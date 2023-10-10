@@ -99,12 +99,19 @@ def transform(conf, carbonyl_atom):
     b_ = np.dot(Rodrigues_rotation(n1, sin1, cos1), b)
     byz = b_ * np.array([0, 1, 1])
     byz = byz / np.linalg.norm(byz)
-    cos2 = np.dot(byz, np.array([0, 1, 0]))
-    cros2 = np.cross(byz, np.array([0, 1, 0]))
+    if False:
+
+        cos2 = np.dot(byz, np.array([0, 1, 0]))
+        cros2 = np.cross(byz, np.array([0, 1, 0]))
+
+    else:
+        cos2 = np.dot(byz, np.array([0, 0, 1]))
+        cros2 = np.cross(byz, np.array([0, 0, 1]))
     sin2 = np.linalg.norm(cros2)
     n2 = cros2 / sin2
     conf = np.dot(Rodrigues_rotation(n1, sin1, cos1), conf.T).T
     conf = np.dot(Rodrigues_rotation(n2, sin2, cos2), conf.T).T
+
     return conf
 
 
@@ -169,16 +176,16 @@ def read_xyz(mol, input_dir_name):
 
 
 if __name__ == '__main__':
-    param_file_name = "./parameter/parameter.txt"
+    param_file_name = "./parameter/parameter_cbs.txt"
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     print(param)
-    data_file_path = "./dataset/data.xlsx"
-    sheet_name = "train"
-    df1 = pd.read_excel(data_file_path, sheet_name=sheet_name).dropna(subset=['smiles'])
-    sheet_name = "test"
-    df2 = pd.read_excel(data_file_path, sheet_name=sheet_name).dropna(subset=['smiles'])
-    df = pd.concat([df1, df2]).drop_duplicates(subset=["smiles"])
+    data_file_path = "arranged_dataset/cbs.xls"
+
+    df1 = pd.read_excel(data_file_path)
+    df2=pd.read_excel("arranged_dataset/DIP-chloride.xls")
+    df = pd.concat([df1, df2]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
+
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
     df = df.dropna(subset=['mol'])
     df["molwt"] = df["smiles"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
@@ -189,8 +196,7 @@ if __name__ == '__main__':
     psi4_out_dir_name = "./psi4_optimization"
     psi4_aligned_dir_name = "./psi4_optimization_aligned"
 
-
-    for smiles in df["smiles"].iloc[::-1]:
+    for smiles in df["smiles"]:
         print(smiles)
         mol = get_mol(smiles)
         MMFF_out_dirs_name = MMFF_out_dir_name + "/" + mol.GetProp("InchyKey")
@@ -206,10 +212,11 @@ if __name__ == '__main__':
         if not os.path.isdir(psi4_aligned_dirs_name):
             try:
                 psi4optimization(MMFF_out_dirs_name, psi4_out_dirs_name + "calculating", param["optimize_level"])
+                read_xyz(mol, psi4_out_dirs_name + "calculating")
+                highenergycut(mol, param["cut_psi4_energy"])
+                rmsdcut(mol, param["cut_psi4_rmsd"])
+                ConfTransform(mol)
+                conf_to_xyz(mol, psi4_aligned_dirs_name)
+                #ヨウ素に対する計算を考える。
             except:
-                None
-            read_xyz(mol, psi4_out_dirs_name + "calculating")
-            highenergycut(mol, param["cut_psi4_energy"])
-            rmsdcut(mol, param["cut_psi4_rmsd"])
-            ConfTransform(mol)
-            conf_to_xyz(mol, psi4_aligned_dirs_name)
+                continue

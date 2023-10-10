@@ -89,18 +89,15 @@ def cube_to_pkl(dirs_name):
 
 
 if __name__ == '__main__':
-    param_file_name = "./parameter/parameter.txt"#_MP2
-    output_dir_name = "/Users/macmini_m1_2022/PycharmProjects/sphere_model/cube_aligned_b3lyp_6-31g(d)"#"./psi4_cube_aligned"#_MP2
+    param_file_name = "./parameter/parameter_cbs.txt"  # _MP2
+    output_dir_name = "/Users/macmini_m1_2022/PycharmProjects/CoMFA_model/cube_aligned_b3lyp_6-31g(d)"  # "./psi4_cube_aligned"#_MP2
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     print(param)
-
-    data_file_path = "./dataset/data.xlsx"
-    sheet_name = "train"
-    df1 = pd.read_excel(data_file_path, sheet_name=sheet_name).dropna(subset=['smiles'])
-    sheet_name = "test"
-    df2 = pd.read_excel(data_file_path, sheet_name=sheet_name).dropna(subset=['smiles'])
-    df = pd.concat([df1, df2])
+    data_file_path = "arranged_dataset/cbs.xls"
+    df1 = pd.read_excel(data_file_path)
+    df2 = pd.read_excel("arranged_dataset/DIP-chloride.xls")
+    df = pd.concat([df1, df2]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
     df = df.dropna(subset=['mol'])
     df["molwt"] = df["smiles"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
