@@ -96,7 +96,8 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
 
 if __name__ == '__main__':
-    param_file_name = "../parameter/parameter_cbs.txt"
+    #param_file_name = "../parameter/parameter_cbs.txt"
+    param_file_name = "../parameter/parameter_dip-chloride.txt"
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     #座標を読み込む

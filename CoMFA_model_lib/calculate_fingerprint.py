@@ -2,6 +2,20 @@ from rdkit.Chem import AllChem
 import numpy as np
 import pandas as pd
 from rdkit import Chem
+import os
+import calculate_conformation
+from rdkit.Chem import PandasTools
+
+def make_fp(smiles):
+    mol=Chem.MolFromSmiles(smiles)
+    calculate_conformation.GetCommonStructure(mol,"[#6](=[#8])([c,C])([c,C])")
+    bitI_morgan = {}
+    AllChem.GetMorganFingerprintAsBitVect(mol, 0, bitInfo=bitI_morgan)
+    common_atom = [[atom.GetIdx() for atom in mol.GetAtoms() if atom.GetProp("alignment") == str(i)][0] for i in
+                   range(4)]
+    print(common_atom)
+    print(bitI_morgan.values())
+
 
 
 
@@ -26,13 +40,12 @@ def make_fpweight(df):
     df["keys3"] = keys3
 
     #         for bit, value in bitI_morgan.items():
-    df = df.replace({'keys2': {80: 926, 1019: 1, 114: 1060},
-                     'keys3': {80: 926, 1019: 1, 114: 1060}})  # 同じものを削除どれとどれが同じFPなのかは可視化プログラムで判断
+    df = df.replace({'keys2': {80: 926, 1019: 1, 114: 1060,694:1380,1873:1380},
+                     'keys3': {80: 926, 1019: 1, 114: 1060,694:1380,1873:1380}})  # 同じものを削除どれとどれが同じFPなのかは可視化プログラムで判断
     key2 = pd.DataFrame(df['keys2'].value_counts())
     key3 = pd.DataFrame(df['keys3'].value_counts())
     keysum = pd.concat([key2, key3], axis=1).fillna(0)
     keysum["fpsum"] = keysum["keys2"] + keysum["keys3"]
-
     return df,keysum
 
 def make_eachweight(df,keysum):
@@ -66,3 +79,23 @@ def make_eachweight(df,keysum):
         else:
             print(q+"notincolumns")
     return df ,fplist
+
+if __name__ == '__main__':
+    df=pd.read_excel("../arranged_dataset/DIP-chloride.xls")
+    print(df)
+    #df["smiles"].apply(make_fp)
+    df,keysum=make_fpweight(df)
+    df,fplist=make_eachweight(df, keysum)
+    to_dir_name = "../fingerprint/fparranged_dataset"
+    to_file_name = "Dip-chloride.csv"
+    to_dir_name2 = "../fingerprint/fplist"
+    to_file_name2 = "Dip-chliride.csv"
+    os.makedirs(to_dir_name, exist_ok=True)
+    os.makedirs(to_dir_name2, exist_ok=True)
+    # print(df)
+    #df.to_excel("test.xlsx")
+    PandasTools.SaveXlsxFromFrame(df, to_dir_name + "/" + to_file_name, size=(100, 100))
+
+
+
+    # print(keysum)

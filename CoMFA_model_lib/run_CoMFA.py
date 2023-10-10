@@ -149,7 +149,8 @@ def leave_one_out(features_dir_name, df, p, out_file_name):
 
 
 if __name__ == '__main__':
-    param_file_name = "../parameter/parameter_cbs.txt"
+    #param_file_name = "../parameter/parameter_cbs.txt"
+    param_file_name = "../parameter/parameter_dip-chloride.txt"
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     features_dir_name = param["grid_dir_name"]
@@ -167,5 +168,6 @@ if __name__ == '__main__':
     os.makedirs(param["out_dir_name"], exist_ok=True)
     grid_search(features_dir_name, df, dfp, param["out_dir_name"] + "/result_grid_search.csv")
     print(dfp)
+    print(dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
     leave_one_out(features_dir_name, df, dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()],
                   param["out_dir_name"] + "/result_loo.xls")

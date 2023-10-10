@@ -12,7 +12,7 @@ if __name__ == '__main__':
     #       "z":np.round(np.arange(-4.75,5,0.5),2)}
     sr ={"x": np.round(np.arange(-5.75, 0.2, 0.5), 2),
      "y": np.round(np.arange(-2.75, 3, 0.5), 2),
-     "z": np.round(np.arange(-8.75, 9, 0.5), 2)}
+     "z": np.round(np.arange(-5.75, 6, 0.5), 2)}
     dfp = pd.DataFrame([dict(zip(sr.keys(), l)) for l in product(*sr.values())]).astype(float)
     os.makedirs(out_dir_name,exist_ok=True)
     dfp.to_csv(out_dir_name+"/"+out_file_name)
