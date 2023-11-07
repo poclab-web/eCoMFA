@@ -40,6 +40,10 @@ def grid_search(features_dir_name,regression_features ,df, dfp, out_file_name,fp
     np.save('../penalty/penalty.npy', penalty)
     r2_list = []
     RMSE_list = []
+    if regression_features in ["LUMO"]:
+        for L3 in dfp["λ1"]:
+            None
+
     for L1, L2 in zip(dfp["λ1"], dfp["λ2"]):
         penalty1 = np.concatenate([L1 * penalty, np.zeros(penalty.shape)], axis=1)
         penalty2 = np.concatenate([np.zeros(penalty.shape), L2 * penalty], axis=1)
@@ -54,19 +58,10 @@ def grid_search(features_dir_name,regression_features ,df, dfp, out_file_name,fp
             ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values
                     for
                     mol in df.iloc[train_index]["mol"]]
-            LUMOs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values
-                    for
-                    mol in df.iloc[train_index]["mol"]]
-            if regression_features in["LUMO"]:
-                features=LUMOs.values
-            else:
-                features = np.concatenate([Dts, ESPs], axis=1)
+            features = np.concatenate([Dts, ESPs], axis=1)
             if reguression_type in["gaussianFP"]:
-                if regression_features in["LUMO"]:
-                    X= np.concatenate([features,penalty3],axis=0)
 
-                else:
-                    X = np.concatenate([features, penalty1, penalty2], axis=0)
+                X = np.concatenate([features, penalty1, penalty2], axis=0)
                 zeroweight =np.zeros(int(penalty.shape[1])).reshape(1,penalty.shape[1])
                 train_if = []
                 for weight in df.loc[:, fplist].columns:
@@ -116,14 +111,8 @@ def leave_one_out(features_dir_name, regression_features, df, out_file_name, par
            in df["mol"]]
     ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values for mol
             in df["mol"]]
-    LUMOs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values for mol
-            in df["mol"]]
-
     penalty = np.load("../penalty/penalty.npy")
-    if regression_features in ["LUMO"]:
-        features = LUMOs.values
-    else:
-        features = np.concatenate([Dts, ESPs], axis=1)
+    features = np.concatenate([Dts, ESPs], axis=1)
     if regression_type== "lassocv":#lassocv
         Y = df["ΔΔG.expt."].values
         model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
@@ -144,15 +133,12 @@ def leave_one_out(features_dir_name, regression_features, df, out_file_name, par
         df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
         print(df["mol"].iloc[0].GetProp("InchyKey"))
         os.makedirs(param["moleculer_field_dir"], exist_ok=True)
-        if regression_features in ["LUMO"]:
-            df["MF_LUMO"]=model.coef_[:penalty.shape[0]]
-        else:
-            df_mf["MF_Dt"] = model.coef_[:penalty.shape[0]]
-            df_mf["MF_ESP"] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
+
+        df_mf["MF_Dt"] = model.coef_[:penalty.shape[0]]
+        df_mf["MF_ESP"] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
         df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
-        if not regression_features in["LUMO"]:
-            df["Dt_contribution"] = np.sum(Dts * df_mf["MF_Dt"].values, axis=1)
-            df["ESP_contribution"] = np.sum(ESPs * df_mf["MF_ESP"].values, axis=1)
+        df["Dt_contribution"] = np.sum(Dts * df_mf["MF_Dt"].values, axis=1)
+        df["ESP_contribution"] = np.sum(ESPs * df_mf["MF_ESP"].values, axis=1)
 
 
     if regression_type in ["gaussianFP"]:
@@ -172,23 +158,17 @@ def leave_one_out(features_dir_name, regression_features, df, out_file_name, par
         df["ΔΔG.train"] = model.predict(features)
         df_mf=pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
 
-        if regression_features in ["LUMO"]:
-            df_fpv = str(model.coef_[penalty.shape[0] :])
-            path_w = param["out_dir_name"] + "/" + "fpvalue"
-            with open(path_w, mode='w') as f:
-                f.write(df_fpv)
-        else:
-            df_mf["MF_Dt"]=model.coef_[:penalty.shape[0]]
-            df_mf["MF_ESP"]=model.coef_[penalty.shape[0]:penalty.shape[0]*2]
-            df["Dt_contribution"] = np.sum(Dts*df_mf["MF_Dt"].values,axis=1)
-            df["ESP_contribution"] = np.sum(ESPs*df_mf["MF_ESP"].values,axis=1)
-            print("model.coef_[penalty.shape[0]*2:]")
-        # print(model.coef_)
-            print(model.coef_[penalty.shape[0]*2:])
-            df_fpv = str(model.coef_[penalty.shape[0] * 2:])
-            path_w = param["out_dir_name"] + "/" + "fpvalue"
-            with open(path_w, mode='w') as f:
-                f.write(df_fpv)
+        df_mf["MF_Dt"]=model.coef_[:penalty.shape[0]]
+        df_mf["MF_ESP"]=model.coef_[penalty.shape[0]:penalty.shape[0]*2]
+        df["Dt_contribution"] = np.sum(Dts*df_mf["MF_Dt"].values,axis=1)
+        df["ESP_contribution"] = np.sum(ESPs*df_mf["MF_ESP"].values,axis=1)
+        print("model.coef_[penalty.shape[0]*2:]")
+    # print(model.coef_)
+        print(model.coef_[penalty.shape[0]*2:])
+        df_fpv = str(model.coef_[penalty.shape[0] * 2:])
+        path_w = param["out_dir_name"] + "/" + "fpvalue"
+        with open(path_w, mode='w') as f:
+            f.write(df_fpv)
     if regression_type in ["FP"]:
         X = np.concatenate([features], axis=0)
         for weight in df.loc[:, fplist].columns:
@@ -202,23 +182,17 @@ def leave_one_out(features_dir_name, regression_features, df, out_file_name, par
         df["ΔΔG.train"] = model.predict(features)
         df_mf=pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
         print(model.coef_.shape)
-        if regression_features in ["LUMO"]:
-            df_fpv = str(model.coef_[penalty.shape[0] :])
-            path_w = param["out_dir_name"] + "/" + "fpvalue"
-            with open(path_w, mode='w') as f:
-                f.write(df_fpv)
-        else:
-            df_mf["MF_Dt"]=model.coef_[:penalty.shape[0]]
-            df_mf["MF_ESP"]=model.coef_[penalty.shape[0]:penalty.shape[0]*2]
-            df["Dt_contribution"] = np.sum(Dts*df_mf["MF_Dt"].values,axis=1)
-            df["ESP_contribution"] = np.sum(ESPs*df_mf["MF_ESP"].values,axis=1)
-            print("model.coef_[penalty.shape[0]*2:]")
-        # print(model.coef_)
-            print(model.coef_[penalty.shape[0]*2:])
-            df_fpv=str(model.coef_[penalty.shape[0]*2:])
-            path_w = param["out_dir_name"]+"/"+"fpvalue"
-            with open(path_w, mode='w') as f:
-                f.write(df_fpv)
+        df_mf["MF_Dt"]=model.coef_[:penalty.shape[0]]
+        df_mf["MF_ESP"]=model.coef_[penalty.shape[0]:penalty.shape[0]*2]
+        df["Dt_contribution"] = np.sum(Dts*df_mf["MF_Dt"].values,axis=1)
+        df["ESP_contribution"] = np.sum(ESPs*df_mf["MF_ESP"].values,axis=1)
+        print("model.coef_[penalty.shape[0]*2:]")
+    # print(model.coef_)
+        print(model.coef_[penalty.shape[0]*2:])
+        df_fpv=str(model.coef_[penalty.shape[0]*2:])
+        path_w = param["out_dir_name"]+"/"+"fpvalue"
+        with open(path_w, mode='w') as f:
+            f.write(df_fpv)
 
 
 
@@ -232,13 +206,7 @@ def leave_one_out(features_dir_name, regression_features, df, out_file_name, par
             ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values
                     for
                     mol in df.iloc[train_index]["mol"]]
-            LUMOs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
-                    for
-                    mol in df.iloc[train_index]["mol"]]
-            if regression_features in ["LUMO"]:
-                features= LUMOs.values
-            else :
-                features = np.concatenate([Dts, ESPs], axis=1)
+            features = np.concatenate([Dts, ESPs], axis=1)
 
             Y=df.iloc[train_index]["ΔΔG.expt."].values
             model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
@@ -248,13 +216,9 @@ def leave_one_out(features_dir_name, regression_features, df, out_file_name, par
             ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values
                     for
                     mol in df.iloc[test_index]["mol"]]
-            LUMOs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
-                    for
-                    mol in df.iloc[test_index]["mol"]]
-            if regression_features in ["LUMO"]:
-                features = LUMOs.values
-            else :
-                features = np.concatenate([Dts, ESPs], axis=1)
+
+
+            features = np.concatenate([Dts, ESPs], axis=1)
             predict = model.predict(features)
             l.extend(predict)
     if regression_type in ["gaussian", "gaussianFP"]:
@@ -265,13 +229,10 @@ def leave_one_out(features_dir_name, regression_features, df, out_file_name, par
                    mol in df.iloc[train_index]["mol"]]
             ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values for
                     mol in df.iloc[train_index]["mol"]]
-            LUMOs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
-                for
-                mol in df.iloc[train_index]["mol"]]
-            if regression_features in ["LUMO"]:
-                features = LUMOs.values
-            else :
-                features = np.concatenate([Dts, ESPs], axis=1)
+
+
+
+            features = np.concatenate([Dts, ESPs], axis=1)
 
 
             penalty1 = np.concatenate([p[0] * penalty, np.zeros(penalty.shape)], axis=1)
