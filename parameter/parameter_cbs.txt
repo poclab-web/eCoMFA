@@ -13,5 +13,9 @@
 "penalty_param_dir" :"../penalty_param/penalty_param.csv",
 "out_dir_name":"../result/cbs",
 "fig_file_dir":"../figs/cbs",
-"data_file_path": "../arranged_dataset/cbs.xls"
+"data_file_path": "../arranged_dataset/cbs.xls",
+"fpdata_file_path": "../fingerprint/fparranged_dataset/cbs.csv",
+"fplist": "../fingerprint/fplist/fplistcbs.csv",
+"moleculer_field_dir":"../moleculer_field/cbs",
+"title":"cbs gaussian"
 }

@@ -26,7 +26,32 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
     print(len(df))
     print("finish")
 
+if __name__ == '__main__':
+    # make_dataset("train","temperature","all_train.xls")
+    make_dataset("../sampledata/cbs_hand_read_1030.csv","cbs.xls")
+    make_dataset("../sampledata/DIP-chloride.csv","DIP-chloride.xls")
 
-# make_dataset("train","temperature","all_train.xls")
-make_dataset("../sampledata/cbs_hand_read_0621.csv","cbs.xls")
-make_dataset("../sampledata/DIP-chloride.csv","DIP-chloride.xls")
+
+    # from CoMFA_model_lib import calculate_conformation
+    #
+    # df_dip=pd.read_excel(to_dir_path+"/DIP-chloride.xls")
+    # df_cbs=pd.read_excel(to_dir_path+"/cbs.xls")
+    # df_dip["mol"]=df_dip["smiles"].apply(lambda smiles:calculate_conformation.get_mol(smiles))
+    # df_dip["InchyKey"]=df_dip["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
+    # df_cbs["mol"]=df_cbs["smiles"].apply(lambda smiles:calculate_conformation.get_mol(smiles))
+    # df_cbs["InchyKey"]=df_cbs["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
+    # print(df_dip.columns)
+    # l=[]
+    # for er, inchykey in zip(df_dip["er."],df_dip["InchyKey"]):
+    #     if inchykey in df_cbs["InchyKey"].values:
+    #         ans=100-er
+    #     else:
+    #         ans=er
+    #     l.append(ans)
+    # df_dip["er."]=l
+    # df_dip["ΔΔG.expt."] = df_dip["RT"].values * np.log(100 / df_dip["er."].values - 1)
+    # print(df_dip["er."])
+    # print(df_dip.columns)
+    # PandasTools.AddMoleculeColumnToFrame(df_dip, "smiles")
+    # df_cbs = df_cbs[["smiles", "ROMol", "er.", "RT", "ΔΔG.expt."]]
+    # PandasTools.SaveXlsxFromFrame(df_dip,to_dir_path+"/DIP-chloride_revised.xls", size=(100, 100))

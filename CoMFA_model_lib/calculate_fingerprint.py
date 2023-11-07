@@ -4,6 +4,8 @@ import pandas as pd
 from rdkit import Chem
 import os
 import calculate_conformation
+import csv
+import json
 from rdkit.Chem import PandasTools
 
 def make_fp(smiles):
@@ -81,20 +83,31 @@ def make_eachweight(df,keysum):
     return df ,fplist
 
 if __name__ == '__main__':
-    df=pd.read_excel("../arranged_dataset/DIP-chloride.xls")
+    param_file_name = "../parameter/parameter_dip-chloride_lassocv.txt"
+    param_file_name = "../parameter/parameter_cbs_gaussian.txt"
+    with open(param_file_name, "r") as f:
+        param = json.loads(f.read())
+
+    df=pd.read_excel(param["data_file_path"]).dropna(subset=['smiles']).reset_index()
     print(df)
     #df["smiles"].apply(make_fp)
     df,keysum=make_fpweight(df)
+    print(keysum)
     df,fplist=make_eachweight(df, keysum)
-    to_dir_name = "../fingerprint/fparranged_dataset"
-    to_file_name = "Dip-chloride.csv"
-    to_dir_name2 = "../fingerprint/fplist"
-    to_file_name2 = "Dip-chliride.csv"
-    os.makedirs(to_dir_name, exist_ok=True)
-    os.makedirs(to_dir_name2, exist_ok=True)
+    # to_dir_name = "../fingerprint/fparranged_dataset"
+    # to_file_name = "Dip-chloride.csv"
+    # to_dir_name2 = param["fplist"]
+
+
+    # os.makedirs(to_dir_name, exist_ok=True)
+    # os.makedirs(to_dir_name2, exist_ok=True)
     # print(df)
-    #df.to_excel("test.xlsx")
-    PandasTools.SaveXlsxFromFrame(df, to_dir_name + "/" + to_file_name, size=(100, 100))
+
+    df.to_csv(param["fpdata_file_path"])
+    with open(param["fplist"],"w") as f:
+        writer =csv.writer(f)
+        writer.writerow(fplist)
+    # PandasTools.SaveXlsxFromFrame(df, to_dir_name + "/" + to_file_name, size=(100, 100))
 
 
 
