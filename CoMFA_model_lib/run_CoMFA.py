@@ -43,7 +43,7 @@ def grid_search(features_dir_name,regression_features ,df, dfp, out_file_name,fp
     for L1, L2 in zip(dfp["λ1"], dfp["λ2"]):
         penalty1 = np.concatenate([L1 * penalty, np.zeros(penalty.shape)], axis=1)
         penalty2 = np.concatenate([np.zeros(penalty.shape), L2 * penalty], axis=1)
-        penalty3 = L1 * penalty
+
         l = []
         kf = KFold(n_splits=5, shuffle=False)
         for (train_index, test_index) in kf.split(df):
