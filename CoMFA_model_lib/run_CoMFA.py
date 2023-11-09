@@ -510,14 +510,14 @@ def leave_one_out(features_dir_name, regression_features, df, out_file_name, par
 
 if __name__ == '__main__':
     for param_file_name in [
+        "../parameter/parameter_cbs_lassocv.txt",
+        "../parameter/parameter_dip-chloride_lassocv.txt",
+        "../parameter/parameter_dip-chloride_FP.txt",
         "../parameter/parameter_cbs_gaussian.txt",
         "../parameter/parameter_dip-chloride_gaussian.txt",
         "../parameter/parameter_dip-chloride_gaussian_FP.txt",
         "../parameter/parameter_cbs_FP.txt",
-        "../parameter/parameter_cbs_gaussian_FP.txt",
-        "../parameter/parameter_cbs_lassocv.txt",
-        "../parameter/parameter_dip-chloride_lassocv.txt",
-        "../parameter/parameter_dip-chloride_FP.txt"
+        "../parameter/parameter_cbs_gaussian_FP.txt"
     ]:
         print(param_file_name)
         with open(param_file_name, "r") as f:
