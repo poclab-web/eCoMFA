@@ -12,12 +12,12 @@ import warnings
 import json
 import csv
 """
-LUMO_imple
+feature_num
 """
 warnings.simplefilter('ignore')
 
 
-def grid_search(features_dir_name,regression_features ,df, dfp, out_file_name,fplist,reguression_type):
+def grid_search(features_dir_name,regression_features ,regression_number,df, dfp, out_file_name,fplist,reguression_type):
     xyz = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))[
         ["x", "y", "z"]].values
     d = np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
@@ -43,19 +43,28 @@ def grid_search(features_dir_name,regression_features ,df, dfp, out_file_name,fp
     np.save('../penalty/penalty.npy', penalty)
     r2_list = []
     RMSE_list = []
-    if regression_features in ["LUMO"]:
-        for L3 in dfp["λ3"]:
-            penalty3 = L3 * penalty
-            l = []
+
+
+    if regression_number=="1":
+        print(dfp["{}param".format(regression_features)])
+        dfp["{}param".format(regression_features)]
+        hyperparam=list(dict.fromkeys(dfp["{}param".format(regression_features)]))
+
+
+        for L1 in hyperparam:
+            print(L1)
+            penalty1 = L1 * penalty
+            l=[]
             kf = KFold(n_splits=5, shuffle=False)
             for (train_index, test_index) in kf.split(df):
-                LUMOs = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
+
+                feature = [
+                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                        "{}".format(regression_features)].values
                     for
                     mol in df.iloc[train_index]["mol"]]
-                features=LUMOs
                 if reguression_type in ["gaussianFP"]:
-                    X = np.concatenate([features, penalty3], axis=0)
+                    X = np.concatenate([feature, penalty1], axis=0)
                     zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
                     train_if = []
                     for weight in df.loc[:, fplist].columns:
@@ -68,28 +77,70 @@ def grid_search(features_dir_name,regression_features ,df, dfp, out_file_name,fp
                     Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] )], axis=0)
                     model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)#ただの線形回帰
                 if reguression_type in["gaussian"]:
-                    X = np.concatenate([features, penalty3], axis=0)
+                    X = np.concatenate([feature, penalty1], axis=0)
                     Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] )], axis=0)
                     model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)#Ridgeじゃないただの線形回帰
 
-                LUMOs = [
+                feature = [
                     pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
                     for
                     mol in df.iloc[test_index]["mol"]]
-                features = LUMOs
+
                 if reguression_type in["FP","gaussianFP"]:
                     for weight in df.loc[:, fplist].columns:
                         S = np.array(df.iloc[test_index][weight].values).reshape(1, np.array(df.iloc[test_index][weight].values).shape[0]).T
-                        features = np.concatenate([features, S], axis=1)
-                predict = model.predict(features)
+                        feature = np.concatenate([feature, S], axis=1)
+                predict = model.predict(feature)
                 l.extend(predict)
-            print(l)
-            r2 = r2_score(df["ΔΔG.expt."], l)
-            RMSE = np.sqrt(mean_squared_error(df["ΔΔG.expt."], l))
-            print("r2", r2)
-            r2_list.append(r2)
-            RMSE_list.append(RMSE)
 
+        raise ValueError
+
+
+        # for L3 in dfp["λ3"]:
+        #     penalty3 = L3 * penalty
+        #     l = []
+        #     kf = KFold(n_splits=5, shuffle=False)
+        #     for (train_index, test_index) in kf.split(df):
+        #         LUMOs = [
+        #             pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
+        #             for
+        #             mol in df.iloc[train_index]["mol"]]
+        #         features=LUMOs
+        #         if reguression_type in ["gaussianFP"]:
+        #             X = np.concatenate([features, penalty3], axis=0)
+        #             zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
+        #             train_if = []
+        #             for weight in df.loc[:, fplist].columns:
+        #                 if (train_tf := not df.iloc[train_index][weight].to_list()
+        #                                                  .count(df.iloc[train_index][weight].to_list()[0]) == len(df.iloc[train_index][weight])):
+        #                     S = df.iloc[train_index][weight].values.reshape(1, -1)
+        #                     Q = np.concatenate([S, zeroweight], axis=1)
+        #                     X = np.concatenate([X, Q.T], axis=1)
+        #                 train_if.append(train_tf)
+        #             Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] )], axis=0)
+        #             model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)#ただの線形回帰
+        #         if reguression_type in["gaussian"]:
+        #             X = np.concatenate([features, penalty3], axis=0)
+        #             Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] )], axis=0)
+        #             model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)#Ridgeじゃないただの線形回帰
+        #
+        #         LUMOs = [
+        #             pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
+        #             for
+        #             mol in df.iloc[test_index]["mol"]]
+        #         features = LUMOs
+        #         if reguression_type in["FP","gaussianFP"]:
+        #             for weight in df.loc[:, fplist].columns:
+        #                 S = np.array(df.iloc[test_index][weight].values).reshape(1, np.array(df.iloc[test_index][weight].values).shape[0]).T
+        #                 features = np.concatenate([features, S], axis=1)
+        #         predict = model.predict(features)
+        #         l.extend(predict)
+        #     print(l)
+        #     r2 = r2_score(df["ΔΔG.expt."], l)
+        #     RMSE = np.sqrt(mean_squared_error(df["ΔΔG.expt."], l))
+        #     print("r2", r2)
+        #     r2_list.append(r2)
+        #     RMSE_list.append(RMSE)
 
 
     else:
@@ -541,9 +592,9 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
 
 if __name__ == '__main__':
     for param_file_name in [
+        "../parameter/parameter_cbs_gaussian.txt",
         "../parameter/parameter_cbs_FP.txt",
         "../parameter/parameter_cbs_PLS.txt",
-        "../parameter/parameter_cbs_gaussian.txt",
         "../parameter/parameter_dip-chloride_gaussian.txt",
         "../parameter/parameter_dip-chloride_PLS.txt",
         "../parameter/parameter_dip-chloride_FP.txt",
@@ -577,14 +628,14 @@ if __name__ == '__main__':
 
         if param["Regression_type"] in ["gaussian","gaussianFP"]:
             if param["Regression_type"] in "gaussian":
-                if param["Regression_features"] in ["LUMO"]:
-                    dfp=dfp.drop_duplicates(subset="λ3")
-                    print("dfp")
-                    print(dfp)
-                else :
-                    print("dfp")
-                    print(dfp)
-                grid_search(features_dir_name,param["Regression_features"] ,df, dfp, param["out_dir_name"] + "/result_grid_search.csv",fplist,param["Regression_type"])
+                # if param["Regression_features"] in ["LUMO"]:
+                #     dfp=dfp.drop_duplicates(subset="λ3")
+                #     print("dfp")
+                #     print(dfp)
+                # else :
+                #     print("dfp")
+                #     print(dfp)
+                grid_search(features_dir_name,param["Regression_features"] ,param["feature_number"],df, dfp, param["out_dir_name"] + "/result_grid_search.csv",fplist,param["Regression_type"])
             if param["cat"]=="cbs":
                 dfp=pd.read_csv("../result/cbs_gaussian/result_grid_search.csv")
             else :
