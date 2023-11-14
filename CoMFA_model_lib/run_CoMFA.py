@@ -44,10 +44,13 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
     r2_list = []
     RMSE_list = []
 
-
     if regression_number=="1":
         hyperparam=list(dict.fromkeys(dfp["{}param".format(regression_features)]))
+        q = []
         for L1 in hyperparam:
+            a = []
+            a.append(L1)
+            q.append(a)
             print(L1)
             penalty1 = L1 * penalty
             l=[]
@@ -87,6 +90,16 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                         feature = np.concatenate([feature, S], axis=1)
                 predict = model.predict(feature)
                 l.extend(predict)
+            r2 = r2_score(df["ΔΔG.expt."], l)
+            RMSE = np.sqrt(mean_squared_error(df["ΔΔG.expt."], l))
+            print("r2", r2)
+            r2_list.append(r2)
+            RMSE_list.append(RMSE)
+
+        paramlist = pd.DataFrame(q)
+        print(regression_features.split()[0])
+        paramlist.rename(columns={0: "{}param".format(regression_features.split()[0])},inplace=True)
+        print(param.columns)
 
     elif regression_number == "2":
         feature1param =list(dict.fromkeys(dfp["{}param".format(regression_features.split()[0])]))
@@ -157,6 +170,12 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                 RMSE_list.append(RMSE)
         print(q)
         paramlist=pd.DataFrame(q)
+
+        paramlist.rename(columns={0: "{}param".format(regression_features.split()[0]),
+                                              1: "{}param".format(regression_features.split()[1])},inplace=True)
+
+
+
 
     elif regression_number == "3":
         feature1param = list(dict.fromkeys(dfp["{}param".format(regression_features.split()[0])]))
@@ -244,15 +263,17 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                     RMSE_list.append(RMSE)
 
         paramlist = pd.DataFrame(q)
-
-
-
-
+        paramlist.rename(columns={0: "{}param".format(regression_features.split()[0]),
+                                              1: "{}param".format(regression_features.split()[1]),
+                                              2: "{}param".format(regression_features.split()[2])},inplace=True)
+    else :
+        raise ValueError
     paramlist["r2"] = r2_list
     paramlist["RMSE"] = RMSE_list
     print(paramlist)
+    print(paramlist.columns)
     paramlist.to_csv(out_file_name)
-    raise ValueError
+
 
 
 def leave_one_out(features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type, p=None):
@@ -680,36 +701,30 @@ if __name__ == '__main__':
 
         if param["Regression_type"] in ["gaussian","gaussianFP"]:
             if param["Regression_type"] in "gaussian":
-                # if param["Regression_features"] in ["LUMO"]:
-                #     dfp=dfp.drop_duplicates(subset="λ3")
-                #     print("dfp")
-                #     print(dfp)
-                # else :
-                #     print("dfp")
-                #     print(dfp)
                 grid_search(features_dir_name,param["Regression_features"] ,param["feature_number"],df, dfp, param["out_dir_name"] + "/result_grid_search.csv",fplist,param["Regression_type"])
             if param["cat"]=="cbs":
                 dfp=pd.read_csv("../result/cbs_gaussian/result_grid_search.csv")
             else :
                 dfp = pd.read_csv("../result/dip-chloride_gaussian/result_grid_search.csv")
-
-
+            print(dfp)
 
             with open(param["out_dir_name"]+"/hyperparam.csv", "w") as f:
                 writer = csv.writer(f)
-                writer.writerow(dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
+                writer.writerow(dfp[["Dtparam", "ESPparam","LUMOparam"]].values[dfp["RMSE"].idxmin()])
 
-            if param["Regression_type"] in ["gaussian", "gaussianFP"]:
-                if param["Regression_features"] in ["LUMO"]:
-                    leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"], df,
-                                  param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
-                                  dfp["λ3"].values[dfp["RMSE"].idxmin()])
-
-
-
-                else:
-                    leave_one_out(features_dir_name,param["Regression_features"],param["feature_number"],df,
-                      param["out_dir_name"] + "/result_loo.xls",param,fplist,param["Regression_type"],dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
-        else:
-            leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"],df,
-                      param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],p=None)
+        raise ValueError
+        #     if param["Regression_type"] in ["gaussian", "gaussianFP"]:
+        #
+        #         leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
+        #                            param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
+        #                            dfp[["λ1", "λ2","λ3"]].values[dfp["RMSE"].idxmin()])
+        #         # if param["Regression_features"] in ["LUMO"]:
+        #         #     leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"], df,
+        #         #                   param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
+        #         #                   dfp["λ3"].values[dfp["RMSE"].idxmin()])
+        #         # else:
+        #         #     leave_one_out(features_dir_name,param["Regression_features"],param["feature_number"],df,
+        #         #       param["out_dir_name"] + "/result_loo.xls",param,fplist,param["Regression_type"],dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
+        # else:
+        #     leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"],df,
+        #               param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],p=None)
