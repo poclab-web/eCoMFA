@@ -88,14 +88,16 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                 predict = model.predict(feature)
                 l.extend(predict)
 
-
-
     elif regression_number == "2":
         feature1param =list(dict.fromkeys(dfp["{}param".format(regression_features.split()[0])]))
         feature2param =list(dict.fromkeys(dfp["{}param".format(regression_features.split()[1])]))
-
+        q=[]
         for L1 in feature1param:
             for L2 in feature2param:
+                a=[]
+                a.append(L1)
+                a.append(L2)
+                q.append(a)
                 penalty1 = np.concatenate([L1 * penalty, np.zeros(penalty.shape)], axis=1)
                 penalty2 = np.concatenate([np.zeros(penalty.shape), L2 * penalty], axis=1)
                 l = []
@@ -153,11 +155,104 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                 print("r2", r2)
                 r2_list.append(r2)
                 RMSE_list.append(RMSE)
+        print(q)
+        paramlist=pd.DataFrame(q)
 
-    dfp["r2"] = r2_list
-    dfp["RMSE"] = RMSE_list
+    elif regression_number == "3":
+        feature1param = list(dict.fromkeys(dfp["{}param".format(regression_features.split()[0])]))
+        feature2param = list(dict.fromkeys(dfp["{}param".format(regression_features.split()[1])]))
+        feature3param = list(dict.fromkeys(dfp["{}param".format(regression_features.split()[2])]))
+        q = []
+        for L1 in feature1param:
+            for L2 in feature2param:
+                for L3 in feature3param:
+                    a = []
+                    a.append(L1)
+                    a.append(L2)
+                    a.append(L3)
+                    q.append(a)
+                    penalty1 = np.concatenate([L1 * penalty, np.zeros(penalty.shape),np.zeros(penalty.shape)], axis=1)
+                    penalty2 = np.concatenate([np.zeros(penalty.shape), L2 * penalty ,np.zeros(penalty.shape)], axis=1)
+                    penalty3 = np.concatenate([np.zeros(penalty.shape),np.zeros(penalty.shape), L3 *penalty], axis=1)
+                    l = []
+                    kf = KFold(n_splits=5, shuffle=False)
+                    for (train_index, test_index) in kf.split(df):
+                        feature1 = [
+                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                                "{}".format(regression_features.split()[0])].values
+                            for
+                            mol in df.iloc[train_index]["mol"]]
+                        feature2 = [
+                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                                "{}".format(regression_features.split()[1])].values
+                            for
+                            mol in df.iloc[train_index]["mol"]]
+                        feature3 = [
+                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                                "{}".format(regression_features.split()[2])].values
+                            for
+                            mol in df.iloc[train_index]["mol"]]
+                        features = np.concatenate([feature1, feature2,feature3], axis=1)
+                        if reguression_type in ["gaussianFP"] or ["gaussian"]:
+                            X = np.concatenate([features, penalty1, penalty2,penalty3], axis=0)
+                            if reguression_type in ["gaussianFP"]:
+                                zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
+                                train_if = []
+                                for weight in df.loc[:, fplist].columns:
+                                    if (train_tf := not df.iloc[train_index][weight].to_list()
+                                                                .count(df.iloc[train_index][weight].to_list()[0]) == len(
+                                        df.iloc[train_index][weight])):
+                                        S = df.iloc[train_index][weight].values.reshape(1, -1)
+                                        Q = np.concatenate([S, zeroweight, zeroweight], axis=1)
+                                        X = np.concatenate([X, Q.T], axis=1)
+                                    train_if.append(train_tf)
+                            Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 3)],
+                                               axis=0)
+                            model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)  # ただの線形回帰
+
+                        # ここから、テストセットの特徴量計算
+                        feature1 = [
+                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                                "{}".format(regression_features.split()[0])].values
+                            for
+                            mol in df.iloc[test_index]["mol"]]
+                        feature2 = [
+                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                                "{}".format(regression_features.split()[1])].values
+                            for
+                            mol in df.iloc[test_index]["mol"]]
+                        feature3 = [
+                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                                "{}".format(regression_features.split()[2])].values
+                            for
+                            mol in df.iloc[test_index]["mol"]]
+                        features = np.concatenate([feature1, feature2 ,feature3], axis=1)
+
+                        if reguression_type in ["FP", "gaussianFP"]:
+                            for weight in df.loc[:, fplist].columns:
+                                S = np.array(df.iloc[test_index][weight].values).reshape(1, np.array(
+                                    df.iloc[test_index][weight].values).shape[0]).T
+
+                                features = np.concatenate([features, S], axis=1)
+                        predict = model.predict(features)
+                        l.extend(predict)
+                    print(l)
+                    r2 = r2_score(df["ΔΔG.expt."], l)
+                    RMSE = np.sqrt(mean_squared_error(df["ΔΔG.expt."], l))
+                    print("r2", r2)
+                    r2_list.append(r2)
+                    RMSE_list.append(RMSE)
+
+        paramlist = pd.DataFrame(q)
+
+
+
+
+    paramlist["r2"] = r2_list
+    paramlist["RMSE"] = RMSE_list
+    print(paramlist)
+    paramlist.to_csv(out_file_name)
     raise ValueError
-    dfp.to_csv(out_file_name)
 
 
 def leave_one_out(features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type, p=None):
