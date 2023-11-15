@@ -99,7 +99,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
         paramlist = pd.DataFrame(q)
         print(regression_features.split()[0])
         paramlist.rename(columns={0: "{}param".format(regression_features.split()[0])},inplace=True)
-        print(param.columns)
+
 
     elif regression_number == "2":
         feature1param =list(dict.fromkeys(dfp["{}param".format(regression_features.split()[0])]))
@@ -284,40 +284,48 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     LUMOs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values for mol
             in df["mol"]]
     penalty = np.load("../penalty/penalty.npy")
+    p
 
-    if regression_features in ["LUMO"]:
-        features =LUMOs
+    # if regression_features in ["LUMO"]:
+    if feature_number == "1":
+
+        feature = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                     "{}".format(regression_features)].values
+                 for mol
+                 in df["mol"]]
         if regression_type== "lassocv" or"PLS":#lassocv
             Y = df["ΔΔG.expt."].values
             if regression_type=="lassocv":
-                model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
+                model = linear_model.LassoCV(fit_intercept=False).fit(feature, Y)
             else :
-                model = PLSRegression(n_components=5).fit(features, Y)
-            df["ΔΔG.train"] = model.predict(features)
+                model = PLSRegression(n_components=5).fit(feature, Y)
+            df["ΔΔG.train"] = model.predict(feature)
             df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
-            df_mf["MF_LUMO"] = model.coef_[:penalty.shape[0]]
+            df_mf["MF_{}".format(regression_features)] = model.coef_[:penalty.shape[0]]
 
-            df_mf.to_csv((param["moleculer_field_dir"] + "/" + "LUMOmoleculer_field.csv"))
+            df_mf.to_csv((param["moleculer_field_dir"] + "/" + "{}moleculer_field.csv".format(regression_features)))
 
         if regression_type in ["gaussian"]:
+            print(p)
+
             penalty3 = p * penalty
 
-            X = np.concatenate([features, penalty3], axis=0)
+            X = np.concatenate([feature, penalty3], axis=0)
             Y = np.concatenate([df["ΔΔG.expt."], np.zeros(penalty.shape[0])], axis=0)
             model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
-            df["ΔΔG.train"] = model.predict(features)
+            df["ΔΔG.train"] = model.predict(feature)
             df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             print(df["mol"].iloc[0].GetProp("InchyKey"))
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
 
-            df_mf["MF_LUMO"] = model.coef_[:penalty.shape[0]]
+            df_mf["MF_{}".format(regression_features)] = model.coef_[:penalty.shape[0]]
 
-            df_mf.to_csv((param["moleculer_field_dir"] + "/" + "LUMOmoleculer_field.csv"))
+            df_mf.to_csv((param["moleculer_field_dir"] + "/" + "{}moleculer_field.csv".format(regression_features)))
 
         if regression_type in ["gaussianFP"]:
             penalty3 = p * penalty
-            X = np.concatenate([features, penalty3], axis=0)
+            X = np.concatenate([feature, penalty3], axis=0)
             zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
             for weight in df.loc[:, fplist].columns:
                 S = np.array(df[weight].values).reshape(1, -1)
@@ -335,7 +343,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
         # print(model.coef_)
             print(model.coef_[penalty.shape[0]:])
             df_fpv = str(model.coef_[penalty.shape[0] :])
-            path_w = param["out_dir_name"] + "/" + "LUMOfpvalue"
+            path_w = param["out_dir_name"] + "/" + "{}fpvalue".format(regression_features)
             with open(path_w, mode='w') as f:
                 f.write(df_fpv)
 
@@ -345,7 +353,8 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 S = df[weight].values.reshape(-1, 1)
                 X = np.concatenate([X, S], axis=1)
             Y = df["ΔΔG.expt."].values
-            model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
+            #model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
+            model = PLSRegression(n_components=5).fit(features, Y)
             for weight in df.loc[:, fplist].columns:
                 S = np.array(df[weight].values).reshape(-1, 1)
                 features = np.concatenate([features, S], axis=1)
@@ -693,11 +702,6 @@ if __name__ == '__main__':
         dfp = pd.read_csv(param["penalty_param_dir"])  # [:1]
         print(dfp)
         os.makedirs(param["out_dir_name"], exist_ok=True)
-        # if param["Regression_type"] in ["gaussian", "gaussianFP"]:
-        #     grid_search(features_dir_name, df, dfp, param["out_dir_name"] + "/result_grid_search.csv", fplist,
-        #                 param["Regression_type"])
-        #     print(dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
-        #     leave_one_out(features_dir_name, df,param["out_dir_name"] + "/result_loo.xls",param,fplist,param["Regression_type"],dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
 
         if param["Regression_type"] in ["gaussian","gaussianFP"]:
             if param["Regression_type"] in "gaussian":
@@ -707,24 +711,34 @@ if __name__ == '__main__':
             else :
                 dfp = pd.read_csv("../result/dip-chloride_gaussian/result_grid_search.csv")
             print(dfp)
+        min_index = dfp['RMSE'].idxmin()
+        min_row = dfp.loc[min_index, :]
+        p = pd.DataFrame([min_row], index=[min_index])
+        print(p)
 
-            with open(param["out_dir_name"]+"/hyperparam.csv", "w") as f:
-                writer = csv.writer(f)
-                writer.writerow(dfp[["Dtparam", "ESPparam","LUMOparam"]].values[dfp["RMSE"].idxmin()])
+        p.to_csv(param["out_dir_name"]+"/hyperparam.csv")
 
-        raise ValueError
-        #     if param["Regression_type"] in ["gaussian", "gaussianFP"]:
-        #
-        #         leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
-        #                            param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
-        #                            dfp[["λ1", "λ2","λ3"]].values[dfp["RMSE"].idxmin()])
-        #         # if param["Regression_features"] in ["LUMO"]:
-        #         #     leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"], df,
-        #         #                   param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
-        #         #                   dfp["λ3"].values[dfp["RMSE"].idxmin()])
+        # with open(param["out_dir_name"]+"/hyperparam.csv", "w") as f:
+        #         writer = csv.writer(f)
+        #         writer.writerow(min_df)
+
+
+        if param["Regression_type"] in ["gaussian", "gaussianFP"]:
+
+            # leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
+            #                    param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
+            #                    dfp[["λ1", "λ2","λ3"]].values[dfp["RMSE"].idxmin()])
+            leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
+                          param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
+                          p)
+            # if param["Regression_features"] in ["LUMO"]:
+            #     leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"], df,
+            #                   param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
+            #                   dfp["λ3"].values[dfp["RMSE"].idxmin()])
         #         # else:
         #         #     leave_one_out(features_dir_name,param["Regression_features"],param["feature_number"],df,
         #         #       param["out_dir_name"] + "/result_loo.xls",param,fplist,param["Regression_type"],dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
         # else:
         #     leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"],df,
         #               param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],p=None)
+        raise ValueError
