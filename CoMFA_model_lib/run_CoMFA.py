@@ -284,7 +284,8 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     LUMOs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values for mol
             in df["mol"]]
     penalty = np.load("../penalty/penalty.npy")
-    p
+
+
 
     # if regression_features in ["LUMO"]:
     if feature_number == "1":
@@ -293,7 +294,9 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                      "{}".format(regression_features)].values
                  for mol
                  in df["mol"]]
-        if regression_type== "lassocv" or"PLS":#lassocv
+        if regression_type in ["PLS"] :#lassocv
+
+            print("lasso")
             Y = df["ΔΔG.expt."].values
             if regression_type=="lassocv":
                 model = linear_model.LassoCV(fit_intercept=False).fit(feature, Y)
@@ -307,8 +310,8 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
             df_mf.to_csv((param["moleculer_field_dir"] + "/" + "{}moleculer_field.csv".format(regression_features)))
 
         if regression_type in ["gaussian"]:
-            print(p)
-
+            hparam =p['{}param'.format(regression_features)].values
+            p=float(hparam[0])
             penalty3 = p * penalty
 
             X = np.concatenate([feature, penalty3], axis=0)
@@ -361,19 +364,24 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
             df["ΔΔG.train"] = model.predict(features)
             df_mf=pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             print(model.coef_.shape)
-            df_mf["LUMO"]=model.coef_[:penalty.shape[0]]
+            df_mf["{}".format(regression_features)]=model.coef_[:penalty.shape[0]]
             print("model.coef_[penalty.shape[0]*2:]")
         # print(model.coef_)
             print(model.coef_[penalty.shape[0]:])
             df_fpv=str(model.coef_[penalty.shape[0]:])
-            path_w = param["out_dir_name"]+"/"+"LUMOfpvalue"
+            path_w = param["out_dir_name"]+"/"+"{}fpvalue".format(regression_features)
             with open(path_w, mode='w') as f:
                 f.write(df_fpv)
 
 
 
-    else :
-        features = np.concatenate([Dts, ESPs], axis=1)
+    elif feature_number == "2" :
+        features1 =[pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values for mol
+           in df["mol"]]
+        features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                         "{}".format(regression_features.split()[1])].values for mol
+                     in df["mol"]]
+        features = np.concatenate([features1, features2], axis=1)
         if regression_type== "lassocv" or "PLS":#lassocv
             Y = df["ΔΔG.expt."].values
             if regression_type=="lassocv":
@@ -389,17 +397,20 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
             print("aaa")
 
             if regression_type=="lassocv":
-                df_mf["MF_Dt"] = model.coef_[:penalty.shape[0]]
-                df_mf["MF_ESP"] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
+                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
+                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
             else :
-                df_mf["MF_Dt"] = model.coef_[0][:penalty.shape[0]]
-                df_mf["MF_ESP"] = model.coef_[0][penalty.shape[0]:penalty.shape[0] * 2]
+                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
+                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][penalty.shape[0]:penalty.shape[0] * 2]
 
             df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
 
         if regression_type in ["gaussian"]:
-            penalty1 = np.concatenate([p[0] * penalty, np.zeros(penalty.shape)], axis=1)
-            penalty2 = np.concatenate([np.zeros(penalty.shape), p[1] * penalty], axis=1)
+            print(p)
+            hparam1 = p['{}param'.format(regression_features.split()[0])].values
+            hparam2 = p['{}param'.format(regression_features.split()[1])].values
+            penalty1 = np.concatenate([hparam1 * penalty, np.zeros(penalty.shape)], axis=1)
+            penalty2 = np.concatenate([np.zeros(penalty.shape), hparam2 * penalty], axis=1)
             X = np.concatenate([features, penalty1, penalty2], axis=0)
             Y = np.concatenate([df["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
             model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
@@ -408,11 +419,11 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
             print(df["mol"].iloc[0].GetProp("InchyKey"))
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
 
-            df_mf["MF_Dt"] = model.coef_[:penalty.shape[0]]
-            df_mf["MF_ESP"] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
+            df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
+            df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
             df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
-            df["Dt_contribution"] = np.sum(Dts * df_mf["MF_Dt"].values, axis=1)
-            df["ESP_contribution"] = np.sum(ESPs * df_mf["MF_ESP"].values, axis=1)
+            df["{}_contribution".format(regression_features.split()[0])] = np.sum(features1 * df_mf["MF_{}".format(regression_features.split()[0])].values, axis=1)
+            df["{}_contribution".format(regression_features.split()[1])] = np.sum(features2 * df_mf["MF_{}".format(regression_features.split()[1])].values, axis=1)
 
 
         if regression_type in ["gaussianFP"]:
@@ -469,45 +480,45 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
             with open(path_w, mode='w') as f:
                 f.write(df_fpv)
 
-    if regression_features in ["LUMO"]:
+    if feature_number == "1":
         print("hello")
-        if regression_type== "lassocv" or "PLS":
-            l=[]
-            kf = KFold(n_splits=len(df), shuffle=False)
-            for (train_index, test_index) in kf.split(df):
-                LUMOs = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
-                    for
-                    mol in df.iloc[train_index]["mol"]]
-                features =LUMOs
-                Y=df.iloc[train_index]["ΔΔG.expt."].values
-                if regression_type=="lassocv":
-                    model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
-                else :
-                    model = PLSRegression(n_components=5).fit(features, Y)
-
-                LUMOs = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
-                    for
-                    mol in df.iloc[test_index]["mol"]]
-                features = LUMOs
-                predict = model.predict(features)
-                l.extend(predict)
+        # if regression_type== "lassocv" or "PLS":
+        #     l=[]
+        #     kf = KFold(n_splits=len(df), shuffle=False)
+        #     for (train_index, test_index) in kf.split(df):
+        #         features = [
+        #             pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
+        #             for
+        #             mol in df.iloc[train_index]["mol"]]
+        #
+        #         Y=df.iloc[train_index]["ΔΔG.expt."].values
+        #         if regression_type=="lassocv":
+        #             model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
+        #         else :
+        #             model = PLSRegression(n_components=5).fit(features, Y)
+        #
+        #         features = [
+        #             pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
+        #             for
+        #             mol in df.iloc[test_index]["mol"]]
+        #
+        #         predict = model.predict(features)
+        #         l.extend(predict)
         if regression_type in ["gaussian", "gaussianFP"]:
             l = []
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
-                LUMOs = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["Dt"].values
+                features = [
+                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
                     for
                     mol in df.iloc[train_index]["mol"]]
 
 
-                features = LUMOs
 
-                penalty3 = p * penalty
 
-                X = np.concatenate([features, penalty3], axis=0)
+                penalty1 = p * penalty
+
+                X = np.concatenate([features, penalty1], axis=0)
                 if regression_type in ["gaussianFP"]:
                     zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
                     for weight in df.loc[:, fplist].columns:
@@ -517,11 +528,11 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] )], axis=0)
                 model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
 
-                LUMOs = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
+                features = [
+                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
                     for
                     mol in df.iloc[test_index]["mol"]]
-                features = LUMOs
+
                 if regression_type in ["gaussianFP"]:
                     for weight in df.loc[:, fplist].columns:
                         S = df.iloc[test_index][weight].values.reshape(-1, 1)
@@ -562,51 +573,56 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 l.extend(predict)
 
 
-    else:
-        if regression_type == "lassocv" or "PLS":
-            l = []
-            kf = KFold(n_splits=len(df), shuffle=False)
-            for (train_index, test_index) in kf.split(df):
-                Dts = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["Dt"].values
-                       for
-                       mol in df.iloc[train_index]["mol"]]
-                ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values
-                        for
-                        mol in df.iloc[train_index]["mol"]]
-                features = np.concatenate([Dts, ESPs], axis=1)
-
-                Y=df.iloc[train_index]["ΔΔG.expt."].values
-                if regression_type =="lassocv":
-                    model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
-                else :
-                    model = PLSRegression(n_components=5).fit(features, Y)
-
-                Dts = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["Dt"].values
-                       for
-                       mol in df.iloc[test_index]["mol"]]
-                ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values
-                        for
-                        mol in df.iloc[test_index]["mol"]]
-
-
-                features = np.concatenate([Dts, ESPs], axis=1)
-                predict = model.predict(features)
-                if regression_type == "lassocv":
-                    l.extend(predict)
-                else:
-                    l.extend(predict[0])
+    elif feature_number == "2":
+        # if regression_type == "lassocv" or "PLS":
+        #     print("lasso")
+        #     l = []
+        #     kf = KFold(n_splits=len(df), shuffle=False)
+        #     for (train_index, test_index) in kf.split(df):
+        #         features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+        #                for
+        #                mol in df.iloc[train_index]["mol"]]
+        #         features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+        #                 for
+        #                 mol in df.iloc[train_index]["mol"]]
+        #         features = np.concatenate([features1, features2], axis=1)
+        #
+        #         Y=df.iloc[train_index]["ΔΔG.expt."].values
+        #         if regression_type =="lassocv":
+        #             model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
+        #         else :
+        #             model = PLSRegression(n_components=5).fit(features, Y)
+        #
+        #         Dts = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["Dt"].values
+        #                for
+        #                mol in df.iloc[test_index]["mol"]]
+        #         ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values
+        #                 for
+        #                 mol in df.iloc[test_index]["mol"]]
+        #
+        #
+        #         features = np.concatenate([Dts, ESPs], axis=1)
+        #         predict = model.predict(features)
+        #         if regression_type == "lassocv":
+        #             l.extend(predict)
+        #         else:
+        #             l.extend(predict[0])
 
         if regression_type in ["gaussian", "gaussianFP"]:
             l = []
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
-                Dts = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["Dt"].values for
-                       mol in df.iloc[train_index]["mol"]]
-                ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values for
-                        mol in df.iloc[train_index]["mol"]]
-                features = np.concatenate([Dts, ESPs], axis=1)
-                penalty1 = np.concatenate([p[0] * penalty, np.zeros(penalty.shape)], axis=1)
-                penalty2 = np.concatenate([np.zeros(penalty.shape), p[1] * penalty], axis=1)
+                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                                 "{}".format(regression_features.split()[0])].values
+                             for
+                             mol in df.iloc[train_index]["mol"]]
+                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                                 "{}".format(regression_features.split()[1])].values
+                             for
+                             mol in df.iloc[train_index]["mol"]]
+                features = np.concatenate([features1, features2], axis=1)
+                penalty1 = np.concatenate([hparam1 * penalty, np.zeros(penalty.shape)], axis=1)
+                penalty2 = np.concatenate([np.zeros(penalty.shape), hparam2 * penalty], axis=1)
                 X = np.concatenate([features, penalty1, penalty2], axis=0)
                 if regression_type in ["gaussianFP"]:
                     zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
@@ -618,11 +634,11 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
 
                 # ここから、テストセットの特徴量計算
-                Dts = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["Dt"].values for
+                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values for
                        mol in df.iloc[test_index]["mol"]]
-                ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values for
+                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values for
                         mol in df.iloc[test_index]["mol"]]
-                features = np.concatenate([Dts, ESPs], axis=1)
+                features = np.concatenate([features1, features2], axis=1)
                 if regression_type in ["FP", "gaussianFP"]:
                     for weight in df.loc[:, fplist].columns:
                         S = df.iloc[test_index][weight].values.reshape(-1, 1)
@@ -722,7 +738,7 @@ if __name__ == '__main__':
         #         writer = csv.writer(f)
         #         writer.writerow(min_df)
 
-
+        print(p)
         if param["Regression_type"] in ["gaussian", "gaussianFP"]:
 
             # leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
