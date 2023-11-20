@@ -15,12 +15,21 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
     df = df.dropna(subset=["smiles"])
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
     df = df.dropna(subset=['er.', "mol", "smiles"])  # .dropna(subset=['smiles'])#順番重要！
+    # for i in df.index:
+    #     if df["er."][i] >=99:
+    #         df["er."][i]=99
+    #     if df["er."][i] <=-99:
+    #         df["er."][i]=-99
+    #
+
     df["RT"] = 1.99 * 10 ** -3 * df["temperature"].values
-    df["ΔΔG.expt."] = df["RT"].values * np.log(100 / df["er."].values - 1)
+    # df["ΔΔG.expt."] = df["RT"].values * np.log(100 / df["er."].values - 1)
     print(len(df))
     # df = df[(df["entry"] != 222)]  # &(df.index!=136)
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    df = df[[ "smiles", "ROMol", "er.", "RT", "ΔΔG.expt."]]
+    # df = df[[ "smiles", "ROMol", "er.", "RT", "ΔΔG.expt."]]
+    df = df[["smiles", "ROMol", "er.", "RT"]]
+    print(df.columns)
     PandasTools.SaveXlsxFromFrame(df, to_dir_path + "/" + out_file_name, size=(100, 100))
 
     print(len(df))
@@ -28,8 +37,10 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
 
 if __name__ == '__main__':
     # make_dataset("train","temperature","all_train.xls")
-    make_dataset("../sampledata/cbs_hand_read_1030.csv","cbs.xls")
-    make_dataset("../sampledata/DIP-chloride.csv","DIP-chloride.xls")
+    #make_dataset("../sampledata/cbs_hand_read_1030.csv", "cbs.xls")
+    # make_dataset("../sampledata/cbs_hand_read_1030.csv","cbs.xls")
+    #make_dataset("../sampledata/DIP-chloride.csv","DIP-chloride.xls")
+    make_dataset("../sampledata/(S)-XylBINAP_(S)-DAIPEN_1117.csv", "RuSS.xls")
 
 
     # from CoMFA_model_lib import calculate_conformation

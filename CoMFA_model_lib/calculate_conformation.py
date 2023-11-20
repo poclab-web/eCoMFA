@@ -184,7 +184,8 @@ if __name__ == '__main__':
 
     df1 = pd.read_excel(data_file_path)
     df2=pd.read_excel("../arranged_dataset/DIP-chloride.xls")
-    df = pd.concat([df1, df2]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
+    df3 =pd.read_excel("../arranged_dataset/Russ.xls")
+    df = pd.concat([df1, df2,df3]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
 
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
     df = df.dropna(subset=['mol'])
