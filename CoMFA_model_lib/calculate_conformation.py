@@ -143,7 +143,7 @@ def conf_to_xyz(mol, out_dir_name):
 def psi4optimization(input_dir_name, output_dir_name, level="hf/sto-3g"):
     psi4.set_num_threads(nthread=4)
     psi4.set_memory("4GB")
-    psi4.set_options({'geom_maxiter': 1000})
+    psi4.set_options({'geom_maxiter': 100})
     i = 0
     while os.path.isfile("{}/optimized{}.xyz".format(input_dir_name, i)):
         # psi4.set_output_file(dir + "/{}/calculation.log".format(i))
@@ -184,7 +184,8 @@ if __name__ == '__main__':
 
     df1 = pd.read_excel(data_file_path)
     df2=pd.read_excel("../arranged_dataset/DIP-chloride.xls")
-    df = pd.concat([df1, df2]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
+    df3 =pd.read_excel("../arranged_dataset/Russ.xls")
+    df = pd.concat([df1, df2,df3]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
 
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
     df = df.dropna(subset=['mol'])
@@ -197,6 +198,7 @@ if __name__ == '__main__':
     psi4_aligned_dir_name = "../psi4_optimization_aligned"
 
     for smiles in df["smiles"]:
+        print("longsmiles")
         print(smiles)
         mol = get_mol(smiles)
         MMFF_out_dirs_name = MMFF_out_dir_name + "/" + mol.GetProp("InchyKey")
@@ -220,3 +222,4 @@ if __name__ == '__main__':
                 #ヨウ素に対する計算を考える。
             except:
                 continue
+        print("{}smilescomplete".format(smiles))

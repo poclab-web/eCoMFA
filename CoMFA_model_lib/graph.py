@@ -6,15 +6,32 @@ import json
 
 fig = plt.figure(figsize=(3*2, 3*4))
 
-for i,param_file_name in enumerate(["../parameter/parameter_cbs_lassocv.txt",
-    "../parameter/parameter_cbs_FP.txt",
-    "../parameter/parameter_cbs_gaussian.txt",
-    "../parameter/parameter_cbs_gaussian_FP.txt",
-    "../parameter/parameter_dip-chloride_lassocv.txt",
-    "../parameter/parameter_dip-chloride_FP.txt",
-    "../parameter/parameter_dip-chloride_gaussian.txt",
-    "../parameter/parameter_dip-chloride_gaussian_FP.txt"
+# for i,param_file_name in enumerate([
+# "../parameter/parameter_cbs_PLS.txt",
+# "../parameter/parameter_cbs_gaussian.txt",
+#     "../parameter/parameter_cbs_FP.txt",
+#
+#     "../parameter/parameter_cbs_gaussian_FP.txt",
+#     "../parameter/parameter_dip-chloride_PLS.txt",
+# "../parameter/parameter_dip-chloride_FP.txt",
+#     "../parameter/parameter_dip-chloride_gaussian.txt",
+#     "../parameter/parameter_dip-chloride_gaussian_FP.txt"
+#     ]):
+for i,param_file_name in enumerate([
+"../parameter/parameter_RuSS_PLS.txt",
+"../parameter/parameter_RuSS_gaussian.txt",
+    "../parameter/parameter_RuSS_FP.txt",
+
+    "../parameter/parameter_RuSS_gaussian_FP.txt"
+
+
+
     ]):
+
+# # for i, param_file_name in enumerate([
+# #                                      "../parameter/parameter_cbs_gaussian.txt",
+#
+#                                      ]):
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     input_dir_name=param["out_dir_name"]

@@ -85,6 +85,7 @@ def make_eachweight(df,keysum):
 if __name__ == '__main__':
     param_file_name = "../parameter/parameter_dip-chloride_lassocv.txt"
     param_file_name = "../parameter/parameter_cbs_gaussian.txt"
+    param_file_name = "../parameter/parameter_RuSS_gaussian.txt"
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
 
