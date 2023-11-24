@@ -133,7 +133,7 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
 if __name__ == '__main__':
 
-    for param_file_name in ["../parameter/parameter_cbs_gaussian.txt",
+    for param_file_name in ["../parameter/parameter_RuSS_gaussian.txt","../parameter/parameter_cbs_gaussian.txt",
                             "../parameter/parameter_dip-chloride_gaussian.txt"]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
@@ -141,7 +141,8 @@ if __name__ == '__main__':
 
         df1 = pd.read_excel( "../arranged_dataset/cbs.xls")
         df2 = pd.read_excel("../arranged_dataset/DIP-chloride.xls")
-        df=pd.concat([df1,df2]).dropna(subset=['smiles'])
+        df3 = pd.read_excel("../arranged_dataset/RuSS.xls")
+        df=pd.concat([df1,df2,df3]).dropna(subset=['smiles'])
         df["mol"]=df["smiles"].apply(calculate_conformation.get_mol)
         df=df[[os.path.isdir(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"))for mol in df["mol"]]]
         df["mol"].apply(lambda mol: calculate_conformation.read_xyz(mol,param["cube_dir_name"]+"/"+mol.GetProp("InchyKey")))
