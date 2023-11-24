@@ -423,11 +423,11 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
                 df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][penalty.shape[0]:penalty.shape[0] * 2]
             elif regression_type=="ridgecv" :
-                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
-                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][penalty.shape[0]:penalty.shape[0] * 2]
+                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
+                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
             elif regression_type=="elasticnetcv" :
-                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
-                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][penalty.shape[0]:penalty.shape[0] * 2]
+                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
+                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
 
             df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
 
@@ -776,6 +776,9 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                     model = RidgeCV(fit_intercept=False).fit(features, Y)
                 elif regression_type == "elasticnetcv":
                     model = ElasticNetCV(fit_intercept=False).fit(features, Y)
+                else:
+                    print("regressionerror")
+                    raise ValueError
 
                 features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
@@ -787,10 +790,12 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
 
                 features = np.concatenate([features1, features2], axis=1)
                 predict = model.predict(features)
-                if regression_type == "lassocv":
-                    l.extend(predict)
-                else:
+                if regression_type =="PLS":
                     l.extend(predict[0])
+
+                else:
+                    l.extend(predict)
+
 
         if regression_type in ["gaussian", "gaussianFP"]:
             l = []
@@ -1010,11 +1015,13 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
 
 if __name__ == '__main__':
     for param_file_name in [
+        "../parameter/parameter_cbs_elasticnetcv.txt",
+        "../parameter/parameter_cbs_gaussian.txt",
+        "../parameter/parameter_cbs_ridgecv.txt",
         "../parameter/parameter_cbs_PLS.txt",
-    "../parameter/parameter_cbs_lassocv.txt",
-    "../parameter/parameter_cbs_ridgecv.txt",
-    "../parameter/parameter_cbs_elasticnetcv.txt",
-    "../parameter/parameter_cbs_gaussian.txt"]:
+    "../parameter/parameter_cbs_lassocv.txt"
+
+    ]:
     # for param_file_name in [
     #     "../parameter/parameter_cbs_PLS.txt",
     #     "../parameter/parameter_cbs_FP.txt",
