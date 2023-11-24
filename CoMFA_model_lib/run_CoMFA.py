@@ -7,6 +7,10 @@ import numpy as np
 from rdkit.Chem import PandasTools
 from sklearn.model_selection import LeaveOneOut, KFold
 from sklearn.cross_decomposition import PLSRegression
+from sklearn.linear_model import RidgeCV
+from sklearn.linear_model import ElasticNetCV
+
+
 import time
 import warnings
 import json
@@ -294,20 +298,34 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                      "{}".format(regression_features)].values
                  for mol
                  in df["mol"]]
-        if regression_type == "lassocv" or regression_type=="PLS" :
+        if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
 
-            print("lasso")
+
             Y = df["ΔΔG.expt."].values
             if regression_type=="lassocv":
                 model = linear_model.LassoCV(fit_intercept=False).fit(feature, Y)
-            else :
+            elif regression_type=="PLS" :
                 model = PLSRegression(n_components=5).fit(feature, Y)
+            elif regression_type=="ridgecv":
+                model = RidgeCV(fit_intercept=False).fit(feature, Y)
+            elif regression_type=="elasticnetcv":
+                model = ElasticNetCV(fit_intercept=False).fit(feature, Y)
+
             df["ΔΔG.train"] = model.predict(feature)
             df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
             df_mf["MF_{}".format(regression_features)] = model.coef_[:penalty.shape[0]]
-
-            df_mf.to_csv((param["moleculer_field_dir"] + "/" + "{}moleculer_field.csv".format(regression_features)))
+            if regression_type=="lassocv":
+                df_mf.to_csv((param["moleculer_field_dir"] + "/" + "{}lassocvmoleculer_field.csv".format(regression_features)))
+            elif regression_type=="PLS" :
+                df_mf.to_csv((param["moleculer_field_dir"] + "/" + "{}PLSmoleculer_field.csv".format(regression_features)))
+            elif regression_type=="ridgecv":
+                df_mf.to_csv((param["moleculer_field_dir"] + "/" + "{}ridgecvmoleculer_field.csv".format(regression_features)))
+            elif regression_type=="elasticnetcv":
+                df_mf.to_csv((param["moleculer_field_dir"] + "/" + "{}elasticnetcvmoleculer_field.csv".format(regression_features)))
+            else:
+                print("regression type error")
+                raise ValueError
 
         if regression_type in ["gaussian"]:
             hparam =p['{}param'.format(regression_features)].values
@@ -380,12 +398,16 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                          "{}".format(regression_features.split()[1])].values for mol
                      in df["mol"]]
         features = np.concatenate([features1, features2], axis=1)
-        if regression_type == "lassocv" or regression_type=="PLS":#lassocv
+        if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
             Y = df["ΔΔG.expt."].values
-            if regression_type=="lassocv":
+            if regression_type == "lassocv":
                 model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
-            else :
+            elif regression_type == "PLS":
                 model = PLSRegression(n_components=5).fit(features, Y)
+            elif regression_type == "ridgecv":
+                model = RidgeCV(fit_intercept=False).fit(features, Y)
+            elif regression_type == "elasticnetcv":
+                model = ElasticNetCV(fit_intercept=False).fit(features, Y)
             df["ΔΔG.train"] = model.predict(features)
             df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
 
@@ -397,7 +419,13 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
             if regression_type=="lassocv":
                 df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
                 df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
-            else :
+            elif regression_type=="PLS" :
+                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
+                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][penalty.shape[0]:penalty.shape[0] * 2]
+            elif regression_type=="ridgecv" :
+                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
+                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][penalty.shape[0]:penalty.shape[0] * 2]
+            elif regression_type=="elasticnetcv" :
                 df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
                 df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][penalty.shape[0]:penalty.shape[0] * 2]
 
@@ -493,12 +521,16 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                      in df["mol"]]
 
         features = np.concatenate([features1, features2,features3], axis=1)
-        if regression_type == "lassocv" or regression_type == "PLS":  # lassocv
+        if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
             Y = df["ΔΔG.expt."].values
             if regression_type == "lassocv":
                 model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
-            else:
+            elif regression_type == "PLS":
                 model = PLSRegression(n_components=5).fit(features, Y)
+            elif regression_type == "ridgecv":
+                model = RidgeCV(fit_intercept=False).fit(features, Y)
+            elif regression_type == "elasticnetcv":
+                model = ElasticNetCV(fit_intercept=False).fit(features, Y)
             df["ΔΔG.train"] = model.predict(features)
             df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
 
@@ -512,12 +544,24 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                                                                         penalty.shape[0]:penalty.shape[0] * 2]
                 df_mf["MF_{}".format(regression_features.split()[2])] = model.coef_[
                                                                         penalty.shape[0] *2:penalty.shape[0] * 3]
-            else:
+            elif regression_type == "PLS":
                 df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
                 df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][
                                                                         penalty.shape[0]:penalty.shape[0] * 2]
                 df_mf["MF_{}".format(regression_features.split()[2])] = model.coef_[0][
                                                                         penalty.shape[0]*2:penalty.shape[0] * 3]
+            elif regression_type == "ridgecv":
+                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
+                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][
+                                                                        penalty.shape[0]:penalty.shape[0] * 2]
+                df_mf["MF_{}".format(regression_features.split()[2])] = model.coef_[0][
+                                                                        penalty.shape[0] * 2:penalty.shape[0] * 3]
+            elif regression_type == "elasticnetcv":
+                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
+                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][
+                                                                        penalty.shape[0]:penalty.shape[0] * 2]
+                df_mf["MF_{}".format(regression_features.split()[2])] = model.coef_[0][
+                                                                        penalty.shape[0] * 2:penalty.shape[0] * 3]
 
             df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
 
@@ -621,8 +665,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     #ここからテストセットの実行
 
     if feature_number == "1":
-        print("hello")
-        if regression_type== "lassocv" or regression_type=="PLS":
+        if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
             l=[]
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
@@ -632,10 +675,14 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                     mol in df.iloc[train_index]["mol"]]
 
                 Y=df.iloc[train_index]["ΔΔG.expt."].values
-                if regression_type=="lassocv":
+                if regression_type == "lassocv":
                     model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
-                else :
+                elif regression_type == "PLS":
                     model = PLSRegression(n_components=5).fit(features, Y)
+                elif regression_type == "ridgecv":
+                    model = RidgeCV(fit_intercept=False).fit(features, Y)
+                elif regression_type == "elasticnetcv":
+                    model = ElasticNetCV(fit_intercept=False).fit(features, Y)
 
                 features = [
                     pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
@@ -681,12 +728,10 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
             l = []
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
-                LUMOs = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
+                features = [
+                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
                     for
                     mol in df.iloc[train_index]["mol"]]
-
-                features = LUMOs
                 X = np.concatenate([features], axis=0)
 
                 for weight in df.loc[:, fplist].columns:
@@ -697,11 +742,10 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 #model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
 
 
-                LUMOs = [
+                features = [
                     pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
                     for
                     mol in df.iloc[test_index]["mol"]]
-                features = LUMOs
 
                 for weight in df.loc[:, fplist].columns:
                     S = df.iloc[test_index][weight].values.reshape(-1, 1)
@@ -711,8 +755,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
 
 
     elif feature_number == "2":
-        if regression_type == "lassocv" or regression_type=="PLS":
-            print("lasso")
+        if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
             l = []
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
@@ -725,10 +768,14 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 features = np.concatenate([features1, features2], axis=1)
 
                 Y=df.iloc[train_index]["ΔΔG.expt."].values
-                if regression_type =="lassocv":
+                if regression_type == "lassocv":
                     model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
-                else :
+                elif regression_type == "PLS":
                     model = PLSRegression(n_components=5).fit(features, Y)
+                elif regression_type == "ridgecv":
+                    model = RidgeCV(fit_intercept=False).fit(features, Y)
+                elif regression_type == "elasticnetcv":
+                    model = ElasticNetCV(fit_intercept=False).fit(features, Y)
 
                 features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
@@ -817,8 +864,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 l.extend(predict[0])
 
     elif feature_number == "3":
-        if regression_type == "lassocv" or regression_type=="PLS":
-            print("lasso")
+        if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
             l = []
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
@@ -835,10 +881,14 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 features = np.concatenate([features1, features2 ,features3], axis=1)
 
                 Y=df.iloc[train_index]["ΔΔG.expt."].values
-                if regression_type =="lassocv":
+                if regression_type == "lassocv":
                     model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
-                else :
+                elif regression_type == "PLS":
                     model = PLSRegression(n_components=5).fit(features, Y)
+                elif regression_type == "ridgecv":
+                    model = RidgeCV(fit_intercept=False).fit(features, Y)
+                elif regression_type == "elasticnetcv":
+                    model = ElasticNetCV(fit_intercept=False).fit(features, Y)
 
                 features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
@@ -959,6 +1009,12 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100),)
 
 if __name__ == '__main__':
+    for param_file_name in [
+        "../parameter/parameter_cbs_PLS.txt",
+    "../parameter/parameter_cbs_lassocv.txt",
+    "../parameter/parameter_cbs_ridgecv.txt",
+    "../parameter/parameter_cbs_elasticnetcv.txt",
+    "../parameter/parameter_cbs_gaussian.txt"]:
     # for param_file_name in [
     #     "../parameter/parameter_cbs_PLS.txt",
     #     "../parameter/parameter_cbs_FP.txt",
@@ -966,18 +1022,14 @@ if __name__ == '__main__':
     #     "../parameter/parameter_dip-chloride_FP.txt",
     #     "../parameter/parameter_cbs_gaussian.txt",
     #     "../parameter/parameter_cbs_gaussian_FP.txt",
-    #
     #     "../parameter/parameter_dip-chloride_gaussian.txt",
-    #     "../parameter/parameter_dip-chloride_gaussian_FP.txt",
-    #
-    #
+    #     "../parameter/parameter_dip-chloride_gaussian_FP.txt"]:
+    # for param_file_name in [
+    #     "../parameter/parameter_RuSS_gaussian.txt",
+    #     "../parameter/parameter_RuSS_gaussian_FP.txt",
+    #     "../parameter/parameter_RuSS_PLS.txt",
+    #     "../parameter/parameter_RuSS_FP.txt"
     # ]:
-    for param_file_name in [
-        "../parameter/parameter_RuSS_gaussian.txt",
-        "../parameter/parameter_RuSS_gaussian_FP.txt",
-        "../parameter/parameter_RuSS_PLS.txt",
-        "../parameter/parameter_RuSS_FP.txt"
-    ]:
         print(param_file_name)
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
