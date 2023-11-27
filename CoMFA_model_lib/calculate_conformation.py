@@ -197,7 +197,8 @@ if __name__ == '__main__':
     psi4_out_dir_name = "../psi4_optimization"
     psi4_aligned_dir_name = "../psi4_optimization_aligned"
 
-    for smiles in df["smiles"]:
+    # for smiles in df["smiles"]:
+    for smiles in df["smiles"][df["smiles"]=="C(=O)(CN(C)c1ccccc1)C"]:
         print("longsmiles")
         print(smiles)
         mol = get_mol(smiles)
