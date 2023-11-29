@@ -133,25 +133,28 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
 if __name__ == '__main__':
 
-    for param_file_name in ["../parameter/parameter_RuSS_gaussian.txt","../parameter/parameter_cbs_gaussian.txt",
-                            "../parameter/parameter_dip-chloride_gaussian.txt"]:
+    for param_file_name in ["../parameter/parameter_cbs_gaussian.txt","../parameter/parameter_dip-chloride_gaussian.txt","../parameter/parameter_RuSS_gaussian.txt"]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
         #座標を読み込む
-
-        df1 = pd.read_excel( "../arranged_dataset/cbs.xls")
-        df2 = pd.read_excel("../arranged_dataset/DIP-chloride.xls")
-        df3 = pd.read_excel("../arranged_dataset/RuSS.xls")
-        df=pd.concat([df1,df2,df3]).dropna(subset=['smiles'])
+        # "data_file_path"
+        # df1 = pd.read_excel( "../arranged_dataset/cbs.xls")
+        # df2 = pd.read_excel("../arranged_dataset/DIP-chloride.xls")
+        # df3 = pd.read_excel("../arranged_dataset/RuSS.xls")
+        # df=pd.concat([df1,df2,df3]).dropna(subset=['smiles'])
+        df = pd.read_excel(param["data_file_path"]).dropna(subset=['smiles'])
         df["mol"]=df["smiles"].apply(calculate_conformation.get_mol)
         df=df[[os.path.isdir(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"))for mol in df["mol"]]]
         df["mol"].apply(lambda mol: calculate_conformation.read_xyz(mol,param["cube_dir_name"]+"/"+mol.GetProp("InchyKey")))
 
         #gridのパラメータを読み込む
 
-        dfp=pd.read_csv(param["grid_coordinates_file"])
+        # dfp=pd.read_csv(param["grid_coordinates_file"])
+        print("../grid_coordinates"+param["grid_coordinates_dir"]+"/[{}]".format(param["grid_sizefile"]))
+        dfp = pd.read_csv("../grid_coordinates"+param["grid_coordinates_dir"]+"/[{}].csv".format(param["grid_sizefile"]))
         print(dfp)
+
         #グリッド情報に変換
         for mol in df["mol"]:
             energy_to_Boltzmann_distribution(mol, RT=0.54)
-            read_cube(param["cube_dir_name"], dfp, mol,param["grid_dir_name"]+"/"+mol.GetProp("InchyKey"))
+            read_cube(param["cube_dir_name"], dfp, mol,param["grid_dir_name"]+"/[{}]".format(param["grid_sizefile"])+"/"+mol.GetProp("InchyKey"))

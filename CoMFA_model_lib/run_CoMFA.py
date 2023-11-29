@@ -21,7 +21,7 @@ feature_num
 warnings.simplefilter('ignore')
 
 
-def grid_search(features_dir_name,regression_features ,regression_number,df, dfp, out_file_name,fplist,reguression_type):
+def grid_search(features_dir_name,regression_features ,regression_number,df, dfp, out_file_name,fplist,reguression_type,maxmin):
     xyz = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))[
         ["x", "y", "z"]].values
     d = np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
@@ -93,10 +93,13 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                         S = np.array(df.iloc[test_index][weight].values).reshape(1, np.array(df.iloc[test_index][weight].values).shape[0]).T
                         feature = np.concatenate([feature, S], axis=1)
                 predict = model.predict(feature)
-                if predict>=df["ΔΔmaxG.expt."]:
-                    predict=df["ΔΔmaxG.expt."]
-                if predict<=df["ΔΔminG.expt."]:
-                    predict=df["ΔΔmixG.expt."]
+                if maxmin == "True":
+                    for i in range(len(predict)):
+
+                        if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+                            predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+                        if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+                            predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
                 l.extend(predict)
             r2 = r2_score(df["ΔΔG.expt."], l)
             RMSE = np.sqrt(mean_squared_error(df["ΔΔG.expt."], l))
@@ -169,10 +172,13 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                                 df.iloc[test_index][weight].values).shape[0]).T
                             features = np.concatenate([features, S], axis=1)
                     predict = model.predict(features)
-                    if predict >= df["ΔΔmaxG.expt."]:
-                        predict = df["ΔΔmaxG.expt."]
-                    if predict <= df["ΔΔminG.expt."]:
-                        predict = df["ΔΔmixG.expt."]
+                    if maxmin =="True":
+                        for i in range(len(predict)):
+
+                            if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+                                predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+                            if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+                                predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
                     l.extend(predict)
                 print(l)
                 r2 = r2_score(df["ΔΔG.expt."], l)
@@ -266,10 +272,13 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
 
                                 features = np.concatenate([features, S], axis=1)
                         predict = model.predict(features)
-                        if predict >= df["ΔΔmaxG.expt."]:
-                            predict = df["ΔΔmaxG.expt."]
-                        if predict <= df["ΔΔminG.expt."]:
-                            predict = df["ΔΔmixG.expt."]
+                        if maxmin == "True":
+                            for i in range(len(predict)):
+
+                                if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+                                    predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+                                if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+                                    predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
                         l.extend(predict)
                     print(l)
                     r2 = r2_score(df["ΔΔG.expt."], l)
@@ -292,7 +301,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
 
 
 
-def leave_one_out(features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type, p=None):
+def leave_one_out(features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type,maxmin,p=None):
     # Dts = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["Dt"].values for mol
     #        in df["mol"]]
     # ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values for mol
@@ -702,10 +711,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                     mol in df.iloc[test_index]["mol"]]
 
                 predict = model.predict(features)
-                if predict>=df["ΔΔmaxG.expt."]:
-                    predict=df["ΔΔmaxG.expt."]
-                if predict<=df["ΔΔminG.expt."]:
-                    predict=df["ΔΔmixG.expt."]
+
                 l.extend(predict)
         if regression_type in ["gaussian", "gaussianFP"]:
             l = []
@@ -738,10 +744,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                         S = df.iloc[test_index][weight].values.reshape(-1, 1)
                         features = np.concatenate([features, S], axis=1)
                 predict = model.predict(features)
-                if predict>=df["ΔΔmaxG.expt."]:
-                    predict=df["ΔΔmaxG.expt."]
-                if predict<=df["ΔΔminG.expt."]:
-                    predict=df["ΔΔmixG.expt."]
+
                 l.extend(predict)
 
         if regression_type in "FP":
@@ -771,10 +774,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                     S = df.iloc[test_index][weight].values.reshape(-1, 1)
                     features = np.concatenate([features, S], axis=1)
                 predict = model.predict(features)
-                if predict>=df["ΔΔmaxG.expt."]:
-                    predict=df["ΔΔmaxG.expt."]
-                if predict<=df["ΔΔminG.expt."]:
-                    predict=df["ΔΔmixG.expt."]
+
                 l.extend(predict)
 
 
@@ -815,17 +815,21 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 features = np.concatenate([features1, features2], axis=1)
                 predict = model.predict(features)
                 if regression_type =="PLS":
-                    if predict[0] >= df["ΔΔmaxG.expt."]:
-                        predict[0] = df["ΔΔmaxG.expt."]
-                    if predict[0] <= df["ΔΔminG.expt."]:
-                        predict[0] = df["ΔΔmixG.expt."]
-                    l.extend(predict[0])
+                    if maxmin =="True":
+                        for i in range(len(predict)):
+                            if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+                                predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+                            if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+                                predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
+                    l.extend(predict[i])
 
                 else:
-                    if predict >= df["ΔΔmaxG.expt."]:
-                        predict = df["ΔΔmaxG.expt."]
-                    if predict <= df["ΔΔminG.expt."]:
-                        predict = df["ΔΔmixG.expt."]
+                    if maxmin =="True":
+                        for i in range(len(predict)):
+                            if predict >= df.iloc[test_index]["ΔΔmaxG.expt."].values:
+                                predict = df.iloc[test_index]["ΔΔmaxG.expt."].values
+                            if predict <= df.iloc[test_index]["ΔΔminG.expt."].values:
+                                predict = df.iloc[test_index]["ΔΔminG.expt."].values
                     l.extend(predict)
 
 
@@ -865,10 +869,12 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                         S = df.iloc[test_index][weight].values.reshape(-1, 1)
                         features = np.concatenate([features, S], axis=1)
                 predict = model.predict(features)
-                if predict>=df["ΔΔmaxG.expt."]:
-                    predict=df["ΔΔmaxG.expt."]
-                if predict<=df["ΔΔminG.expt."]:
-                    predict=df["ΔΔmixG.expt."]
+                if maxmin == "True":
+                    for i in range(len(predict)):
+                        if predict >= df.iloc[test_index]["ΔΔmaxG.expt."].values:
+                            predict = df.iloc[test_index]["ΔΔmaxG.expt."].values
+                        if predict <= df.iloc[test_index]["ΔΔminG.expt."].values:
+                            predict = df.iloc[test_index]["ΔΔminG.expt."].values
                 l.extend(predict)
         if regression_type in "FP":
             l = []
@@ -902,11 +908,14 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                     S = df.iloc[test_index][weight].values.reshape(-1, 1)
                     features = np.concatenate([features, S], axis=1)
                 predict = model.predict(features)
-                if predict[0] >= df["ΔΔmaxG.expt."]:
-                    predict[0] = df["ΔΔmaxG.expt."]
-                if predict[0] <= df["ΔΔminG.expt."]:
-                    predict[0] = df["ΔΔmixG.expt."]
-                l.extend(predict[0])
+                if regression_type == "PLS":
+                    if maxmin == "True":
+                        for i in range(len(predict)):
+                            if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+                                predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+                            if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+                                predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
+                    l.extend(predict[i])
 
     elif feature_number == "3":
         if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
@@ -950,18 +959,23 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
 
                 features = np.concatenate([features1, features2,features3], axis=1)
                 predict = model.predict(features)
-                if regression_type == "lassocv":
-                    if predict >= df["ΔΔmaxG.expt."]:
-                        predict = df["ΔΔmaxG.expt."]
-                    if predict <= df["ΔΔminG.expt."]:
-                        predict = df["ΔΔmixG.expt."]
-                    l.extend(predict)
+                if regression_type == "PLS":
+                    if maxmin == "True":
+                        for i in range(len(predict)):
+                            if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+                                predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+                            if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+                                predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
+                    l.extend(predict[i])
+
                 else:
-                    if predict[0] >= df["ΔΔmaxG.expt."]:
-                        predict[0] = df["ΔΔmaxG.expt."]
-                    if predict[0] <= df["ΔΔminG.expt."]:
-                        predict[0] = df["ΔΔmixG.expt."]
-                    l.extend(predict[0])
+                    if maxmin == "True":
+                        for i in range(len(predict)):
+                            if predict >= df.iloc[test_index]["ΔΔmaxG.expt."].values:
+                                predict = df.iloc[test_index]["ΔΔmaxG.expt."].values
+                            if predict <= df.iloc[test_index]["ΔΔminG.expt."].values:
+                                predict = df.iloc[test_index]["ΔΔminG.expt."].values
+                    l.extend(predict)
 
         if regression_type in ["gaussian", "gaussianFP"]:
             l = []
@@ -1007,10 +1021,12 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                         S = df.iloc[test_index][weight].values.reshape(-1, 1)
                         features = np.concatenate([features, S], axis=1)
                 predict = model.predict(features)
-                if predict>=df["ΔΔmaxG.expt."]:
-                    predict=df["ΔΔmaxG.expt."]
-                if predict<=df["ΔΔminG.expt."]:
-                    predict=df["ΔΔmixG.expt."]
+                if maxmin == "True":
+                    for i in range(len(predict)):
+                        if predict >= df.iloc[test_index]["ΔΔmaxG.expt."].values:
+                            predict = df.iloc[test_index]["ΔΔmaxG.expt."].values
+                        if predict <= df.iloc[test_index]["ΔΔminG.expt."].values:
+                            predict = df.iloc[test_index]["ΔΔminG.expt."].values
                 l.extend(predict)
         if regression_type in "FP":
             l = []
@@ -1052,11 +1068,13 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                     S = df.iloc[test_index][weight].values.reshape(-1, 1)
                     features = np.concatenate([features, S], axis=1)
                 predict = model.predict(features)
-                if predict[0]>=df["ΔΔmaxG.expt."]:
-                    predict[0]=df["ΔΔmaxG.expt."]
-                if predict[0]<=df["ΔΔminG.expt."]:
-                    predict[0]=df["ΔΔmixG.expt."]
-                l.extend(predict[0])
+                if maxmin == "True":
+                    for i in range(len(predict)):
+                        if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+                            predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+                        if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+                            predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
+                l.extend(predict[i])
 
 
 
@@ -1070,29 +1088,31 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100),)
 
 if __name__ == '__main__':
-    # for param_file_name in [
-    #     "../parameter/parameter_cbs_PLS.txt",
-    #     "../parameter/parameter_cbs_FP.txt",
-    #     "../parameter/parameter_dip-chloride_PLS.txt",
-    #     "../parameter/parameter_dip-chloride_FP.txt",
-    #     "../parameter/parameter_cbs_gaussian.txt",
-    #     "../parameter/parameter_cbs_gaussian_FP.txt",
-    #
-    #     "../parameter/parameter_dip-chloride_gaussian.txt",
-    #     "../parameter/parameter_dip-chloride_gaussian_FP.txt",
-    #
-    #
-    # ]:
     for param_file_name in [
-        "../parameter/parameter_RuSS_gaussian.txt",
-        "../parameter/parameter_RuSS_gaussian_FP.txt",
-        "../parameter/parameter_RuSS_PLS.txt",
-        "../parameter/parameter_RuSS_FP.txt"
+        "../parameter/parameter_cbs_gaussian.txt",
+        "../parameter/parameter_cbs_lassocv.txt",
+        "../parameter/parameter_cbs_PLS.txt",
+
+        "../parameter/parameter_cbs_elasticnetcv.txt",
+
+        "../parameter/parameter_cbs_ridgecv.txt",
+
+        "../parameter/parameter_dip-chloride_PLS.txt",
+        "../parameter/parameter_dip-chloride_lassocv.txt",
+        "../parameter/parameter_dip-chloride_gaussian.txt",
+        "../parameter/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter/parameter_dip-chloride_ridgecv.txt",
     ]:
+    # for param_file_name in [
+    #     "../parameter/parameter_RuSS_gaussian.txt",
+    #     "../parameter/parameter_RuSS_gaussian_FP.txt",
+    #     "../parameter/parameter_RuSS_PLS.txt",
+    #     "../parameter/parameter_RuSS_FP.txt"
+    # ]:
         print(param_file_name)
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
-        features_dir_name = param["grid_dir_name"]
+        features_dir_name = param["grid_dir_name"]+ "/[{}]/".format(param["grid_sizefile"])
         fparranged_dataname=param["fpdata_file_path"]
         df_fplist =pd.read_csv(fparranged_dataname).dropna(subset=['smiles']).reset_index()
         fplist = pd.read_csv(param["fplist"]).columns.values.tolist()
@@ -1102,7 +1122,7 @@ if __name__ == '__main__':
         df=df.loc[:, ~df.columns.duplicated()]
         df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
         print(len(df))
-        df = df[[os.path.isdir(features_dir_name + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+        df = df[[os.path.isdir(features_dir_name + mol.GetProp("InchyKey")) for mol in df["mol"]]]
         print(len(df))
         df["mol"].apply(lambda mol: calculate_conformation.read_xyz(mol, xyz_dir_name + "/" + mol.GetProp("InchyKey")))
         dfp = pd.read_csv(param["penalty_param_dir"])  # [:1]
@@ -1111,7 +1131,7 @@ if __name__ == '__main__':
 
         if param["Regression_type"] in ["gaussian","gaussianFP"]:
             if param["Regression_type"] in "gaussian":
-                grid_search(features_dir_name,param["Regression_features"] ,param["feature_number"],df, dfp, param["out_dir_name"] + "/result_grid_search.csv",fplist,param["Regression_type"])
+                grid_search(features_dir_name,param["Regression_features"] ,param["feature_number"],df, dfp, param["out_dir_name"] + "/result_grid_search.csv",fplist,param["Regression_type"],param["maxmin"])
             if param["cat"]=="cbs":
                 dfp=pd.read_csv("../result/cbs_gaussian/result_grid_search.csv")
             else :
@@ -1121,21 +1141,14 @@ if __name__ == '__main__':
             min_row = dfp.loc[min_index, :]
             p = pd.DataFrame([min_row], index=[min_index])
             print(p)
-
             p.to_csv(param["out_dir_name"]+"/hyperparam.csv")
-
-        # with open(param["out_dir_name"]+"/hyperparam.csv", "w") as f:
-        #         writer = csv.writer(f)
-        #         writer.writerow(min_df)
-
-
         if param["Regression_type"] in ["gaussian", "gaussianFP"]:
 
             # leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
             #                    param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
             #                    dfp[["λ1", "λ2","λ3"]].values[dfp["RMSE"].idxmin()])
             leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
-                          param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
+                          param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],
                           p)
             # if param["Regression_features"] in ["LUMO"]:
             #     leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"], df,
@@ -1146,5 +1159,5 @@ if __name__ == '__main__':
         #         #       param["out_dir_name"] + "/result_loo.xls",param,fplist,param["Regression_type"],dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
         else:
             leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"],df,
-                      param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],p=None)
+                      param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],p=None)
         # raise ValueError
