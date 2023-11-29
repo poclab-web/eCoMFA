@@ -419,8 +419,10 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                          "{}".format(regression_features.split()[1])].values for mol
                      in df["mol"]]
         features = np.concatenate([features1, features2], axis=1)
+        print(features.shape)
         if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
             Y = df["ΔΔG.expt."].values
+            print(Y.shape)
             if regression_type == "lassocv":
                 model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
             elif regression_type == "PLS":
@@ -431,10 +433,10 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 model = ElasticNetCV(fit_intercept=False).fit(features, Y)
             df["ΔΔG.train"] = model.predict(features)
             df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
-
+            print(df_mf.shape)
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
 
-
+            # print(model.coef_[0][:penalty.shape[0]].shape)
             print("aaa")
 
             if regression_type=="lassocv":
@@ -816,6 +818,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 predict = model.predict(features)
                 if regression_type =="PLS":
                     if maxmin =="True":
+                        print("maxmin")
                         for i in range(len(predict)):
                             if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
                                 predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
@@ -870,11 +873,14 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                         features = np.concatenate([features, S], axis=1)
                 predict = model.predict(features)
                 if maxmin == "True":
+                    print("maxmin")
+                    print(predict)
                     for i in range(len(predict)):
-                        if predict >= df.iloc[test_index]["ΔΔmaxG.expt."].values:
-                            predict = df.iloc[test_index]["ΔΔmaxG.expt."].values
-                        if predict <= df.iloc[test_index]["ΔΔminG.expt."].values:
-                            predict = df.iloc[test_index]["ΔΔminG.expt."].values
+                        if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+                            predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+                        if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+                            predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
+                        print(predict[i])
                 l.extend(predict)
         if regression_type in "FP":
             l = []
@@ -979,7 +985,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
 
         if regression_type in ["gaussian", "gaussianFP"]:
             l = []
-            kf = KFold(n_splits=len(df), shuffle=False)
+            kf = KFold(n_splits=5, shuffle=False)
             for (train_index, test_index) in kf.split(df):
                 features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[0])].values
@@ -1022,6 +1028,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                         features = np.concatenate([features, S], axis=1)
                 predict = model.predict(features)
                 if maxmin == "True":
+                    print(predict)
                     for i in range(len(predict)):
                         if predict >= df.iloc[test_index]["ΔΔmaxG.expt."].values:
                             predict = df.iloc[test_index]["ΔΔmaxG.expt."].values
@@ -1089,13 +1096,15 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
 
 if __name__ == '__main__':
     for param_file_name in [
+        "../parameter/parameter_cbs_ridgecv.txt",
+        "../parameter/parameter_cbs_PLS.txt",
         "../parameter/parameter_cbs_gaussian.txt",
         "../parameter/parameter_cbs_lassocv.txt",
-        "../parameter/parameter_cbs_PLS.txt",
+
 
         "../parameter/parameter_cbs_elasticnetcv.txt",
 
-        "../parameter/parameter_cbs_ridgecv.txt",
+
 
         "../parameter/parameter_dip-chloride_PLS.txt",
         "../parameter/parameter_dip-chloride_lassocv.txt",
@@ -1160,4 +1169,4 @@ if __name__ == '__main__':
         else:
             leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"],df,
                       param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],p=None)
-        # raise ValueError
+        raise ValueError
