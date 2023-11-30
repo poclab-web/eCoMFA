@@ -9,6 +9,7 @@ from sklearn.model_selection import LeaveOneOut, KFold
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.linear_model import RidgeCV
 from sklearn.linear_model import ElasticNetCV
+from sklearn.model_selection import train_test_split
 
 
 import time
@@ -1106,6 +1107,24 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     df["inchikey"]=df["mol"].apply(lambda  mol:mol.GetProp("InchyKey"))
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100),)
+    return model
+
+
+def train_testfold(features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type,maxmin,p=None):
+    # kf = KFold(n_splits=5, shuffle=False)
+    # for (train_index, test_index) in kf.split(df):
+    df_train,df_test= train_test_split(df,train_size = 0.8,random_state=0)
+    model=leave_one_out(features_dir_name, regression_features,feature_number, df_train, out_file_name, param, fplist, regression_type,maxmin,p=None)
+    features = [
+        pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+            "{}".format(regression_features)].values
+        for
+        mol in df.iloc[train_index]["mol"]]
+    testpredict=model.predict(features)
+
+
+
+
 
 if __name__ == '__main__':
     for param_file_name in [
