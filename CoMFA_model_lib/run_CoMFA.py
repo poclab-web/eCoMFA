@@ -22,7 +22,7 @@ feature_num
 warnings.simplefilter('ignore')
 
 
-def grid_search(features_dir_name,regression_features ,regression_number,df, dfp, out_file_name,fplist,reguression_type,maxmin):
+def grid_search(features_dir_name, regression_features, feature_number, df, dfp, out_file_name, fplist, regression_type, maxmin):
     xyz = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))[
         ["x", "y", "z"]].values
     d = np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
@@ -49,7 +49,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
     r2_list = []
     RMSE_list = []
 
-    if regression_number=="1":
+    if feature_number== "1":
         hyperparam=list(dict.fromkeys(dfp["{}param".format(regression_features)]))
         q = []
         for L1 in hyperparam:
@@ -66,7 +66,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                         "{}".format(regression_features)].values
                     for
                     mol in df.iloc[train_index]["mol"]]
-                if reguression_type in ["gaussianFP"]:
+                if regression_type in ["gaussianFP"]:
                     X = np.concatenate([feature, penalty1], axis=0)
                     zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
                     train_if = []
@@ -79,7 +79,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                         train_if.append(train_tf)
                     Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] )], axis=0)
                     model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)#ただの線形回帰
-                if reguression_type in["gaussian"]:
+                if regression_type in["gaussian"]:
                     X = np.concatenate([feature, penalty1], axis=0)
                     Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] )], axis=0)
                     model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)#Ridgeじゃないただの線形回帰
@@ -89,7 +89,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                     for
                     mol in df.iloc[test_index]["mol"]]
 
-                if reguression_type in["FP","gaussianFP"]:
+                if regression_type in["FP", "gaussianFP"]:
                     for weight in df.loc[:, fplist].columns:
                         S = np.array(df.iloc[test_index][weight].values).reshape(1, np.array(df.iloc[test_index][weight].values).shape[0]).T
                         feature = np.concatenate([feature, S], axis=1)
@@ -113,7 +113,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
         paramlist.rename(columns={0: "{}param".format(regression_features.split()[0])},inplace=True)
 
 
-    elif regression_number == "2":
+    elif feature_number == "2":
         feature1param =list(dict.fromkeys(dfp["{}param".format(regression_features.split()[0])]))
         feature2param =list(dict.fromkeys(dfp["{}param".format(regression_features.split()[1])]))
         q=[]
@@ -137,7 +137,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                         for
                         mol in df.iloc[train_index]["mol"]]
                     features = np.concatenate([feature1, feature2], axis=1)
-                    if reguression_type in ["gaussianFP"]:
+                    if regression_type in ["gaussianFP"]:
                         X = np.concatenate([features, penalty1, penalty2], axis=0)
                         zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
                         train_if = []
@@ -151,7 +151,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                             train_if.append(train_tf)
                         Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
                         model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)  # ただの線形回帰
-                    if reguression_type in ["gaussian"]:
+                    if regression_type in ["gaussian"]:
                         X = np.concatenate([features, penalty1, penalty2], axis=0)
                         Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
                         model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)  # Ridgeじゃないただの線形回帰
@@ -167,7 +167,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                         mol in df.iloc[test_index]["mol"]]
                     features = np.concatenate([feature1, feature2], axis=1)
 
-                    if reguression_type in ["FP", "gaussianFP"]:
+                    if regression_type in ["FP", "gaussianFP"]:
                         for weight in df.loc[:, fplist].columns:
                             S = np.array(df.iloc[test_index][weight].values).reshape(1, np.array(
                                 df.iloc[test_index][weight].values).shape[0]).T
@@ -196,7 +196,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
 
 
 
-    elif regression_number == "3":
+    elif feature_number == "3":
         feature1param = list(dict.fromkeys(dfp["{}param".format(regression_features.split()[0])]))
         feature2param = list(dict.fromkeys(dfp["{}param".format(regression_features.split()[1])]))
         feature3param = list(dict.fromkeys(dfp["{}param".format(regression_features.split()[2])]))
@@ -231,9 +231,9 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                             for
                             mol in df.iloc[train_index]["mol"]]
                         features = np.concatenate([feature1, feature2,feature3], axis=1)
-                        if reguression_type in ["gaussianFP"] or ["gaussian"]:
+                        if regression_type in ["gaussianFP"] or ["gaussian"]:
                             X = np.concatenate([features, penalty1, penalty2,penalty3], axis=0)
-                            if reguression_type in ["gaussianFP"]:
+                            if regression_type in ["gaussianFP"]:
                                 zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
                                 train_if = []
                                 for weight in df.loc[:, fplist].columns:
@@ -266,7 +266,7 @@ def grid_search(features_dir_name,regression_features ,regression_number,df, dfp
                             mol in df.iloc[test_index]["mol"]]
                         features = np.concatenate([feature1, feature2 ,feature3], axis=1)
 
-                        if reguression_type in ["FP", "gaussianFP"]:
+                        if regression_type in ["FP", "gaussianFP"]:
                             for weight in df.loc[:, fplist].columns:
                                 S = np.array(df.iloc[test_index][weight].values).reshape(1, np.array(
                                     df.iloc[test_index][weight].values).shape[0]).T
@@ -458,7 +458,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
             df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
 
         if regression_type in ["gaussian"]:
-
+            print(p)
             hparam1 = p['{}param'.format(regression_features.split()[0])].values
             hparam2 = p['{}param'.format(regression_features.split()[1])].values
             penalty1 = np.concatenate([hparam1 * penalty, np.zeros(penalty.shape)], axis=1)
@@ -789,7 +789,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     elif feature_number == "2":
         if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
             l = []
-            kf = KFold(n_splits=5, shuffle=False)
+            kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
                 features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
@@ -838,7 +838,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
 
                 else:
                     print("ridgecv")
-                    print(predict[1])
+                    print(predict[0])
                     for i in range(len(predict)):
                         if maxmin =="True":
                             print(df.iloc[test_index]["ΔΔmaxG.expt."].values)
@@ -1107,20 +1107,55 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     df["inchikey"]=df["mol"].apply(lambda  mol:mol.GetProp("InchyKey"))
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100),)
+    if param["cat"] == "cbs":
+        dfp = pd.read_csv("../result/cbs_gaussian/result_grid_search.csv")
+    else:
+        dfp = pd.read_csv("../result/dip-chloride_gaussian/result_grid_search.csv")
+    print(dfp)
+    min_index = dfp['RMSE'].idxmin()
+    min_row = dfp.loc[min_index, :]
+    p = pd.DataFrame([min_row], index=[min_index])
+    print(p)
+    p.to_csv(param["out_dir_name"] + "/hyperparam.csv")
     return model
 
 
-def train_testfold(features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type,maxmin,p=None):
+def train_testfold(features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type,maxmin,dfp):
     # kf = KFold(n_splits=5, shuffle=False)
     # for (train_index, test_index) in kf.split(df):
     df_train,df_test= train_test_split(df,train_size = 0.8,random_state=0)
-    model=leave_one_out(features_dir_name, regression_features,feature_number, df_train, out_file_name, param, fplist, regression_type,maxmin,p=None)
-    features = [
-        pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
-            "{}".format(regression_features)].values
-        for
-        mol in df.iloc[train_index]["mol"]]
+    if param["Regression_type"] in "gaussian":
+        grid_search(features_dir_name,regression_features ,feature_number,df, dfp, out_file_name,fplist,regression_type,maxmin)
+        if param["cat"]=="cbs":
+            p=pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
+        else :
+            p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
+    if param["Regression_type"] in "gaussian":
+        model=leave_one_out(features_dir_name, regression_features,feature_number, df_train, out_file_name, param, fplist, regression_type,maxmin,p)
+    else:
+        model = leave_one_out(features_dir_name, regression_features, feature_number, df_train, out_file_name, param,
+                              fplist, regression_type, maxmin, p=None)
+
+    features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                     "{}".format(regression_features.split()[0])].values
+                 for
+                 mol in df_test["mol"]]
+    features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                     "{}".format(regression_features.split()[1])].values
+                 for
+                 mol in df_test["mol"]]
+    features = np.concatenate([features1, features2], axis=1)
     testpredict=model.predict(features)
+    print(testpredict)
+    print(testpredict)
+    df_test["ΔΔG.test"] =testpredict
+    r2 = r2_score(df_test["ΔΔG.expt."], testpredict)
+    print(r2)
+    df_test["error"] = df_test["ΔΔG.test"]- df_test["ΔΔG.expt."]
+    df_test["inchikey"] = df_test["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
+    PandasTools.AddMoleculeColumnToFrame(df_test, "smiles")
+    PandasTools.SaveXlsxFromFrame(df_test, out_file_name, size=(100, 100), )
+
 
 
 
@@ -1128,10 +1163,11 @@ def train_testfold(features_dir_name, regression_features,feature_number, df, ou
 
 if __name__ == '__main__':
     for param_file_name in [
+        "../parameter/parameter_cbs_gaussian.txt",
         "../parameter/parameter_cbs_PLS.txt",
         "../parameter/parameter_cbs_ridgecv.txt",
 
-        "../parameter/parameter_cbs_gaussian.txt",
+
         "../parameter/parameter_cbs_lassocv.txt",
         "../parameter/parameter_cbs_elasticnetcv.txt",
 
@@ -1169,35 +1205,41 @@ if __name__ == '__main__':
         dfp = pd.read_csv(param["penalty_param_dir"])  # [:1]
         print(dfp)
         os.makedirs(param["out_dir_name"], exist_ok=True)
+        if True:
+            train_testfold(features_dir_name, param["Regression_features"], param["feature_number"], df,
+                       param["out_dir_name"] + "/result_train_test.xls", param, fplist, param["Regression_type"],
+                       param["maxmin"],dfp)
 
-        if param["Regression_type"] in ["gaussian","gaussianFP"]:
-            if param["Regression_type"] in "gaussian":
-                grid_search(features_dir_name,param["Regression_features"] ,param["feature_number"],df, dfp, param["out_dir_name"] + "/result_grid_search.csv",fplist,param["Regression_type"],param["maxmin"])
-            if param["cat"]=="cbs":
-                dfp=pd.read_csv("../result/cbs_gaussian/result_grid_search.csv")
-            else :
-                dfp = pd.read_csv("../result/dip-chloride_gaussian/result_grid_search.csv")
-            print(dfp)
-            min_index = dfp['RMSE'].idxmin()
-            min_row = dfp.loc[min_index, :]
-            p = pd.DataFrame([min_row], index=[min_index])
-            print(p)
-            p.to_csv(param["out_dir_name"]+"/hyperparam.csv")
-        if param["Regression_type"] in ["gaussian", "gaussianFP"]:
 
-            # leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
-            #                    param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
-            #                    dfp[["λ1", "λ2","λ3"]].values[dfp["RMSE"].idxmin()])
-            leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
-                          param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],
-                          p)
-            # if param["Regression_features"] in ["LUMO"]:
-            #     leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"], df,
-            #                   param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
-            #                   dfp["λ3"].values[dfp["RMSE"].idxmin()])
-        #         # else:
-        #         #     leave_one_out(features_dir_name,param["Regression_features"],param["feature_number"],df,
-        #         #       param["out_dir_name"] + "/result_loo.xls",param,fplist,param["Regression_type"],dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
         else:
-            leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"],df,
-                      param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],p=None)
+            if param["Regression_type"] in ["gaussian","gaussianFP"]:
+                if param["Regression_type"] in "gaussian":
+                    grid_search(features_dir_name,param["Regression_features"] ,param["feature_number"],df, dfp, param["out_dir_name"] + "/result_grid_search.csv",fplist,param["Regression_type"],param["maxmin"])
+
+            if param["Regression_type"] in ["gaussian", "gaussianFP"]:
+
+                # leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
+                #                    param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
+                #                    dfp[["λ1", "λ2","λ3"]].values[dfp["RMSE"].idxmin()])
+                if param["cat"] == "cbs":
+                    p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
+                elif param["cat"] == "dip":
+                    p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
+                elif param["cat"] == "RuSS":
+                    p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
+                else:
+                    raise ValueError
+                leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
+                              param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],
+                              p)
+                # if param["Regression_features"] in ["LUMO"]:
+                #     leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"], df,
+                #                   param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
+                #                   dfp["λ3"].values[dfp["RMSE"].idxmin()])
+            #         # else:
+            #         #     leave_one_out(features_dir_name,param["Regression_features"],param["feature_number"],df,
+            #         #       param["out_dir_name"] + "/result_loo.xls",param,fplist,param["Regression_type"],dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
+            else:
+                leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"],df,
+                          param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],p=None)
+
