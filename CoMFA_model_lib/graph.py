@@ -28,8 +28,8 @@ for i,param_file_name in enumerate([
 "../parameter/parameter_cbs_PLS.txt",
 "../parameter/parameter_cbs_gaussian.txt",
 "../parameter/parameter_cbs_ridgecv.txt",
-#     "../parameter/parameter_cbs_elasticnetcv.txt",
-# "../parameter/parameter_cbs_lassocv.txt",
+    "../parameter/parameter_cbs_elasticnetcv.txt",
+"../parameter/parameter_cbs_lassocv.txt",
 
     ]):
 # for i,param_file_name in enumerate([

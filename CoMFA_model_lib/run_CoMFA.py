@@ -1174,8 +1174,8 @@ if __name__ == '__main__':
         "../parameter/parameter_cbs_ridgecv.txt",
 
 
-        "../parameter/parameter_cbs_lassocv.txt",
-        "../parameter/parameter_cbs_elasticnetcv.txt",
+        # "../parameter/parameter_cbs_lassocv.txt",
+        # "../parameter/parameter_cbs_elasticnetcv.txt",
 
 
 
@@ -1211,7 +1211,7 @@ if __name__ == '__main__':
         dfp = pd.read_csv(param["penalty_param_dir"])  # [:1]
         print(dfp)
         os.makedirs(param["out_dir_name"], exist_ok=True)
-        # df[df["smiles"] != "ClCC(=O)c1ccccc1"]
+        df=df[df["smiles"] != "ClCC(=O)c1ccccc1"]
 
         if True:
             train_testfold(features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"] + "/result_loo.xls",
