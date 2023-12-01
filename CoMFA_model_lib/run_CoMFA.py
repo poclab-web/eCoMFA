@@ -300,6 +300,12 @@ def grid_search(features_dir_name, regression_features, feature_number, df, dfp,
     print(paramlist.columns)
     paramlist.to_csv(out_file_name)
 
+    min_index = paramlist['RMSE'].idxmin()
+    min_row = paramlist.loc[min_index, :]
+    p = pd.DataFrame([min_row], index=[min_index])
+    print(p)
+    p.to_csv(param["out_dir_name"] + "/hyperparam.csv")
+
 
 
 def leave_one_out(features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type,maxmin,p=None):
@@ -1120,20 +1126,20 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     return model
 
 
-def train_testfold(features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type,maxmin,dfp):
+def train_testfold(features_dir_name, regression_features, feature_number, df, looout_file_name,testout_file_name ,param, fplist, regression_type, maxmin, dfp):
     # kf = KFold(n_splits=5, shuffle=False)
     # for (train_index, test_index) in kf.split(df):
     df_train,df_test= train_test_split(df,train_size = 0.8,random_state=0)
     if param["Regression_type"] in "gaussian":
-        grid_search(features_dir_name,regression_features ,feature_number,df, dfp, out_file_name,fplist,regression_type,maxmin)
+        grid_search(features_dir_name, regression_features, feature_number, df, dfp, looout_file_name, fplist, regression_type, maxmin)
         if param["cat"]=="cbs":
             p=pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
         else :
             p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
     if param["Regression_type"] in "gaussian":
-        model=leave_one_out(features_dir_name, regression_features,feature_number, df_train, out_file_name, param, fplist, regression_type,maxmin,p)
+        model=leave_one_out(features_dir_name, regression_features, feature_number, df_train, looout_file_name, param, fplist, regression_type, maxmin, p)
     else:
-        model = leave_one_out(features_dir_name, regression_features, feature_number, df_train, out_file_name, param,
+        model = leave_one_out(features_dir_name, regression_features, feature_number, df_train, looout_file_name, param,
                               fplist, regression_type, maxmin, p=None)
 
     features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
@@ -1154,7 +1160,7 @@ def train_testfold(features_dir_name, regression_features,feature_number, df, ou
     df_test["error"] = df_test["ΔΔG.test"]- df_test["ΔΔG.expt."]
     df_test["inchikey"] = df_test["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
     PandasTools.AddMoleculeColumnToFrame(df_test, "smiles")
-    PandasTools.SaveXlsxFromFrame(df_test, out_file_name, size=(100, 100), )
+    PandasTools.SaveXlsxFromFrame(df_test, testout_file_name, size=(100, 100), )
 
 
 
@@ -1205,8 +1211,10 @@ if __name__ == '__main__':
         dfp = pd.read_csv(param["penalty_param_dir"])  # [:1]
         print(dfp)
         os.makedirs(param["out_dir_name"], exist_ok=True)
+        # df[df["smiles"] != "ClCC(=O)c1ccccc1"]
+
         if True:
-            train_testfold(features_dir_name, param["Regression_features"], param["feature_number"], df,
+            train_testfold(features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"] + "/result_loo.xls",
                        param["out_dir_name"] + "/result_train_test.xls", param, fplist, param["Regression_type"],
                        param["maxmin"],dfp)
 
@@ -1232,13 +1240,7 @@ if __name__ == '__main__':
                 leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
                               param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],
                               p)
-                # if param["Regression_features"] in ["LUMO"]:
-                #     leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"], df,
-                #                   param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
-                #                   dfp["λ3"].values[dfp["RMSE"].idxmin()])
-            #         # else:
-            #         #     leave_one_out(features_dir_name,param["Regression_features"],param["feature_number"],df,
-            #         #       param["out_dir_name"] + "/result_loo.xls",param,fplist,param["Regression_type"],dfp[["λ1", "λ2"]].values[dfp["RMSE"].idxmin()])
+
             else:
                 leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"],df,
                           param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],p=None)
