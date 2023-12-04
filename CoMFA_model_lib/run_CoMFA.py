@@ -10,8 +10,6 @@ from sklearn.cross_decomposition import PLSRegression
 from sklearn.linear_model import RidgeCV
 from sklearn.linear_model import ElasticNetCV
 from sklearn.model_selection import train_test_split
-
-
 import time
 import warnings
 import json
@@ -189,7 +187,8 @@ def grid_search(features_dir_name, regression_features, feature_number, df, dfp,
                 RMSE_list.append(RMSE)
         print(q)
         paramlist=pd.DataFrame(q)
-
+        print(regression_features.split()[0])
+        print(regression_features.split()[1])
         paramlist.rename(columns={0: "{}param".format(regression_features.split()[0]),
                                               1: "{}param".format(regression_features.split()[1])},inplace=True)
 
@@ -793,9 +792,10 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
 
 
     elif feature_number == "2":
+        kf = KFold(n_splits=len(df), shuffle=False)
         if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
             l = []
-            kf = KFold(n_splits=len(df), shuffle=False)
+
             for (train_index, test_index) in kf.split(df):
                 features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
@@ -858,7 +858,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
 
         if regression_type in ["gaussian", "gaussianFP"]:
             l = []
-            kf = KFold(n_splits=5, shuffle=False)
+
             for (train_index, test_index) in kf.split(df):
                 features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[0])].values
@@ -902,7 +902,7 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
                 l.extend(predict)
         if regression_type in "FP":
             l = []
-            kf = KFold(n_splits=len(df), shuffle=False)
+
             for (train_index, test_index) in kf.split(df):
                 features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
@@ -1126,12 +1126,12 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     return model
 
 
-def train_testfold(features_dir_name, regression_features, feature_number, df, looout_file_name,testout_file_name ,param, fplist, regression_type, maxmin, dfp):
+def train_testfold(features_dir_name, regression_features, feature_number, df, gridsearch_file_name,looout_file_name,testout_file_name ,param, fplist, regression_type, maxmin, dfp):
     # kf = KFold(n_splits=5, shuffle=False)
     # for (train_index, test_index) in kf.split(df):
     df_train,df_test= train_test_split(df,train_size = 0.8,random_state=0)
     if param["Regression_type"] in "gaussian":
-        grid_search(features_dir_name, regression_features, feature_number, df, dfp, looout_file_name, fplist, regression_type, maxmin)
+        grid_search(features_dir_name, regression_features, feature_number, df, dfp, gridsearch_file_name, fplist, regression_type, maxmin)
         if param["cat"]=="cbs":
             p=pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
         else :
@@ -1169,17 +1169,16 @@ def train_testfold(features_dir_name, regression_features, feature_number, df, l
 
 if __name__ == '__main__':
     for param_file_name in [
-        "../parameter/parameter_cbs_gaussian.txt",
-        "../parameter/parameter_cbs_PLS.txt",
-        "../parameter/parameter_cbs_ridgecv.txt",
-
-
+        # "../parameter/parameter_cbs_gaussian.txt",
+        # "../parameter/parameter_cbs_PLS.txt",
+        # "../parameter/parameter_cbs_ridgecv.txt",
         # "../parameter/parameter_cbs_lassocv.txt",
         # "../parameter/parameter_cbs_elasticnetcv.txt",
-
-
-
-
+            "../parameter/parameter_dip-chloride_PLS.txt",
+        "../parameter/parameter_dip-chloride_lassocv.txt",
+        "../parameter/parameter_dip-chloride_gaussian.txt",
+        "../parameter/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter/parameter_dip-chloride_ridgecv.txt",
     ]:
     #     "../parameter/parameter_dip-chloride_PLS.txt",
     # "../parameter/parameter_dip-chloride_lassocv.txt",
@@ -1205,16 +1204,17 @@ if __name__ == '__main__':
         df=df.loc[:, ~df.columns.duplicated()]
         df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
         print(len(df))
+        print(df["smiles"][[os.path.isdir(features_dir_name + mol.GetProp("InchyKey")) for mol in df["mol"]]])
         df = df[[os.path.isdir(features_dir_name + mol.GetProp("InchyKey")) for mol in df["mol"]]]
         print(len(df))
         df["mol"].apply(lambda mol: calculate_conformation.read_xyz(mol, xyz_dir_name + "/" + mol.GetProp("InchyKey")))
         dfp = pd.read_csv(param["penalty_param_dir"])  # [:1]
         print(dfp)
         os.makedirs(param["out_dir_name"], exist_ok=True)
-        df=df[df["smiles"] != "ClCC(=O)c1ccccc1"]
+        # df=df[df["smiles"] != "ClCC(=O)c1ccccc1"]
 
         if True:
-            train_testfold(features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"] + "/result_loo.xls",
+            train_testfold(features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"]+"/result_grid_search.csv",param["out_dir_name"] + "/result_loo.xls",
                        param["out_dir_name"] + "/result_train_test.xls", param, fplist, param["Regression_type"],
                        param["maxmin"],dfp)
 

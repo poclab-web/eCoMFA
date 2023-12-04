@@ -17,6 +17,8 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
     df = df.dropna(subset=["smiles"])
     print(len(df))
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
+    df["q"] =df["mol"].apply(lambda x:Chem.AddHs(x))
+    df["inchikey"] = df["q"].apply(lambda x: Chem.inchi.MolToInchiKey(x))
     df = df.dropna(subset=['er.', "mol", "smiles"])  # .dropna(subset=['smiles'])#順番重要！
     df.loc[df['er.'] <= 1, 'er.'] = 1
     df.loc[df['er.'] >= 99, 'er.'] = 99
@@ -25,7 +27,7 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
     df["ΔΔminG.expt."] =df["RT"].values* np.log(100 / 99 - 1)
     df["ΔΔmaxG.expt."] = df["RT"].values * np.log(100 / 1 - 1)
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    df = df[[ "smiles", "ROMol", "er.", "RT", "ΔΔG.expt.","ΔΔminG.expt.","ΔΔmaxG.expt."]]
+    df = df[[ "smiles", "ROMol","inchikey","er.", "RT", "ΔΔG.expt.","ΔΔminG.expt.","ΔΔmaxG.expt."]]
     #df = df[["smiles", "ROMol", "er.", "RT"]]
     print(df.columns)
     PandasTools.SaveXlsxFromFrame(df, to_dir_path + "/" + out_file_name, size=(100, 100))
