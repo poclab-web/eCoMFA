@@ -15,7 +15,7 @@
 "grid_coordinates_file": "../grid_coordinates/grid_coordinate_RuSS.csv",
 "penalty_param_dir" :"../penalty_param/penalty_param.csv",
 "out_dir_name":"../result/RuSS_PLS",
-"fig_file_dir":"../figs/RuSS_gaussianPLS",
+"fig_file_dir":"../figs/RuSS_PLS",
 
 "data_file_path": "../arranged_dataset/RuSS.xls",
 "fpdata_file_path": "../fingerprint/fparranged_dataset/RuSS.csv",

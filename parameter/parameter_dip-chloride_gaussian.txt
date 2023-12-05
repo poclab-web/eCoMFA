@@ -11,7 +11,7 @@
 
 "grid_dir_name": "../grid_features",
 "grid_coordinates_dir":"/grid_coordinate_dip-chloride",
-"grid_sizefile":"8,3,9,1",
+"grid_sizefile":"8,3,9,0.5",
 "grid_coordinates_file": "../grid_coordinates/grid_coordinate_dip-chloride.csv",
 "penalty_param_dir" :"../penalty_param/penalty_param.csv",
 "out_dir_name":"../result/dip-chloride_gaussian",
@@ -26,7 +26,7 @@
 "cat":"dip",
 "Regression_features":"Dt ESP",
 "feature_number":"2",
-"maxmin":"True"
+"maxmin":"False"
 
 
 }
