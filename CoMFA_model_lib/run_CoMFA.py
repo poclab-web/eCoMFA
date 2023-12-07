@@ -1130,7 +1130,7 @@ def train_testfold(features_dir_name, regression_features, feature_number, df, g
     # kf = KFold(n_splits=5, shuffle=False)
     # for (train_index, test_index) in kf.split(df):
     #df_train,df_test= train_test_split(df,train_size = 0.8,random_state=0)
-    df_train, df_test = train_test_split(df, train_size=0.5, random_state=0)
+    df_train, df_test = train_test_split(df, train_size=0.7, random_state=1)
     if param["Regression_type"] in "gaussian":
         grid_search(features_dir_name, regression_features, feature_number, df, dfp, gridsearch_file_name, fplist, regression_type, maxmin)
         if param["cat"]=="cbs":

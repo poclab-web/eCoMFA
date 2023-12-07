@@ -204,7 +204,7 @@ if __name__ == '__main__':
     #df = df[df["smiles"] != "c1ccccc1C(C)(C)C(=O)C#CCCCCCCCC"]
 
     # for smiles in df["smiles"]:
-    for smiles in df["smiles"][df["smiles"] == "c1cc(Br)ccc1c2cc(Cl)ccc2C(=O)CCC"]:
+    for smiles in df["smiles"][df["smiles"] == "C(=O)(c1ccc(F)cc1)CCCN2CCN(C3=NCC(F)C=N3)CC2"]:
         print("longsmiles")
         print(smiles)
         mol = get_mol(smiles)

@@ -26,6 +26,6 @@
 "cat":"dip",
 "Regression_features":"Dt ESP",
 "feature_number":"2",
-"maxmin":"False"
+"maxmin":"True"
 
 }
