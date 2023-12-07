@@ -45,5 +45,43 @@ for p in df.index:
             l.append(q)
     r.append(l)
 df['ΔΔG.expt.Ru']=r
+
+
+df_cbs= pd.read_excel("../result/cbs_gaussian/result_loo.xls")
+df_dip = pd.read_excel("../result/dip-chloride_gaussian/result_loo.xls")
+df_Russ = pd.read_excel("../result/RuSS_gaussian/result_loo.xls")
+
+t=[]
+for p in df.index:
+    l = []
+    for i in df_cbs.index:
+        if df["inchikey"][p]==df_cbs["inchikey"][i]:
+
+            q=df_cbs["ΔΔG.loo"][i]
+            l.append(q)
+    t.append(l)
+df['ΔΔG.pre.cbs']=t
+
+s=[]
+for p in df.index:
+    l = []
+    for i in df_dip.index:
+        if str(df["inchikey"][p])==str(df_dip["inchikey"][i]):
+            q=df_dip["ΔΔG.loo"][i]
+            l.append(q)
+    s.append(l)
+df['ΔΔG.pre.dip']=s
+
+r=[]
+for p in df.index:
+    l = []
+    for i in df_Russ.index:
+        if str(df["inchikey"][p])==str(df_Russ["inchikey"][i]):
+            q=df_Russ["ΔΔG.loo"][i]
+            l.append(q)
+    r.append(l)
+df["ΔΔG.loo"]=r
+
+
 os.makedirs("../datalist", exist_ok=True)
 PandasTools.SaveXlsxFromFrame(df, "../datalist/datalist.xls", size=(100, 100))
