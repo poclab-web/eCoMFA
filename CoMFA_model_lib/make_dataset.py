@@ -41,6 +41,7 @@ if __name__ == '__main__':
     # make_dataset("../sampledata/cbs_hand_read_1030.csv","cbs.xls")
     make_dataset("../sampledata/DIP-chloride_1127.csv","DIP-chloride.xls")
     make_dataset("../sampledata/Ru_cat_1127.csv", "RuSS.xls")
+    make_dataset("../sampledata/cbs_hand_scifinder.csv", "cbstestdata.xls")
 
 
     # from CoMFA_model_lib import calculate_conformation

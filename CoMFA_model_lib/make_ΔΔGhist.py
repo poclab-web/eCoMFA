@@ -8,14 +8,14 @@ df3 =pd.read_excel("../arranged_dataset/Russ.xls").dropna(subset=['smiles']).dro
 for (df,name) in zip([df1,df2,df3],["cbs","dip","Russ"]):
 
 
-    plt.hist(df["er."])
+    plt.hist(df["er."],bins=20)
 
     os.makedirs("../datahist",exist_ok=True)
     plt.savefig("../datahist"+"/{}erplot.png".format(name))
     plt.clf()
 
 for (df, name) in zip([df1, df2, df3], ["cbs", "dip", "Russ"]):
-    plt.hist(df["ΔΔG.expt."])
+    plt.hist(df["ΔΔG.expt."],bins=20)
 
 
     os.makedirs("../datahist", exist_ok=True)

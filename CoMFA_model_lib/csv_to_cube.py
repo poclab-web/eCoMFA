@@ -17,7 +17,7 @@ if __name__ == '__main__':
         features_dir_name = param["moleculer_field_dir"]#param["grid_dir_name"]
 
         #"../cube_aligned_b3lyp_6-31g(d)/ADCYRBXQAJXJTD-UHFFFAOYSA-N/ESP02_0.cube"
-        #inchykey = "WRYKPYJMRHQDBM-UHFFFAOYSA-N","KWOLFJPFCHCOCG-UHFFFAOYSA-N"KWOLFJPFCHCOCG-UHFFFAOYSA-N
+        #inchykey = "WRYKPYJMRHQDBM-UHFFFAOYSA-N","KWOLFJPFCHCOCG-UHFFFAOYSA-N"KWOLFJPFCHCOCG-UHFFFAOYSA-N　IMACFCSSMIZSPP-UHFFFAOYSA-N
 
         #feature="MF_Dt"
 
