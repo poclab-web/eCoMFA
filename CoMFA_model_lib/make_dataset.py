@@ -37,13 +37,13 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
 
 if __name__ == '__main__':
     # make_dataset("train","temperature","all_train.xls")
-    make_dataset("../sampledata/cbs_hand_read_1207.csv", "cbs.xls")
+    make_dataset("../sampledata/cbs_hand_read_1207.csv", "cbs.xlsx")
     # make_dataset("../sampledata/cbs_hand_read_1030.csv","cbs.xls")
-    make_dataset("../sampledata/DIP-chloride_1127.csv","DIP-chloride.xls")
-    make_dataset("../sampledata/Ru_cat_1127.csv", "RuSS.xls")
-    make_dataset("../sampledata/cbs_hand_scifinder.csv", "cbstestdata.xls")
+    make_dataset("../sampledata/DIP-chloride_1127.csv","DIP-chloride.xlsx")
+    make_dataset("../sampledata/Ru_cat_1127.csv", "RuSS.xlsx")
+    make_dataset("../sampledata/cbs_hand_scifinder.csv", "cbstestdata.xlsx")
 
-
+    #make_dataset("../errortest/df3.csv","error.xls")
     # from CoMFA_model_lib import calculate_conformation
     #
     # df_dip=pd.read_excel(to_dir_path+"/DIP-chloride.xls")

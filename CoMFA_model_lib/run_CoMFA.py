@@ -21,12 +21,17 @@ warnings.simplefilter('ignore')
 
 
 def grid_search(fold,features_dir_name, regression_features, feature_number, df, dfp, out_file_name, fplist, regression_type, maxmin):
+    os.makedirs("../errortest/", exist_ok=True)
+
     if fold:
         xyz = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))[
         ["x", "y", "z"]].values
+        print("yzfold")
     else:
         xyz = pd.read_csv("{}/{}/feature_y.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))[
             ["x", "y", "z"]].values
+        print("zfold")
+
 
     d = np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
     d_y = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, 1]), axis=1) for _ in xyz])
@@ -46,8 +51,10 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
     penalty_yz = np.where(d_yz < 0.5 * 3, gauss_func(d_yz), 0)
     if fold:
         penalty = penalty + penalty_y + penalty_z + penalty_yz
+        grid_features_name = "{}/{}/feature_yz.csv"
     else:
         penalty = penalty + penalty_y
+        grid_features_name = "{}/{}/feature_y.csv"
 
     penalty = penalty / np.max(np.sum(penalty, axis=0))
     np.fill_diagonal(penalty, -1)
@@ -55,6 +62,8 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
     np.save('../penalty/penalty.npy', penalty)
     r2_list = []
     RMSE_list = []
+
+
 
     if feature_number== "1":
         hyperparam=list(dict.fromkeys(dfp["{}param".format(regression_features)]))
@@ -68,20 +77,13 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
             l=[]
             kf = KFold(n_splits=5, shuffle=False)
             for (train_index, test_index) in kf.split(df):
-                if fold:
-                    grid_features_name="{}/{}/feature_yz.csv"
-                else:
-                    grid_features_name = "{}/{}/feature_y.csv"
+
                 feature = [
                     pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                         "{}".format(regression_features)].values
                     for
                     mol in df.iloc[train_index]["mol"]]
-                # feature = [
-                #     pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
-                #         "{}".format(regression_features)].values
-                #     for
-                #     mol in df.iloc[train_index]["mol"]]
+
                 if regression_type in ["gaussianFP"]:
                     X = np.concatenate([feature, penalty1], axis=0)
                     zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
@@ -101,7 +103,7 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
                     model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)#Ridgeじゃないただの線形回帰
 
                 feature = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
+                    pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
                     for
                     mol in df.iloc[test_index]["mol"]]
 
@@ -144,10 +146,7 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
                 l = []
                 kf = KFold(n_splits=5, shuffle=False)
                 for (train_index, test_index) in kf.split(df):
-                    if fold:
-                        grid_features_name = "{}/{}/feature_yz.csv"
-                    else:
-                        grid_features_name = "{}/{}/feature_y.csv"
+
                     feature1 = [
                         pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                             "{}".format(regression_features.split()[0])].values
@@ -158,14 +157,7 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
                             "{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[train_index]["mol"]]
-                    # feature1 = [
-                    #     pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
-                    #     for
-                    #     mol in df.iloc[train_index]["mol"]]
-                    # feature2 = [
-                    #     pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
-                    #     for
-                    #     mol in df.iloc[train_index]["mol"]]
+
                     features = np.concatenate([feature1, feature2], axis=1)
                     if regression_type in ["gaussianFP"]:
                         X = np.concatenate([features, penalty1, penalty2], axis=0)
@@ -185,16 +177,17 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
                         X = np.concatenate([features, penalty1, penalty2], axis=0)
                         Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
                         model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)  # Ridgeじゃないただの線形回帰
-                    raise ValueError
+
                     # ここから、テストセットの特徴量計算
                     feature1 = [
-                        pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                        pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                         for
                         mol in df.iloc[test_index]["mol"]]
                     feature2 = [
-                        pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                        pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[test_index]["mol"]]
+
                     features = np.concatenate([feature1, feature2], axis=1)
 
                     if regression_type in ["FP", "gaussianFP"]:
@@ -247,17 +240,17 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
                     kf = KFold(n_splits=5, shuffle=False)
                     for (train_index, test_index) in kf.split(df):
                         feature1 = [
-                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                            pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                 "{}".format(regression_features.split()[0])].values
                             for
                             mol in df.iloc[train_index]["mol"]]
                         feature2 = [
-                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                            pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                 "{}".format(regression_features.split()[1])].values
                             for
                             mol in df.iloc[train_index]["mol"]]
                         feature3 = [
-                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                            pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                 "{}".format(regression_features.split()[2])].values
                             for
                             mol in df.iloc[train_index]["mol"]]
@@ -281,17 +274,17 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
 
                         # ここから、テストセットの特徴量計算
                         feature1 = [
-                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                            pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                 "{}".format(regression_features.split()[0])].values
                             for
                             mol in df.iloc[test_index]["mol"]]
                         feature2 = [
-                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                            pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                 "{}".format(regression_features.split()[1])].values
                             for
                             mol in df.iloc[test_index]["mol"]]
                         feature3 = [
-                            pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                            pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                 "{}".format(regression_features.split()[2])].values
                             for
                             mol in df.iloc[test_index]["mol"]]
@@ -339,21 +332,21 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
 
 
 
+
 def leave_one_out(fold,features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type,maxmin,p=None):
-    # Dts = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["Dt"].values for mol
-    #        in df["mol"]]
-    # ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values for mol
-    #         in df["mol"]]
-    # LUMOs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values for mol
-    #         in df["mol"]]
     penalty = np.load("../penalty/penalty.npy")
+    if fold:
+        grid_features_name = "{}/{}/feature_yz.csv"
+    else:
+        grid_features_name = "{}/{}/feature_y.csv"
+
 
 
 
     # if regression_features in ["LUMO"]:
     if feature_number == "1":
 
-        feature = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+        feature = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                      "{}".format(regression_features)].values
                  for mol
                  in df["mol"]]
@@ -371,7 +364,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 model = ElasticNetCV(fit_intercept=False).fit(feature, Y)
 
             df["ΔΔG.train"] = model.predict(feature)
-            df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+            df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
             df_mf["MF_{}".format(regression_features)] = model.coef_[:penalty.shape[0]]
             if regression_type=="lassocv":
@@ -395,7 +388,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             Y = np.concatenate([df["ΔΔG.expt."], np.zeros(penalty.shape[0])], axis=0)
             model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
             df["ΔΔG.train"] = model.predict(feature)
-            df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+            df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             print(df["mol"].iloc[0].GetProp("InchyKey"))
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
 
@@ -417,7 +410,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 S = df[weight].values.reshape(-1, 1)
                 features = np.concatenate([features, S], axis=1)
             df["ΔΔG.train"] = model.predict(features)
-            df_mf=pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+            df_mf=pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
 
             print("model.coef_[penalty.shape[0]*2:]")
         # print(model.coef_)
@@ -439,7 +432,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 S = np.array(df[weight].values).reshape(-1, 1)
                 features = np.concatenate([features, S], axis=1)
             df["ΔΔG.train"] = model.predict(features)
-            df_mf=pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+            df_mf=pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             print(model.coef_.shape)
             df_mf["{}".format(regression_features)]=model.coef_[:penalty.shape[0]]
             print("model.coef_[penalty.shape[0]*2:]")
@@ -451,9 +444,9 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 f.write(df_fpv)
 
     elif feature_number == "2" :
-        features1 =[pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values for mol
+        features1 =[pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values for mol
            in df["mol"]]
-        features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+        features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                          "{}".format(regression_features.split()[1])].values for mol
                      in df["mol"]]
         features = np.concatenate([features1, features2], axis=1)
@@ -470,7 +463,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             elif regression_type == "elasticnetcv":
                 model = ElasticNetCV(fit_intercept=False).fit(features, Y)
             df["ΔΔG.train"] = model.predict(features)
-            df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+            df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
 
 
@@ -504,7 +497,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             Y = np.concatenate([df["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
             model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
             df["ΔΔG.train"] = model.predict(features)
-            df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+            df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             print(df["mol"].iloc[0].GetProp("InchyKey"))
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
 
@@ -532,7 +525,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 S = df[weight].values.reshape(-1, 1)
                 features = np.concatenate([features, S], axis=1)
             df["ΔΔG.train"] = model.predict(features)
-            df_mf=pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+            df_mf=pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
 
             df_mf["MF_{}".format(regression_features.split()[0])]=model.coef_[:penalty.shape[0]]
             df_mf["MF_{}".format(regression_features.split()[1])]=model.coef_[penalty.shape[0]:penalty.shape[0]*2]
@@ -558,7 +551,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 S = np.array(df[weight].values).reshape(-1, 1)
                 features = np.concatenate([features, S], axis=1)
             df["ΔΔG.train"] = model.predict(features)
-            df_mf=pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+            df_mf=pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             print(model.coef_.shape)
             df_mf["MF_{}".format(regression_features.split()[0])]=model.coef_[0][:penalty.shape[0]]
             df_mf["MF_{}".format(regression_features.split()[1])]=model.coef_[0][penalty.shape[0]:penalty.shape[0]*2]
@@ -573,13 +566,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 f.write(df_fpv)
 
     elif feature_number == "3":
-        features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+        features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                          "{}".format(regression_features.split()[0])].values for mol
                      in df["mol"]]
-        features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+        features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                          "{}".format(regression_features.split()[1])].values for mol
                      in df["mol"]]
-        features3 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+        features3 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                          "{}".format(regression_features.split()[2])].values for mol
                      in df["mol"]]
 
@@ -595,7 +588,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             elif regression_type == "elasticnetcv":
                 model = ElasticNetCV(fit_intercept=False).fit(features, Y)
             df["ΔΔG.train"] = model.predict(features)
-            df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+            df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
 
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
 
@@ -643,7 +636,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             Y = np.concatenate([df["ΔΔG.expt."], np.zeros(penalty.shape[0] * 3)], axis=0)
             model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
             df["ΔΔG.train"] = model.predict(features)
-            df_mf = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+            df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             print(df["mol"].iloc[0].GetProp("InchyKey"))
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
 
@@ -672,7 +665,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 features = np.concatenate([features, S], axis=1)
             df["ΔΔG.train"] = model.predict(features)
             df_mf = pd.read_csv(
-                "{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+                grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
 
             df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
             df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[
@@ -706,7 +699,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 features = np.concatenate([features, S], axis=1)
             df["ΔΔG.train"] = model.predict(features)
             df_mf = pd.read_csv(
-                "{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+                grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             print(model.coef_.shape)
             df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
             df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][
@@ -736,7 +729,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
                 features = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
+                    pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
                     for
                     mol in df.iloc[train_index]["mol"]]
 
@@ -751,7 +744,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                     model = ElasticNetCV(fit_intercept=False).fit(features, Y)
 
                 features = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
+                    pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
                     for
                     mol in df.iloc[test_index]["mol"]]
 
@@ -763,7 +756,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
                 features = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
+                    pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
                     for
                     mol in df.iloc[train_index]["mol"]]
 
@@ -780,7 +773,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
 
                 features = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
+                    pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
                     for
                     mol in df.iloc[test_index]["mol"]]
 
@@ -797,7 +790,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
                 features = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
+                    pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
                     for
                     mol in df.iloc[train_index]["mol"]]
                 X = np.concatenate([features], axis=0)
@@ -811,7 +804,7 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
 
 
                 features = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
+                    pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["LUMO"].values
                     for
                     mol in df.iloc[test_index]["mol"]]
 
@@ -829,10 +822,10 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             l = []
 
             for (train_index, test_index) in kf.split(df):
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
                        mol in df.iloc[train_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[train_index]["mol"]]
                 features = np.concatenate([features1, features2], axis=1)
@@ -850,10 +843,10 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                     print("regressionerror")
                     raise ValueError
 
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
                        mol in df.iloc[test_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[test_index]["mol"]]
 
@@ -892,11 +885,11 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             l = []
 
             for (train_index, test_index) in kf.split(df):
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[0])].values
                              for
                              mol in df.iloc[train_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[1])].values
                              for
                              mol in df.iloc[train_index]["mol"]]
@@ -914,9 +907,9 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
 
                 # ここから、テストセットの特徴量計算
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values for
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values for
                        mol in df.iloc[test_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values for
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values for
                         mol in df.iloc[test_index]["mol"]]
                 features = np.concatenate([features1, features2], axis=1)
                 if regression_type in ["FP", "gaussianFP"]:
@@ -936,10 +929,10 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             l = []
 
             for (train_index, test_index) in kf.split(df):
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
                        mol in df.iloc[train_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[train_index]["mol"]]
                 features = np.concatenate([features1, features2], axis=1)
@@ -952,10 +945,10 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 #model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
                 model = PLSRegression(n_components=5).fit(X, Y)
 
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                       for
                       mol in df.iloc[test_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[test_index]["mol"]]
                 features = np.concatenate([features1, features2], axis=1)
@@ -979,13 +972,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             l = []
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
                        mol in df.iloc[train_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[train_index]["mol"]]
-                features3 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                features3 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[2])].values
                              for
                              mol in df.iloc[train_index]["mol"]]
@@ -1001,13 +994,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 elif regression_type == "elasticnetcv":
                     model = ElasticNetCV(fit_intercept=False).fit(features, Y)
 
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
                        mol in df.iloc[test_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[test_index]["mol"]]
-                features3 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                features3 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[1])].values
                              for
                              mol in df.iloc[test_index]["mol"]]
@@ -1039,15 +1032,15 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             l = []
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[0])].values
                              for
                              mol in df.iloc[train_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[1])].values
                              for
                              mol in df.iloc[train_index]["mol"]]
-                features3 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                features3 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[2])].values
                              for
                              mol in df.iloc[train_index]["mol"]]
@@ -1066,11 +1059,11 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
 
 
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values for
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values for
                        mol in df.iloc[test_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values for
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values for
                         mol in df.iloc[test_index]["mol"]]
-                features3 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                features3 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[2])].values for
                              mol in df.iloc[test_index]["mol"]]
                 features = np.concatenate([features1, features2,features3], axis=1)
@@ -1091,13 +1084,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             l = []
             kf = KFold(n_splits=len(df), shuffle=False)
             for (train_index, test_index) in kf.split(df):
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
                        mol in df.iloc[train_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[train_index]["mol"]]
-                features3 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                features3 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[2])].values
                              for
                              mol in df.iloc[train_index]["mol"]]
@@ -1111,13 +1104,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
                 #model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
                 model = PLSRegression(n_components=5).fit(X, Y)
 
-                features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                       for
                       mol in df.iloc[test_index]["mol"]]
-                features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[test_index]["mol"]]
-                features3 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                features3 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                                  "{}".format(regression_features.split()[2])].values
                              for
                              mol in df.iloc[test_index]["mol"]]
@@ -1143,8 +1136,19 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
     print("r2", r2)
     df["error"] = l - df["ΔΔG.expt."]
     df["inchikey"]=df["mol"].apply(lambda  mol:mol.GetProp("InchyKey"))
+    print(df['smiles'].isnull())
+    os.makedirs("../errortest/", exist_ok=True)
+    df.to_csv("../errortest/df.csv")
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100),)
+    print(df)
+    print(df['ROMol'].isnull())
+
+    df.to_csv("../errortest/df3.csv")
+    print(df.isnull().sum())
+
+    print(df.isnull().sum())
+    df.to_excel(out_file_name)
+    #PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100),molCol='ROMol')
     if param["cat"] == "cbs":
         dfp = pd.read_csv("../result/cbs_gaussian/result_grid_search.csv")
     else:
@@ -1162,6 +1166,10 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
     # kf = KFold(n_splits=5, shuffle=False)
     # for (train_index, test_index) in kf.split(df):
     #df_train,df_test= train_test_split(df,train_size = 0.8,random_state=0)
+    if fold:
+        grid_features_name = "{}/{}/feature_yz.csv"
+    else:
+        grid_features_name = "{}/{}/feature_y.csv"
     df_train, df_test = train_test_split(df, train_size=0.7, random_state=1)
     if param["Regression_type"] in "gaussian":
         grid_search(fold,features_dir_name, regression_features, feature_number, df, dfp, gridsearch_file_name, fplist, regression_type, maxmin)
@@ -1175,11 +1183,11 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
         model = leave_one_out(fold,features_dir_name, regression_features, feature_number, df_train, looout_file_name, param,
                               fplist, regression_type, maxmin, p=None)
 
-    features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+    features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                      "{}".format(regression_features.split()[0])].values
                  for
                  mol in df_test["mol"]]
-    features2 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+    features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                      "{}".format(regression_features.split()[1])].values
                  for
                  mol in df_test["mol"]]
@@ -1193,7 +1201,7 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
     df_test["error"] = df_test["ΔΔG.test"]- df_test["ΔΔG.expt."]
     df_test["inchikey"] = df_test["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
     PandasTools.AddMoleculeColumnToFrame(df_test, "smiles")
-    PandasTools.SaveXlsxFromFrame(df_test, testout_file_name, size=(100, 100), )
+    PandasTools.SaveXlsxFromFrame(df_test, testout_file_name, size=(100, 100))
 
 
 
@@ -1229,7 +1237,7 @@ if __name__ == '__main__':
     # for param_file_name in [
 
     # ]:
-        fold =False
+        fold =True
         print(param_file_name)
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
@@ -1255,8 +1263,8 @@ if __name__ == '__main__':
         # df=df[df["smiles"] != "ClCC(=O)c1ccccc1"]
 
         if True:
-            train_testfold(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"]+"/result_grid_search.csv",param["out_dir_name"] + "/result_loo.xls",
-                       param["out_dir_name"] + "/result_train_test.xls", param, fplist, param["Regression_type"],
+            train_testfold(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"]+"/result_grid_search.csv",param["out_dir_name"] + "/result_loo.xlsx",
+                       param["out_dir_name"] + "/result_train_test.xlsx", param, fplist, param["Regression_type"],
                        param["maxmin"],dfp)
 
 
