@@ -1140,15 +1140,21 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
     os.makedirs("../errortest/", exist_ok=True)
     df.to_csv("../errortest/df.csv")
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    print(df)
+    print(df.round(5))
+    # df=df.replace('0', np.nan)
     print(df['ROMol'].isnull())
-
+    df=df.round(5)
+    df=df.fillna(0)
     df.to_csv("../errortest/df3.csv")
-    print(df.isnull().sum())
+    df=pd.read_csv("../errortest/df3.csv")
+    print(df.columns)
+    try:
+        df=df.drop(['level_0', 'Unnamed: 0', 'mol'])
+    except:
+        None
+    #df=df[["smiles","ROMol","inchikey","er.","ΔΔG.expt.","ΔΔminG.expt.","ΔΔmaxG.expt.", 'mol','level_0']]
+    PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100),molCol='ROMol')
 
-    print(df.isnull().sum())
-    df.to_excel(out_file_name)
-    #PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100),molCol='ROMol')
     if param["cat"] == "cbs":
         dfp = pd.read_csv("../result/cbs_gaussian/result_grid_search.csv")
     else:
@@ -1201,6 +1207,12 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
     df_test["error"] = df_test["ΔΔG.test"]- df_test["ΔΔG.expt."]
     df_test["inchikey"] = df_test["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
     PandasTools.AddMoleculeColumnToFrame(df_test, "smiles")
+    try:
+        df_test=df_test.drop(['level_0', 'Unnamed: 0'])
+    except:
+        None
+    df_test = df_test.round(5)
+    df_test = df_test.fillna(0)
     PandasTools.SaveXlsxFromFrame(df_test, testout_file_name, size=(100, 100))
 
 
