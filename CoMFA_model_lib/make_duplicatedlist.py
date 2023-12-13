@@ -80,7 +80,7 @@ for p in df.index:
             q=df_Russ["ΔΔG.loo"][i]
             l.append(q)
     r.append(l)
-df["ΔΔG.loo"]=r
+df["ΔΔG.pre.RuSS"]=r
 
 
 os.makedirs("../datalist", exist_ok=True)

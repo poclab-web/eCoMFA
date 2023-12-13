@@ -12,8 +12,8 @@ import time
 
 
 def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
-    psi4.set_num_threads(nthread=4)
-    psi4.set_memory("4GB")
+    psi4.set_num_threads(nthread=2)
+    psi4.set_memory("2GB")
     # psi4.set_options({'geom_maxiter': 1000})
 
     psi4.set_options({'cubeprop_filepath': output_dir_name})

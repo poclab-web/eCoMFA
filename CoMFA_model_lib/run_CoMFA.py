@@ -20,9 +20,14 @@ feature_num
 warnings.simplefilter('ignore')
 
 
-def grid_search(features_dir_name, regression_features, feature_number, df, dfp, out_file_name, fplist, regression_type, maxmin):
-    xyz = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))[
+def grid_search(fold,features_dir_name, regression_features, feature_number, df, dfp, out_file_name, fplist, regression_type, maxmin):
+    if fold:
+        xyz = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))[
         ["x", "y", "z"]].values
+    else:
+        xyz = pd.read_csv("{}/{}/feature_y.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))[
+            ["x", "y", "z"]].values
+
     d = np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
     d_y = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, 1]), axis=1) for _ in xyz])
     d_z = np.array([np.linalg.norm(xyz - _ * np.array([1, 1, -1]), axis=1) for _ in xyz])
@@ -39,7 +44,11 @@ def grid_search(features_dir_name, regression_features, feature_number, df, dfp,
     penalty_y = np.where(d_y < 0.5 * 3, gauss_func(d_y), 0)
     penalty_z = np.where(d_z < 0.5 * 3, gauss_func(d_z), 0)
     penalty_yz = np.where(d_yz < 0.5 * 3, gauss_func(d_yz), 0)
-    penalty = penalty + penalty_y + penalty_z + penalty_yz
+    if fold:
+        penalty = penalty + penalty_y + penalty_z + penalty_yz
+    else:
+        penalty = penalty + penalty_y
+
     penalty = penalty / np.max(np.sum(penalty, axis=0))
     np.fill_diagonal(penalty, -1)
     os.makedirs("../penalty", exist_ok=True)
@@ -59,11 +68,20 @@ def grid_search(features_dir_name, regression_features, feature_number, df, dfp,
             l=[]
             kf = KFold(n_splits=5, shuffle=False)
             for (train_index, test_index) in kf.split(df):
+                if fold:
+                    grid_features_name="{}/{}/feature_yz.csv"
+                else:
+                    grid_features_name = "{}/{}/feature_y.csv"
                 feature = [
-                    pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                    pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                         "{}".format(regression_features)].values
                     for
                     mol in df.iloc[train_index]["mol"]]
+                # feature = [
+                #     pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
+                #         "{}".format(regression_features)].values
+                #     for
+                #     mol in df.iloc[train_index]["mol"]]
                 if regression_type in ["gaussianFP"]:
                     X = np.concatenate([feature, penalty1], axis=0)
                     zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
@@ -126,14 +144,28 @@ def grid_search(features_dir_name, regression_features, feature_number, df, dfp,
                 l = []
                 kf = KFold(n_splits=5, shuffle=False)
                 for (train_index, test_index) in kf.split(df):
+                    if fold:
+                        grid_features_name = "{}/{}/feature_yz.csv"
+                    else:
+                        grid_features_name = "{}/{}/feature_y.csv"
                     feature1 = [
-                        pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                        pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                            "{}".format(regression_features.split()[0])].values
                         for
                         mol in df.iloc[train_index]["mol"]]
                     feature2 = [
-                        pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                        pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                            "{}".format(regression_features.split()[1])].values
                         for
                         mol in df.iloc[train_index]["mol"]]
+                    # feature1 = [
+                    #     pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
+                    #     for
+                    #     mol in df.iloc[train_index]["mol"]]
+                    # feature2 = [
+                    #     pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[1])].values
+                    #     for
+                    #     mol in df.iloc[train_index]["mol"]]
                     features = np.concatenate([feature1, feature2], axis=1)
                     if regression_type in ["gaussianFP"]:
                         X = np.concatenate([features, penalty1, penalty2], axis=0)
@@ -153,7 +185,7 @@ def grid_search(features_dir_name, regression_features, feature_number, df, dfp,
                         X = np.concatenate([features, penalty1, penalty2], axis=0)
                         Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
                         model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)  # Ridgeじゃないただの線形回帰
-
+                    raise ValueError
                     # ここから、テストセットの特徴量計算
                     feature1 = [
                         pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
@@ -307,7 +339,7 @@ def grid_search(features_dir_name, regression_features, feature_number, df, dfp,
 
 
 
-def leave_one_out(features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type,maxmin,p=None):
+def leave_one_out(fold,features_dir_name, regression_features,feature_number, df, out_file_name, param, fplist, regression_type,maxmin,p=None):
     # Dts = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["Dt"].values for mol
     #        in df["mol"]]
     # ESPs = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))["ESP"].values for mol
@@ -1126,21 +1158,21 @@ def leave_one_out(features_dir_name, regression_features,feature_number, df, out
     return model
 
 
-def train_testfold(features_dir_name, regression_features, feature_number, df, gridsearch_file_name,looout_file_name,testout_file_name ,param, fplist, regression_type, maxmin, dfp):
+def train_testfold(fold,features_dir_name, regression_features, feature_number, df, gridsearch_file_name,looout_file_name,testout_file_name ,param, fplist, regression_type, maxmin, dfp):
     # kf = KFold(n_splits=5, shuffle=False)
     # for (train_index, test_index) in kf.split(df):
     #df_train,df_test= train_test_split(df,train_size = 0.8,random_state=0)
     df_train, df_test = train_test_split(df, train_size=0.7, random_state=1)
     if param["Regression_type"] in "gaussian":
-        grid_search(features_dir_name, regression_features, feature_number, df, dfp, gridsearch_file_name, fplist, regression_type, maxmin)
+        grid_search(fold,features_dir_name, regression_features, feature_number, df, dfp, gridsearch_file_name, fplist, regression_type, maxmin)
         if param["cat"]=="cbs":
             p=pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
         else :
             p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
     if param["Regression_type"] in "gaussian":
-        model=leave_one_out(features_dir_name, regression_features, feature_number, df_train, looout_file_name, param, fplist, regression_type, maxmin, p)
+        model=leave_one_out(fold,features_dir_name, regression_features, feature_number, df_train, looout_file_name, param, fplist, regression_type, maxmin, p)
     else:
-        model = leave_one_out(features_dir_name, regression_features, feature_number, df_train, looout_file_name, param,
+        model = leave_one_out(fold,features_dir_name, regression_features, feature_number, df_train, looout_file_name, param,
                               fplist, regression_type, maxmin, p=None)
 
     features1 = [pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
@@ -1171,23 +1203,23 @@ def train_testfold(features_dir_name, regression_features, feature_number, df, g
 if __name__ == '__main__':
     for param_file_name in [
         "../parameter/parameter_cbs_gaussian.txt",
-        "../parameter/parameter_cbs_PLS.txt",
-        "../parameter/parameter_cbs_ridgecv.txt",
-        "../parameter/parameter_cbs_lassocv.txt",
-        "../parameter/parameter_cbs_elasticnetcv.txt",
-            "../parameter/parameter_dip-chloride_PLS.txt",
-        "../parameter/parameter_dip-chloride_lassocv.txt",
-        "../parameter/parameter_dip-chloride_gaussian.txt",
-        "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter/parameter_dip-chloride_ridgecv.txt",
-            "../parameter/parameter_RuSS_gaussian.txt",
-            "../parameter/parameter_RuSS_lassocv.txt",
-            "../parameter/parameter_RuSS_PLS.txt",
-            "../parameter/parameter_RuSS_elasticnetcv.txt",
-            "../parameter/parameter_RuSS_ridgecv.txt",
-        "../parameter/parameter_cbs_gaussian_FP.txt",
-        "../parameter/parameter_dip-chloride_gaussian_FP.txt",
-        "../parameter/parameter_RuSS_gaussian_FP.txt",
+        # "../parameter/parameter_cbs_PLS.txt",
+        # "../parameter/parameter_cbs_ridgecv.txt",
+        # "../parameter/parameter_cbs_lassocv.txt",
+        # "../parameter/parameter_cbs_elasticnetcv.txt",
+        #     "../parameter/parameter_dip-chloride_PLS.txt",
+        # "../parameter/parameter_dip-chloride_lassocv.txt",
+        # "../parameter/parameter_dip-chloride_gaussian.txt",
+        # "../parameter/parameter_dip-chloride_elasticnetcv.txt",
+        # "../parameter/parameter_dip-chloride_ridgecv.txt",
+        #     "../parameter/parameter_RuSS_gaussian.txt",
+        #     "../parameter/parameter_RuSS_lassocv.txt",
+        #     "../parameter/parameter_RuSS_PLS.txt",
+        #     "../parameter/parameter_RuSS_elasticnetcv.txt",
+        #     "../parameter/parameter_RuSS_ridgecv.txt",
+        # "../parameter/parameter_cbs_gaussian_FP.txt",
+        # "../parameter/parameter_dip-chloride_gaussian_FP.txt",
+        # "../parameter/parameter_RuSS_gaussian_FP.txt",
     ]:
     #     "../parameter/parameter_dip-chloride_PLS.txt",
     # "../parameter/parameter_dip-chloride_lassocv.txt",
@@ -1197,10 +1229,13 @@ if __name__ == '__main__':
     # for param_file_name in [
 
     # ]:
+        fold =False
         print(param_file_name)
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
+
         features_dir_name = param["grid_dir_name"]+ "/[{}]/".format(param["grid_sizefile"])
+
         fparranged_dataname=param["fpdata_file_path"]
         df_fplist =pd.read_csv(fparranged_dataname).dropna(subset=['smiles']).reset_index()
         fplist = pd.read_csv(param["fplist"]).columns.values.tolist()
@@ -1220,7 +1255,7 @@ if __name__ == '__main__':
         # df=df[df["smiles"] != "ClCC(=O)c1ccccc1"]
 
         if True:
-            train_testfold(features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"]+"/result_grid_search.csv",param["out_dir_name"] + "/result_loo.xls",
+            train_testfold(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"]+"/result_grid_search.csv",param["out_dir_name"] + "/result_loo.xls",
                        param["out_dir_name"] + "/result_train_test.xls", param, fplist, param["Regression_type"],
                        param["maxmin"],dfp)
 
@@ -1228,7 +1263,7 @@ if __name__ == '__main__':
         else:
             if param["Regression_type"] in ["gaussian","gaussianFP"]:
                 if param["Regression_type"] in "gaussian":
-                    grid_search(features_dir_name,param["Regression_features"] ,param["feature_number"],df, dfp, param["out_dir_name"] + "/result_grid_search.csv",fplist,param["Regression_type"],param["maxmin"])
+                    grid_search(fold,features_dir_name,param["Regression_features"] ,param["feature_number"],df, dfp, param["out_dir_name"] + "/result_grid_search.csv",fplist,param["Regression_type"],param["maxmin"])
 
             if param["Regression_type"] in ["gaussian", "gaussianFP"]:
 
@@ -1243,11 +1278,11 @@ if __name__ == '__main__':
                     p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
                 else:
                     raise ValueError
-                leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
+                leave_one_out(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,
                               param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],
                               p)
 
             else:
-                leave_one_out(features_dir_name, param["Regression_features"],param["feature_number"],df,
+                leave_one_out(fold,features_dir_name, param["Regression_features"],param["feature_number"],df,
                           param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],p=None)
 
