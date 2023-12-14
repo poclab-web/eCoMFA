@@ -161,10 +161,8 @@ if __name__ == '__main__':
         print("../grid_coordinates"+param["grid_coordinates_dir"]+"/[{}]".format(param["grid_sizefile"]))
         dfp = pd.read_csv("../grid_coordinates"+param["grid_coordinates_dir"]+"/[{}].csv".format(param["grid_sizefile"]))
         print(dfp)
-        if fold:
-            grid_dir_name= param["grid_dir_name"]+"fold"
-        else:
-            grid_dir_name=param["grid_dir_name"]
+
+        grid_dir_name=param["grid_dir_name"]
         #グリッド情報に変換
         for mol in df["mol"]:
             energy_to_Boltzmann_distribution(mol, RT=0.54)

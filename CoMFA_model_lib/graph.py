@@ -27,23 +27,23 @@ fig = plt.figure(figsize=(3*2, 3*4))
 #
 #
 #     ]):
-# for i,param_file_name in enumerate([
-# "../parameter/parameter_cbs_PLS.txt",
-# "../parameter/parameter_cbs_gaussian.txt",
-# "../parameter/parameter_cbs_ridgecv.txt",
-#     "../parameter/parameter_cbs_elasticnetcv.txt",
-# "../parameter/parameter_cbs_lassocv.txt",
-#
-#     ]):
 for i,param_file_name in enumerate([
-"../parameter/parameter_dip-chloride_PLS.txt",
-"../parameter/parameter_dip-chloride_gaussian.txt",
-
-"../parameter/parameter_dip-chloride_ridgecv.txt",
-    "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-"../parameter/parameter_dip-chloride_lassocv.txt"
+"../parameter/parameter_cbs_PLS.txt",
+"../parameter/parameter_cbs_gaussian.txt",
+"../parameter/parameter_cbs_ridgecv.txt",
+    "../parameter/parameter_cbs_elasticnetcv.txt",
+"../parameter/parameter_cbs_lassocv.txt",
 
     ]):
+# for i,param_file_name in enumerate([
+# "../parameter/parameter_dip-chloride_PLS.txt",
+# "../parameter/parameter_dip-chloride_gaussian.txt",
+#
+# "../parameter/parameter_dip-chloride_ridgecv.txt",
+#     "../parameter/parameter_dip-chloride_elasticnetcv.txt",
+# "../parameter/parameter_dip-chloride_lassocv.txt"
+#
+#     ]):
 
 # # for i, param_file_name in enumerate([
 # #                                      "../parameter/parameter_cbs_gaussian.txt",
@@ -53,9 +53,9 @@ for i,param_file_name in enumerate([
         param = json.loads(f.read())
     input_dir_name=param["out_dir_name"]
     save_dir=param["fig_file_dir"]
-    df = pd.read_excel("{}/result_loo.xls".format(input_dir_name))
+    df = pd.read_excel("{}/result_loo.xlsx".format(input_dir_name))
     try:
-        df_test = pd.read_excel("{}/result_train_test.xls".format(input_dir_name))
+        df_test = pd.read_excel("{}/result_train_test.xlsx".format(input_dir_name))
     except:
         None
     ax = fig.add_subplot(4, 2, i+1)

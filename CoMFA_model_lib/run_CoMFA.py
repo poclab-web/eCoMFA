@@ -1222,21 +1222,25 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
 
 if __name__ == '__main__':
     for param_file_name in [
+
         "../parameter/parameter_cbs_gaussian.txt",
-        # "../parameter/parameter_cbs_PLS.txt",
-        # "../parameter/parameter_cbs_ridgecv.txt",
-        # "../parameter/parameter_cbs_lassocv.txt",
-        # "../parameter/parameter_cbs_elasticnetcv.txt",
-        #     "../parameter/parameter_dip-chloride_PLS.txt",
+        "../parameter/parameter_cbs_PLS.txt",
+        "../parameter/parameter_cbs_ridgecv.txt",
+        "../parameter/parameter_cbs_lassocv.txt",
+        "../parameter/parameter_cbs_elasticnetcv.txt",
+        # "../parameter/parameter_RuSS_gaussian.txt",
+        # "../parameter/parameter_RuSS_lassocv.txt",
+        # "../parameter/parameter_RuSS_PLS.txt",
+        # "../parameter/parameter_RuSS_elasticnetcv.txt",
+        # "../parameter/parameter_RuSS_ridgecv.txt",
+        # "../parameter/parameter_dip-chloride_PLS.txt",
+        #
         # "../parameter/parameter_dip-chloride_lassocv.txt",
         # "../parameter/parameter_dip-chloride_gaussian.txt",
         # "../parameter/parameter_dip-chloride_elasticnetcv.txt",
         # "../parameter/parameter_dip-chloride_ridgecv.txt",
-        #     "../parameter/parameter_RuSS_gaussian.txt",
-        #     "../parameter/parameter_RuSS_lassocv.txt",
-        #     "../parameter/parameter_RuSS_PLS.txt",
-        #     "../parameter/parameter_RuSS_elasticnetcv.txt",
-        #     "../parameter/parameter_RuSS_ridgecv.txt",
+
+        #
         # "../parameter/parameter_cbs_gaussian_FP.txt",
         # "../parameter/parameter_dip-chloride_gaussian_FP.txt",
         # "../parameter/parameter_RuSS_gaussian_FP.txt",
@@ -1249,7 +1253,7 @@ if __name__ == '__main__':
     # for param_file_name in [
 
     # ]:
-        fold =True
+        fold =False
         print(param_file_name)
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
@@ -1257,12 +1261,14 @@ if __name__ == '__main__':
         features_dir_name = param["grid_dir_name"]+ "/[{}]/".format(param["grid_sizefile"])
 
         fparranged_dataname=param["fpdata_file_path"]
-        df_fplist =pd.read_csv(fparranged_dataname).dropna(subset=['smiles']).reset_index()
+        df_fplist =pd.read_csv(fparranged_dataname).dropna(subset=['smiles']).reset_index(drop=True)
         fplist = pd.read_csv(param["fplist"]).columns.values.tolist()
         xyz_dir_name = param["cube_dir_name"]
-        df = pd.read_excel(param["data_file_path"]).dropna(subset=['smiles']).reset_index()  # [:10]
+        df = pd.read_excel(param["data_file_path"]).dropna(subset=['smiles']).reset_index(drop=True)  # [:10]
         df= pd.concat([df,df_fplist],axis=1)
+        df.to_csv("../errortest/df.csv")
         df=df.loc[:, ~df.columns.duplicated()]
+        df=df.dropna(subset=['smiles']).reset_index(drop=True)
         df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
         print(len(df))
         print(df["smiles"][[os.path.isdir(features_dir_name + mol.GetProp("InchyKey")) for mol in df["mol"]]])

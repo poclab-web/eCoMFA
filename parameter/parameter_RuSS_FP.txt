@@ -17,7 +17,7 @@
 "out_dir_name":"../result/RuSS_FP",
 "fig_file_dir":"../figs/RuSS_FP",
 
-"data_file_path": "../arranged_dataset/RuSS.xls",
+"data_file_path": "../arranged_dataset/RuSS.xlsx",
 "fpdata_file_path": "../fingerprint/fparranged_dataset/RuSS.csv",
 "fplist": "../fingerprint/fplist/fplistRuSS.csv",
 "moleculer_field_dir":"../moleculer_field/RuSS_FP",

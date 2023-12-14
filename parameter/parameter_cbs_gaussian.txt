@@ -18,7 +18,7 @@
 "out_dir_name":"../result/cbs_gaussian",
 "fig_file_dir":"../figs/cbs_gaussian",
 
-"data_file_path": "../arranged_dataset/cbs.xls",
+"data_file_path": "../arranged_dataset/cbs.xlsx",
 "fpdata_file_path": "../fingerprint/fparranged_dataset/cbs.csv",
 "fplist": "../fingerprint/fplist/fplistcbs.csv",
 "moleculer_field_dir":"../moleculer_field/cbs_gaussian",

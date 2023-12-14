@@ -17,7 +17,7 @@
 "out_dir_name":"../result/dip-chloride_FP",
 "fig_file_dir":"../figs/dip-chloride_FP",
 
-"data_file_path": "../arranged_dataset/DIP-chloride.xls",
+"data_file_path": "../arranged_dataset/DIP-chloride.xlsx",
 "fpdata_file_path": "../fingerprint/fparranged_dataset/Dip-chloride.csv",
 "fplist": "../fingerprint/fplist/fplistdip.csv",
 "moleculer_field_dir":"../moleculer_field/dip_FP",
