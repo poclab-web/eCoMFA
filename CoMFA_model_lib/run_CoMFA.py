@@ -1174,9 +1174,9 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
         grid_features_name = "{}/{}/feature_yz.csv"
     else:
         grid_features_name = "{}/{}/feature_y.csv"
-    # kf = KFold(n_splits=5, random_state=1)
-    # for (train_index, test_index) in kf.split(df):
-
+    kf = KFold(n_splits=5, random_state=1)
+    for (train_index, test_index) in kf.split(df):
+        df_train, df_test=df[train_index],df[test_index]
         if param["Regression_type"] in "gaussian":
             grid_search(fold,features_dir_name, regression_features, feature_number, df, dfp, gridsearch_file_name, fplist, regression_type, maxmin)
             if param["cat"]=="cbs":
