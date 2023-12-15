@@ -1136,18 +1136,16 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
     print("r2", r2)
     df["error"] = l - df["ΔΔG.expt."]
     df["inchikey"]=df["mol"].apply(lambda  mol:mol.GetProp("InchyKey"))
-    print(df['smiles'].isnull())
     os.makedirs("../errortest/", exist_ok=True)
     df.to_csv("../errortest/df.csv")
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    print(df.round(5))
+
     # df=df.replace('0', np.nan)
-    print(df['ROMol'].isnull())
+
     df=df.round(5)
     df=df.fillna(0)
     df.to_csv("../errortest/df3.csv")
     df=pd.read_csv("../errortest/df3.csv")
-    print(df.columns)
     try:
         df=df.drop(['level_0', 'Unnamed: 0', 'mol'])
     except:
@@ -1199,9 +1197,16 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
                  mol in df_test["mol"]]
     features = np.concatenate([features1, features2], axis=1)
     testpredict=model.predict(features)
-    print(testpredict)
-    print(testpredict)
-    df_test["ΔΔG.test"] =testpredict
+    l = []
+    if maxmin == "True":
+        for i in range(len(testpredict)):
+
+            if testpredict[i] >= df_test["ΔΔmaxG.expt."].values[i]:
+                testpredict[i] = df_test["ΔΔmaxG.expt."].values[i]
+            if testpredict[i] <= df_test["ΔΔminG.expt."].values[i]:
+                testpredict[i] = df_test["ΔΔminG.expt."].values[i]
+            l.extend(testpredict[i])
+    df_test["ΔΔG.test"] =l
     r2 = r2_score(df_test["ΔΔG.expt."], testpredict)
     print(r2)
     df_test["error"] = df_test["ΔΔG.test"]- df_test["ΔΔG.expt."]
@@ -1222,9 +1227,8 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
 
 if __name__ == '__main__':
     for param_file_name in [
-
-        "../parameter/parameter_cbs_gaussian.txt",
         "../parameter/parameter_cbs_PLS.txt",
+        "../parameter/parameter_cbs_gaussian.txt",
         "../parameter/parameter_cbs_ridgecv.txt",
         "../parameter/parameter_cbs_lassocv.txt",
         "../parameter/parameter_cbs_elasticnetcv.txt",
@@ -1286,6 +1290,8 @@ if __name__ == '__main__':
                        param["maxmin"],dfp)
 
 
+
+
         else:
             if param["Regression_type"] in ["gaussian","gaussianFP"]:
                 if param["Regression_type"] in "gaussian":
@@ -1311,4 +1317,5 @@ if __name__ == '__main__':
             else:
                 leave_one_out(fold,features_dir_name, param["Regression_features"],param["feature_number"],df,
                           param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],param["maxmin"],p=None)
+        raise ValueError
 
