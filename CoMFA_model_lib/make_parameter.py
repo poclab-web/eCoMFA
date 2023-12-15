@@ -27,7 +27,7 @@ for param_file_name in [
         data_lines = f.read()
     try:
     # 文字列置換
-        data_lines = data_lines.replace("8,3,9,0.5", "8,3,9,1")
+        data_lines = data_lines.replace("8,3,9,1", "8,3,9,0.5")
 
     except:
         None
