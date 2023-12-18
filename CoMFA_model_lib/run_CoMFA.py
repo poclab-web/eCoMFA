@@ -1266,11 +1266,16 @@ def doublecrossvalidation(fold,features_dir_name, regression_features, feature_n
         grid_features_name = "{}/{}/feature_yz.csv"
     else:
         grid_features_name = "{}/{}/feature_y.csv"
-    kf = KFold(n_splits=5, random_state=1)
+    df=df.sample(frac=1,random_state=0)
+    kf = KFold(n_splits=5)
+    df.to_csv("../errortest/dfrandom.csv")
+    testlist=[]
     for (train_index, test_index) in kf.split(df):
-        print(train_index)
-        print(test_index)
-        df_train, df_test = df[train_index], df[test_index]
+        # df.iloc[train_index].to_csv("../errortest/dftrainrandom.csv")
+        # df.iloc[test_index].to_csv("../errortest/dftestrandom.csv")
+
+        df_train, df_test = df.iloc[train_index], df.iloc[test_index]
+        p=None
         if param["Regression_type"] in "gaussian":
             grid_search(fold, features_dir_name, regression_features, feature_number, df_train, dfp, gridsearch_file_name,
                         fplist, regression_type, maxmin)
@@ -1301,28 +1306,41 @@ def doublecrossvalidation(fold,features_dir_name, regression_features, feature_n
                      mol in df_test["mol"]]
         features = np.concatenate([features1, features2], axis=1)
         testpredict = model.predict(features)
-        l = []
-        if maxmin == "True":
-            for i in range(len(testpredict)):
 
-                if testpredict[i] >= df_test["ΔΔmaxG.expt."].values[i]:
-                    testpredict[i] = df_test["ΔΔmaxG.expt."].values[i]
-                if testpredict[i] <= df_test["ΔΔminG.expt."].values[i]:
-                    testpredict[i] = df_test["ΔΔminG.expt."].values[i]
-                l.extend(testpredict[i])
-        df_test["ΔΔG.test"] = l
-        r2 = r2_score(df_test["ΔΔG.expt."], testpredict)
-        print(r2)
-        df_test["error"] = df_test["ΔΔG.test"] - df_test["ΔΔG.expt."]
-        df_test["inchikey"] = df_test["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
-        PandasTools.AddMoleculeColumnToFrame(df_test, "smiles")
-        try:
-            df_test = df_test.drop(['level_0', 'Unnamed: 0'])
-        except:
-            None
-        df_test = df_test.round(5)
-        df_test = df_test.fillna(0)
-        PandasTools.SaveXlsxFromFrame(df_test, testout_file_name, size=(100, 100))
+        if maxmin == "True":
+            if regression_type == "PLS":
+                for i in range(len(testpredict)):
+                    ans = testpredict[i][0]
+                    print(ans)
+
+                    if ans >= df_test["ΔΔmaxG.expt."].values[i]:
+                        ans = df_test["ΔΔmaxG.expt."].values[i]
+                    if ans <= df_test["ΔΔminG.expt."].values[i]:
+                        ans = df_test["ΔΔminG.expt."].values[i]
+                    testlist.append(ans)
+            else:
+                for i in range(len(testpredict)):
+                    ans = testpredict[i]
+                    print(ans)
+
+                    if ans >= df_test["ΔΔmaxG.expt."].values[i]:
+                        ans = df_test["ΔΔmaxG.expt."].values[i]
+                    if ans <= df_test["ΔΔminG.expt."].values[i]:
+                        ans = df_test["ΔΔminG.expt."].values[i]
+                    testlist.append(ans)
+    df["ΔΔG.crosstest"] =testlist
+    r2 = r2_score(df["ΔΔG.expt."],df["ΔΔG.crosstest"] )
+    print(r2)
+    df["testerror"] = df["ΔΔG.crosstest"] - df["ΔΔG.expt."]
+    df["inchikey"] = df["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
+    PandasTools.AddMoleculeColumnToFrame(df, "smiles")
+    try:
+        df = df.drop(['level_0', 'Unnamed: 0'])
+    except:
+        None
+    df = df.round(5)
+    df = df.fillna(0)
+    PandasTools.SaveXlsxFromFrame(df, testout_file_name, size=(100, 100))
 
 
 
@@ -1366,6 +1384,8 @@ if __name__ == '__main__':
 
     # ]:
         fold =True
+        traintest=False
+        doublecrossvalid=True
         print(param_file_name)
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
@@ -1392,10 +1412,16 @@ if __name__ == '__main__':
         os.makedirs(param["out_dir_name"], exist_ok=True)
         # df=df[df["smiles"] != "ClCC(=O)c1ccccc1"]
 
-        if True:
+        if traintest:
             train_testfold(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"]+"/result_grid_search.csv",param["out_dir_name"] + "/result_loo.xlsx",
                        param["out_dir_name"] + "/result_train_test.xlsx", param, fplist, param["Regression_type"],
                        param["maxmin"],dfp)
+
+        elif doublecrossvalid:
+            doublecrossvalidation(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"]+"/result_grid_search.csv",param["out_dir_name"] + "/result_loo.xlsx",
+                       param["out_dir_name"] + "/result_crossvalid.xlsx", param, fplist, param["Regression_type"],
+                       param["maxmin"],dfp)
+
 
 
 
