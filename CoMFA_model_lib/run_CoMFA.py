@@ -926,7 +926,6 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
 
                 l.extend(predict)
         if regression_type in "FP":
-
             l = []
 
             for (train_index, test_index) in kf.split(df):
@@ -1170,22 +1169,46 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
 
 
 def train_testfold(fold,features_dir_name, regression_features, feature_number, df, gridsearch_file_name,looout_file_name,testout_file_name ,param, fplist, regression_type, maxmin, dfp):
+    """
 
 
-    df_train, df_test = train_test_split(df, train_size=0.7, random_state=1)
+    :param fold: yzでおりかえすならtrue,yのみならFalse
+    :param features_dir_name: 特徴量(grid_features)のディレクトリ
+    :param regression_features: 　
+    :param feature_number:
+    :param df: dataframe
+    :param gridsearch_file_name: グリッドサーチの保存先
+    :param looout_file_name:looの保存先
+    :param testout_file_name: testデータの保存先
+    :param param: param
+    :param fplist:
+    :param regression_type:
+    :param maxmin:
+    :param dfp:
+    :return:
+    """
+
+
+    #df_train, df_test = train_test_split(df, train_size=0.7, random_state=1)
+
     if fold:
         grid_features_name = "{}/{}/feature_yz.csv"
     else:
         grid_features_name = "{}/{}/feature_y.csv"
-    # kf = KFold(n_splits=5, random_state=1)
-    # for (train_index, test_index) in kf.split(df):
-
+    df_train, df_test = train_test_split(df, train_size=0.8, random_state=0)
     if param["Regression_type"] in "gaussian":
-        grid_search(fold,features_dir_name, regression_features, feature_number, df, dfp, gridsearch_file_name, fplist, regression_type, maxmin)
-        if param["cat"]=="cbs":
-            p=pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
-        else :
-            p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
+        grid_search(fold, features_dir_name, regression_features, feature_number, df_train, dfp, gridsearch_file_name,
+                    fplist, regression_type, maxmin)
+    p=[]
+    if param["cat"] == "cbs":
+        p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
+    elif param["cat"] == "dip":
+        p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
+    elif param["cat"] == "RuSS":
+        p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
+    else :
+        print("Not exist gridsearch result")
+
     if param["Regression_type"] in "gaussian":
         model=leave_one_out(fold,features_dir_name, regression_features, feature_number, df_train, looout_file_name, param, fplist, regression_type, maxmin, p)
     else:
@@ -1202,30 +1225,32 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
                  mol in df_test["mol"]]
     features = np.concatenate([features1, features2], axis=1)
     testpredict=model.predict(features)
+    l = []
+    print(testpredict)
 
-    l=testpredict
     if maxmin == "True":
-        l = []
-        for i in range(len(testpredict)):
+        if regression_type=="PLS":
+            for i in range(len(testpredict)):
+                ans=testpredict[i][0]
+                print(ans)
 
-            ans = testpredict[i]
+                if ans >= df_test["ΔΔmaxG.expt."].values[i]:
+                    ans = df_test["ΔΔmaxG.expt."].values[i]
+                if ans <= df_test["ΔΔminG.expt."].values[i]:
+                    ans = df_test["ΔΔminG.expt."].values[i]
+                l.append(ans)
+        else:
+            for i in range(len(testpredict)):
+                ans=testpredict[i]
+                print(ans)
 
-            if regression_type == "PLS":
-                ans=testpredict[i,0]
-            print(ans)
-            print(type(ans))
-            print(type(testpredict))
-            if testpredict[i] >= df_test["ΔΔmaxG.expt."].values[i]:
-                ans = df_test["ΔΔmaxG.expt."].values[i]
-            if testpredict[i] <= df_test["ΔΔminG.expt."].values[i]:
-                ans = df_test["ΔΔminG.expt."].values[i]
-
-
-            l.append(ans)
+                if ans >= df_test["ΔΔmaxG.expt."].values[i]:
+                    ans = df_test["ΔΔmaxG.expt."].values[i]
+                if ans <= df_test["ΔΔminG.expt."].values[i]:
+                    ans = df_test["ΔΔminG.expt."].values[i]
+                l.append(ans)
     df_test["ΔΔG.test"] =l
-    print("type")
-    print(type(df_test["ΔΔG.test"][2]))
-    r2 = r2_score(df_test["ΔΔG.expt."], testpredict)
+    r2 = r2_score(df_test["ΔΔG.expt."], df_test["ΔΔG.test"])
     print(r2)
     df_test["error"] = df_test["ΔΔG.test"]- df_test["ΔΔG.expt."]
     df_test["inchikey"] = df_test["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
@@ -1238,6 +1263,88 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
     df_test = df_test.fillna(0)
     PandasTools.SaveXlsxFromFrame(df_test, testout_file_name, size=(100, 100))
 
+def doublecrossvalidation(fold,features_dir_name, regression_features, feature_number, df, gridsearch_file_name,looout_file_name,testout_file_name ,param, fplist, regression_type, maxmin, dfp):
+    if fold:
+        grid_features_name = "{}/{}/feature_yz.csv"
+    else:
+        grid_features_name = "{}/{}/feature_y.csv"
+    df=df.sample(frac=1,random_state=0)
+    kf = KFold(n_splits=5)
+    df.to_csv("../errortest/dfrandom.csv")
+    testlist=[]
+    for (train_index, test_index) in kf.split(df):
+        # df.iloc[train_index].to_csv("../errortest/dftrainrandom.csv")
+        # df.iloc[test_index].to_csv("../errortest/dftestrandom.csv")
+
+        df_train, df_test = df.iloc[train_index], df.iloc[test_index]
+        p=None
+        if param["Regression_type"] in "gaussian":
+            grid_search(fold, features_dir_name, regression_features, feature_number, df_train, dfp, gridsearch_file_name,
+                        fplist, regression_type, maxmin)
+            if param["cat"] == "cbs":
+                p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
+            elif param["cat"] == "dip":
+                p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
+            elif param["cat"] == "RuSS":
+                p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
+            else:
+                print("Not exist gridsearch result")
+
+        if param["Regression_type"] in "gaussian":
+            model = leave_one_out(fold, features_dir_name, regression_features, feature_number, df_train,
+                                  looout_file_name, param, fplist, regression_type, maxmin, p)
+        else:
+            model = leave_one_out(fold, features_dir_name, regression_features, feature_number, df_train,
+                                  looout_file_name, param,
+                                  fplist, regression_type, maxmin, p=None)
+
+        features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                         "{}".format(regression_features.split()[0])].values
+                     for
+                     mol in df_test["mol"]]
+        features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                         "{}".format(regression_features.split()[1])].values
+                     for
+                     mol in df_test["mol"]]
+        features = np.concatenate([features1, features2], axis=1)
+        testpredict = model.predict(features)
+
+        if maxmin == "True":
+            if regression_type == "PLS":
+                for i in range(len(testpredict)):
+                    ans = testpredict[i][0]
+                    print(ans)
+
+                    if ans >= df_test["ΔΔmaxG.expt."].values[i]:
+                        ans = df_test["ΔΔmaxG.expt."].values[i]
+                    if ans <= df_test["ΔΔminG.expt."].values[i]:
+                        ans = df_test["ΔΔminG.expt."].values[i]
+                    testlist.append(ans)
+            else:
+                for i in range(len(testpredict)):
+                    ans = testpredict[i]
+                    print(ans)
+
+                    if ans >= df_test["ΔΔmaxG.expt."].values[i]:
+                        ans = df_test["ΔΔmaxG.expt."].values[i]
+                    if ans <= df_test["ΔΔminG.expt."].values[i]:
+                        ans = df_test["ΔΔminG.expt."].values[i]
+                    testlist.append(ans)
+    df["ΔΔG.crosstest"] =testlist
+    r2 = r2_score(df["ΔΔG.expt."],df["ΔΔG.crosstest"] )
+    print(r2)
+    df["testerror"] = df["ΔΔG.crosstest"] - df["ΔΔG.expt."]
+    df["inchikey"] = df["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
+    PandasTools.AddMoleculeColumnToFrame(df, "smiles")
+    try:
+        df = df.drop(['level_0', 'Unnamed: 0'])
+    except:
+        None
+    df = df.round(5)
+    df = df.fillna(0)
+    PandasTools.SaveXlsxFromFrame(df, testout_file_name, size=(100, 100))
+
+
 
 
 
@@ -1245,11 +1352,6 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
 
 if __name__ == '__main__':
     for param_file_name in [
-        "../parameter/parameter_cbs_PLS.txt",
-        "../parameter/parameter_cbs_gaussian.txt",
-        "../parameter/parameter_cbs_ridgecv.txt",
-        "../parameter/parameter_cbs_lassocv.txt",
-        "../parameter/parameter_cbs_elasticnetcv.txt",
         "../parameter/parameter_RuSS_gaussian.txt",
         "../parameter/parameter_RuSS_lassocv.txt",
         "../parameter/parameter_RuSS_PLS.txt",
@@ -1261,6 +1363,12 @@ if __name__ == '__main__':
         "../parameter/parameter_dip-chloride_gaussian.txt",
         "../parameter/parameter_dip-chloride_elasticnetcv.txt",
         "../parameter/parameter_dip-chloride_ridgecv.txt",
+        # "../parameter/parameter_cbs_gaussian.txt",
+        # "../parameter/parameter_cbs_PLS.txt",
+        # "../parameter/parameter_cbs_ridgecv.txt",
+        # "../parameter/parameter_cbs_lassocv.txt",
+        # "../parameter/parameter_cbs_elasticnetcv.txt",
+
 
 
         # "../parameter/parameter_cbs_gaussian_FP.txt",
@@ -1276,6 +1384,8 @@ if __name__ == '__main__':
 
     # ]:
         fold =True
+        traintest=False
+        doublecrossvalid=True
         print(param_file_name)
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
@@ -1301,11 +1411,20 @@ if __name__ == '__main__':
         print(dfp)
         os.makedirs(param["out_dir_name"], exist_ok=True)
         # df=df[df["smiles"] != "ClCC(=O)c1ccccc1"]
-
-        if True:
-            train_testfold(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"]+"/result_grid_search.csv",param["out_dir_name"] + "/result_loo.xlsx",
-                       param["out_dir_name"] + "/result_train_test.xlsx", param, fplist, param["Regression_type"],
+        gridsearch_file_name=param["out_dir_name"] + "/result_grid_search.csv"
+        looout_file_name=param["out_dir_name"] + "/result_loo.xlsx"
+        testout_file_name=param["out_dir_name"] + "/result_train_test.xlsx"
+        crosstestout_file_name=param["out_dir_name"] + "/result_crossvalid.xlsx"
+        if traintest:
+            train_testfold(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,gridsearch_file_name
+                           ,looout_file_name,testout_file_name, param, fplist, param["Regression_type"],
                        param["maxmin"],dfp)
+
+        elif doublecrossvalid:
+            doublecrossvalidation(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,gridsearch_file_name,looout_file_name,
+                                  crosstestout_file_name, param, fplist, param["Regression_type"],
+                       param["maxmin"],dfp)
+
 
 
 

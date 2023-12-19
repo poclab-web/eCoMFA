@@ -33,15 +33,22 @@ for i,param_file_name in enumerate([
 # "../parameter/parameter_cbs_ridgecv.txt",
 # "../parameter/parameter_cbs_elasticnetcv.txt",
 # "../parameter/parameter_cbs_lassocv.txt",
-
-    ]):
-# for i,param_file_name in enumerate([
 # "../parameter/parameter_dip-chloride_PLS.txt",
 # "../parameter/parameter_dip-chloride_gaussian.txt",
 #
 # "../parameter/parameter_dip-chloride_ridgecv.txt",
 #     "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-# "../parameter/parameter_dip-chloride_lassocv.txt"
+# "../parameter/parameter_dip-chloride_lassocv.txt",
+# "../parameter/parameter_RuSS_PLS.txt",
+# "../parameter/parameter_RuSS_gaussian.txt",
+#
+# "../parameter/parameter_RuSS_lassocv.txt",
+# "../parameter/parameter_RuSS_ridgecv.txt",
+# "../parameter/parameter_RuSS_elasticnetcv.txt",
+
+    ]):
+# for i,param_file_name in enumerate([
+
 #
 #     ]):
 
@@ -55,7 +62,6 @@ for i,param_file_name in enumerate([
     save_dir=param["fig_file_dir"]
     df = pd.read_excel("{}/result_loo.xlsx".format(input_dir_name))
     try:
-        print("test")
         df_test = pd.read_excel("{}/result_train_test.xlsx".format(input_dir_name))
     except:
         None
@@ -64,8 +70,6 @@ for i,param_file_name in enumerate([
     ax.plot(df["ΔΔG.expt."], df["ΔΔG.loo"], "s", color="red", alpha=0.5,label="loo $q^2$ = {:.2f}".format(r2_score(df["ΔΔG.expt."], df["ΔΔG.loo"])))
     ax.plot(df["ΔΔG.expt."], df["ΔΔG.train"], "x",color="Black", alpha=0.5,label="train $r^2$ = {:.2f}".format(r2_score(df["ΔΔG.expt."], df["ΔΔG.train"])))
     try:
-        print("testadd")
-
         ax.plot(df_test["ΔΔG.expt."], df_test["ΔΔG.test"], "o",color="Blue", alpha=0.5,label="test $r^2$ = {:.2f}".format(r2_score(df_test["ΔΔG.expt."], df_test["ΔΔG.test"])))
     except:
         None
