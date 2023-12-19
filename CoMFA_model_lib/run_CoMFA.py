@@ -1202,7 +1202,7 @@ def train_testfold(fold,features_dir_name, regression_features, feature_number, 
         p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
     elif param["cat"] == "dip":
         p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
-    elif param["RuSS"] == "dip":
+    elif param["cat"] == "RuSS":
         p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
     else :
         print("Not exist gridsearch result")
@@ -1283,7 +1283,7 @@ def doublecrossvalidation(fold,features_dir_name, regression_features, feature_n
                 p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
             elif param["cat"] == "dip":
                 p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
-            elif param["RuSS"] == "dip":
+            elif param["cat"] == "RuSS":
                 p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
             else:
                 print("Not exist gridsearch result")
@@ -1350,25 +1350,23 @@ def doublecrossvalidation(fold,features_dir_name, regression_features, feature_n
 
 if __name__ == '__main__':
     for param_file_name in [
-        "../parameter/parameter_cbs_gaussian.txt",
-        "../parameter/parameter_cbs_PLS.txt",
+        "../parameter/parameter_RuSS_gaussian.txt",
+        "../parameter/parameter_RuSS_lassocv.txt",
+        "../parameter/parameter_RuSS_PLS.txt",
+        "../parameter/parameter_RuSS_elasticnetcv.txt",
+        "../parameter/parameter_RuSS_ridgecv.txt",
+        "../parameter/parameter_dip-chloride_PLS.txt",
 
+        "../parameter/parameter_dip-chloride_lassocv.txt",
+        "../parameter/parameter_dip-chloride_gaussian.txt",
+        "../parameter/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter/parameter_dip-chloride_ridgecv.txt",
+        # "../parameter/parameter_cbs_gaussian.txt",
+        # "../parameter/parameter_cbs_PLS.txt",
+        # "../parameter/parameter_cbs_ridgecv.txt",
+        # "../parameter/parameter_cbs_lassocv.txt",
+        # "../parameter/parameter_cbs_elasticnetcv.txt",
 
-
-        "../parameter/parameter_cbs_ridgecv.txt",
-        "../parameter/parameter_cbs_lassocv.txt",
-        "../parameter/parameter_cbs_elasticnetcv.txt",
-        # "../parameter/parameter_RuSS_gaussian.txt",
-        # "../parameter/parameter_RuSS_lassocv.txt",
-        # "../parameter/parameter_RuSS_PLS.txt",
-        # "../parameter/parameter_RuSS_elasticnetcv.txt",
-        # "../parameter/parameter_RuSS_ridgecv.txt",
-        # "../parameter/parameter_dip-chloride_PLS.txt",
-        #
-        # "../parameter/parameter_dip-chloride_lassocv.txt",
-        # "../parameter/parameter_dip-chloride_gaussian.txt",
-        # "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-        # "../parameter/parameter_dip-chloride_ridgecv.txt",
 
 
         # "../parameter/parameter_cbs_gaussian_FP.txt",
@@ -1411,15 +1409,18 @@ if __name__ == '__main__':
         print(dfp)
         os.makedirs(param["out_dir_name"], exist_ok=True)
         # df=df[df["smiles"] != "ClCC(=O)c1ccccc1"]
-
+        gridsearch_file_name=param["out_dir_name"] + "/result_grid_search.csv"
+        looout_file_name=param["out_dir_name"] + "/result_loo.xlsx"
+        testout_file_name=param["out_dir_name"] + "/result_train_test.xlsx"
+        crosstestout_file_name=param["out_dir_name"] + "/result_crossvalid.xlsx"
         if traintest:
-            train_testfold(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"]+"/result_grid_search.csv",param["out_dir_name"] + "/result_loo.xlsx",
-                       param["out_dir_name"] + "/result_train_test.xlsx", param, fplist, param["Regression_type"],
+            train_testfold(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,gridsearch_file_name
+                           ,looout_file_name,testout_file_name, param, fplist, param["Regression_type"],
                        param["maxmin"],dfp)
 
         elif doublecrossvalid:
-            doublecrossvalidation(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,param["out_dir_name"]+"/result_grid_search.csv",param["out_dir_name"] + "/result_loo.xlsx",
-                       param["out_dir_name"] + "/result_crossvalid.xlsx", param, fplist, param["Regression_type"],
+            doublecrossvalidation(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,gridsearch_file_name,looout_file_name,
+                                  crosstestout_file_name, param, fplist, param["Regression_type"],
                        param["maxmin"],dfp)
 
 
