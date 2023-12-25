@@ -28,8 +28,8 @@ fig = plt.figure(figsize=(3*2, 3*4))
 #
 #     ]):
 for i,param_file_name in enumerate([
-"../parameter/parameter_cbs_PLS.txt",
-"../parameter/parameter_cbs_gaussian.txt",
+# "../parameter/parameter_cbs_PLS.txt",
+# "../parameter/parameter_cbs_gaussian.txt",
 # "../parameter/parameter_cbs_ridgecv.txt",
 # "../parameter/parameter_cbs_elasticnetcv.txt",
 # "../parameter/parameter_cbs_lassocv.txt",
@@ -39,12 +39,12 @@ for i,param_file_name in enumerate([
 # "../parameter/parameter_dip-chloride_ridgecv.txt",
 #     "../parameter/parameter_dip-chloride_elasticnetcv.txt",
 # "../parameter/parameter_dip-chloride_lassocv.txt",
-# "../parameter/parameter_RuSS_PLS.txt",
-# "../parameter/parameter_RuSS_gaussian.txt",
-#
-# "../parameter/parameter_RuSS_lassocv.txt",
-# "../parameter/parameter_RuSS_ridgecv.txt",
-# "../parameter/parameter_RuSS_elasticnetcv.txt",
+"../parameter/parameter_RuSS_PLS.txt",
+"../parameter/parameter_RuSS_gaussian.txt",
+
+"../parameter/parameter_RuSS_lassocv.txt",
+"../parameter/parameter_RuSS_ridgecv.txt",
+"../parameter/parameter_RuSS_elasticnetcv.txt",
 
     ]):
 # for i,param_file_name in enumerate([
@@ -62,7 +62,8 @@ for i,param_file_name in enumerate([
     save_dir=param["fig_file_dir"]
     df = pd.read_excel("{}/result_loo.xlsx".format(input_dir_name))
     try:
-        df_test = pd.read_excel("{}/result_train_test.xlsx".format(input_dir_name))
+        df_test = pd.read_excel("{}/result_crossvalid.xlsx".format(input_dir_name))
+        print("true")
     except:
         None
     ax = fig.add_subplot(4, 2, i+1)
@@ -70,7 +71,7 @@ for i,param_file_name in enumerate([
     ax.plot(df["ΔΔG.expt."], df["ΔΔG.loo"], "s", color="red", alpha=0.5,label="loo $q^2$ = {:.2f}".format(r2_score(df["ΔΔG.expt."], df["ΔΔG.loo"])))
     ax.plot(df["ΔΔG.expt."], df["ΔΔG.train"], "x",color="Black", alpha=0.5,label="train $r^2$ = {:.2f}".format(r2_score(df["ΔΔG.expt."], df["ΔΔG.train"])))
     try:
-        ax.plot(df_test["ΔΔG.expt."], df_test["ΔΔG.test"], "o",color="Blue", alpha=0.5,label="test $r^2$ = {:.2f}".format(r2_score(df_test["ΔΔG.expt."], df_test["ΔΔG.test"])))
+        ax.plot(df_test["ΔΔG.expt."], df_test["ΔΔG.crosstest"], "o",color="Blue", alpha=0.5,label="test $r^2$ = {:.2f}".format(r2_score(df_test["ΔΔG.expt."], df_test["ΔΔG.crosstest"])))
     except:
         None
     ax.legend(loc = 'upper left',fontsize=8) #凡例

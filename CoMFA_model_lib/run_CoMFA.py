@@ -1165,6 +1165,8 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
     p = pd.DataFrame([min_row], index=[min_index])
     print(p)
     p.to_csv(param["out_dir_name"] + "/hyperparam.csv")
+
+
     return model
 
 
@@ -1269,7 +1271,7 @@ def doublecrossvalidation(fold,features_dir_name, regression_features, feature_n
     else:
         grid_features_name = "{}/{}/feature_y.csv"
     df=df.sample(frac=1,random_state=0)
-    kf = KFold(n_splits=5)
+    kf = KFold(n_splits=2)
     df.to_csv("../errortest/dfrandom.csv")
     testlist=[]
     for (train_index, test_index) in kf.split(df):
@@ -1352,17 +1354,18 @@ def doublecrossvalidation(fold,features_dir_name, regression_features, feature_n
 
 if __name__ == '__main__':
     for param_file_name in [
-        "../parameter/parameter_RuSS_gaussian.txt",
-        "../parameter/parameter_RuSS_lassocv.txt",
-        "../parameter/parameter_RuSS_PLS.txt",
-        "../parameter/parameter_RuSS_elasticnetcv.txt",
-        "../parameter/parameter_RuSS_ridgecv.txt",
-        "../parameter/parameter_dip-chloride_PLS.txt",
-
-        "../parameter/parameter_dip-chloride_lassocv.txt",
-        "../parameter/parameter_dip-chloride_gaussian.txt",
-        "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter/parameter_dip-chloride_ridgecv.txt",
+        "../parameter/parameter_cbs_gaussian_practice.txt",
+        # "../parameter/parameter_RuSS_gaussian.txt",
+        # "../parameter/parameter_RuSS_lassocv.txt",
+        # "../parameter/parameter_RuSS_PLS.txt",
+        # "../parameter/parameter_RuSS_elasticnetcv.txt",
+        # "../parameter/parameter_RuSS_ridgecv.txt",
+        # "../parameter/parameter_dip-chloride_PLS.txt",
+        #
+        # "../parameter/parameter_dip-chloride_lassocv.txt",
+        # "../parameter/parameter_dip-chloride_gaussian.txt",
+        # "../parameter/parameter_dip-chloride_elasticnetcv.txt",
+        # "../parameter/parameter_dip-chloride_ridgecv.txt",
         # "../parameter/parameter_cbs_gaussian.txt",
         # "../parameter/parameter_cbs_PLS.txt",
         # "../parameter/parameter_cbs_ridgecv.txt",
@@ -1385,7 +1388,8 @@ if __name__ == '__main__':
     # ]:
         fold =True
         traintest=False
-        doublecrossvalid=True
+        doublecrossvalid=False
+        practice=True
         print(param_file_name)
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
@@ -1414,7 +1418,7 @@ if __name__ == '__main__':
         gridsearch_file_name=param["out_dir_name"] + "/result_grid_search.csv"
         looout_file_name=param["out_dir_name"] + "/result_loo.xlsx"
         testout_file_name=param["out_dir_name"] + "/result_train_test.xlsx"
-        crosstestout_file_name=param["out_dir_name"] + "/result_crossvalid.xlsx"
+        crosstestout_file_name=param["out_dir_name"] + "/result_2crossvalid.xlsx"
         if traintest:
             train_testfold(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,gridsearch_file_name
                            ,looout_file_name,testout_file_name, param, fplist, param["Regression_type"],
@@ -1424,6 +1428,23 @@ if __name__ == '__main__':
             doublecrossvalidation(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,gridsearch_file_name,looout_file_name,
                                   crosstestout_file_name, param, fplist, param["Regression_type"],
                        param["maxmin"],dfp)
+        elif practice:
+            if param["Regression_type"] in "gaussian":
+                grid_search(fold, features_dir_name, param["Regression_features"], param["feature_number"], df, dfp,
+                            gridsearch_file_name,
+                            fplist, param["Regression_type"], param["maxmin"])
+            p = []
+            if param["cat"] == "cbs":
+                p = pd.read_csv("../errortest/hyperparam.csv")
+
+            else:
+                print("Not exist gridsearch result")
+
+            if param["Regression_type"] in "gaussian":
+                model = leave_one_out(fold, features_dir_name, param["Regression_features"], param["feature_number"], df, looout_file_name,
+                                      param, fplist, param["Regression_type"], param["maxmin"], p)
+
+
 
 
 
