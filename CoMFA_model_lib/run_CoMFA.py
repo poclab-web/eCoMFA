@@ -57,7 +57,8 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
         grid_features_name = "{}/{}/feature_y.csv"
 
     penalty = penalty / np.max(np.sum(penalty, axis=0))
-    np.fill_diagonal(penalty, -1)
+    #np.fill_diagonal(penalty, -1)
+    penalty=penalty - np.identity(penalty.shape[0])
     os.makedirs("../penalty", exist_ok=True)
     np.save('../penalty/penalty.npy', penalty)
     r2_list = []
@@ -137,6 +138,7 @@ def grid_search(fold,features_dir_name, regression_features, feature_number, df,
         q=[]
         for L1 in feature1param:
             for L2 in feature2param:
+                print([L1,L2])
                 a=[]
                 a.append(L1)
                 a.append(L2)
@@ -355,13 +357,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
 
             Y = df["ΔΔG.expt."].values
             if regression_type=="lassocv":
-                model = linear_model.LassoCV(fit_intercept=False).fit(feature, Y)
+                model = linear_model.LassoCV(fit_intercept=False,cv=5).fit(feature, Y)
             elif regression_type=="PLS" :
                 model = PLSRegression(n_components=5).fit(feature, Y)
             elif regression_type=="ridgecv":
-                model = RidgeCV(fit_intercept=False).fit(feature, Y)
+                model = RidgeCV(fit_intercept=False,cv=5).fit(feature, Y)
             elif regression_type=="elasticnetcv":
-                model = ElasticNetCV(fit_intercept=False).fit(feature, Y)
+                model = ElasticNetCV(fit_intercept=False,cv=5).fit(feature, Y)
 
             df["ΔΔG.train"] = model.predict(feature)
             df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
@@ -455,13 +457,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
             Y = df["ΔΔG.expt."].values
             print(Y.shape)
             if regression_type == "lassocv":
-                model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
+                model = linear_model.LassoCV(fit_intercept=False,cv=5).fit(features, Y)
             elif regression_type == "PLS":
                 model = PLSRegression(n_components=5).fit(features, Y)
             elif regression_type == "ridgecv":
-                model = RidgeCV(fit_intercept=False).fit(features, Y)
+                model = RidgeCV(fit_intercept=False,cv=5).fit(features, Y)
             elif regression_type == "elasticnetcv":
-                model = ElasticNetCV(fit_intercept=False).fit(features, Y)
+                model = ElasticNetCV(fit_intercept=False,cv=5).fit(features, Y)
             df["ΔΔG.train"] = model.predict(features)
             df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
             os.makedirs(param["moleculer_field_dir"], exist_ok=True)
@@ -580,13 +582,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
         if regression_type == "lassocv" or regression_type=="PLS" or regression_type=="ridgecv" or regression_type=="elasticnetcv":
             Y = df["ΔΔG.expt."].values
             if regression_type == "lassocv":
-                model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
+                model = linear_model.LassoCV(fit_intercept=False,cv=5).fit(features, Y)
             elif regression_type == "PLS":
                 model = PLSRegression(n_components=5).fit(features, Y)
             elif regression_type == "ridgecv":
-                model = RidgeCV(fit_intercept=False).fit(features, Y)
+                model = RidgeCV(fit_intercept=False,cv=5).fit(features, Y)
             elif regression_type == "elasticnetcv":
-                model = ElasticNetCV(fit_intercept=False).fit(features, Y)
+                model = ElasticNetCV(fit_intercept=False,cv=5).fit(features, Y)
             df["ΔΔG.train"] = model.predict(features)
             df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
 
@@ -735,13 +737,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
 
                 Y=df.iloc[train_index]["ΔΔG.expt."].values
                 if regression_type == "lassocv":
-                    model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
+                    model = linear_model.LassoCV(fit_intercept=False,cv=5).fit(features, Y)
                 elif regression_type == "PLS":
                     model = PLSRegression(n_components=5).fit(features, Y)
                 elif regression_type == "ridgecv":
-                    model = RidgeCV(fit_intercept=False).fit(features, Y)
+                    model = RidgeCV(fit_intercept=False,cv=5).fit(features, Y)
                 elif regression_type == "elasticnetcv":
-                    model = ElasticNetCV(fit_intercept=False).fit(features, Y)
+                    model = ElasticNetCV(fit_intercept=False,cv=5).fit(features, Y)
 
                 features = [
                     pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features)].values
@@ -832,13 +834,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
 
                 Y=df.iloc[train_index]["ΔΔG.expt."].values
                 if regression_type == "lassocv":
-                    model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
+                    model = linear_model.LassoCV(fit_intercept=False,cv=5).fit(features, Y)
                 elif regression_type == "PLS":
                     model = PLSRegression(n_components=5).fit(features, Y)
                 elif regression_type == "ridgecv":
-                    model = RidgeCV(fit_intercept=False).fit(features, Y)
+                    model = RidgeCV(fit_intercept=False,cv=5).fit(features, Y)
                 elif regression_type == "elasticnetcv":
-                    model = ElasticNetCV(fit_intercept=False).fit(features, Y)
+                    model = ElasticNetCV(fit_intercept=False,cv=5).fit(features, Y)
                 else:
                     print("regressionerror")
                     raise ValueError
@@ -988,13 +990,13 @@ def leave_one_out(fold,features_dir_name, regression_features,feature_number, df
 
                 Y=df.iloc[train_index]["ΔΔG.expt."].values
                 if regression_type == "lassocv":
-                    model = linear_model.LassoCV(fit_intercept=False).fit(features, Y)
+                    model = linear_model.LassoCV(fit_intercept=False,cv=5).fit(features, Y)
                 elif regression_type == "PLS":
                     model = PLSRegression(n_components=5).fit(features, Y)
                 elif regression_type == "ridgecv":
-                    model = RidgeCV(fit_intercept=False).fit(features, Y)
+                    model = RidgeCV(fit_intercept=False,cv=5).fit(features, Y)
                 elif regression_type == "elasticnetcv":
-                    model = ElasticNetCV(fit_intercept=False).fit(features, Y)
+                    model = ElasticNetCV(fit_intercept=False,cv=5).fit(features, Y)
 
                 features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))["{}".format(regression_features.split()[0])].values
                        for
@@ -1271,7 +1273,7 @@ def doublecrossvalidation(fold,features_dir_name, regression_features, feature_n
     else:
         grid_features_name = "{}/{}/feature_y.csv"
     df=df.sample(frac=1,random_state=0)
-    kf = KFold(n_splits=2)
+    kf = KFold(n_splits=5)
     df.to_csv("../errortest/dfrandom.csv")
     testlist=[]
     for (train_index, test_index) in kf.split(df):
@@ -1312,7 +1314,7 @@ def doublecrossvalidation(fold,features_dir_name, regression_features, feature_n
         testpredict = model.predict(features)
 
         if maxmin == "True":
-            if regression_type == "PLS":
+            if regression_type == "PLS":#PLSだけ出力形式が少し変
                 for i in range(len(testpredict)):
                     ans = testpredict[i][0]
                     print(ans)
@@ -1354,42 +1356,33 @@ def doublecrossvalidation(fold,features_dir_name, regression_features, feature_n
 
 if __name__ == '__main__':
     for param_file_name in [
-        "../parameter/parameter_cbs_gaussian_practice.txt",
-        # "../parameter/parameter_RuSS_gaussian.txt",
-        # "../parameter/parameter_RuSS_lassocv.txt",
-        # "../parameter/parameter_RuSS_PLS.txt",
-        # "../parameter/parameter_RuSS_elasticnetcv.txt",
-        # "../parameter/parameter_RuSS_ridgecv.txt",
-        # "../parameter/parameter_dip-chloride_PLS.txt",
-        #
-        # "../parameter/parameter_dip-chloride_lassocv.txt",
-        # "../parameter/parameter_dip-chloride_gaussian.txt",
-        # "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-        # "../parameter/parameter_dip-chloride_ridgecv.txt",
-        # "../parameter/parameter_cbs_gaussian.txt",
-        # "../parameter/parameter_cbs_PLS.txt",
-        # "../parameter/parameter_cbs_ridgecv.txt",
-        # "../parameter/parameter_cbs_lassocv.txt",
-        # "../parameter/parameter_cbs_elasticnetcv.txt",
 
-
-
+        # "../parameter/parameter_cbs_gaussian_practice.txt",
+        "../parameter/parameter_RuSS_gaussian.txt",
+        "../parameter/parameter_RuSS_lassocv.txt",
+        "../parameter/parameter_RuSS_PLS.txt",
+        "../parameter/parameter_RuSS_elasticnetcv.txt",
+        "../parameter/parameter_RuSS_ridgecv.txt",
+        "../parameter/parameter_dip-chloride_PLS.txt",
+        "../parameter/parameter_dip-chloride_gaussian.txt",
+        "../parameter/parameter_dip-chloride_lassocv.txt",
+        "../parameter/parameter_dip-chloride_gaussian.txt",
+        "../parameter/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter/parameter_dip-chloride_ridgecv.txt",
+        "../parameter/parameter_cbs_gaussian.txt",
+        "../parameter/parameter_cbs_PLS.txt",
+        "../parameter/parameter_cbs_ridgecv.txt",
+        "../parameter/parameter_cbs_lassocv.txt",
+        "../parameter/parameter_cbs_elasticnetcv.txt",
         # "../parameter/parameter_cbs_gaussian_FP.txt",
         # "../parameter/parameter_dip-chloride_gaussian_FP.txt",
         # "../parameter/parameter_RuSS_gaussian_FP.txt",
     ]:
-    #     "../parameter/parameter_dip-chloride_PLS.txt",
-    # "../parameter/parameter_dip-chloride_lassocv.txt",
-    # "../parameter/parameter_dip-chloride_gaussian.txt",
-    # "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-    # "../parameter/parameter_dip-chloride_ridgecv.txt",
-    # for param_file_name in [
 
-    # ]:
         fold =True
         traintest=False
-        doublecrossvalid=False
-        practice=True
+        doublecrossvalid=True
+        practice=False
         print(param_file_name)
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
@@ -1414,11 +1407,10 @@ if __name__ == '__main__':
         dfp = pd.read_csv(param["penalty_param_dir"])  # [:1]
         print(dfp)
         os.makedirs(param["out_dir_name"], exist_ok=True)
-        # df=df[df["smiles"] != "ClCC(=O)c1ccccc1"]
         gridsearch_file_name=param["out_dir_name"] + "/result_grid_search.csv"
         looout_file_name=param["out_dir_name"] + "/result_loo.xlsx"
         testout_file_name=param["out_dir_name"] + "/result_train_test.xlsx"
-        crosstestout_file_name=param["out_dir_name"] + "/result_2crossvalid.xlsx"
+        crosstestout_file_name=param["out_dir_name"] + "/result_5crossvalid.xlsx"
         if traintest:
             train_testfold(fold,features_dir_name, param["Regression_features"], param["feature_number"], df,gridsearch_file_name
                            ,looout_file_name,testout_file_name, param, fplist, param["Regression_type"],
@@ -1444,12 +1436,6 @@ if __name__ == '__main__':
                 model = leave_one_out(fold, features_dir_name, param["Regression_features"], param["feature_number"], df, looout_file_name,
                                       param, fplist, param["Regression_type"], param["maxmin"], p)
 
-
-
-
-
-
-
         else:
             if param["Regression_type"] in ["gaussian","gaussianFP"]:
                 if param["Regression_type"] in "gaussian":
@@ -1457,9 +1443,6 @@ if __name__ == '__main__':
 
             if param["Regression_type"] in ["gaussian", "gaussianFP"]:
 
-                # leave_one_out(features_dir_name, param["Regression_features"], param["feature_number"], df,
-                #                    param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
-                #                    dfp[["λ1", "λ2","λ3"]].values[dfp["RMSE"].idxmin()])
                 if param["cat"] == "cbs":
                     p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
                 elif param["cat"] == "dip":

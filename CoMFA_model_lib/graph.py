@@ -34,17 +34,17 @@ for i,param_file_name in enumerate([
 # "../parameter/parameter_cbs_elasticnetcv.txt",
 # "../parameter/parameter_cbs_lassocv.txt",
 # "../parameter/parameter_dip-chloride_PLS.txt",
-# "../parameter/parameter_dip-chloride_gaussian.txt",
+"../parameter/parameter_dip-chloride_gaussian.txt",
 #
 # "../parameter/parameter_dip-chloride_ridgecv.txt",
 #     "../parameter/parameter_dip-chloride_elasticnetcv.txt",
 # "../parameter/parameter_dip-chloride_lassocv.txt",
-"../parameter/parameter_RuSS_PLS.txt",
-"../parameter/parameter_RuSS_gaussian.txt",
-
-"../parameter/parameter_RuSS_lassocv.txt",
-"../parameter/parameter_RuSS_ridgecv.txt",
-"../parameter/parameter_RuSS_elasticnetcv.txt",
+# "../parameter/parameter_RuSS_PLS.txt",
+# "../parameter/parameter_RuSS_gaussian.txt",
+#
+# "../parameter/parameter_RuSS_lassocv.txt",
+# "../parameter/parameter_RuSS_ridgecv.txt",
+# "../parameter/parameter_RuSS_elasticnetcv.txt",
 
     ]):
 # for i,param_file_name in enumerate([
