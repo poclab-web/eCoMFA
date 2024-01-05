@@ -10,7 +10,7 @@
 "cube_dir_name": "../cube_aligned_b3lyp_6-31g(d)",
 "grid_dir_name": "../grid_features",
 "grid_coordinates_dir":"/grid_coordinate_cbs",
-"grid_sizefile":"8,3,9,0.5",
+"grid_sizefile":"8,3,9,1",
 "grid_coordinates_file": "../grid_coordinates/grid_coordinate_cbs.csv",
 "penalty_param_dir" :"../penalty_param/penalty_param.csv",
 "out_dir_name":"../result/cbs_PLS",

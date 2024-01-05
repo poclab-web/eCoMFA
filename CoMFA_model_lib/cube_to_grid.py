@@ -47,7 +47,18 @@ def read_cube(dir_name,dfp,mol,out_name):
                 ans=0
 
             return ans
+        # 20240105 坂口　作成
+        def fesp_new(n,Dt,feature):
+            try:
+                if float(Dt[3 + 3 + n_atom+n//6].split()[n%6])<0.1:
+                    ans=float(feature[3 + 3 + n_atom+n//6].split()[n%6])
+                else:
+                    ans=0
+            except:
+                ans=0
 
+            return ans
+        ##
         def fLUMO(n, feature):
             try:
                 ans = float(feature[3 + 3 + n_atom + n // 6].split()[n % 6])
@@ -59,6 +70,7 @@ def read_cube(dir_name,dfp,mol,out_name):
 
         dfp["Dt"]=np.where(cond_all,np.array([fdt(_,Dt) for _ in n]).astype(float),0)
         dfp["ESP"]=np.where(cond_all,np.array([fesp(_,ESP) for _ in n]).astype(float),0)
+        dfp["ESP_cutoff"]=np.where(cond_all,np.array([fesp_new(_,Dt,ESP) for _ in n]).astype(float),0)
         dfp["LUMO"]=np.where(cond_all,np.array([fLUMO(_,LUMO) for _ in n]).astype(float),0)
         os.makedirs(out_name,exist_ok=True)
         dfp_y=dfp[dfp["y"]>=0][["x","y","z"]]
