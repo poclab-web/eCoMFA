@@ -28,11 +28,14 @@ fig = plt.figure(figsize=(3*2, 3*4))
 #
 #     ]):
 for i,param_file_name in enumerate([
- "../parameter/parameter_cbs_PLS.txt",
 "../parameter/parameter_cbs_gaussian.txt",
- "../parameter/parameter_cbs_ridgecv.txt",
- "../parameter/parameter_cbs_elasticnetcv.txt",
-"../parameter/parameter_cbs_lassocv.txt",
+"../parameter/parameter_dip-chloride_gaussian.txt",
+"../parameter/parameter_RuSS_gaussian.txt",
+#  "../parameter/parameter_cbs_PLS.txt",
+# "../parameter/parameter_cbs_gaussian.txt",
+#  "../parameter/parameter_cbs_ridgecv.txt",
+#  "../parameter/parameter_cbs_elasticnetcv.txt",
+# "../parameter/parameter_cbs_lassocv.txt",
 # "../parameter/parameter_dip-chloride_PLS.txt",
 # "../parameter/parameter_dip-chloride_gaussian.txt",
 # #
@@ -62,7 +65,7 @@ for i,param_file_name in enumerate([
     save_dir=param["fig_file_dir"]
     df = pd.read_excel("{}/result_loo.xlsx".format(input_dir_name))
     try:
-        df_test = pd.read_excel("{}/result_crossvalid.xlsx".format(input_dir_name))
+        df_test = pd.read_excel("{}/result_5crossvalid.xlsx".format(input_dir_name))
         print("true")
     except:
         None

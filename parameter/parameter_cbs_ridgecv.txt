@@ -22,7 +22,7 @@
 "Regression_type":"ridgecv",
 "title":"cbs ridgecv",
 "cat":"cbs",
-"Regression_features":"Dt ESP",
+"Regression_features":"Dt ESP_cutoff",
 "feature_number":"2",
 "maxmin":"True"
 }

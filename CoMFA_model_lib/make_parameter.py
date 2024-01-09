@@ -31,6 +31,20 @@ for param_file_name in [
 
     except:
         None
+    try:
+    # 文字列置換
+        data_lines = data_lines.replace("Dt ESP", "Dt ESP_cutoff")
+
+    except:
+        None
+    try:
+    # 文字列置換
+        data_lines = data_lines.replace("Dt ESP_cutoff_cutoff", "Dt ESP_cutoff")
+
+    except:
+        None
+
+
 
     # 同じファイル名で保存
     with open(param_file_name, mode="w", encoding="cp932") as f:

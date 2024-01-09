@@ -4,11 +4,9 @@ import os
 import copy
 
 if __name__ == '__main__':
-    for param_file_name in ["../parameter/parameter_cbs_gaussian.txt","../parameter/parameter_dip-chloride_gaussian.txt"
-                            ,"../parameter/parameter_cbs_lassocv.txt","../parameter/parameter_dip-chloride_lassocv.txt",
-                            "../parameter/parameter_RuSS_gaussian.txt","../parameter/parameter_RuSS_lassocv.txt",
-                            "../parameter/parameter_cbs_elasticnetcv.txt","../parameter/parameter_dip-chloride_elasticnetcv.txt",
-                            "../parameter/parameter_RuSS_elasticnetcv.txt"]:
+    for param_file_name in ["../parameter/parameter_cbs_gaussian.txt",
+                            "../parameter/parameter_dip-chloride_gaussian.txt",
+                            "../parameter/parameter_RuSS_gaussian.txt"]:
 
 
         print(param_file_name)
@@ -24,8 +22,16 @@ if __name__ == '__main__':
         dir_name=param["moleculer_field_dir"]
         os.makedirs(dir_name, exist_ok=True)
         df=pd.read_csv(dir_name+"/moleculer_field.csv")#"{}/{}/feature_yz.csv".format(features_dir_name, inchykey))
-        for feature,cube_file_name in zip(["MF_Dt","MF_ESP"],["../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube",
-                                                              "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube"]):
+        # for feature,cube_file_name in zip(["MF_Dt","MF_ESP","MF_ESP_cutoff"],["../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube",
+        #                                                       "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube",
+        #                                                     "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube"
+        #                                                                       ]):
+        for feature, cube_file_name in zip(["MF_ESP_cutoff","MF_Dt"  ], [
+            "../cube_aligned_b3lyp_6-31g(d)/IMACFCSSMIZSPP-UHFFFAOYSA-N/ESP02_0.cube",
+                "../cube_aligned_b3lyp_6-31g(d)/IMACFCSSMIZSPP-UHFFFAOYSA-N/Dt02_0.cube",
+
+
+                ]):
 
             if fold:
                 df = pd.read_csv(dir_name + "/moleculer_field.csv")

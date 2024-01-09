@@ -24,7 +24,7 @@
 "Regression_type":"gaussianFP",
 "title":"RuSS gaussian_FP",
 "cat":"RuSS",
-"Regression_features":"Dt ESP",
+"Regression_features":"Dt ESP_cutoff",
 "feature_number":"2",
 "maxmin":"True"
 }

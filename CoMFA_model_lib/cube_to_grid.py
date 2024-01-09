@@ -50,12 +50,13 @@ def read_cube(dir_name,dfp,mol,out_name):
         # 20240105 坂口　作成
         def fesp_new(n,Dt,feature):
             try:
-                if float(Dt[3 + 3 + n_atom+n//6].split()[n%6])<0.1:
+                if float(Dt[3 + 3 + n_atom+n//6].split()[n%6])<0.01:
                     ans=float(feature[3 + 3 + n_atom+n//6].split()[n%6])
                 else:
                     ans=0
             except:
                 ans=0
+
 
             return ans
         ##
@@ -77,7 +78,7 @@ def read_cube(dir_name,dfp,mol,out_name):
         dfp_z=dfp[dfp["z"]>0][["x","y","z"]]
         dfp_yz=dfp[(dfp["y"]>=0)&(dfp["z"]>0)][["x","y","z"]]
 
-        for feature in ["Dt","ESP","LUMO"]:
+        for feature in ["Dt","ESP","ESP_cutoff","LUMO"]:
             dfp_y[feature]=dfp[dfp["y"]>=0][feature].values#+dfp[dfp["y"]<=0][feature].values
 
             dfp_z[feature]=dfp[dfp["z"]>0][feature].values-\
@@ -100,9 +101,12 @@ def read_cube(dir_name,dfp,mol,out_name):
     ESPs=[pd.read_csv(out_name+"/feature_{}.csv".format(conf.GetId()))["ESP"].values for conf in mol.GetConformers()]
     LUMOs = [pd.read_csv(out_name + "/feature_{}.csv".format(conf.GetId()))["LUMO"].values for conf in
             mol.GetConformers()]
+    ESPs_cutoff =[pd.read_csv(out_name + "/feature_{}.csv".format(conf.GetId()))["ESP_cutoff"].values for conf in
+            mol.GetConformers()]
     weights= [float(conf.GetProp("Boltzmann_distribution")) for conf in mol.GetConformers()]
     dfp["Dt"]=np.average(Dts,weights=weights,axis=0)
     dfp["ESP"]=np.average(ESPs,weights=weights,axis=0)
+    dfp["ESP_cutoff"]=np.average(ESPs_cutoff,weights=weights,axis=0)
     dfp["LUMO"]=np.average(LUMOs,weights=weights,axis=0)
     dfp.to_csv(out_name + "/feature.csv".format(conf.GetId()))
 
@@ -111,9 +115,12 @@ def read_cube(dir_name,dfp,mol,out_name):
     ESPs = [pd.read_csv(out_name + "/feature_y_{}.csv".format(conf.GetId()))["ESP"].values for conf in mol.GetConformers()]
     LUMOs = [pd.read_csv(out_name + "/feature_y_{}.csv".format(conf.GetId()))["LUMO"].values for conf in
              mol.GetConformers()]
+    ESPs_cutoff = [pd.read_csv(out_name + "/feature_y_{}.csv".format(conf.GetId()))["ESP_cutoff"].values for conf in
+                   mol.GetConformers()]
     weights = [float(conf.GetProp("Boltzmann_distribution")) for conf in mol.GetConformers()]
     dfp_y["Dt"] = np.average(Dts, weights=weights, axis=0)
     dfp_y["ESP"] = np.average(ESPs, weights=weights, axis=0)
+    dfp_y["ESP_cutoff"] = np.average(ESPs_cutoff, weights=weights, axis=0)
     dfp_y["LUMO"] = np.average(LUMOs, weights=weights, axis=0)
     dfp_y.to_csv(out_name + "/feature_y.csv".format(conf.GetId()))
 
@@ -122,10 +129,13 @@ def read_cube(dir_name,dfp,mol,out_name):
     ESPs = [pd.read_csv(out_name + "/feature_z_{}.csv".format(conf.GetId()))["ESP"].values for conf in mol.GetConformers()]
     LUMOs = [pd.read_csv(out_name + "/feature_z_{}.csv".format(conf.GetId()))["ESP"].values for conf in
             mol.GetConformers()]
+    ESPs_cutoff = [pd.read_csv(out_name + "/feature_z_{}.csv".format(conf.GetId()))["ESP_cutoff"].values for conf in
+                   mol.GetConformers()]
     weights = [float(conf.GetProp("Boltzmann_distribution")) for conf in mol.GetConformers()]
     dfp_z["Dt"] = np.average(Dts, weights=weights, axis=0)
     dfp_z["ESP"] = np.average(ESPs, weights=weights, axis=0)
     dfp_z["LUMO"] = np.average(LUMOs, weights=weights, axis=0)
+    dfp_z["ESP_cutoff"] = np.average(ESPs_cutoff, weights=weights, axis=0)
 
     dfp_z.to_csv(out_name + "/feature_z.csv".format(conf.GetId()))
 
@@ -134,10 +144,13 @@ def read_cube(dir_name,dfp,mol,out_name):
     ESPs = [pd.read_csv(out_name + "/feature_yz_{}.csv".format(conf.GetId()))["ESP"].values for conf in mol.GetConformers()]
     LUMOs = [pd.read_csv(out_name + "/feature_yz_{}.csv".format(conf.GetId()))["LUMO"].values for conf in
             mol.GetConformers()]
+    ESPs_cutoff = [pd.read_csv(out_name + "/feature_yz_{}.csv".format(conf.GetId()))["ESP_cutoff"].values for conf in
+                   mol.GetConformers()]
     weights = [float(conf.GetProp("Boltzmann_distribution")) for conf in mol.GetConformers()]
     dfp_yz["Dt"] = np.average(Dts, weights=weights, axis=0)
     dfp_yz["ESP"] = np.average(ESPs, weights=weights, axis=0)
     dfp_yz["LUMO"] = np.average(LUMOs, weights=weights, axis=0)
+    dfp_yz["ESP_cutoff"] = np.average(ESPs_cutoff, weights=weights, axis=0)
     dfp_yz.to_csv(out_name + "/feature_yz.csv".format(conf.GetId()))
 
 

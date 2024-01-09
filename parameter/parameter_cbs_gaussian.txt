@@ -25,7 +25,7 @@
 "Regression_type":"gaussian",
 "title":"cbs gaussian",
 "cat":"cbs",
-"Regression_features":"Dt ESP",
+"Regression_features":"Dt ESP_cutoff",
 "feature_number":"2",
 "maxmin":"True"
 }

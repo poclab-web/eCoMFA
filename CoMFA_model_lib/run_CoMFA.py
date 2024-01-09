@@ -1370,8 +1370,8 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
     resultfile=param["out_dir_name"]
 
 
-    with open("{}/r2result.txt".format(resultfile), mode='w') as f:
-        f.write(r2)
+    # with open("{}/r2result.txt".format(resultfile), mode='w') as f:
+    #     f.write(r2)
 
     print(r2)
     df["testerror"] = df["ΔΔG.crosstest"] - df["ΔΔG.expt."]
@@ -1389,6 +1389,8 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
 if __name__ == '__main__':
     for param_file_name in [
         "../parameter/parameter_dip-chloride_gaussian.txt",
+        "../parameter/parameter_cbs_gaussian.txt",
+        "../parameter/parameter_RuSS_gaussian.txt",
         # "../parameter/parameter_cbs_gaussian_practice.txt",
         # "../parameter/parameter_cbs_gaussian.txt",
         # "../parameter/parameter_cbs_ridgecv.txt",
@@ -1396,16 +1398,16 @@ if __name__ == '__main__':
         # "../parameter/parameter_cbs_lassocv.txt",
         # "../parameter/parameter_cbs_elasticnetcv.txt",
         # "../parameter/parameter_RuSS_gaussian.txt",
-        "../parameter/parameter_RuSS_lassocv.txt",
-        "../parameter/parameter_RuSS_PLS.txt",
-        "../parameter/parameter_RuSS_elasticnetcv.txt",
-        "../parameter/parameter_RuSS_ridgecv.txt",
-        "../parameter/parameter_dip-chloride_PLS.txt",
-
-        "../parameter/parameter_dip-chloride_lassocv.txt",
-        "../parameter/parameter_dip-chloride_gaussian.txt",
-        "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter/parameter_dip-chloride_ridgecv.txt",
+        # "../parameter/parameter_RuSS_lassocv.txt",
+        # "../parameter/parameter_RuSS_PLS.txt",
+        # "../parameter/parameter_RuSS_elasticnetcv.txt",
+        # "../parameter/parameter_RuSS_ridgecv.txt",
+        # "../parameter/parameter_dip-chloride_PLS.txt",
+        #
+        # "../parameter/parameter_dip-chloride_lassocv.txt",
+        # "../parameter/parameter_dip-chloride_gaussian.txt",
+        # "../parameter/parameter_dip-chloride_elasticnetcv.txt",
+        # "../parameter/parameter_dip-chloride_ridgecv.txt",
 
         # "../parameter/parameter_cbs_gaussian_FP.txt",
         # "../parameter/parameter_dip-chloride_gaussian_FP.txt",
