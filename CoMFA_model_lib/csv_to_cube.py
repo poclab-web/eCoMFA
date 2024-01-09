@@ -6,7 +6,8 @@ import copy
 if __name__ == '__main__':
     for param_file_name in ["../parameter/parameter_cbs_gaussian.txt",
                             "../parameter/parameter_dip-chloride_gaussian.txt",
-                            "../parameter/parameter_RuSS_gaussian.txt"]:
+                            "../parameter/parameter_RuSS_gaussian.txt",
+                            "../parameter/parameter_cbs_ridgecv.txt",]:
 
 
         print(param_file_name)

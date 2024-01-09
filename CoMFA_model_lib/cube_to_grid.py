@@ -50,7 +50,7 @@ def read_cube(dir_name,dfp,mol,out_name):
         # 20240105 坂口　作成
         def fesp_new(n,Dt,feature):
             try:
-                if float(Dt[3 + 3 + n_atom+n//6].split()[n%6])<0.01:
+                if float(Dt[3 + 3 + n_atom+n//6].split()[n%6])<0.05:
                     ans=float(feature[3 + 3 + n_atom+n//6].split()[n%6])
                 else:
                     ans=0
