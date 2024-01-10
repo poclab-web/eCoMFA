@@ -22,7 +22,7 @@
 "fplist": "../fingerprint/fplist/fplistRuSS.csv",
 "moleculer_field_dir":"../moleculer_field/RuSS_elasticnetcv",
 "Regression_type":"elasticnetcv",
-"title":"RuSS elasticnetcv",
+"title":"Ru cat. elasticnetcv",
 "cat":"RuSS",
 "Regression_features":"Dt ESP_cutoff",
 "feature_number":"2",

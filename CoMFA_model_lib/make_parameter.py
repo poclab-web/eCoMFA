@@ -43,6 +43,12 @@ for param_file_name in [
 
     except:
         None
+    try:
+    # 文字列置換
+        data_lines = data_lines.replace("Ru cat.", "RuSS")
+
+    except:
+        None
 
 
 

@@ -22,7 +22,7 @@
 "fplist": "../fingerprint/fplist/fplistRuSS.csv",
 "moleculer_field_dir":"../moleculer_field/RuSS_ridgecv",
 "Regression_type":"ridgecv",
-"title":"RuSS ridgecv",
+"title":"Ru cat. ridgecv",
 "cat":"RuSS",
 "Regression_features":"Dt ESP_cutoff",
 "feature_number":"2",

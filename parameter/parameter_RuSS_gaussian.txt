@@ -22,7 +22,7 @@
 "fplist": "../fingerprint/fplist/fplistRuSS.csv",
 "moleculer_field_dir":"../moleculer_field/RuSS_gaussian",
 "Regression_type":"gaussian",
-"title":"RuSS gaussian",
+"title":"Ru cat. gaussian",
 "cat":"RuSS",
 "Regression_features":"Dt ESP_cutoff",
 "feature_number":"2",

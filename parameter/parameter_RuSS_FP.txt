@@ -22,7 +22,7 @@
 "fplist": "../fingerprint/fplist/fplistRuSS.csv",
 "moleculer_field_dir":"../moleculer_field/RuSS_FP",
 "Regression_type":"FP",
-"title":"RuSS FP",
+"title":"Ru cat. FP",
 "cat":"RuSS",
 "Regression_features":"Dt ESP",
 "feature_number":"2",
