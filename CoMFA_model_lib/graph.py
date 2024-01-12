@@ -9,7 +9,7 @@ import numpy as np
 from sklearn.metrics import r2_score, mean_squared_error
 
 #fig = plt.figure(figsize=(3*2, 3*4))
-fig =plt.figure(figsize=(3*5, 3*1))
+fig =plt.figure(figsize=(3*5, 3*3))
 # for i,param_file_name in enumerate([
 # "../parameter/parameter_cbs_PLS.txt",
 # "../parameter/parameter_cbs_gaussian.txt",
@@ -36,11 +36,11 @@ for i,param_file_name in enumerate([
 # "../parameter/parameter_dip-chloride_gaussian.txt",
 # "../parameter/parameter_RuSS_gaussian.txt",
 #
-# "../parameter_nomax/parameter_cbs_gaussian.txt",
-#  "../parameter_nomax/parameter_cbs_PLS.txt",
-#  "../parameter_nomax/parameter_cbs_ridgecv.txt",
-#  "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
-# "../parameter_nomax/parameter_cbs_lassocv.txt",
+"../parameter_nomax/parameter_cbs_gaussian.txt",
+ "../parameter_nomax/parameter_cbs_PLS.txt",
+ "../parameter_nomax/parameter_cbs_ridgecv.txt",
+ "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
+"../parameter_nomax/parameter_cbs_lassocv.txt",
 
 "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
 "../parameter_nomax/parameter_dip-chloride_PLS.txt",
@@ -48,11 +48,11 @@ for i,param_file_name in enumerate([
 "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
 "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
 
-# "../parameter_nomax/parameter_RuSS_gaussian.txt",
-# "../parameter_nomax/parameter_RuSS_PLS.txt",
-# "../parameter_nomax/parameter_RuSS_ridgecv.txt",
-# "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
-# "../parameter_nomax/parameter_RuSS_lassocv.txt",
+"../parameter_nomax/parameter_RuSS_gaussian.txt",
+"../parameter_nomax/parameter_RuSS_PLS.txt",
+"../parameter_nomax/parameter_RuSS_ridgecv.txt",
+"../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
+"../parameter_nomax/parameter_RuSS_lassocv.txt",
 
 
 
@@ -77,7 +77,7 @@ for i,param_file_name in enumerate([
     except:
         None
     # ax = fig.add_subplot(4, 2, i+1)
-    ax = fig.add_subplot(1, 5, i+1)
+    ax = fig.add_subplot(3, 5, i+1)
     # ax =  subplot(2, 2, i)
     ax.plot([-2.5,2.5], [-2.5,2.5],color="Gray")
     #ax.plot(df["ΔΔG.expt."], df["ΔΔG.loo"], "s", color="red",markersize=4 , alpha=0.5,label="loo $q^2$ = {:.2f}".format(r2_score(df["ΔΔG.expt."], df["ΔΔG.loo"])))

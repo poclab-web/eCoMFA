@@ -4,13 +4,13 @@ import os
 import copy
 
 if __name__ == '__main__':
-    for param_file_name in ["../parameter/parameter_cbs_gaussian.txt",
-                            "../parameter/parameter_dip-chloride_gaussian.txt",
-                            "../parameter/parameter_RuSS_gaussian.txt",
-                            "../parameter/parameter_cbs_ridgecv.txt",
-                            "../parameter/parameter_cbs_elasticnetcv.txt",
-                            "../parameter/parameter_cbs_lassocv.txt",
-                            "../parameter/parameter_cbs_PLS.txt",]:
+    for param_file_name in ["../parameter_nomax/parameter_cbs_gaussian.txt",
+                            "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
+                            "../parameter_nomax/parameter_RuSS_gaussian.txt",
+                            "../parameter_nomax/parameter_cbs_ridgecv.txt",
+                            "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
+                            "../parameter_nomax/parameter_cbs_lassocv.txt",
+                            "../parameter_nomax/parameter_cbs_PLS.txt",]:
 
 
         print(param_file_name)
@@ -30,10 +30,10 @@ if __name__ == '__main__':
         #                                                       "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube",
         #                                                     "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube"
         #                                                                       ]):
-        # UPEUQDJSUFHFQP-UHFFFAOYSA-N ,WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N WYJOVVXUZNRJQY-UHFFFAOYSA-N
+        # UPEUQDJSUFHFQP-UHFFFAOYSA-N ,WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N
         for feature, cube_file_name in zip(["MF_ESP_cutoff","MF_Dt"  ], [
-            "../cube_aligned_b3lyp_6-31g(d)/UPEUQDJSUFHFQP-UHFFFAOYSA-N/ESP02_0.cube",
-                "../cube_aligned_b3lyp_6-31g(d)/UPEUQDJSUFHFQP-UHFFFAOYSA-N/Dt02_0.cube",
+            "../cube_aligned_b3lyp_6-31g(d)/PFIKCDNZZJYSMK-UHFFFAOYSA-N/ESP02_0.cube",
+                "../cube_aligned_b3lyp_6-31g(d)/PFIKCDNZZJYSMK-UHFFFAOYSA-N/Dt02_0.cube",
 
 
                 ]):
@@ -101,10 +101,12 @@ if __name__ == '__main__':
             with open( to_cube_file_name, "w") as f:
                 print(0,file=f)
                 print(1,file=f)
-                print("    {} {} {} {}".format(n_atom,drop_dupl_x.min(),drop_dupl_y.min(),drop_dupl_z.min()),file=f)
-                print("    {}   {:.5f} {:.5f} {:.5f}".format(count_x,d_x,0,0),file=f)
-                print("    {}   {:.5f} {:.5f} {:.5f}".format(count_y,0, d_y,  0), file=f)
-                print("    {}   {:.5f} {:.5f} {:.5f}".format(count_z, 0,0,d_z), file=f)
+                print("    {} {} {} {}".format(n_atom,drop_dupl_x.min()/0.52917720859,
+                                               drop_dupl_y.min()/0.52917720859,
+                                               drop_dupl_z.min()/0.52917720859),file=f)
+                print("    {}   {:.5f} {:.5f} {:.5f}".format(count_x,d_x/0.52917720859,0,0),file=f)
+                print("    {}   {:.5f} {:.5f} {:.5f}".format(count_y,0, d_y/0.52917720859,  0), file=f)
+                print("    {}   {:.5f} {:.5f} {:.5f}".format(count_z, 0,0,d_z/0.52917720859), file=f)
                 print("\n".join(xyz),file=f)
                 for i in range(len(df)//6+1):
                     line=df[feature].iloc[6*i:6*i+6].values.tolist()

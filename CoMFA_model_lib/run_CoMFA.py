@@ -41,7 +41,7 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
 
     def gauss_func(d):
         sigma = 0.5
-        leng = 0.5
+        leng = 1
         ans = 1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
               * np.exp(-d ** 2 / (2 * sigma ** 2))
         return ans
@@ -59,7 +59,7 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
 
     penalty = penalty / np.max(np.sum(penalty, axis=0))
     # np.fill_diagonal(penalty, -1)
-    penalty = penalty - np.identity(penalty.shape[0])
+    penalty = penalty - np.identity(penalty.shape[0])/np.sum(penalty,axis=0)
     os.makedirs("../penalty", exist_ok=True)
     np.save('../penalty/penalty.npy', penalty)
     r2_list = []
@@ -137,15 +137,15 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
     elif feature_number == "2":
         feature1param = list(dict.fromkeys(dfp["{}param".format(regression_features.split()[0])]))
         feature2param = list(dict.fromkeys(dfp["{}param".format(regression_features.split()[1])]))
-        q = []
+        #q = []
         # for L1 in feature1param:
         #     for L2 in feature2param:
         for L1,L2 in zip(dfp["Dtparam"],dfp["ESP_cutoffparam"]):
             print([L1, L2])
-            a = []
-            a.append(L1)
-            a.append(L2)
-            q.append(a)
+            # a = []
+            # a.append(L1)
+            # a.append(L2)
+            # q.append(a)
             penalty1 = np.concatenate([L1 * penalty, np.zeros(penalty.shape)], axis=1)
             penalty2 = np.concatenate([np.zeros(penalty.shape), L2 * penalty], axis=1)
             l = []
@@ -217,8 +217,9 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
             print("r2", r2)
             r2_list.append(r2)
             RMSE_list.append(RMSE)
-        print(q)
-        paramlist = pd.DataFrame(q)
+        #print(q)
+        #paramlist = pd.DataFrame(q)
+        paramlist=dfp
         print(regression_features.split()[0])
         print(regression_features.split()[1])
         paramlist.rename(columns={0: "{}param".format(regression_features.split()[0]),
@@ -348,7 +349,7 @@ def leave_one_out(fold, features_dir_name, regression_features, feature_number, 
         grid_features_name = "{}/{}/feature_y.csv"
 
     # if regression_features in ["LUMO"]:
-    if feature_number == "1":
+    if False and feature_number == "1":
 
         feature = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                        "{}".format(regression_features)].values
@@ -579,7 +580,7 @@ def leave_one_out(fold, features_dir_name, regression_features, feature_number, 
             with open(path_w, mode='w') as f:
                 f.write(df_fpv)
 
-    elif feature_number == "3":
+    elif False and feature_number == "3":
         features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                          "{}".format(regression_features.split()[0])].values for mol
                      in df["mol"]]
@@ -739,7 +740,7 @@ def leave_one_out(fold, features_dir_name, regression_features, feature_number, 
 
     # ここからテストセットの実行
 
-    if feature_number == "1":
+    if False and feature_number == "1":
         if regression_type == "lassocv" or regression_type == "PLS" or regression_type == "ridgecv" or regression_type == "elasticnetcv":
             l = []
             kf = KFold(n_splits=len(df), shuffle=False)
@@ -991,7 +992,7 @@ def leave_one_out(fold, features_dir_name, regression_features, feature_number, 
                                 predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
                     l.extend(predict[i])
 
-    elif feature_number == "3":
+    elif False and feature_number == "3":
         if regression_type == "lassocv" or regression_type == "PLS" or regression_type == "ridgecv" or regression_type == "elasticnetcv":
             l = []
             kf = KFold(n_splits=len(df), shuffle=False)
@@ -1324,6 +1325,7 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
             else:
                 print("Not exist gridsearch result")
 
+
         if param["Regression_type"] in "gaussian":
             model = leave_one_out(fold, features_dir_name, regression_features, feature_number, df_train,
                                   looout_file_name, param, fplist, regression_type, maxmin, p)
@@ -1400,7 +1402,7 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
 
 if __name__ == '__main__':
     for param_file_name in [
-        "../parameter_nomax/parameter_cbs_gaussian.txt",
+        # "../parameter_nomax/parameter_cbs_gaussian.txt",
         "../parameter_nomax/parameter_cbs_ridgecv.txt",
         "../parameter_nomax/parameter_cbs_PLS.txt",
         "../parameter_nomax/parameter_cbs_lassocv.txt",
