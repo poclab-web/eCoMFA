@@ -26,6 +26,25 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
     if "B_OH" in df.columns:
 
         df=df[df["B_OH"]==False]
+    if True :
+        df=df[df["smiles"]!="C(=O)(c1ccc(Br)cc1)CCC(=C(C)O2)N=C2c1ccccc1"]
+        df=df[df["smiles"]!="O=C(C3=CCCC3)CC1=C(OC)C(C)=C2C(C(OC2)=O)=C1[Si](C(C)(C)C)(C)C"]
+        df=df[df["smiles"]!="C(=O)(c1ccc(F)cc1)CCCN2CCN(C3=NCC(F)C=N3)CC2"]
+        df=df[df["smiles"]!="c1ccccc1C(C)(C)C(=O)C#CCCCCCCCC"]
+        df = df[df["smiles"] != "C(=O)(c1ccc(I)cc1)C"]
+        df = df[df["smiles"] != "C(=O)(c1ccc(I)cc1)"]
+        df = df[df["smiles"] != "ICC(=O)c1ccccc1"]
+        df = df[df["smiles"] != "CCCCCCCCC#CC(=O)C(C)(C)CC=C"]
+        df = df[df["smiles"] != "C(=O)(c1ccc(I)cc1)C"]
+        df = df[df["smiles"] != "ICC(=O)c1ccccc1"]
+        df = df[df["smiles"] != "CCCCCCCCC#CC(=O)C(C)(C)CC=C"]
+        df = df[df["smiles"] != "C(=O)(c1ccc(I)cc1)C"]
+        df = df[df["smiles"] != "C(=O)(c1ccc(I)cc1)C"]
+
+
+
+
+
     df["RT"] = 1.99 * 10 ** -3 * df["temperature"].values
     df["ΔΔG.expt."] = df["RT"].values * np.log(100 / df["er."].values - 1)
     df["ΔΔminG.expt."] =df["RT"].values* np.log(100 / 99 - 1)
@@ -41,9 +60,9 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
 
 if __name__ == '__main__':
     # make_dataset("train","temperature","all_train.xls")
-    make_dataset("../sampledata/cbs_hand_read_1207.csv", "cbs.xlsx")
+    make_dataset("../sampledata/cbs_hand_read_0110.csv", "cbs.xlsx")
     # make_dataset("../sampledata/cbs_hand_read_1030.csv","cbs.xls")
-    make_dataset("../sampledata/DIP-chloride_0104.csv","DIP-chloride.xlsx")
+    make_dataset("../sampledata/DIP-chloride_origin.csv","DIP-chloride.xlsx")
     make_dataset("../sampledata/Ru_cat_1127.csv", "RuSS.xlsx")
     make_dataset("../sampledata/cbs_hand_scifinder.csv", "cbstestdata.xlsx")
 

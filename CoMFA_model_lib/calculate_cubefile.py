@@ -95,10 +95,10 @@ if __name__ == '__main__':
         param = json.loads(f.read())
     print(param)
     output_dir_name =param["cube_dir_name"]
-    data_file_path = "../arranged_dataset/cbs.xls"
+    data_file_path = "../arranged_dataset/cbs.xlsx"
     df1 = pd.read_excel(data_file_path)
-    df2 = pd.read_excel("../arranged_dataset/DIP-chloride.xls")
-    df3 = pd.read_excel("../arranged_dataset/Russ.xls")
+    df2 = pd.read_excel("../arranged_dataset/DIP-chloride.xlsx")
+    df3 = pd.read_excel("../arranged_dataset/Russ.xlsx")
     df = pd.concat([df1, df2,df3]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
     df = df.dropna(subset=['mol'])

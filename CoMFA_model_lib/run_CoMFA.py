@@ -1363,6 +1363,17 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
                     if ans <= df_test["ΔΔminG.expt."].values[i]:
                         ans = df_test["ΔΔminG.expt."].values[i]
                     testlist.append(ans)
+        else:
+            if regression_type == "PLS":  # PLSだけ出力形式が少し変
+                for i in range(len(testpredict)):
+                    ans = testpredict[i][0]
+                    testlist.append(ans)
+            else:
+                for i in range(len(testpredict)):
+                    ans = testpredict[i]
+                    testlist.append(ans)
+
+
 
 
     df["ΔΔG.crosstest"] = testlist
@@ -1388,26 +1399,40 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
 
 if __name__ == '__main__':
     for param_file_name in [
-        "../parameter/parameter_dip-chloride_gaussian.txt",
-        "../parameter/parameter_cbs_gaussian.txt",
-        "../parameter/parameter_RuSS_gaussian.txt",
+        "../parameter_nomax/parameter_cbs_gaussian.txt",
+        "../parameter_nomax/parameter_cbs_ridgecv.txt",
+        "../parameter_nomax/parameter_cbs_PLS.txt",
+        "../parameter_nomax/parameter_cbs_lassocv.txt",
+        "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
+        "../parameter_nomax/parameter_RuSS_gaussian.txt",
+        "../parameter_nomax/parameter_RuSS_lassocv.txt",
+        "../parameter_nomax/parameter_RuSS_PLS.txt",
+        "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
+        "../parameter_nomax/parameter_RuSS_ridgecv.txt",
+        "../parameter_nomax/parameter_dip-chloride_PLS.txt",
+        "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
+        "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
+        "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
+
+        # "../parameter/parameter_dip-chloride_gaussian.txt",
+        # "../parameter/parameter_RuSS_gaussian.txt",
         # "../parameter/parameter_cbs_gaussian_practice.txt",
         # "../parameter/parameter_cbs_gaussian.txt",
-        "../parameter/parameter_cbs_ridgecv.txt",
-        "../parameter/parameter_cbs_PLS.txt",
-        "../parameter/parameter_cbs_lassocv.txt",
-        "../parameter/parameter_cbs_elasticnetcv.txt",
+        # "../parameter/parameter_cbs_ridgecv.txt",
+        # "../parameter/parameter_cbs_PLS.txt",
+        # "../parameter/parameter_cbs_lassocv.txt",
+        # "../parameter/parameter_cbs_elasticnetcv.txt",
         # "../parameter/parameter_RuSS_gaussian.txt",
-        "../parameter/parameter_RuSS_lassocv.txt",
-        "../parameter/parameter_RuSS_PLS.txt",
-        "../parameter/parameter_RuSS_elasticnetcv.txt",
-        "../parameter/parameter_RuSS_ridgecv.txt",
-        "../parameter/parameter_dip-chloride_PLS.txt",
-
-        "../parameter/parameter_dip-chloride_lassocv.txt",
-        # "../parameter/parameter_dip-chloride_gaussian.txt",
-        "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter/parameter_dip-chloride_ridgecv.txt",
+        # "../parameter/parameter_RuSS_lassocv.txt",
+        # "../parameter/parameter_RuSS_PLS.txt",
+        # "../parameter/parameter_RuSS_elasticnetcv.txt",
+        # "../parameter/parameter_RuSS_ridgecv.txt",
+        # "../parameter/parameter_dip-chloride_PLS.txt",
+        # "../parameter/parameter_dip-chloride_lassocv.txt",
+        # # "../parameter/parameter_dip-chloride_gaussian.txt",
+        # "../parameter/parameter_dip-chloride_elasticnetcv.txt",
+        # "../parameter/parameter_dip-chloride_ridgecv.txt",
 
         # "../parameter/parameter_cbs_gaussian_FP.txt",
         # "../parameter/parameter_dip-chloride_gaussian_FP.txt",

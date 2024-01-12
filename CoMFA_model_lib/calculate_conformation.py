@@ -180,11 +180,11 @@ if __name__ == '__main__':
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     print(param)
-    data_file_path = "../arranged_dataset/cbs.xls"
+    data_file_path = "../arranged_dataset/cbs.xlsx"
 
     df1 = pd.read_excel(data_file_path)
-    df2=pd.read_excel("../arranged_dataset/DIP-chloride.xls")
-    df3 =pd.read_excel("../arranged_dataset/Russ.xls")
+    df2=pd.read_excel("../arranged_dataset/DIP-chloride.xlsx")
+    df3 =pd.read_excel("../arranged_dataset/Russ.xlsx")
     df = pd.concat([df1, df2,df3]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
 
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
@@ -196,9 +196,9 @@ if __name__ == '__main__':
     MMFF_out_dir_name = "../MMFF_optimization"
     psi4_out_dir_name = "../psi4_optimization"
     psi4_aligned_dir_name = "../psi4_optimization_aligned"
-    #df=df[df["smiles"] != "C(=O)(CN(C)c1ccccc1)C"]
+    df=df[df["smiles"] == "ClC(Cl)(Cl)C(=O)c1ccccc1"]
     # df = df[df["smiles"] != "C(=O)(C1=CC=CO1)CCCCC"]
-    df = df[df["smiles"] != "C(=O)(CN(C)c1ccccc1)C"]
+    # df = df[df["smiles"] != "C(=O)(CN(C)c1ccccc1)C"]
     #df = df[df["smiles"] != "c1cc(Br)ccc1c2cc(Cl)ccc2C(=O)CCC"]
     #df = df[df["smiles"] != "C(=O)(C(c1ccccc1)(c1ccccc1)c1ccccc1)C"]
     #df = df[df["smiles"] != "c1ccccc1C(C)(C)C(=O)C#CCCCCCCCC"]
