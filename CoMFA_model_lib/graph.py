@@ -35,23 +35,26 @@ for i,param_file_name in enumerate([
 # "../parameter/parameter_cbs_gaussian.txt",
 # "../parameter/parameter_dip-chloride_gaussian.txt",
 # "../parameter/parameter_RuSS_gaussian.txt",
-#  "../parameter_nomax/parameter_cbs_PLS.txt",
+#
 # "../parameter_nomax/parameter_cbs_gaussian.txt",
+#  "../parameter_nomax/parameter_cbs_PLS.txt",
 #  "../parameter_nomax/parameter_cbs_ridgecv.txt",
 #  "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
 # "../parameter_nomax/parameter_cbs_lassocv.txt",
-"../parameter/parameter_dip-chloride_PLS.txt",
-"../parameter/parameter_dip-chloride_gaussian.txt",
-#
-"../parameter/parameter_dip-chloride_ridgecv.txt",
-    "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-"../parameter/parameter_dip-chloride_lassocv.txt",
-# "../parameter_nomax/parameter_RuSS_PLS.txt",
+
+"../parameter_nomax/parameter_dip-chloride_gaussian.txt",
+"../parameter_nomax/parameter_dip-chloride_PLS.txt",
+"../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
+"../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
+"../parameter_nomax/parameter_dip-chloride_lassocv.txt",
+
 # "../parameter_nomax/parameter_RuSS_gaussian.txt",
-#
-# "../parameter_nomax/parameter_RuSS_lassocv.txt",
+# "../parameter_nomax/parameter_RuSS_PLS.txt",
 # "../parameter_nomax/parameter_RuSS_ridgecv.txt",
 # "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
+# "../parameter_nomax/parameter_RuSS_lassocv.txt",
+
+
 
     ]):
 # for i,param_file_name in enumerate([

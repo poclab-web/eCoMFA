@@ -196,9 +196,9 @@ if __name__ == '__main__':
     MMFF_out_dir_name = "../MMFF_optimization"
     psi4_out_dir_name = "../psi4_optimization"
     psi4_aligned_dir_name = "../psi4_optimization_aligned"
-    df=df[df["smiles"] == "ClC(Cl)(Cl)C(=O)c1ccccc1"]
+    df=df[df["smiles"] == "ClC(Cl)C(=O)c1ccccc1"]
     # df = df[df["smiles"] != "C(=O)(C1=CC=CO1)CCCCC"]
-    # df = df[df["smiles"] != "C(=O)(CN(C)c1ccccc1)C"]
+    df = df[df["smiles"] != "C(=O)(CN(C)c1ccccc1)C"]
     #df = df[df["smiles"] != "c1cc(Br)ccc1c2cc(Cl)ccc2C(=O)CCC"]
     #df = df[df["smiles"] != "C(=O)(C(c1ccccc1)(c1ccccc1)c1ccccc1)C"]
     #df = df[df["smiles"] != "c1ccccc1C(C)(C)C(=O)C#CCCCCCCCC"]
