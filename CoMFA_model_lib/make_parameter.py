@@ -44,9 +44,21 @@ for param_file_name in [
 
     with open(param_file_name, encoding="cp932") as f:
         data_lines = f.read()
+    # try:
+    # # 文字列置換
+    #     data_lines = data_lines.replace("5,3,5,0.5", ",3,5,0.5")
+    #
+    # except:
+    #     None
     try:
     # 文字列置換
-        data_lines = data_lines.replace("5,2,6,0.5", "4,2,5,0.5")
+        data_lines = data_lines.replace(".../grid_features", "../grid_features")
+
+    except:
+        None
+    try:
+    # 文字列置換
+        data_lines = data_lines.replace("..../grid_features", ".../grid_features")
 
     except:
         None

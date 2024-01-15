@@ -21,7 +21,7 @@ feature_num
 warnings.simplefilter('ignore')
 
 
-def grid_search(fold, features_dir_name, regression_features, feature_number, df, dfp, out_file_name, fplist,
+def grid_search(fold, features_dir_name, regression_features, feature_number, df, dfp, out_file_name,
                 regression_type, maxmin):
     os.makedirs("../errortest/", exist_ok=True)
 
@@ -96,22 +96,9 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
                         "{}".format(regression_features.split()[1])].values
                     for
                     mol in df.iloc[train_index]["mol"]]
+                features_train = np.concatenate([feature1, feature2], axis=1)
+                features = features_train / np.std(features_train, axis=0)
 
-                features = np.concatenate([feature1, feature2], axis=1)
-                if regression_type in ["gaussianFP"]:
-                    X = np.concatenate([features, penalty1, penalty2], axis=0)
-                    zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
-                    train_if = []
-                    for weight in df.loc[:, fplist].columns:
-                        if (train_tf := not df.iloc[train_index][weight].to_list()
-                                                    .count(df.iloc[train_index][weight].to_list()[0]) == len(
-                            df.iloc[train_index][weight])):
-                            S = df.iloc[train_index][weight].values.reshape(1, -1)
-                            Q = np.concatenate([S, zeroweight, zeroweight], axis=1)
-                            X = np.concatenate([X, Q.T], axis=1)
-                        train_if.append(train_tf)
-                    Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
-                    model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)  # ただの線形回帰
                 if regression_type in ["gaussian"]:
                     X = np.concatenate([features, penalty1, penalty2], axis=0)
                     Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
@@ -129,13 +116,10 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
                     for
                     mol in df.iloc[test_index]["mol"]]
 
-                features = np.concatenate([feature1, feature2], axis=1)
+                features_test = np.concatenate([feature1, feature2], axis=1)
+                features = features_test / np.std(features_train, axis=0)
 
-                if regression_type in ["FP", "gaussianFP"]:
-                    for weight in df.loc[:, fplist].columns:
-                        S = np.array(df.iloc[test_index][weight].values).reshape(1, np.array(
-                            df.iloc[test_index][weight].values).shape[0]).T
-                        features = np.concatenate([features, S], axis=1)
+
                 predict = model.predict(features)
                 if maxmin == "True":
                     for i in range(len(predict)):
@@ -165,8 +149,7 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
 
     paramlist["r2"] = r2_list
     paramlist["RMSE"] = RMSE_list
-    print(paramlist)
-    print(paramlist.columns)
+
     paramlist.to_csv(out_file_name)
 
     min_index = paramlist['RMSE'].idxmin()
@@ -176,8 +159,8 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
     p.to_csv(param["out_dir_name"] + "/hyperparam.csv")
 
 
-def leave_one_out(fold, features_dir_name, regression_features, feature_number, df, out_file_name, param, fplist,
-                  regression_type, maxmin, p=None):
+def leave_one_out(fold, features_dir_name, regression_features,  df, out_file_name, param,
+                  regression_type,  p=None):
     penalty = np.load("../penalty/penalty.npy")
     if fold:
         grid_features_name = "{}/{}/feature_yz.csv"
@@ -187,18 +170,104 @@ def leave_one_out(fold, features_dir_name, regression_features, feature_number, 
     # if regression_features in ["LUMO"]:
 
 
-    if feature_number == "2":
-        features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                         "{}".format(regression_features.split()[0])].values for mol
-                     in df["mol"]]
-        features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                         "{}".format(regression_features.split()[1])].values for mol
-                     in df["mol"]]
-        features = np.concatenate([features1, features2], axis=1)
-        print(features.shape)
-        if regression_type == "lassocv" or regression_type == "PLS" or regression_type == "ridgecv" or regression_type == "elasticnetcv":
-            Y = df["ΔΔG.expt."].values
-            print(Y.shape)
+    features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                     "{}".format(regression_features.split()[0])].values for mol
+                 in df["mol"]]
+    features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                     "{}".format(regression_features.split()[1])].values for mol
+                 in df["mol"]]
+
+    features_train = np.concatenate([features1, features2], axis=1)
+    #np.save(param["moleculer_field_dir"]+"/trainstd", np.std(features1, axis=0))
+    features=features_train/np.std(features_train,axis=0)
+    print("features.shape")
+    print(features.shape)
+    if regression_type == "lassocv" or regression_type == "PLS" or regression_type == "ridgecv" or regression_type == "elasticnetcv":
+        Y = df["ΔΔG.expt."].values
+        print(Y.shape)
+        if regression_type == "lassocv":
+            model = linear_model.LassoCV(fit_intercept=False, cv=5).fit(features, Y)
+
+        elif regression_type == "PLS":
+            model = PLSRegression(n_components=5).fit(features, Y)
+        elif regression_type == "ridgecv":
+            model = RidgeCV(fit_intercept=False, cv=5).fit(features, Y)
+        elif regression_type == "elasticnetcv":
+            model = ElasticNetCV(fit_intercept=False, cv=5).fit(features, Y)
+        df["ΔΔG.train"] = model.predict(features)
+        df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
+
+        os.makedirs(param["moleculer_field_dir"], exist_ok=True)
+        if regression_type == "PLS":
+            df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][
+                                                                    :int(model.coef_[0].shape[0] / 2)]
+            df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][
+                                                                    int(model.coef_[0].shape[0] / 2):int(
+                                                                        model.coef_[0].shape[0])]
+        else:# regression_type == "lassocv":
+            df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:int(model.coef_.shape[0] / 2)]
+            df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[int(model.coef_.shape[0] / 2):int(
+                model.coef_.shape[0])]
+
+        # elif regression_type == "ridgecv":
+        #     df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:int(model.coef_.shape[0] / 2)]
+        #     df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[int(model.coef_.shape[0] / 2):int(
+        #         model.coef_.shape[0])]
+        # elif regression_type == "elasticnetcv":
+        #     df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:int(model.coef_.shape[0] / 2)]
+        #     df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[int(model.coef_.shape[0] / 2):int(
+        #         model.coef_.shape[0])]
+        print("writemoleculerfield")
+        df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
+
+    if regression_type in ["gaussian"]:
+        print("loocv printp")
+        print(p)
+        hparam1 = p['{}param'.format(regression_features.split()[0])].values
+        hparam2 = p['{}param'.format(regression_features.split()[1])].values
+        penalty1 = np.concatenate([hparam1 * penalty, np.zeros(penalty.shape)], axis=1)
+        penalty2 = np.concatenate([np.zeros(penalty.shape), hparam2 * penalty], axis=1)
+        X = np.concatenate([features, penalty1, penalty2], axis=0)
+        Y = np.concatenate([df["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
+        model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
+        df["ΔΔG.train"] = model.predict(features)
+        df_mf = pd.read_csv(grid_features_name.format(features_dir_name, "KWOLFJPFCHCOCG-UHFFFAOYSA-N"))
+        print(df["mol"].iloc[0].GetProp("InchyKey"))
+        os.makedirs(param["moleculer_field_dir"], exist_ok=True)
+
+        df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
+        df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
+        print("writemoleculerfield")
+
+    df["{}_contribution".format(regression_features.split()[0])] = np.sum(
+        features1/ np.std(features1,axis=0)* df_mf["MF_{}".format(regression_features.split()[0])].values, axis=1)
+    df["{}_contribution".format(regression_features.split()[1])] = np.sum(
+        features2 /np.std(features2,axis=0)* df_mf["MF_{}".format(regression_features.split()[1])].values, axis=1)
+    df_mf["Dt_std"]=  np.std(features1, axis=0)
+    df_mf["ESP_std"] = np.std(features2, axis=0)
+    df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
+
+    # ここからテストセットの実行
+
+
+    kf = KFold(n_splits=len(df), shuffle=False)
+    print(regression_type)
+    if regression_type == "lassocv" or regression_type == "PLS" or regression_type == "ridgecv" or regression_type == "elasticnetcv":
+        l = []
+
+        for (train_index, test_index) in kf.split(df):
+            features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                             "{}".format(regression_features.split()[0])].values
+                         for
+                         mol in df.iloc[train_index]["mol"]]
+            features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                             "{}".format(regression_features.split()[1])].values
+                         for
+                         mol in df.iloc[train_index]["mol"]]
+            features_train = np.concatenate([features1, features2], axis=1)
+            features = features_train / np.std(features_train, axis=0)
+
+            Y = df.iloc[train_index]["ΔΔG.expt."].values
             if regression_type == "lassocv":
                 model = linear_model.LassoCV(fit_intercept=False, cv=5).fit(features, Y)
             elif regression_type == "PLS":
@@ -207,281 +276,93 @@ def leave_one_out(fold, features_dir_name, regression_features, feature_number, 
                 model = RidgeCV(fit_intercept=False, cv=5).fit(features, Y)
             elif regression_type == "elasticnetcv":
                 model = ElasticNetCV(fit_intercept=False, cv=5).fit(features, Y)
-            df["ΔΔG.train"] = model.predict(features)
-            df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
-            os.makedirs(param["moleculer_field_dir"], exist_ok=True)
+            else:
+                print("regressionerror")
+                raise ValueError
 
-            if regression_type == "lassocv":
-                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:int(model.coef_.shape[0] / 2)]
-                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[int(model.coef_.shape[0] / 2):int(
-                    model.coef_.shape[0])]
-            elif regression_type == "PLS":
-                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][
-                                                                        :int(model.coef_[0].shape[0] / 2)]
-                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][
-                                                                        int(model.coef_[0].shape[0] / 2):int(
-                                                                            model.coef_[0].shape[0])]
-            elif regression_type == "ridgecv":
-                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:int(model.coef_.shape[0] / 2)]
-                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[int(model.coef_.shape[0] / 2):int(
-                    model.coef_.shape[0])]
-            elif regression_type == "elasticnetcv":
-                df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:int(model.coef_.shape[0] / 2)]
-                df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[int(model.coef_.shape[0] / 2):int(
-                    model.coef_.shape[0])]
+            features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                             "{}".format(regression_features.split()[0])].values
+                         for
+                         mol in df.iloc[test_index]["mol"]]
+            features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                             "{}".format(regression_features.split()[1])].values
+                         for
+                         mol in df.iloc[test_index]["mol"]]
 
-            df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
+            features_test = np.concatenate([features1, features2], axis=1)
+            features= features_test / np.std(features_train, axis=0)
+            predict = model.predict(features)
 
-        if regression_type in ["gaussian"]:
-            print(p)
-            hparam1 = p['{}param'.format(regression_features.split()[0])].values
-            hparam2 = p['{}param'.format(regression_features.split()[1])].values
-            penalty1 = np.concatenate([hparam1 * penalty, np.zeros(penalty.shape)], axis=1)
-            penalty2 = np.concatenate([np.zeros(penalty.shape), hparam2 * penalty], axis=1)
-            X = np.concatenate([features, penalty1, penalty2], axis=0)
-            Y = np.concatenate([df["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
-            model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
-            df["ΔΔG.train"] = model.predict(features)
-            df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
-            print(df["mol"].iloc[0].GetProp("InchyKey"))
-            os.makedirs(param["moleculer_field_dir"], exist_ok=True)
+            if regression_type == "PLS":
+                l.extend([_[0] for _ in predict])
+                # for i in range(len(predict)):
+                #     # if maxmin == "True":
+                #     #
+                #     #     if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+                #     #         predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+                #     #     if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+                #     #         predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
+                #     l.extend(predict[i])
 
-            df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
-            df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
-            df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
-            df["{}_contribution".format(regression_features.split()[0])] = np.sum(
-                features1 * df_mf["MF_{}".format(regression_features.split()[0])].values, axis=1)
-            df["{}_contribution".format(regression_features.split()[1])] = np.sum(
-                features2 * df_mf["MF_{}".format(regression_features.split()[1])].values, axis=1)
-
-        if regression_type in ["gaussianFP"]:
-            hparam1 = p['{}param'.format(regression_features.split()[0])].values
-            hparam2 = p['{}param'.format(regression_features.split()[1])].values
-            penalty1 = np.concatenate([hparam1 * penalty, np.zeros(penalty.shape)], axis=1)
-            penalty2 = np.concatenate([np.zeros(penalty.shape), hparam2 * penalty], axis=1)
-            X = np.concatenate([features, penalty1, penalty2], axis=0)
-            zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
-            for weight in df.loc[:, fplist].columns:
-                S = np.array(df[weight].values).reshape(1, -1)
-                Q = np.concatenate([S, zeroweight, zeroweight], axis=1)
-                X = np.concatenate([X, Q.T], axis=1)
-            Y = np.concatenate([df["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
-            model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
-            for weight in df.loc[:, fplist].columns:
-                S = df[weight].values.reshape(-1, 1)
-                features = np.concatenate([features, S], axis=1)
-            df["ΔΔG.train"] = model.predict(features)
-            df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
-
-            df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
-            df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
-
-            df["{}_contribution".format(regression_features.split()[0])] = np.sum(
-                features1 * df_mf["MF_{}".format(regression_features.split()[0])].values, axis=1)
-            df["{}_contribution".format(regression_features.split()[1])] = np.sum(
-                features2 * df_mf["MF_{}".format(regression_features.split()[1])].values, axis=1)
-            print("model.coef_[penalty.shape[0]*2:]")
-            # print(model.coef_)
-            print(model.coef_[penalty.shape[0] * 2:])
-            df_fpv = str(model.coef_[penalty.shape[0] * 2:])
-            path_w = param["out_dir_name"] + "/" + "fpvalue"
-            with open(path_w, mode='w') as f:
-                f.write(df_fpv)
-        if regression_type in ["FP"]:
-            X = np.concatenate([features], axis=0)
-            for weight in df.loc[:, fplist].columns:
-                S = df[weight].values.reshape(-1, 1)
-                X = np.concatenate([X, S], axis=1)
-            Y = df["ΔΔG.expt."].values
-            # model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
-            model = PLSRegression(n_components=5).fit(X, Y)
-            for weight in df.loc[:, fplist].columns:
-                S = np.array(df[weight].values).reshape(-1, 1)
-                features = np.concatenate([features, S], axis=1)
-            df["ΔΔG.train"] = model.predict(features)
-            df_mf = pd.read_csv(grid_features_name.format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))
-            print(model.coef_.shape)
-            df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[0][:penalty.shape[0]]
-            df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[0][
-                                                                    penalty.shape[0]:penalty.shape[0] * 2]
-            df["{}_contribution".format(regression_features.split()[0])] = np.sum(
-                features1 * df_mf["MF_{}".format(regression_features.split()[0])].values, axis=1)
-            df["{}_contribution".format(regression_features.split()[1])] = np.sum(
-                features2 * df_mf["MF_{}".format(regression_features.split()[1])].values, axis=1)
-            print("model.coef_[penalty.shape[0]*2:]")
-            # print(model.coef_)
-            print(model.coef_[0][penalty.shape[0] * 2:])
-            df_fpv = str(model.coef_[0][penalty.shape[0] * 2:])
-            path_w = param["out_dir_name"] + "/" + "fpvalue"
-            with open(path_w, mode='w') as f:
-                f.write(df_fpv)
-
-
-
-    # ここからテストセットの実行
-
-
-
-
-    if feature_number == "2":
-        kf = KFold(n_splits=len(df), shuffle=False)
-        if regression_type == "lassocv" or regression_type == "PLS" or regression_type == "ridgecv" or regression_type == "elasticnetcv":
-            l = []
-
-            for (train_index, test_index) in kf.split(df):
-                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[0])].values
-                             for
-                             mol in df.iloc[train_index]["mol"]]
-                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[1])].values
-                             for
-                             mol in df.iloc[train_index]["mol"]]
-                features = np.concatenate([features1, features2], axis=1)
-
-                Y = df.iloc[train_index]["ΔΔG.expt."].values
-                if regression_type == "lassocv":
-                    model = linear_model.LassoCV(fit_intercept=False, cv=5).fit(features, Y)
-                elif regression_type == "PLS":
-                    model = PLSRegression(n_components=5).fit(features, Y)
-                elif regression_type == "ridgecv":
-                    model = RidgeCV(fit_intercept=False, cv=5).fit(features, Y)
-                elif regression_type == "elasticnetcv":
-                    model = ElasticNetCV(fit_intercept=False, cv=5).fit(features, Y)
-                else:
-                    print("regressionerror")
-                    raise ValueError
-
-                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[0])].values
-                             for
-                             mol in df.iloc[test_index]["mol"]]
-                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[1])].values
-                             for
-                             mol in df.iloc[test_index]["mol"]]
-
-                features = np.concatenate([features1, features2], axis=1)
-                predict = model.predict(features)
-
-                if regression_type == "PLS":
-                    for i in range(len(predict)):
-                        if maxmin == "True":
-
-                            if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
-                                predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
-                            if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
-                                predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
-                        l.extend(predict[i])
-
-                else:
-                    for i in range(len(predict)):
-                        if maxmin == "True":
-                            if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
-                                predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
-                            if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
-                                predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
-
-                        l.extend([predict[i]])
-
-        if regression_type in ["gaussian", "gaussianFP"]:
-            l = []
-
-            for (train_index, test_index) in kf.split(df):
-                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[0])].values
-                             for
-                             mol in df.iloc[train_index]["mol"]]
-                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[1])].values
-                             for
-                             mol in df.iloc[train_index]["mol"]]
-                features = np.concatenate([features1, features2], axis=1)
-                penalty1 = np.concatenate([hparam1 * penalty, np.zeros(penalty.shape)], axis=1)
-                penalty2 = np.concatenate([np.zeros(penalty.shape), hparam2 * penalty], axis=1)
-                X = np.concatenate([features, penalty1, penalty2], axis=0)
-                if regression_type in ["gaussianFP"]:
-                    zeroweight = np.zeros(int(penalty.shape[1])).reshape(1, penalty.shape[1])
-                    for weight in df.loc[:, fplist].columns:
-                        S = df.iloc[train_index][weight].values.reshape(1, -1)
-                        Q = np.concatenate([S, zeroweight, zeroweight], axis=1)
-                        X = np.concatenate([X, Q.T], axis=1)
-                Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
-                model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
-
-                # ここから、テストセットの特徴量計算
-                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[0])].values for
-                             mol in df.iloc[test_index]["mol"]]
-                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[1])].values for
-                             mol in df.iloc[test_index]["mol"]]
-                features = np.concatenate([features1, features2], axis=1)
-                if regression_type in ["FP", "gaussianFP"]:
-                    for weight in df.loc[:, fplist].columns:
-                        S = df.iloc[test_index][weight].values.reshape(-1, 1)
-                        features = np.concatenate([features, S], axis=1)
-                predict = model.predict(features)
-                if maxmin == "True":
-                    for i in range(len(predict)):
-                        if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
-                            predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
-                        if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
-                            predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
+            else:
 
                 l.extend(predict)
-        if regression_type in "FP":
-            l = []
+                # for i in range(len(predict)):
+                #     # if maxmin == "True":
+                #     #     if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+                #     #         predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+                #     #     if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+                #     #         predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
+                #
+                #     l.extend([predict[i]])
 
-            for (train_index, test_index) in kf.split(df):
-                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[0])].values
-                             for
-                             mol in df.iloc[train_index]["mol"]]
-                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[1])].values
-                             for
-                             mol in df.iloc[train_index]["mol"]]
-                features = np.concatenate([features1, features2], axis=1)
-                X = np.concatenate([features], axis=0)
+    if regression_type in ["gaussian", "gaussianFP"]:
+        l = []
 
-                for weight in df.loc[:, fplist].columns:
-                    S = df.iloc[train_index][weight].values.reshape(-1, 1)
-                    X = np.concatenate([X, S], axis=1)
-                Y = df.iloc[train_index]["ΔΔG.expt."]
-                # model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
-                model = PLSRegression(n_components=5).fit(X, Y)
+        for (train_index, test_index) in kf.split(df):
+            features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                             "{}".format(regression_features.split()[0])].values
+                         for
+                         mol in df.iloc[train_index]["mol"]]
+            features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                             "{}".format(regression_features.split()[1])].values
+                         for
+                         mol in df.iloc[train_index]["mol"]]
+            hparam1 = p['{}param'.format(regression_features.split()[0])].values
+            hparam2 = p['{}param'.format(regression_features.split()[1])].values
+            features_train = np.concatenate([features1, features2], axis=1)
+            features = features_train / np.std(features_train, axis=0)
+            penalty1 = np.concatenate([hparam1 * penalty, np.zeros(penalty.shape)], axis=1)
+            penalty2 = np.concatenate([np.zeros(penalty.shape), hparam2 * penalty], axis=1)
+            X = np.concatenate([features, penalty1, penalty2], axis=0)
 
-                features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[0])].values
-                             for
-                             mol in df.iloc[test_index]["mol"]]
-                features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                                 "{}".format(regression_features.split()[1])].values
-                             for
-                             mol in df.iloc[test_index]["mol"]]
-                features = np.concatenate([features1, features2], axis=1)
+            Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
+            model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
 
-                for weight in df.loc[:, fplist].columns:
-                    S = df.iloc[test_index][weight].values.reshape(-1, 1)
-                    features = np.concatenate([features, S], axis=1)
-                predict = model.predict(features)
-                if regression_type == "PLS":
-                    if maxmin == "True":
-                        print("kouzicyuu maxmin")
-                        raise ValueError
+            # ここから、テストセットの特徴量計算
+            features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                             "{}".format(regression_features.split()[0])].values for
+                         mol in df.iloc[test_index]["mol"]]
+            features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                             "{}".format(regression_features.split()[1])].values for
+                         mol in df.iloc[test_index]["mol"]]
+            features_test = np.concatenate([features1, features2], axis=1)
+            features =features_test / np.std(features_train, axis=0)
 
-                        for i in range(len(predict)):
-                            if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
-                                predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
-                            if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
-                                predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
-                    l.extend(predict[i])
+            predict = model.predict(features)
+            # if maxmin == "True":
+            #     for i in range(len(predict)):
+            #         if predict[i] >= df.iloc[test_index]["ΔΔmaxG.expt."].values[i]:
+            #             predict[i] = df.iloc[test_index]["ΔΔmaxG.expt."].values[i]
+            #         if predict[i] <= df.iloc[test_index]["ΔΔminG.expt."].values[i]:
+            #             predict[i] = df.iloc[test_index]["ΔΔminG.expt."].values[i]
+
+            l.extend(predict)
 
 
 
-    print(len(l), l)
     df["ΔΔG.loo"] = l
+    print(l)
     r2 = r2_score(df["ΔΔG.expt."], l)
     print("r2", r2)
     df["error"] = l - df["ΔΔG.expt."]
@@ -492,10 +373,7 @@ def leave_one_out(fold, features_dir_name, regression_features, feature_number, 
 
     # df=df.replace('0', np.nan)
 
-    df = df.round(5)
-    df = df.fillna(0)
-    df.to_csv("../errortest/df3.csv")
-    df = pd.read_csv("../errortest/df3.csv")
+
     try:
         df = df.drop(['level_0', 'Unnamed: 0', 'mol'])
     except:
@@ -504,9 +382,11 @@ def leave_one_out(fold, features_dir_name, regression_features, feature_number, 
     PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100), molCol='ROMol')
 
     if param["cat"] == "cbs":
-        dfp = pd.read_csv("../result/cbs_gaussian/result_grid_search.csv")
-    else:
-        dfp = pd.read_csv("../result/dip-chloride_gaussian/result_grid_search.csv")
+        dfp = pd.read_csv("../result/cbs_gaussian_nomax/result_grid_search.csv")
+    elif param["cat"] =="dip":
+        dfp = pd.read_csv("../result/dip-chloride_gaussian_nomax/result_grid_search.csv")
+    elif param["cat"] == "RuSS":
+        dfp = pd.read_csv("../result/RuSS_gaussian_nomax/result_grid_search.csv")
     print(dfp)
     min_index = dfp['RMSE'].idxmin()
     min_row = dfp.loc[min_index, :]
@@ -517,169 +397,209 @@ def leave_one_out(fold, features_dir_name, regression_features, feature_number, 
     return model
 
 
-def train_testfold(fold, features_dir_name, regression_features, feature_number, df, gridsearch_file_name,
-                   looout_file_name, testout_file_name, param, fplist, regression_type, maxmin, dfp):
-
-
-    # df_train, df_test = train_test_split(df, train_size=0.7, random_state=1)
-
-    if fold:
-        grid_features_name = "{}/{}/feature_yz.csv"
-    else:
-        grid_features_name = "{}/{}/feature_y.csv"
-    df_train, df_test = train_test_split(df, train_size=0.8, random_state=0)
-    if param["Regression_type"] in "gaussian":
-        grid_search(fold, features_dir_name, regression_features, feature_number, df_train, dfp, gridsearch_file_name,
-                    fplist, regression_type, maxmin)
-    p = []
-    if param["cat"] == "cbs":
-        p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
-    elif param["cat"] == "dip":
-        p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
-    elif param["cat"] == "RuSS":
-        p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
-    else:
-        print("Not exist gridsearch result")
-
-    if param["Regression_type"] in "gaussian":
-        model = leave_one_out(fold, features_dir_name, regression_features, feature_number, df_train, looout_file_name,
-                              param, fplist, regression_type, maxmin, p)
-    else:
-        model = leave_one_out(fold, features_dir_name, regression_features, feature_number, df_train, looout_file_name,
-                              param,
-                              fplist, regression_type, maxmin, p=None)
-
-    features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                     "{}".format(regression_features.split()[0])].values
-                 for
-                 mol in df_test["mol"]]
-    features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                     "{}".format(regression_features.split()[1])].values
-                 for
-                 mol in df_test["mol"]]
-    features = np.concatenate([features1, features2], axis=1)
-    testpredict = model.predict(features)
-    l = []
-    print(testpredict)
-
-    if maxmin == "True":
-        if regression_type == "PLS":
-            for i in range(len(testpredict)):
-                ans = testpredict[i][0]
-                print(ans)
-
-                if ans >= df_test["ΔΔmaxG.expt."].values[i]:
-                    ans = df_test["ΔΔmaxG.expt."].values[i]
-                if ans <= df_test["ΔΔminG.expt."].values[i]:
-                    ans = df_test["ΔΔminG.expt."].values[i]
-                l.append(ans)
-        else:
-            for i in range(len(testpredict)):
-                ans = testpredict[i]
-                print(ans)
-
-                if ans >= df_test["ΔΔmaxG.expt."].values[i]:
-                    ans = df_test["ΔΔmaxG.expt."].values[i]
-                if ans <= df_test["ΔΔminG.expt."].values[i]:
-                    ans = df_test["ΔΔminG.expt."].values[i]
-                l.append(ans)
-    df_test["ΔΔG.test"] = l
-    r2 = r2_score(df_test["ΔΔG.expt."], df_test["ΔΔG.test"])
-    print(r2)
-    df_test["error"] = df_test["ΔΔG.test"] - df_test["ΔΔG.expt."]
-    df_test["inchikey"] = df_test["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
-    PandasTools.AddMoleculeColumnToFrame(df_test, "smiles")
-    try:
-        df_test = df_test.drop(['level_0', 'Unnamed: 0'])
-    except:
-        None
-    df_test = df_test.round(5)
-    df_test = df_test.fillna(0)
-    PandasTools.SaveXlsxFromFrame(df_test, testout_file_name, size=(100, 100))
+# def train_testfold(fold, features_dir_name, regression_features, feature_number, df, gridsearch_file_name,
+#                    looout_file_name, testout_file_name, param, fplist, regression_type, maxmin, dfp):
+#
+#
+#     # df_train, df_test = train_test_split(df, train_size=0.7, random_state=1)
+#
+#     if fold:
+#         grid_features_name = "{}/{}/feature_yz.csv"
+#     else:
+#         grid_features_name = "{}/{}/feature_y.csv"
+#     df_train, df_test = train_test_split(df, train_size=0.8, random_state=0)
+#     if param["Regression_type"] in "gaussian":
+#         grid_search(fold, features_dir_name, regression_features, feature_number, df_train, dfp, gridsearch_file_name,
+#                     fplist, regression_type, maxmin)
+#     p = []
+#     if param["cat"] == "cbs":
+#         p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
+#     elif param["cat"] == "dip":
+#         p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
+#     elif param["cat"] == "RuSS":
+#         p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
+#     else:
+#         print("Not exist gridsearch result")
+#
+#     if param["Regression_type"] in "gaussian":
+#         model = leave_one_out(fold, features_dir_name, regression_features, feature_number, df_train, looout_file_name,
+#                               param, fplist, regression_type, maxmin, p)
+#     else:
+#         model = leave_one_out(fold, features_dir_name, regression_features, feature_number, df_train, looout_file_name,
+#                               param,
+#                               fplist, regression_type, maxmin, p=None)
+#
+#     features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+#                      "{}".format(regression_features.split()[0])].values
+#                  for
+#                  mol in df_test["mol"]]
+#     features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+#                      "{}".format(regression_features.split()[1])].values
+#                  for
+#                  mol in df_test["mol"]]
+#     features = np.concatenate([features1, features2], axis=1)
+#     testpredict = model.predict(features)
+#     l = []
+#     print(testpredict)
+#
+#     if maxmin == "True":
+#         if regression_type == "PLS":
+#             for i in range(len(testpredict)):
+#                 ans = testpredict[i][0]
+#                 print(ans)
+#
+#                 if ans >= df_test["ΔΔmaxG.expt."].values[i]:
+#                     ans = df_test["ΔΔmaxG.expt."].values[i]
+#                 if ans <= df_test["ΔΔminG.expt."].values[i]:
+#                     ans = df_test["ΔΔminG.expt."].values[i]
+#                 l.append(ans)
+#         else:
+#             for i in range(len(testpredict)):
+#                 ans = testpredict[i]
+#                 print(ans)
+#
+#                 if ans >= df_test["ΔΔmaxG.expt."].values[i]:
+#                     ans = df_test["ΔΔmaxG.expt."].values[i]
+#                 if ans <= df_test["ΔΔminG.expt."].values[i]:
+#                     ans = df_test["ΔΔminG.expt."].values[i]
+#                 l.append(ans)
+#     df_test["ΔΔG.test"] = l
+#     r2 = r2_score(df_test["ΔΔG.expt."], df_test["ΔΔG.test"])
+#     print(r2)
+#     df_test["error"] = df_test["ΔΔG.test"] - df_test["ΔΔG.expt."]
+#     df_test["inchikey"] = df_test["mol"].apply(lambda mol: mol.GetProp("InchyKey"))
+#     PandasTools.AddMoleculeColumnToFrame(df_test, "smiles")
+#     try:
+#         df_test = df_test.drop(['level_0', 'Unnamed: 0'])
+#     except:
+#         None
+#     df_test = df_test.round(5)
+#     df_test = df_test.fillna(0)
+#     PandasTools.SaveXlsxFromFrame(df_test, testout_file_name, size=(100, 100))
 
 
 def doublecrossvalidation(fold, features_dir_name, regression_features, feature_number, df, gridsearch_file_name,
-                          looout_file_name, testout_file_name, param, fplist, regression_type, maxmin, dfp):
+                          looout_file_name, testout_file_name, param, regression_type, maxmin, dfp):
     if fold:
         grid_features_name = "{}/{}/feature_yz.csv"
     else:
         grid_features_name = "{}/{}/feature_y.csv"
+    penalty = np.load("../penalty/penalty.npy")
     df = df.sample(frac=1, random_state=0)
 
     df.to_csv("../errortest/dfrandom.csv")
-    testlist = []
+
     df_train =df
     p = None
     if param["Regression_type"] in "gaussian":
         grid_search(fold, features_dir_name, regression_features, feature_number, df_train, dfp,
                     gridsearch_file_name,
-                    fplist, regression_type, maxmin)
+                     regression_type, maxmin)
         if param["cat"] == "cbs":
-            p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
+            p = pd.read_csv("../result/cbs_gaussian_nomax/hyperparam.csv")
         elif param["cat"] == "dip":
-            p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
+            p = pd.read_csv("../result/dip-chloride_gaussian_nomax/hyperparam.csv")
         elif param["cat"] == "RuSS":
-            p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
+            p = pd.read_csv("../result/RuSS_gaussian_nomax/hyperparam.csv")
         else:
             print("Not exist gridsearch result")
-
-
-    if param["Regression_type"] in "gaussian":
-        model = leave_one_out(fold, features_dir_name, regression_features, feature_number, df_train,
-                              looout_file_name, param, fplist, regression_type, maxmin, p)
+        leave_one_out(fold, features_dir_name, regression_features,  df_train,
+                              looout_file_name, param,  regression_type, p)#分子場の出力　looの出力
     else:
-        model = leave_one_out(fold, features_dir_name, regression_features, feature_number, df_train,
+        leave_one_out(fold, features_dir_name, regression_features,  df_train,#分子場の出力　looの出力
                               looout_file_name, param,
-                              fplist, regression_type, maxmin, p=None)
-    kf
-    features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                     "{}".format(regression_features.split()[0])].values
-                 for
-                 mol in df_test["mol"]]
-    features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
-                     "{}".format(regression_features.split()[1])].values
-                 for
-                 mol in df_test["mol"]]
-    features = np.concatenate([features1, features2], axis=1)
-    testpredict = model.predict(features)
+                               regression_type,  p=None)
+    df = df.sample(frac=1, random_state=0)
+    kf = KFold(n_splits=5)
 
-    if maxmin == "True":
-        if regression_type == "PLS":  # PLSだけ出力形式が少し変
-            for i in range(len(testpredict)):
-                ans = testpredict[i][0]
-                print(ans)
+    testlist = []
+    for (train_index, test_index) in kf.split(df):
+        df_train=df.iloc[train_index]
+        df_test=df.iloc[test_index]
+        features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                         "{}".format(regression_features.split()[0])].values for mol
+                     in df_train["mol"]]
+        features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                         "{}".format(regression_features.split()[1])].values for mol
+                     in df_train["mol"]]
+        features_train = np.concatenate([features1, features2], axis=1)
+        features = features_train / np.std(features_train, axis=0)
+        print(features.shape)
+        #if regression_type == "lassocv" or regression_type == "PLS" or regression_type == "ridgecv" or regression_type == "elasticnetcv":
+        Y = df_train["ΔΔG.expt."].values
+        print(Y.shape)
+        if regression_type == "lassocv":
+            model = linear_model.LassoCV(fit_intercept=False, cv=5).fit(features, Y)
+        elif regression_type == "PLS":
+            model = PLSRegression(n_components=5).fit(features, Y)
+        elif regression_type == "ridgecv":
+            model = RidgeCV(fit_intercept=False, cv=5).fit(features, Y)
+        elif regression_type == "elasticnetcv":
+            model = ElasticNetCV(fit_intercept=False, cv=5).fit(features, Y)
+        elif regression_type in ["gaussian"]:
+            hparam1 = p['{}param'.format(regression_features.split()[0])].values
+            hparam2 = p['{}param'.format(regression_features.split()[1])].values
+            penalty1 = np.concatenate([hparam1 * penalty, np.zeros(penalty.shape)], axis=1)
+            penalty2 = np.concatenate([np.zeros(penalty.shape), hparam2 * penalty], axis=1)
+            print(penalty1.shape)
+            print(penalty2.shape)
+            print(features.shape)
+            X = np.concatenate([features, penalty1, penalty2], axis=0)
+            Y = np.concatenate([df_train["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
+            model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
 
-                if ans >= df_test["ΔΔmaxG.expt."].values[i]:
-                    ans = df_test["ΔΔmaxG.expt."].values[i]
-                if ans <= df_test["ΔΔminG.expt."].values[i]:
-                    ans = df_test["ΔΔminG.expt."].values[i]
-                testlist.append(ans)
+        features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                         "{}".format(regression_features.split()[0])].values
+                     for
+                     mol in df_test["mol"]]
+        features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
+                         "{}".format(regression_features.split()[1])].values
+                     for
+                     mol in df_test["mol"]]
+
+        features_test = np.concatenate([features1, features2], axis=1)
+        features = features_test / np.std(features_train, axis=0)
+        testpredict = model.predict(features)
+
+        # if maxmin == "True":
+        #     if regression_type == "PLS":  # PLSだけ出力形式が少し変
+        #         for i in range(len(testpredict)):
+        #             ans = testpredict[i][0]
+        #             print(ans)
+        #
+        #             if ans >= df_test["ΔΔmaxG.expt."].values[i]:
+        #                 ans = df_test["ΔΔmaxG.expt."].values[i]
+        #             if ans <= df_test["ΔΔminG.expt."].values[i]:
+        #                 ans = df_test["ΔΔminG.expt."].values[i]
+        #             testlist.append(ans)
+        #     else:
+        #         for i in range(len(testpredict)):
+        #             ans = testpredict[i]
+        #             print(ans)
+        #
+        #             if ans >= df_test["ΔΔmaxG.expt."].values[i]:
+        #                 ans = df_test["ΔΔmaxG.expt."].values[i]
+        #             if ans <= df_test["ΔΔminG.expt."].values[i]:
+        #                 ans = df_test["ΔΔminG.expt."].values[i]
+        #             testlist.append(ans)
+        if regression_type == "PLS":
+            testlist.extend([_[0] for _ in testpredict])
         else:
-            for i in range(len(testpredict)):
-                ans = testpredict[i]
-                print(ans)
-
-                if ans >= df_test["ΔΔmaxG.expt."].values[i]:
-                    ans = df_test["ΔΔmaxG.expt."].values[i]
-                if ans <= df_test["ΔΔminG.expt."].values[i]:
-                    ans = df_test["ΔΔminG.expt."].values[i]
-                testlist.append(ans)
-    else:
-        if regression_type == "PLS":  # PLSだけ出力形式が少し変
-            for i in range(len(testpredict)):
-                ans = testpredict[i][0]
-                testlist.append(ans)
-        else:
-            for i in range(len(testpredict)):
-                ans = testpredict[i]
-                testlist.append(ans)
+            testlist.extend(testpredict)
+        # for i in range(len(testpredict)):
+        #     if regression_type == "PLS":  # PLSだけ出力形式が少し変
+        #         ans = testpredict[i][0]
+        #         testlist.append(ans)
+        #     else:
+        #         ans = testpredict[i]
+        #         testlist.append(ans)
 
 
 
 
     df["ΔΔG.crosstest"] = testlist
     r2 = r2_score(df["ΔΔG.expt."], df["ΔΔG.crosstest"])
-    resultfile=param["out_dir_name"]
+    #resultfile=param["out_dir_name"]
 
 
     # with open("{}/r2result.txt".format(resultfile), mode='w') as f:
@@ -701,20 +621,21 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
 if __name__ == '__main__':
     for param_file_name in [
         "../parameter_nomax/parameter_cbs_gaussian.txt",
-        "../parameter_nomax/parameter_cbs_ridgecv.txt",
-        "../parameter_nomax/parameter_cbs_PLS.txt",
-        "../parameter_nomax/parameter_cbs_lassocv.txt",
-        "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
-        "../parameter_nomax/parameter_RuSS_gaussian.txt",
-        "../parameter_nomax/parameter_RuSS_lassocv.txt",
-        "../parameter_nomax/parameter_RuSS_PLS.txt",
-        "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
-        "../parameter_nomax/parameter_RuSS_ridgecv.txt",
-        "../parameter_nomax/parameter_dip-chloride_PLS.txt",
-        "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
-        "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
-        "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
+        # "../parameter_nomax/parameter_cbs_ridgecv.txt",
+        # "../parameter_nomax/parameter_cbs_PLS.txt",
+        # "../parameter_nomax/parameter_cbs_lassocv.txt",
+        # "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
+        # "../parameter_nomax/parameter_dip-chloride_PLS.txt",
+        # "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
+        # "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
+        # "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
+        # "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
+        # "../parameter_nomax/parameter_RuSS_gaussian.txt",
+        # "../parameter_nomax/parameter_RuSS_lassocv.txt",
+        # "../parameter_nomax/parameter_RuSS_PLS.txt",
+        # "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
+        # "../parameter_nomax/parameter_RuSS_ridgecv.txt",
+
 
         # "../parameter/parameter_dip-chloride_gaussian.txt",
         # "../parameter/parameter_RuSS_gaussian.txt",
@@ -751,78 +672,72 @@ if __name__ == '__main__':
         features_dir_name = param["grid_dir_name"] + "/[{}]/".format(param["grid_sizefile"])
 
         fparranged_dataname = param["fpdata_file_path"]
-        df_fplist = pd.read_csv(fparranged_dataname).dropna(subset=['smiles']).reset_index(drop=True)
-        fplist = pd.read_csv(param["fplist"]).columns.values.tolist()
+        # df_fplist = pd.read_csv(fparranged_dataname).dropna(subset=['smiles']).reset_index(drop=True)
+        # fplist = pd.read_csv(param["fplist"]).columns.values.tolist()
         xyz_dir_name = param["cube_dir_name"]
         df = pd.read_excel(param["data_file_path"]).dropna(subset=['smiles']).reset_index(drop=True)  # [:10]
-        df = pd.concat([df, df_fplist], axis=1)
-        df.to_csv("../errortest/df.csv")
-        df = df.loc[:, ~df.columns.duplicated()]
+        # df = pd.concat([df, df_fplist], axis=1)
         df = df.dropna(subset=['smiles']).reset_index(drop=True)
         df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
-        print(len(df))
-        print(df["smiles"][[os.path.isdir(features_dir_name + mol.GetProp("InchyKey")) for mol in df["mol"]]])
         df = df[[os.path.isdir(features_dir_name + mol.GetProp("InchyKey")) for mol in df["mol"]]]
-        print(len(df))
         df["mol"].apply(lambda mol: calculate_conformation.read_xyz(mol, xyz_dir_name + "/" + mol.GetProp("InchyKey")))
         dfp = pd.read_csv(param["penalty_param_dir"])  # [:1]
-        print(dfp)
         os.makedirs(param["out_dir_name"], exist_ok=True)
         gridsearch_file_name = param["out_dir_name"] + "/result_grid_search.csv"
         looout_file_name = param["out_dir_name"] + "/result_loo.xlsx"
         testout_file_name = param["out_dir_name"] + "/result_train_test.xlsx"
         crosstestout_file_name = param["out_dir_name"] + "/result_5crossvalid.xlsx"
-        if traintest:
-            train_testfold(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
-                           gridsearch_file_name
-                           , looout_file_name, testout_file_name, param, fplist, param["Regression_type"],
-                           param["maxmin"], dfp)
+        # if traintest:
+        #     train_testfold(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
+        #                    gridsearch_file_name
+        #                    , looout_file_name, testout_file_name, param, fplist, param["Regression_type"],
+        #                    param["maxmin"], dfp)
 
-        elif doublecrossvalid:
+        if doublecrossvalid:
             doublecrossvalidation(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
                                   gridsearch_file_name, looout_file_name,
-                                  crosstestout_file_name, param, fplist, param["Regression_type"],
+                                  crosstestout_file_name, param, param["Regression_type"],
                                   param["maxmin"], dfp)
-        elif practice:
-            if param["Regression_type"] in "gaussian":
-                grid_search(fold, features_dir_name, param["Regression_features"], param["feature_number"], df, dfp,
-                            gridsearch_file_name,
-                            fplist, param["Regression_type"], param["maxmin"])
-            p = []
-            if param["cat"] == "cbs":
-                p = pd.read_csv("../errortest/hyperparam.csv")
-
-            else:
-                print("Not exist gridsearch result")
-
-            if param["Regression_type"] in "gaussian":
-                model = leave_one_out(fold, features_dir_name, param["Regression_features"], param["feature_number"],
-                                      df, looout_file_name,
-                                      param, fplist, param["Regression_type"], param["maxmin"], p)
-
-        else:
-            if param["Regression_type"] in ["gaussian", "gaussianFP"]:
-                if param["Regression_type"] in "gaussian":
-                    grid_search(fold, features_dir_name, param["Regression_features"], param["feature_number"], df, dfp,
-                                param["out_dir_name"] + "/result_grid_search.csv", fplist, param["Regression_type"],
-                                param["maxmin"])
-
-            if param["Regression_type"] in ["gaussian", "gaussianFP"]:
-
-                if param["cat"] == "cbs":
-                    p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
-                elif param["cat"] == "dip":
-                    p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
-                elif param["cat"] == "RuSS":
-                    p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
-                else:
-                    raise ValueError
-                leave_one_out(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
-                              param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
-                              param["maxmin"],
-                              p)
-
-            else:
-                leave_one_out(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
-                              param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
-                              param["maxmin"], p=None)
+        # elif practice:
+        #     if param["Regression_type"] in "gaussian":
+        #         grid_search(fold, features_dir_name, param["Regression_features"], param["feature_number"], df, dfp,
+        #                     gridsearch_file_name,
+        #                     fplist, param["Regression_type"], param["maxmin"])
+        #     p = []
+        #     if param["cat"] == "cbs":
+        #         p = pd.read_csv("../errortest/hyperparam.csv")
+        #
+        #     else:
+        #         print("Not exist gridsearch result")
+        #
+        #     if param["Regression_type"] in "gaussian":
+        #         model = leave_one_out(fold, features_dir_name, param["Regression_features"], param["feature_number"],
+        #                               df, looout_file_name,
+        #                               param, fplist, param["Regression_type"], param["maxmin"], p)
+        #
+        # else:
+        #     if param["Regression_type"] in ["gaussian", "gaussianFP"]:
+        #         if param["Regression_type"] in "gaussian":
+        #             grid_search(fold, features_dir_name, param["Regression_features"], param["feature_number"], df, dfp,
+        #                         param["out_dir_name"] + "/result_grid_search.csv", fplist, param["Regression_type"],
+        #                         param["maxmin"])
+        #
+        #     if param["Regression_type"] in ["gaussian", "gaussianFP"]:
+        #
+        #         if param["cat"] == "cbs":
+        #             p = pd.read_csv("../result/cbs_gaussian/hyperparam.csv")
+        #         elif param["cat"] == "dip":
+        #             p = pd.read_csv("../result/dip-chloride_gaussian/hyperparam.csv")
+        #         elif param["cat"] == "RuSS":
+        #             p = pd.read_csv("../result/RuSS_gaussian/hyperparam.csv")
+        #         else:
+        #             raise ValueError
+        #         leave_one_out(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
+        #                       param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
+        #                       param["maxmin"],
+        #                       p)
+        #
+        #     else:
+        #         leave_one_out(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
+        #                       param["out_dir_name"] + "/result_loo.xls", param, fplist, param["Regression_type"],
+        #                       param["maxmin"], p=None)
