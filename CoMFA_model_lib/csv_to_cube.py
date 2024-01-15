@@ -5,12 +5,20 @@ import copy
 
 if __name__ == '__main__':
     for param_file_name in ["../parameter_nomax/parameter_cbs_gaussian.txt",
-                            "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
-                            "../parameter_nomax/parameter_RuSS_gaussian.txt",
-                            "../parameter_nomax/parameter_cbs_ridgecv.txt",
-                            "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
-                            "../parameter_nomax/parameter_cbs_lassocv.txt",
-                            "../parameter_nomax/parameter_cbs_PLS.txt",]:
+        "../parameter_nomax/parameter_cbs_ridgecv.txt",
+        "../parameter_nomax/parameter_cbs_PLS.txt",
+        "../parameter_nomax/parameter_cbs_lassocv.txt",
+        "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
+        "../parameter_nomax/parameter_RuSS_gaussian.txt",
+        "../parameter_nomax/parameter_RuSS_lassocv.txt",
+        "../parameter_nomax/parameter_RuSS_PLS.txt",
+        "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
+        "../parameter_nomax/parameter_RuSS_ridgecv.txt",
+        "../parameter_nomax/parameter_dip-chloride_PLS.txt",
+        "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
+        "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
+        "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",]:
 
 
         print(param_file_name)
@@ -32,8 +40,9 @@ if __name__ == '__main__':
         #                                                                       ]):
         # UPEUQDJSUFHFQP-UHFFFAOYSA-N ,WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N
         for feature, cube_file_name in zip(["MF_ESP_cutoff","MF_Dt"  ], [
-            "../cube_aligned_b3lyp_6-31g(d)/PFIKCDNZZJYSMK-UHFFFAOYSA-N/ESP02_0.cube",
-                "../cube_aligned_b3lyp_6-31g(d)/PFIKCDNZZJYSMK-UHFFFAOYSA-N/Dt02_0.cube",
+            "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube",
+            "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube",
+
 
 
                 ]):

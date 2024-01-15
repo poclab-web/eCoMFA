@@ -1402,7 +1402,7 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
 
 if __name__ == '__main__':
     for param_file_name in [
-        # "../parameter_nomax/parameter_cbs_gaussian.txt",
+        "../parameter_nomax/parameter_cbs_gaussian.txt",
         "../parameter_nomax/parameter_cbs_ridgecv.txt",
         "../parameter_nomax/parameter_cbs_PLS.txt",
         "../parameter_nomax/parameter_cbs_lassocv.txt",

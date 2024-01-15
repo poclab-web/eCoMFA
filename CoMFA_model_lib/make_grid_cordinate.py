@@ -15,7 +15,7 @@ if __name__ == '__main__':
                             "../parameter_nomax/parameter_RuSS_gaussian.txt"]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
-        gridinterval = 0.4
+        gridinterval = 0.5
         xgrid =5
         ygrid =2
         zgrid =6
