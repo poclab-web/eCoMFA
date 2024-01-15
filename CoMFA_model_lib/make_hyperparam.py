@@ -20,7 +20,11 @@ if __name__ == '__main__':#cbsだいたい0.01あたりから,dip0.1あたりか
     #       # "LUMOparam":[0.001,0.005],
     #       # "ESP_cutoffparam": [ 0.01,0.05,0.1,0.5, 1]
     #       }
-
+    sr = {"Dtparam": [0.025,0.05,0.1, 0.2,0.4, 0.8, 1.6, 3.2, 6.4, 12.8, 25.6, 51.2, 102.4],
+          # "ESPparam": [ 0.01,0.05,0.1,0.5, 1],
+          # "LUMOparam":[0.001,0.005],
+          # "ESP_cutoffparam": [ 0.01,0.05,0.1,0.5, 1]
+          }
     # sr = {"λ1": [0.1, 0.5, 1, 5],
     #       "λ2": [ 0.1, 0.5, 1, 5]}
     dfp = pd.DataFrame([dict(zip(sr.keys(), l)) for l in product(*sr.values())]).astype(float)

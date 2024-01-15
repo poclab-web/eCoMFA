@@ -42,9 +42,6 @@ if __name__ == '__main__':
         for feature, cube_file_name in zip(["MF_ESP_cutoff","MF_Dt"  ], [
             "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube",
             "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube",
-
-
-
                 ]):
 
             if fold:

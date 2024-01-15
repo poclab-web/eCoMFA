@@ -6,6 +6,7 @@ import json
 
 def read_cube(dir_name,dfp,mol,out_name):
     os.makedirs(out_name, exist_ok=True)
+
     for conf in mol.GetConformers():
         Dt_file="{}/{}/Dt02_{}.cube".format(dir_name,mol.GetProp("InchyKey"),conf.GetId())
         with open(Dt_file,"r",encoding="UTF-8")as f:
@@ -79,7 +80,8 @@ def read_cube(dir_name,dfp,mol,out_name):
         dfp_yz=dfp[(dfp["y"]>=0)&(dfp["z"]>0)][["x","y","z"]]
 
         for feature in ["Dt","ESP","ESP_cutoff","LUMO"]:
-            dfp_y[feature]=dfp[dfp["y"]>=0][feature].values#+dfp[dfp["y"]<=0][feature].values
+            dfp_y[feature]=dfp[dfp["y"]>=0][feature].values+dfp[dfp["y"]<=0][feature].values
+            dfp_y[dfp_y["y"]==0] = dfp[dfp["y"] == 0]
 
             dfp_z[feature]=dfp[dfp["z"]>0][feature].values-\
                            dfp[dfp["z"]<0][feature].values
