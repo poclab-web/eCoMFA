@@ -9,9 +9,9 @@
 "one_point_level": "b3lyp/6-31g(d)",
 "cube_dir_name": "../cube_aligned_b3lyp_6-31g(d)",
 
-"grid_dir_name": "../../../grid_features",
+"grid_dir_name": "../../grid_features",
 "grid_coordinates_dir":"/grid_coordinate_RuSS",
-"grid_sizefile":"4,2,5,0.5",
+"grid_sizefile":"5,2,6,0.5",
 "grid_coordinates_file": "../grid_coordinates/grid_coordinate_RuSS.csv",
 "penalty_param_dir" :"../penalty_param/penalty_param.csv",
 "out_dir_name":"../result/RuSS_gaussian_nomax",
