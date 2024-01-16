@@ -15,10 +15,10 @@ if __name__ == '__main__':
                             "../parameter_nomax/parameter_RuSS_gaussian.txt"]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
-        gridinterval = 0.5
-        xgrid =5
-        ygrid =3
-        zgrid =5
+        gridinterval = 0.4
+        xgrid =6
+        ygrid =2
+        zgrid =6
         # sr = {"x":np.round(np.arange(-4.75,0,0.5),2),
         #       "y":np.round(np.arange(-2.75,3,0.5),2),
         #       "z":np.round(np.arange(-4.75,5,0.5),2)}

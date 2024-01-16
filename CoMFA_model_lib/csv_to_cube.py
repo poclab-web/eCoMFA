@@ -76,6 +76,7 @@ if __name__ == '__main__':
                 df_yz[feature]=-df_yz[feature]
                 #df_yz.to_csv(dir_name + "/moleculer_fieldtestyz.csv")
                 df=pd.concat([df_z0,df_z01,df,df_y,df_z,df_yz]).sort_values(by=["x","y","z"])
+
             else:
                 None
             df.to_csv(dir_name+"/moleculer_fieldtest.csv")

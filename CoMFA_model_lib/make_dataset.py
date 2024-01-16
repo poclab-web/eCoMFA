@@ -60,7 +60,7 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
 
 if __name__ == '__main__':
     # make_dataset("train","temperature","all_train.xls")
-    make_dataset("../sampledata/cbs_hand_read_0110.csv", "cbs.xlsx")
+    make_dataset("../sampledata/cbs_hand_read_0116.csv", "cbs.xlsx")
     # make_dataset("../sampledata/cbs_hand_read_1030.csv","cbs.xls")
     make_dataset("../sampledata/DIP-chloride_origin.csv","DIP-chloride.xlsx")
     make_dataset("../sampledata/Ru_cat_1127.csv", "RuSS.xlsx")
