@@ -16,9 +16,9 @@ if __name__ == '__main__':
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
         gridinterval = 0.4
-        xgrid =6
-        ygrid =2
-        zgrid =6
+        xgrid =5
+        ygrid =2.5
+        zgrid =5
         # sr = {"x":np.round(np.arange(-4.75,0,0.5),2),
         #       "y":np.round(np.arange(-2.75,3,0.5),2),
         #       "z":np.round(np.arange(-4.75,5,0.5),2)}
@@ -34,13 +34,23 @@ if __name__ == '__main__':
         # sr = {"x": np.round(np.arange(-8, 1.1, 0.5), 2),
         #       "y": np.round(np.arange(-3, 3.1, 0.5), 2),
         #       "z": np.round(np.arange(-9, 9.1, 0.5), 2)}
+        y_up=np.arange(gridinterval/2,ygrid,gridinterval)
+        y_down=-y_up
+        y=np.sort(np.concatenate([y_down,y_up]))
+        z_up=np.arange(gridinterval/2,zgrid,gridinterval)
+        z_down = -z_up
+        print(z_up[-1])
+        z=np.sort(np.concatenate([z_down,z_up]))
         sr = {"x": np.round(np.arange(-xgrid, 1.1, gridinterval), 2),
-              "y": np.round(np.arange(-ygrid, ygrid+0.1, gridinterval), 2),
-              "z": np.round(np.arange(-zgrid, zgrid+0.1, gridinterval), 2)}
+              #"y": np.round(np.arange(-ygrid, ygrid+0.1, gridinterval), 2),
+              "y": np.round(y, 2),
+              "z": np.round(z, 2)}
 
-        dfp = pd.DataFrame([dict(zip(sr.keys(), l)) for l in product(*sr.values())]).astype(float)
+        dfp = pd.DataFrame([dict(zip(sr.keys(), l)) for l in product(*sr.values())]).astype(float).sort_values(by=["x", "y", "z"])
         os.makedirs(out_dir_name+"/"+param["grid_coordinates_dir"],exist_ok=True)
-        dfp.to_csv(out_dir_name+"/"+param["grid_coordinates_dir"]+"/[{},{},{},{}].csv".format(xgrid,ygrid,zgrid,gridinterval))
+        #dfp.to_csv(out_dir_name+"/"+param["grid_coordinates_dir"]+"/[{},{},{},{}].csv".format(xgrid,ygrid,zgrid,gridinterval))
+        dfp.to_csv(out_dir_name + "/" + param["grid_coordinates_dir"] + "/[{},{},{},{}].csv".format(xgrid, round(y_up[-1],2), round(z_up[-1],2),
+                                                                                                    gridinterval))
 
 
         # dfp.to_csv(out_dir_name + "/" + out_file_name2)

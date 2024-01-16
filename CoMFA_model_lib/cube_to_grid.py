@@ -21,7 +21,7 @@ def read_cube(dir_name,dfp,mol,out_name):
         n_atom = int(l[0, 0])
         x0 = l[0, 1:].astype(float)*0.52917720859
         size = l[1:, 0].astype(int)
-        axis = l[1:, 1:].astype(float)*0.52917720859
+        #axis = l[1:, 1:].astype(float)*0.52917720859
         delta=0.2*0.52917720859
         grid=(dfp[["x", "y", "z"]].values-x0)/delta
         grid=np.round(grid).astype(int)
@@ -77,19 +77,28 @@ def read_cube(dir_name,dfp,mol,out_name):
         os.makedirs(out_name,exist_ok=True)
         dfp_y=dfp[dfp["y"]>=0][["x","y","z"]]
         dfp_z=dfp[dfp["z"]>0][["x","y","z"]]
-        dfp_yz=dfp[(dfp["y"]>=0)&(dfp["z"]>0)][["x","y","z"]]
+        #dfp_yz=dfp[(dfp["y"]>=0)&(dfp["z"]>0)][["x","y","z"]]
+        dfp_yz=dfp[(dfp["y"]>0)&(dfp["z"]>0)][["x","y","z"]]
 
         for feature in ["Dt","ESP","ESP_cutoff","LUMO"]:
-            dfp_y[feature]=dfp[dfp["y"]>=0][feature].values+dfp[dfp["y"]<=0][feature].values
-            dfp_y[dfp_y["y"]==0] = dfp[dfp["y"] == 0]
+            #dfp_y[feature]=dfp[dfp["y"]>=0][feature].values+dfp[dfp["y"]<=0][feature].values
+            dfp_y[feature] = dfp[dfp["y"] > 0][feature].values + dfp[dfp["y"] < 0][feature].values
+            #dfp_y[dfp_y["y"]==0] = dfp[dfp["y"] == 0]
 
             dfp_z[feature]=dfp[dfp["z"]>0][feature].values-\
                            dfp[dfp["z"]<0][feature].values
 
-            dfp_yz[feature]=dfp[(dfp["y"]>=0)&(dfp["z"]>0)][feature].values+\
-                            dfp[(dfp["y"]<=0)&(dfp["z"]>0)][feature].values-\
-                            dfp[(dfp["y"]>=0)&(dfp["z"]<0)][feature].values-\
-                            dfp[(dfp["y"]<=0)&(dfp["z"]<0)][feature].values
+            # dfp_yz[feature]=dfp[(dfp["y"]>=0)&(dfp["z"]>0)][feature].values+\
+            #                 dfp[(dfp["y"]<=0)&(dfp["z"]>0)][feature].values-\
+            #                 dfp[(dfp["y"]>=0)&(dfp["z"]<0)][feature].values-\
+            #                 dfp[(dfp["y"]<=0)&(dfp["z"]<0)][feature].values
+            # dfp_yz[feature] = dfp[(dfp["y"] > 0) & (dfp["z"] > 0)][feature].values + \
+            #                   dfp[(dfp["y"] < 0) & (dfp["z"] > 0)][feature].values - \
+            #                   dfp[(dfp["y"] > 0) & (dfp["z"] < 0)][feature].values - \
+            #                   dfp[(dfp["y"] < 0) & (dfp["z"] < 0)][feature].values
+            dfp_yz[feature] = dfp_y[dfp_y["z"] > 0][feature].values - \
+                                dfp_y[dfp_y["z"]<0][feature].values
+
         dfp_y.to_csv(out_name+"/feature_y_{}.csv".format(conf.GetId()))
         dfp_z.to_csv(out_name + "/feature_z_{}.csv".format(conf.GetId()))
         dfp_yz.to_csv(out_name + "/feature_yz_{}.csv".format(conf.GetId()))
