@@ -16,8 +16,8 @@ if __name__ == '__main__':
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
         gridinterval = 0.4
-        xgrid =5
-        ygrid =2.5
+        xgrid =4.8
+        ygrid =2
         zgrid =5
         # sr = {"x":np.round(np.arange(-4.75,0,0.5),2),
         #       "y":np.round(np.arange(-2.75,3,0.5),2),
