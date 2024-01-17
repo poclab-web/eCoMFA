@@ -36,6 +36,7 @@ for i,param_file_name in enumerate([
 
 
     ]):
+
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     input_dir_name=param["out_dir_name"]
@@ -43,6 +44,7 @@ for i,param_file_name in enumerate([
     df = pd.read_excel("{}/result_loo.xlsx".format(input_dir_name))
     try:
         df_test = pd.read_excel("{}/result_5crossvalid.xlsx".format(input_dir_name))
+        print(len(df_test))
         print("true")
     except:
         None
@@ -90,23 +92,17 @@ plt.savefig(save_dir+"/plot.png", dpi=300)
 fig =plt.figure(figsize=(3*5, 3*3))
 margin = 0.2  # 0 <margin< 1
 totoal_width = 1 - margin
-x = np.arange(5)
+x = np.arange(3)
 fig, ax = plt.subplots(figsize=(6.4, 4))
-labels =["gaussian","PLS","Ridge","Elastic Net","Lasso"]
+
+labels=["CBS","DIP","Ru cat."]
 print(labels)
-filename=[["../parameter_nomax/parameter_cbs_gaussian.txt","../parameter_nomax/parameter_dip-chloride_gaussian.txt","../parameter_nomax/parameter_RuSS_gaussian.txt"],
-          ["../parameter_nomax/parameter_cbs_PLS.txt","../parameter_nomax/parameter_dip-chloride_PLS.txt","../parameter_nomax/parameter_RuSS_PLS.txt"],
-          ["../parameter_nomax/parameter_cbs_ridgecv.txt","../parameter_nomax/parameter_dip-chloride_ridgecv.txt","../parameter_nomax/parameter_RuSS_ridgecv.txt"],
-          ["../parameter_nomax/parameter_cbs_elasticnetcv.txt","../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt","../parameter_nomax/parameter_RuSS_elasticnetcv.txt"],
-          ["../parameter_nomax/parameter_cbs_lassocv.txt","../parameter_nomax/parameter_dip-chloride_lassocv.txt","../parameter_nomax/parameter_RuSS_lassocv.txt"]]
+filename=[["../parameter_nomax/parameter_cbs_gaussian.txt","../parameter_nomax/parameter_cbs_PLS.txt","../parameter_nomax/parameter_cbs_ridgecv.txt","../parameter_nomax/parameter_cbs_elasticnetcv.txt","../parameter_nomax/parameter_cbs_lassocv.txt"],
+           ["../parameter_nomax/parameter_dip-chloride_gaussian.txt","../parameter_nomax/parameter_dip-chloride_PLS.txt","../parameter_nomax/parameter_dip-chloride_ridgecv.txt","../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt","../parameter_nomax/parameter_dip-chloride_lassocv.txt"],
+            ["../parameter_nomax/parameter_RuSS_gaussian.txt","../parameter_nomax/parameter_RuSS_PLS.txt","../parameter_nomax/parameter_RuSS_ridgecv.txt","../parameter_nomax/parameter_RuSS_elasticnetcv.txt","../parameter_nomax/parameter_RuSS_lassocv.txt"]]
 
 
 for i, param_file_names in enumerate(filename):
-
-
-
-
-
     ax.set_xlabel("ΔΔG.expt. [kcal/mol]")
     ax.set_ylabel("ΔΔG.predict [kcal/mol]")
 
@@ -127,19 +123,20 @@ for i, param_file_names in enumerate(filename):
         RMSEs.append(RMSE)
 
     # np.savetxt("{}/RMSE.csv".format(param["out_dir_name"]), RMSE)
-    if i==4:
-        bars =ax.bar([i-0.3,i,i+0.3],RMSEs,color="red", width=0.2,label=["CBS","DIP","Ru cat."])
+    lis=[i-0.3,i - 0.15, i, i + 0.15,i+0.3]
+    if i==2:
+        bars =ax.bar(lis,RMSEs,color="red", width=0.15,label =["gaussian","PLS","Ridge","Elastic Net","Lasso"])
     else:
-        bars = ax.bar([i - 0.3, i, i + 0.3], RMSEs, color="red", width=0.2)
-
+        bars = ax.bar(lis, RMSEs, color="red", width=0.15)
+    ax.bar_label(bars, labels=["{:.2f}".format(_) for _ in RMSEs], rotation=60, label_type='center')  # ,fmt='%.2f'
     for i, b in enumerate(bars):
-        b.set_alpha(i/3+0.2)#plt.cm.jet(1. * i / (3 - 1)))
+        b.set_alpha(i/5+0.2)#plt.cm.jet(1. * i / (3 - 1)))
         #ax.bar_label(bars, labels=["CBS","Ru cat.","DIP"],label_type='center')  # ,fmt='%.2f'
     #ax.bar_label(bar2, labels=["+{:.2f}".format(_) for _ in l[:, 0]], rotation=60, label_type='center')
-ax.legend(loc='upper left',ncol=3, fontsize=8)  # 凡例
+ax.legend(loc='upper left',ncol=5, fontsize=8)  # 凡例
 
 ax.set_xticks(x)
-ax.set_xlim(0-(1-margin)/3-margin, 4+(1-margin)/3+margin)
+ax.set_xlim(0-(1-margin)/3-margin, 2+(1-margin)/3+margin)
 #ax.set_ylim(0, 1.1)
 ax.set_yticks([0,0.5,1])
 ax.set_xticklabels(["{}".format(label) for label in labels], rotation=20)

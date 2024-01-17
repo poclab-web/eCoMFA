@@ -75,38 +75,63 @@ def read_cube(dir_name,dfp,mol,out_name):
         dfp["ESP_cutoff"]=np.where(cond_all,np.array([fesp_new(_,Dt,ESP) for _ in n]).astype(float),0)
         dfp["LUMO"]=np.where(cond_all,np.array([fLUMO(_,LUMO) for _ in n]).astype(float),0)
         os.makedirs(out_name,exist_ok=True)
-        dfp_y=dfp[dfp["y"]>=0][["x","y","z"]]
-        dfp_z=dfp[dfp["z"]>0][["x","y","z"]]
-        #dfp_yz=dfp[(dfp["y"]>=0)&(dfp["z"]>0)][["x","y","z"]]
-        dfp_yz=dfp[(dfp["y"]>0)&(dfp["z"]>0)][["x","y","z"]]
+        dfp_y=dfp[dfp["y"]>=0][["x","y","z"]].sort_values(['x', 'y', "z"], ascending=[True, True, True])  # そとにでる
+        dfp_z=dfp[dfp["z"]>0][["x","y","z"]].sort_values(['x', 'y', "z"], ascending=[True, True, True])  # そとにでる
+        dfp_yz=dfp[(dfp["y"]>0)&(dfp["z"]>0)][["x","y","z"]].sort_values(['x', 'y', "z"], ascending=[True, True, True])  # そとにでる
 
         for feature in ["Dt","ESP","ESP_cutoff","LUMO"]:
-            #dfp_y[feature]=dfp[dfp["y"]>=0][feature].values+dfp[dfp["y"]<=0][feature].values
-            dfp_y[feature] = dfp[dfp["y"] > 0][feature].values + dfp[dfp["y"] < 0][feature].values
-            #dfp_y[dfp_y["y"]==0] = dfp[dfp["y"] == 0]
+            if False:
+                #dfp_y[feature]=dfp[dfp["y"]>=0][feature].values+dfp[dfp["y"]<=0][feature].values
+                dfp_y[feature] = dfp[dfp["y"] > 0][feature].values + dfp[dfp["y"] < 0][feature].values
+                #dfp_y[dfp_y["y"]==0] = dfp[dfp["y"] == 0]
 
-            dfp_z[feature]=dfp[dfp["z"]>0][feature].values-\
-                           dfp[dfp["z"]<0][feature].values
+                dfp_z[feature]=dfp[dfp["z"]>0][feature].values-\
+                                dfp[dfp["z"]<0][feature].values
 
-            # dfp_yz[feature]=dfp[(dfp["y"]>=0)&(dfp["z"]>0)][feature].values+\
-            #                 dfp[(dfp["y"]<=0)&(dfp["z"]>0)][feature].values-\
-            #                 dfp[(dfp["y"]>=0)&(dfp["z"]<0)][feature].values-\
-            #                 dfp[(dfp["y"]<=0)&(dfp["z"]<0)][feature].values
-            # dfp_yz[feature] = dfp[(dfp["y"] > 0) & (dfp["z"] > 0)][feature].values + \
-            #                   dfp[(dfp["y"] < 0) & (dfp["z"] > 0)][feature].values - \
-            #                   dfp[(dfp["y"] > 0) & (dfp["z"] < 0)][feature].values - \
-            #                   dfp[(dfp["y"] < 0) & (dfp["z"] < 0)][feature].values
-            dfp_yz[feature] = dfp_y[dfp_y["z"] > 0][feature].values - \
-                                dfp_y[dfp_y["z"]<0][feature].values
+                # dfp_yz[feature]=dfp[(dfp["y"]>=0)&(dfp["z"]>0)][feature].values+\
+                #                 dfp[(dfp["y"]<=0)&(dfp["z"]>0)][feature].values-\
+                #                 dfp[(dfp["y"]>=0)&(dfp["z"]<0)][feature].values-\
+                #                 dfp[(dfp["y"]<=0)&(dfp["z"]<0)][feature].values
+                dfp_yz[feature] = dfp[(dfp["y"] > 0) & (dfp["z"] > 0)][feature].values + \
+                                  dfp[(dfp["y"] < 0) & (dfp["z"] > 0)][feature].values - \
+                                  dfp[(dfp["y"] > 0) & (dfp["z"] < 0)][feature].values - \
+                                  dfp[(dfp["y"] < 0) & (dfp["z"] < 0)][feature].values
+            dfp_y[feature]=dfp[dfp["y"] > 0].sort_values(['x', 'y',"z"], ascending=[True, True,True])[feature].values\
+                           +dfp[dfp["y"] < 0].sort_values(['x', 'y',"z"], ascending=[True, False,True])[feature].values
+            # dfp_z = dfp_z.sort_values(['x', 'y', "z"], ascending=[True, True, True])  # そとにでる
+            dfp_z[feature] = dfp[dfp["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[feature].values \
+                             - dfp[dfp["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])[feature].values
+            # dfp_yz = dfp_yz.sort_values(['x', 'y', "z"], ascending=[True, True, True])  # そとにでる
+            dfp_yz[feature]=dfp[(dfp["y"] > 0)&(dfp["z"] > 0)].sort_values(['x', 'y',"z"], ascending=[True, True,True])[feature].values\
+                           +dfp[(dfp["y"] < 0)&(dfp["z"] > 0)].sort_values(['x', 'y',"z"], ascending=[True, False,True])[feature].values\
+                            -dfp[(dfp["y"] > 0)&(dfp["z"] < 0)].sort_values(['x', 'y',"z"], ascending=[True, True,False])[feature].values\
+                           -dfp[(dfp["y"] < 0)&(dfp["z"] < 0)].sort_values(['x', 'y',"z"], ascending=[True, False,False])[feature].values
+            if False:
+                l_y=[]
+                l_z=[]
+                l_yz=[]
+                for x,y,z in zip(dfp_y["x"],dfp_y["y"],dfp_y["z"]):
+                    ans=dfp[(dfp["x"] == x) & (dfp["y"] == y) & (dfp["z"] == z)][feature].iloc[0]
+                    ans_y=dfp[(dfp["x"] == x) & (dfp["y"] == -y) & (dfp["z"] == z)][feature].iloc[0]
+                    l_y.append(ans+ans_y)
+                dfp_y[feature]=l_y
+                for x,y,z in zip(dfp_z["x"],dfp_z["y"],dfp_z["z"]):
+                    ans=dfp[(dfp["x"] == x) & (dfp["y"] == y) & (dfp["z"] == z)][feature].iloc[0]
+                    ans_z=dfp[(dfp["x"] == x) & (dfp["y"] == y) & (dfp["z"] == -z)][feature].iloc[0]
+                    l_z.append(ans-ans_z)
+                dfp_z[feature]=l_z
+                for x,y,z in zip(dfp_yz["x"],dfp_yz["y"],dfp_yz["z"]):
+                    ans=dfp[(dfp["x"] == x) & (dfp["y"] == y) & (dfp["z"] == z)][feature].iloc[0]
+                    ans_y=dfp[(dfp["x"] == x) & (dfp["y"] == -y) & (dfp["z"] == z)][feature].iloc[0]
+                    ans_z=dfp[(dfp["x"] == x) & (dfp["y"] == y) & (dfp["z"] == -z)][feature].iloc[0]
+                    ans_zy=dfp[(dfp["x"] == x) & (dfp["y"] == -y) & (dfp["z"] == -z)][feature].iloc[0]
+                    l_yz.append(ans+ans_y-ans_z-ans_zy)
+                dfp_yz[feature]=l_yz
 
         dfp_y.to_csv(out_name+"/feature_y_{}.csv".format(conf.GetId()))
         dfp_z.to_csv(out_name + "/feature_z_{}.csv".format(conf.GetId()))
         dfp_yz.to_csv(out_name + "/feature_yz_{}.csv".format(conf.GetId()))
         dfp.to_csv(out_name+"/feature_{}.csv".format(conf.GetId()))
-
-
-
-
 
     Dts=np.stack([pd.read_csv(out_name+"/feature_{}.csv".format(conf.GetId()))["Dt"].values for conf in mol.GetConformers()])
     ESPs=[pd.read_csv(out_name+"/feature_{}.csv".format(conf.GetId()))["ESP"].values for conf in mol.GetConformers()]
@@ -163,7 +188,7 @@ def read_cube(dir_name,dfp,mol,out_name):
     dfp_yz["LUMO"] = np.average(LUMOs, weights=weights, axis=0)
     dfp_yz["ESP_cutoff"] = np.average(ESPs_cutoff, weights=weights, axis=0)
     dfp_yz.to_csv(out_name + "/feature_yz.csv".format(conf.GetId()))
-
+    print("!!!")
 
 def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
     energies = np.array([float(conf.GetProp("energy")) for conf in mol.GetConformers()])
