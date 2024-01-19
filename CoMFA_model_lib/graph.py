@@ -95,7 +95,7 @@ totoal_width = 1 - margin
 x = np.arange(3)
 fig, ax = plt.subplots(figsize=(6.4, 4))
 
-labels=["CBS","DIP","Ru cat."]
+labels=["CBS cat.","DIP-Chloride","Ru cat."]
 print(labels)
 filename=[["../parameter_nomax/parameter_cbs_gaussian.txt","../parameter_nomax/parameter_cbs_PLS.txt","../parameter_nomax/parameter_cbs_ridgecv.txt","../parameter_nomax/parameter_cbs_elasticnetcv.txt","../parameter_nomax/parameter_cbs_lassocv.txt"],
            ["../parameter_nomax/parameter_dip-chloride_gaussian.txt","../parameter_nomax/parameter_dip-chloride_PLS.txt","../parameter_nomax/parameter_dip-chloride_ridgecv.txt","../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt","../parameter_nomax/parameter_dip-chloride_lassocv.txt"],
@@ -125,7 +125,7 @@ for i, param_file_names in enumerate(filename):
     # np.savetxt("{}/RMSE.csv".format(param["out_dir_name"]), RMSE)
     lis=[i-0.3,i - 0.15, i, i + 0.15,i+0.3]
     if i==2:
-        bars =ax.bar(lis,RMSEs,color="red", width=0.15,label =["gaussian","PLS","Ridge","Elastic Net","Lasso"])
+        bars =ax.bar(lis,RMSEs,color="red", width=0.15,label =["Gaussian","PLS","Ridge","Elastic Net","Lasso"])
     else:
         bars = ax.bar(lis, RMSEs, color="red", width=0.15)
     ax.bar_label(bars, labels=["{:.2f}".format(_) for _ in RMSEs], rotation=60, label_type='center')  # ,fmt='%.2f'
@@ -133,12 +133,12 @@ for i, param_file_names in enumerate(filename):
         b.set_alpha(i/5+0.2)#plt.cm.jet(1. * i / (3 - 1)))
         #ax.bar_label(bars, labels=["CBS","Ru cat.","DIP"],label_type='center')  # ,fmt='%.2f'
     #ax.bar_label(bar2, labels=["+{:.2f}".format(_) for _ in l[:, 0]], rotation=60, label_type='center')
-ax.legend(loc='upper left',ncol=5, fontsize=8)  # 凡例
+ax.legend(loc='upper left',ncol=5, fontsize=8,)  # 凡例
 
 ax.set_xticks(x)
 ax.set_xlim(0-(1-margin)/3-margin, 2+(1-margin)/3+margin)
-#ax.set_ylim(0, 1.1)
-ax.set_yticks([0,0.5,1])
+# ax.set_ylim(0, 1.5)
+ax.set_yticks([0,0.5,1,1.5])
 ax.set_xticklabels(["{}".format(label) for label in labels], rotation=20)
 ax.set_xlabel("Regression methods")
 ax.set_ylabel("RMSE [kcal/mol]")
