@@ -30,5 +30,7 @@ if __name__ == '__main__':#cbsだいたい0.01あたりから,dip0.1あたりか
     dfp = pd.DataFrame([dict(zip(sr.keys(), l)) for l in product(*sr.values())]).astype(float)
     print(dfp)
     dfp["ESP_cutoffparam"]=dfp["Dtparam"]
+    dfp["ESPparam"]=dfp["Dtparam"]
+
     os.makedirs(out_dir_name,exist_ok=True)
     dfp.to_csv(out_dir_name+"/"+out_file_name)
