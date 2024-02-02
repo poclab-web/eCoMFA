@@ -179,14 +179,15 @@ def df1unfolding(df):
     df = pd.concat([df, df_y, df_z, df_yz]).sort_values(by=["x", "y", "z"])
 
     return df
-def zunfolding(df):
+def zunfolding(df,regression_features):
 
     df.to_csv("../errortest/dfbefore.csv")
     df_z = copy.deepcopy(df)
     df_z["z"]=-df_z["z"]
     df_z["MF_Dt"]=-df_z["MF_Dt"]
-    df_z["MF_ESP_cutoff"] = -df_z["MF_ESP_cutoff"]
-    #
+
+    df_z["MF_{}".format(regression_features.split()[1])]=-df_z["MF_{}".format(regression_features.split()[1])]
+
 
     df = pd.concat([df ,df_z ]).sort_values(['x', 'y',"z"], ascending=[True, True,True])#.sort_values(by=["x", "y", "z"])
     df.to_csv("../errortest/dfafter.csv")
@@ -330,7 +331,7 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
     df_mf["ESP_std"] = np.std(features2_)
     df_unfold = df_mf
     if fold :
-        df_unfold = zunfolding(df_mf)
+        df_unfold = zunfolding(df_mf,regression_features)
 
     # df_unfold["Dt_std"] =np.std(features1_unfold)
     # df_unfold["ESP_std"] = np.std(features2_unfold)
@@ -352,7 +353,7 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
         #df1[df1["y"] == 0]["ESP_cutoff"] = df1[df1["y"] == 0]["ESP_cutoff"] ** 2
         df1["DtR1"] = df1["Dt"].values / df_unfold["Dt_std"].values * df_unfold["MF_Dt"].values  # dfdtnumpy
 
-        df1["ESPR1"] = df1["ESP_cutoff"].values / df_unfold["ESP_std"].values * df_unfold["MF_ESP_cutoff"].values  # dfespnumpy
+        df1["ESPR1"] = df1["{}".format(regression_features.split()[1])].values / df_unfold["ESP_std"].values * df_unfold["MF_{}".format(regression_features.split()[1])].values  # dfespnumpy
 
         #ここまではあっている
         df1.to_csv("../errortest/df1R1R2.csv")
@@ -639,10 +640,13 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
                     regression_type, maxmin)
         if param["cat"] == "cbs":
             p = pd.read_csv("../result/cbs_gaussian_nomax/hyperparam.csv")
+            p=pd.read_csv(param["out_dir_name"] + "/hyperparam.csv")
         elif param["cat"] == "dip":
             p = pd.read_csv("../result/dip-chloride_gaussian_nomax/hyperparam.csv")
+            p = pd.read_csv(param["out_dir_name"] + "/hyperparam.csv")
         elif param["cat"] == "RuSS":
             p = pd.read_csv("../result/RuSS_gaussian_nomax/hyperparam.csv")
+            p = pd.read_csv(param["out_dir_name"] + "/hyperparam.csv")
         else:
             print("Not exist gridsearch result")
         leave_one_out(fold, features_dir_name, regression_features, df_train,
@@ -768,22 +772,37 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
 if __name__ == '__main__':
     for param_file_name in [
 
-        "../parameter_nomax/parameter_cbs_gaussian.txt",
-        "../parameter_nomax/parameter_cbs_ridgecv.txt",
-        "../parameter_nomax/parameter_cbs_PLS.txt",
-        "../parameter_nomax/parameter_cbs_lassocv.txt",
-        "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
-        "../parameter_nomax/parameter_dip-chloride_PLS.txt",
-        "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
-        "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
-        "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
-        "../parameter_nomax/parameter_RuSS_gaussian.txt",
-        "../parameter_nomax/parameter_RuSS_PLS.txt",
-        "../parameter_nomax/parameter_RuSS_lassocv.txt",
+        # "../parameter_nomax/parameter_cbs_gaussian.txt",
+        # "../parameter_nomax/parameter_cbs_ridgecv.txt",
+        # "../parameter_nomax/parameter_cbs_PLS.txt",
+        # "../parameter_nomax/parameter_cbs_lassocv.txt",
+        # "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
+        # "../parameter_nomax/parameter_dip-chloride_PLS.txt",
+        # "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
+        # "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
+        # "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
+        # "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
+        # "../parameter_nomax/parameter_RuSS_gaussian.txt",
+        # "../parameter_nomax/parameter_RuSS_PLS.txt",
+        # "../parameter_nomax/parameter_RuSS_lassocv.txt",
+        # "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
+        # "../parameter_nomax/parameter_RuSS_ridgecv.txt",
 
-        "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
-        "../parameter_nomax/parameter_RuSS_ridgecv.txt",
+        "../parameter_0125/parameter_cbs_gaussian.txt",
+        "../parameter_0125/parameter_cbs_ridgecv.txt",
+        "../parameter_0125/parameter_cbs_PLS.txt",
+        "../parameter_0125/parameter_cbs_lassocv.txt",
+        "../parameter_0125/parameter_cbs_elasticnetcv.txt",
+        "../parameter_0125/parameter_dip-chloride_PLS.txt",
+        "../parameter_0125/parameter_dip-chloride_lassocv.txt",
+        "../parameter_0125/parameter_dip-chloride_gaussian.txt",
+        "../parameter_0125/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter_0125/parameter_dip-chloride_ridgecv.txt",
+        "../parameter_0125/parameter_RuSS_gaussian.txt",
+        "../parameter_0125/parameter_RuSS_PLS.txt",
+        "../parameter_0125/parameter_RuSS_lassocv.txt",
+        "../parameter_0125/parameter_RuSS_elasticnetcv.txt",
+        "../parameter_0125/parameter_RuSS_ridgecv.txt",
 
         # "../parameter/parameter_dip-chloride_gaussian.txt",
         # "../parameter/parameter_RuSS_gaussian.txt",

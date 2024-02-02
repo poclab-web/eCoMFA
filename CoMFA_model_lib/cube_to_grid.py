@@ -57,9 +57,18 @@ def read_cube(dir_name,dfp,mol,out_name):
                     ans=0
             except:
                 ans=0
+            return ans
+        def fesp_deletenucleo(n,feature):
+            try:
+                ans=float(feature[3 + 3 + n_atom+n//6].split()[n%6])
+                if ans>0:
+                    ans=0
+            except:
+                ans=0
 
 
             return ans
+
         ##
         def fLUMO(n, feature):
             try:
@@ -71,7 +80,7 @@ def read_cube(dir_name,dfp,mol,out_name):
             return ans
 
         dfp["Dt"]=np.where(cond_all,np.array([fdt(_,Dt) for _ in n]).astype(float),0)
-        dfp["ESP"]=np.where(cond_all,np.array([fesp(_,ESP) for _ in n]).astype(float),0)
+        dfp["ESP"]=np.where(cond_all,np.array([fesp_deletenucleo(_,ESP) for _ in n]).astype(float),0)
         dfp["ESP_cutoff"]=np.where(cond_all,np.array([fesp_new(_,Dt,ESP) for _ in n]).astype(float),0)
         dfp["LUMO"]=np.where(cond_all,np.array([fLUMO(_,LUMO) for _ in n]).astype(float),0)
         os.makedirs(out_name,exist_ok=True)
@@ -201,7 +210,7 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
 if __name__ == '__main__':
 
-    for param_file_name in ["../parameter_nomax/parameter_cbs_gaussian.txt","../parameter_nomax/parameter_dip-chloride_gaussian.txt","../parameter_nomax/parameter_RuSS_gaussian.txt"]:
+    for param_file_name in ["../parameter_0125/parameter_cbs_gaussian.txt","../parameter_0125/parameter_dip-chloride_gaussian.txt","../parameter_0125/parameter_RuSS_gaussian.txt"]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
 

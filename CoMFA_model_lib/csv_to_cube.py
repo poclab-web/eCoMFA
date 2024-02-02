@@ -3,6 +3,14 @@ import json
 import os
 import copy
 
+
+def fesp_deletenucleo(n, feature):
+    try:
+        ans = float(feature[3 + 3 + n_atom + n // 6])
+        if ans > 0:
+            ans = 0
+    except:
+        ans = 0
 def mfunfolding(df):
 
 
@@ -12,32 +20,41 @@ def mfunfolding(df):
     df_z = copy.deepcopy(df)
     df_z["z"]=-df_z["z"]
     df_z["MF_Dt"]=-df_z["MF_Dt"]
-    df_z["MF_ESP_cutoff"] = -df_z["MF_ESP_cutoff"]
+
     df_yz= copy.deepcopy(df)
     df_yz["y"]=-df_yz["y"]
     df_yz["z"]=-df_yz["z"]
     df_yz["MF_Dt"]=-df_yz["MF_Dt"]
-    df_yz["MF_ESP_cutoff"] = -df_yz["MF_ESP_cutoff"]
+    try:
+        df_z["MF_ESP_cutoff"] = -df_z["MF_ESP_cutoff"]
+        df_yz["MF_ESP_cutoff"] = -df_yz["MF_ESP_cutoff"]
+    except:
+        df_z["MF_ESP"] = -df_z["MF_ESP"]
+        df_yz["MF_ESP"] = -df_yz["MF_ESP"]
+
 
     df = pd.concat([df, df_y, df_z, df_yz]).sort_values(by=["x", "y", "z"], ascending=[True, True,True])
 
     return df
 if __name__ == '__main__':
-    for param_file_name in ["../parameter_nomax/parameter_cbs_gaussian.txt",
-        "../parameter_nomax/parameter_cbs_ridgecv.txt",
-        "../parameter_nomax/parameter_cbs_PLS.txt",
-        "../parameter_nomax/parameter_cbs_lassocv.txt",
-        "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
-        "../parameter_nomax/parameter_RuSS_gaussian.txt",
-        "../parameter_nomax/parameter_RuSS_lassocv.txt",
-        "../parameter_nomax/parameter_RuSS_PLS.txt",
-        "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
-        "../parameter_nomax/parameter_RuSS_ridgecv.txt",
-        "../parameter_nomax/parameter_dip-chloride_PLS.txt",
-        "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
-        "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
-        "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",]:
+    for param_file_name in [
+                            "../parameter_nomax/parameter_cbs_gaussian.txt",
+                            "../parameter_nomax/parameter_cbs_gaussian.txt",
+                            "../parameter_nomax/parameter_cbs_ridgecv.txt",
+                            "../parameter_nomax/parameter_cbs_PLS.txt",
+                            "../parameter_nomax/parameter_cbs_lassocv.txt",
+                            "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
+                            "../parameter_nomax/parameter_RuSS_gaussian.txt",
+                            "../parameter_nomax/parameter_RuSS_lassocv.txt",
+                            "../parameter_nomax/parameter_RuSS_PLS.txt",
+                            "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
+                            "../parameter_nomax/parameter_RuSS_ridgecv.txt",
+                            "../parameter_nomax/parameter_dip-chloride_PLS.txt",
+                            "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
+                            "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
+                            "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
+                            "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
+                            ]:
 
 
         print(param_file_name)
@@ -57,11 +74,11 @@ if __name__ == '__main__':
         #                                                       "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube",
         #                                                     "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube"
         #                                                                       ]):
-        # UPEUQDJSUFHFQP-UHFFFAOYSA-N ,WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N,RIFKADJTWUGDOV-UHFFFAOYSA-N
-        #KRIOVPPHQSLHCZ-UHFFFAOYSA-N
+        # UPEUQDJSUFHFQP-UHFFFAOYSA-N ,WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N,RIFKADJTWUGDOV-UHFFFAOYSA-N,
+        #KRIOVPPHQSLHCZ-UHFFFAOYSA-N,CKGKXGQVRVAKEA-UHFFFAOYSA-N,AJKVQEKCUACUMD-UHFFFAOYSA-N,VRZSUVFVIIVLPV-UHFFFAOYSA-N
         for feature, cube_file_name in zip(["MF_ESP_cutoff","MF_Dt"  ], [
-            "../cube_aligned_b3lyp_6-31g(d)/KRIOVPPHQSLHCZ-UHFFFAOYSA-N/ESP02_0.cube",
-            "../cube_aligned_b3lyp_6-31g(d)/KRIOVPPHQSLHCZ-UHFFFAOYSA-N/Dt02_0.cube",
+            "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube",
+            "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube",
 
                 ]):
             df = pd.read_csv(dir_name + "/moleculer_field.csv")
@@ -106,14 +123,10 @@ if __name__ == '__main__':
 
             #inchykey = "WRYKPYJMRHQDBM-UHFFFAOYSA-N"
             with open(cube_file_name, "r", encoding="UTF-8") as f:
-                Dt = f.read().splitlines()
+                cube = f.read().splitlines()
+            n_atom=int(cube[2].split()[0])
 
-            n_atom=int(Dt[2].split()[0])
-
-            xyz=Dt[6:6+n_atom]
-
-
-
+            xyz=cube[6:6+n_atom]
             dir_name=param["moleculer_field_dir"]
             os.makedirs(dir_name,exist_ok=True)
             to_cube_file_name=dir_name+"/"+feature+".cube"
@@ -162,3 +175,17 @@ if __name__ == '__main__':
                     print(line,file=f)
 
             print(xyz)
+            if False:
+                if feature == "MF_ESP":
+                    ESP0 = cube[0:6+n_atom]
+                    ESP1=cube[6+n_atom:]
+                    ESP1list=[]
+                    for i in range(len(ESP1)):
+                        espl=ESP1[i].split()
+                        replaceespl = [str(0) if float(i2) > 0 else i2 for i2 in espl]
+                        q=' '.join(replaceespl)
+                        ESP1list.append(q)
+                    with open("../errortest/espcubetest.cube", "w") as f:
+                        print("\n".join(ESP0), file=f)
+                        print("\n".join(ESP1list), file=f)
+
