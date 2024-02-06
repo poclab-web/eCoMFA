@@ -38,22 +38,39 @@ def mfunfolding(df):
     return df
 if __name__ == '__main__':
     for param_file_name in [
-                            "../parameter_nomax/parameter_cbs_gaussian.txt",
-                            "../parameter_nomax/parameter_cbs_gaussian.txt",
-                            "../parameter_nomax/parameter_cbs_ridgecv.txt",
-                            "../parameter_nomax/parameter_cbs_PLS.txt",
-                            "../parameter_nomax/parameter_cbs_lassocv.txt",
-                            "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
-                            "../parameter_nomax/parameter_RuSS_gaussian.txt",
-                            "../parameter_nomax/parameter_RuSS_lassocv.txt",
-                            "../parameter_nomax/parameter_RuSS_PLS.txt",
-                            "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
-                            "../parameter_nomax/parameter_RuSS_ridgecv.txt",
-                            "../parameter_nomax/parameter_dip-chloride_PLS.txt",
-                            "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
-                            "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
-                            "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
-                            "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
+                            # "../parameter_nomax/parameter_cbs_gaussian.txt",
+                            # "../parameter_nomax/parameter_cbs_gaussian.txt",
+                            # "../parameter_nomax/parameter_cbs_ridgecv.txt",
+                            # "../parameter_nomax/parameter_cbs_PLS.txt",
+                            # "../parameter_nomax/parameter_cbs_lassocv.txt",
+                            # "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
+                            # "../parameter_nomax/parameter_RuSS_gaussian.txt",
+                            # "../parameter_nomax/parameter_RuSS_lassocv.txt",
+                            # "../parameter_nomax/parameter_RuSS_PLS.txt",
+                            # "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
+                            # "../parameter_nomax/parameter_RuSS_ridgecv.txt",
+                            # "../parameter_nomax/parameter_dip-chloride_PLS.txt",
+                            # "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
+                            # "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
+                            # "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
+                            # "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
+
+        "../parameter_0206/parameter_cbs_gaussian.txt",
+        # "../parameter_0206/parameter_cbs_gaussian.txt",
+        # "../parameter_0206/parameter_cbs_ridgecv.txt",
+        # "../parameter_0206/parameter_cbs_PLS.txt",
+        # "../parameter_0206/parameter_cbs_lassocv.txt",
+        # "../parameter_0206/parameter_cbs_elasticnetcv.txt",
+        # "../parameter_0206/parameter_RuSS_gaussian.txt",
+        # "../parameter_0206/parameter_RuSS_lassocv.txt",
+        # "../parameter_0206/parameter_RuSS_PLS.txt",
+        # "../parameter_0206/parameter_RuSS_elasticnetcv.txt",
+        # "../parameter_0206/parameter_RuSS_ridgecv.txt",
+        # "../parameter_0206/parameter_dip-chloride_PLS.txt",
+        # "../parameter_0206/parameter_dip-chloride_lassocv.txt",
+        # "../parameter_0206/parameter_dip-chloride_gaussian.txt",
+        # "../parameter_0206/parameter_dip-chloride_elasticnetcv.txt",
+        # "../parameter_0206/parameter_dip-chloride_ridgecv.txt",
                             ]:
 
 
@@ -76,9 +93,9 @@ if __name__ == '__main__':
         #                                                                       ]):
         # UPEUQDJSUFHFQP-UHFFFAOYSA-N ,WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N,RIFKADJTWUGDOV-UHFFFAOYSA-N,
         #KRIOVPPHQSLHCZ-UHFFFAOYSA-N,CKGKXGQVRVAKEA-UHFFFAOYSA-N,AJKVQEKCUACUMD-UHFFFAOYSA-N,VRZSUVFVIIVLPV-UHFFFAOYSA-N
-        for feature, cube_file_name in zip(["MF_ESP_cutoff","MF_Dt"  ], [
-            "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube",
-            "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube",
+        for feature, cube_file_name in zip(["MF_ESP","MF_Dt"  ], [
+            "../cube_aligned_b3lyp_6-31g(d)/UPEUQDJSUFHFQP-UHFFFAOYSA-N/ESP02_0.cube",
+            "../cube_aligned_b3lyp_6-31g(d)/UPEUQDJSUFHFQP-UHFFFAOYSA-N/Dt02_0.cube",
 
                 ]):
             df = pd.read_csv(dir_name + "/moleculer_field.csv")
@@ -175,7 +192,7 @@ if __name__ == '__main__':
                     print(line,file=f)
 
             print(xyz)
-            if False:
+            if True:
                 if feature == "MF_ESP":
                     ESP0 = cube[0:6+n_atom]
                     ESP1=cube[6+n_atom:]

@@ -9,22 +9,22 @@
 "one_point_level": "b3lyp/6-31g(d)",
 "cube_dir_name": "../cube_aligned_b3lyp_6-31g(d)",
 
-"grid_dir_name": "../grid_features",
+"grid_dir_name": "../../../grid_features/origin",
 "grid_coordinates_dir":"/grid_coordinate_RuSS",
-"grid_sizefile":"8,3,9,0.5",
+"grid_sizefile":"4.8,1.88,4.88,0.25",
 "grid_coordinates_file": "../grid_coordinates/grid_coordinate_RuSS.csv",
 "penalty_param_dir" :"../penalty_param/penalty_param.csv",
-"out_dir_name":"../result/RuSS_FP",
-"fig_file_dir":"../figs/RuSS_FP",
+"out_dir_name":"../result/origin/RuSS_gaussian",
+"fig_file_dir":"../figs/origin/RuSS_gaussian",
 
 "data_file_path": "../arranged_dataset/RuSS.xlsx",
 "fpdata_file_path": "../fingerprint/fparranged_dataset/RuSS.csv",
 "fplist": "../fingerprint/fplist/fplistRuSS.csv",
-"moleculer_field_dir":"../moleculer_field/RuSS_FP",
-"Regression_type":"FP",
-"title":"Ru cat. FP",
+"moleculer_field_dir":"../moleculer_field/origin/RuSS_gaussian",
+"Regression_type":"gaussian",
+"title":"Gaussian penalized",
 "cat":"RuSS",
 "Regression_features":"Dt ESP",
 "feature_number":"2",
-"maxmin":"True"
+"maxmin":"False"
 }

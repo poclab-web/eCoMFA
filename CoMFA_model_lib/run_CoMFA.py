@@ -524,11 +524,11 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
     PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100), molCol='ROMol')
 
     if param["cat"] == "cbs":
-        dfp = pd.read_csv("../result/cbs_gaussian_nomax/result_grid_search.csv")
+        dfp = pd.read_csv("../result/old /cbs_gaussian_nomax/result_grid_search.csv")
     elif param["cat"] == "dip":
-        dfp = pd.read_csv("../result/dip-chloride_gaussian_nomax/result_grid_search.csv")
+        dfp = pd.read_csv("../result/old /dip-chloride_gaussian_nomax/result_grid_search.csv")
     elif param["cat"] == "RuSS":
-        dfp = pd.read_csv("../result/RuSS_gaussian_nomax/result_grid_search.csv")
+        dfp = pd.read_csv("../result/old /RuSS_gaussian_nomax/result_grid_search.csv")
     print(dfp)
     min_index = dfp['RMSE'].idxmin()
     min_row = dfp.loc[min_index, :]
@@ -538,7 +538,6 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
 
     return model
 
-    raise ValueError
 # def train_testfold(fold, features_dir_name, regression_features, feature_number, df, gridsearch_file_name,
 #                    looout_file_name, testout_file_name, param, fplist, regression_type, maxmin, dfp):
 #
@@ -639,13 +638,13 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
                     gridsearch_file_name,
                     regression_type, maxmin)
         if param["cat"] == "cbs":
-            p = pd.read_csv("../result/cbs_gaussian_nomax/hyperparam.csv")
+            p = pd.read_csv("../result/old /cbs_gaussian_nomax/hyperparam.csv")
             p=pd.read_csv(param["out_dir_name"] + "/hyperparam.csv")
         elif param["cat"] == "dip":
-            p = pd.read_csv("../result/dip-chloride_gaussian_nomax/hyperparam.csv")
+            p = pd.read_csv("../result/old /dip-chloride_gaussian_nomax/hyperparam.csv")
             p = pd.read_csv(param["out_dir_name"] + "/hyperparam.csv")
         elif param["cat"] == "RuSS":
-            p = pd.read_csv("../result/RuSS_gaussian_nomax/hyperparam.csv")
+            p = pd.read_csv("../result/old /RuSS_gaussian_nomax/hyperparam.csv")
             p = pd.read_csv(param["out_dir_name"] + "/hyperparam.csv")
         else:
             print("Not exist gridsearch result")
@@ -788,44 +787,23 @@ if __name__ == '__main__':
         # "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
         # "../parameter_nomax/parameter_RuSS_ridgecv.txt",
 
-        "../parameter_0125/parameter_cbs_gaussian.txt",
-        "../parameter_0125/parameter_cbs_ridgecv.txt",
-        "../parameter_0125/parameter_cbs_PLS.txt",
-        "../parameter_0125/parameter_cbs_lassocv.txt",
-        "../parameter_0125/parameter_cbs_elasticnetcv.txt",
-        "../parameter_0125/parameter_dip-chloride_PLS.txt",
-        "../parameter_0125/parameter_dip-chloride_lassocv.txt",
-        "../parameter_0125/parameter_dip-chloride_gaussian.txt",
-        "../parameter_0125/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter_0125/parameter_dip-chloride_ridgecv.txt",
-        "../parameter_0125/parameter_RuSS_gaussian.txt",
-        "../parameter_0125/parameter_RuSS_PLS.txt",
-        "../parameter_0125/parameter_RuSS_lassocv.txt",
-        "../parameter_0125/parameter_RuSS_elasticnetcv.txt",
-        "../parameter_0125/parameter_RuSS_ridgecv.txt",
+        "../parameter_0206/parameter_cbs_gaussian.txt",
+        "../parameter_0206/parameter_cbs_ridgecv.txt",
+        "../parameter_0206/parameter_cbs_PLS.txt",
+        "../parameter_0206/parameter_cbs_lassocv.txt",
+        "../parameter_0206/parameter_cbs_elasticnetcv.txt",
+        "../parameter_0206/parameter_dip-chloride_PLS.txt",
+        "../parameter_0206/parameter_dip-chloride_lassocv.txt",
+        "../parameter_0206/parameter_dip-chloride_gaussian.txt",
+        "../parameter_0206/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter_0206/parameter_dip-chloride_ridgecv.txt",
+        "../parameter_0206/parameter_RuSS_gaussian.txt",
+        "../parameter_0206/parameter_RuSS_PLS.txt",
+        "../parameter_0206/parameter_RuSS_lassocv.txt",
+        "../parameter_0206/parameter_RuSS_elasticnetcv.txt",
+        "../parameter_0206/parameter_RuSS_ridgecv.txt",
 
-        # "../parameter/parameter_dip-chloride_gaussian.txt",
-        # "../parameter/parameter_RuSS_gaussian.txt",
-        # "../parameter/parameter_cbs_gaussian_practice.txt",
-        # "../parameter/parameter_cbs_gaussian.txt",
-        # "../parameter/parameter_cbs_ridgecv.txt",
-        # "../parameter/parameter_cbs_PLS.txt",
-        # "../parameter/parameter_cbs_lassocv.txt",
-        # "../parameter/parameter_cbs_elasticnetcv.txt",
-        # "../parameter/parameter_RuSS_gaussian.txt",
-        # "../parameter/parameter_RuSS_lassocv.txt",
-        # "../parameter/parameter_RuSS_PLS.txt",
-        # "../parameter/parameter_RuSS_elasticnetcv.txt",
-        # "../parameter/parameter_RuSS_ridgecv.txt",
-        # "../parameter/parameter_dip-chloride_PLS.txt",
-        # "../parameter/parameter_dip-chloride_lassocv.txt",
-        # # "../parameter/parameter_dip-chloride_gaussian.txt",
-        # "../parameter/parameter_dip-chloride_elasticnetcv.txt",
-        # "../parameter/parameter_dip-chloride_ridgecv.txt",
 
-        # "../parameter/parameter_cbs_gaussian_FP.txt",
-        # "../parameter/parameter_dip-chloride_gaussian_FP.txt",
-        # "../parameter/parameter_RuSS_gaussian_FP.txt",
     ]:
 
         fold = True

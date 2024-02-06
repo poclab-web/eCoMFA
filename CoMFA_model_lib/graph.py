@@ -15,7 +15,7 @@ for i,param_file_name in enumerate([
 # "../parameter/parameter_dip-chloride_gaussian.txt",
 # "../parameter/parameter_RuSS_gaussian.txt",
 #
-# "../parameter_0125/parameter_cbs_gaussian.txt",
+"../parameter_0125/parameter_cbs_gaussian.txt",
 #  "../parameter_0125/parameter_cbs_PLS.txt",
 #  "../parameter_0125/parameter_cbs_ridgecv.txt",
 #  "../parameter_0125/parameter_cbs_elasticnetcv.txt",
@@ -32,23 +32,23 @@ for i,param_file_name in enumerate([
 # "../parameter_0125/parameter_RuSS_ridgecv.txt",
 # "../parameter_0125/parameter_RuSS_elasticnetcv.txt",
 # "../parameter_0125/parameter_RuSS_lassocv.txt",
-"../parameter_nomax/parameter_cbs_gaussian.txt",
- "../parameter_nomax/parameter_cbs_PLS.txt",
- "../parameter_nomax/parameter_cbs_ridgecv.txt",
- "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
-"../parameter_nomax/parameter_cbs_lassocv.txt",
-
-"../parameter_nomax/parameter_dip-chloride_gaussian.txt",
-"../parameter_nomax/parameter_dip-chloride_PLS.txt",
-"../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
-"../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
-"../parameter_nomax/parameter_dip-chloride_lassocv.txt",
-
-"../parameter_nomax/parameter_RuSS_gaussian.txt",
-"../parameter_nomax/parameter_RuSS_PLS.txt",
-"../parameter_nomax/parameter_RuSS_ridgecv.txt",
-"../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
-"../parameter_nomax/parameter_RuSS_lassocv.txt",
+# "../parameter_nomax/parameter_cbs_gaussian.txt",
+#  "../parameter_nomax/parameter_cbs_PLS.txt",
+#  "../parameter_nomax/parameter_cbs_ridgecv.txt",
+#  "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
+# "../parameter_nomax/parameter_cbs_lassocv.txt",
+#
+# "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
+# "../parameter_nomax/parameter_dip-chloride_PLS.txt",
+# "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
+# "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
+# "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
+#
+# "../parameter_nomax/parameter_RuSS_gaussian.txt",
+# "../parameter_nomax/parameter_RuSS_PLS.txt",
+# "../parameter_nomax/parameter_RuSS_ridgecv.txt",
+# "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
+# "../parameter_nomax/parameter_RuSS_lassocv.txt",
 
 
 
@@ -58,9 +58,9 @@ for i,param_file_name in enumerate([
         param = json.loads(f.read())
     input_dir_name=param["out_dir_name"]
     save_dir=param["fig_file_dir"]
-    df = pd.read_excel("{}/result_loo.xlsx".format(input_dir_name))
+    df = pd.read_excel("{}/result_loo_025.xlsx".format(input_dir_name))
     try:
-        df_test = pd.read_excel("{}/result_5crossvalid.xlsx".format(input_dir_name))
+        df_test = pd.read_excel("{}/result_5crossvalid_025.xlsx".format(input_dir_name))
         print(len(df_test))
         print("true")
     except:
@@ -124,7 +124,7 @@ filename=[["../parameter_nomax/parameter_cbs_gaussian.txt","../parameter_nomax/p
 # filename=[["../parameter_0125/parameter_cbs_gaussian.txt","../parameter_0125/parameter_cbs_PLS.txt","../parameter_0125/parameter_cbs_ridgecv.txt","../parameter_0125/parameter_cbs_elasticnetcv.txt","../parameter_0125/parameter_cbs_lassocv.txt"],
 #            ["../parameter_0125/parameter_dip-chloride_gaussian.txt","../parameter_0125/parameter_dip-chloride_PLS.txt","../parameter_0125/parameter_dip-chloride_ridgecv.txt","../parameter_0125/parameter_dip-chloride_elasticnetcv.txt","../parameter_0125/parameter_dip-chloride_lassocv.txt"],
 #             ["../parameter_0125/parameter_RuSS_gaussian.txt","../parameter_0125/parameter_RuSS_PLS.txt","../parameter_0125/parameter_RuSS_ridgecv.txt","../parameter_0125/parameter_RuSS_elasticnetcv.txt","../parameter_0125/parameter_RuSS_lassocv.txt"]]
-#
+
 
 for i, param_file_names in enumerate(filename):
     ax.set_xlabel("ΔΔG.expt. [kcal/mol]")
