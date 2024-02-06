@@ -8,25 +8,21 @@
 "cut_psi4_rmsd":0.5,
 "one_point_level": "b3lyp/6-31g(d)",
 "cube_dir_name": "../cube_aligned_b3lyp_6-31g(d)",
-
-"grid_dir_name": "../grid_features",
-"grid_coordinates_dir":"/grid_coordinate_cbs",
-"grid_sizefile":"8,3,9,0.5",
+"grid_dir_name": "../../../grid_features/origin",
+"grid_coordinates_dir":"/grid_features/origin",
+"grid_sizefile":"4.8,1.88,4.88,0.25",
 "grid_coordinates_file": "../grid_coordinates/grid_coordinate_cbs.csv",
 "penalty_param_dir" :"../penalty_param/penalty_param.csv",
-"out_dir_name":"../result/cbs_gaussian_FP",
-"fig_file_dir":"../figs/cbs_gaussian_FP",
-
+"out_dir_name":"../result/origin/cbs_ridgecv",
+"fig_file_dir":"../figs/origin/cbs_ridgecv",
 "data_file_path": "../arranged_dataset/cbs.xlsx",
 "fpdata_file_path": "../fingerprint/fparranged_dataset/cbs.csv",
 "fplist": "../fingerprint/fplist/fplistcbs.csv",
-"moleculer_field_dir":"../moleculer_field/cbs_gaussian_FP",
-"Regression_type":"gaussianFP",
-"title":"cbs gaussian_FP",
+"moleculer_field_dir":"../moleculer_field/origin/cbs_ridgecv",
+"Regression_type":"ridgecv",
+"title":"Ridge ",
 "cat":"cbs",
-"Regression_features":"Dt ESP_cutoff",
+"Regression_features":"Dt ESP",
 "feature_number":"2",
-"maxmin":"True"
-
-
+"maxmin":"False"
 }

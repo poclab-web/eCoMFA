@@ -15,10 +15,10 @@ if __name__ == '__main__':
                             "../parameter_nomax/parameter_RuSS_gaussian.txt"]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
-        gridinterval = 0.4
+        gridinterval = 1
         xgrid =4.8
-        ygrid =2
-        zgrid =5
+        ygrid =2.0
+        zgrid =5.0
         # sr = {"x":np.round(np.arange(-4.75,0,0.5),2),
         #       "y":np.round(np.arange(-2.75,3,0.5),2),
         #       "z":np.round(np.arange(-4.75,5,0.5),2)}
@@ -41,10 +41,10 @@ if __name__ == '__main__':
         z_down = -z_up
         print(z_up[-1])
         z=np.sort(np.concatenate([z_down,z_up]))
-        sr = {"x": np.round(np.arange(-xgrid, 1.1, gridinterval), 2),
+        sr = {"x": np.round(np.arange(-xgrid, 1.1, gridinterval),3 ),
               #"y": np.round(np.arange(-ygrid, ygrid+0.1, gridinterval), 2),
-              "y": np.round(y, 2),
-              "z": np.round(z, 2)}
+              "y": np.round(y, 5),
+              "z": np.round(z, 5)}
 
         dfp = pd.DataFrame([dict(zip(sr.keys(), l)) for l in product(*sr.values())]).astype(float).sort_values(by=["x", "y", "z"])
         os.makedirs(out_dir_name+"/"+param["grid_coordinates_dir"],exist_ok=True)
