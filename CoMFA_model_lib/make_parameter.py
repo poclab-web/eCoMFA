@@ -52,7 +52,7 @@ for param_file_name in [
 
     try:
     # 文字列置換
-        data_lines = data_lines.replace("4.8,1.88,4.88,0.25", "4.8,1.88,4.88,0.25")
+        data_lines = data_lines.replace("4.8,1.5,4.5,1", "4.8,1.88,4.88,0.25")
 
     except:
         None
