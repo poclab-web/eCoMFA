@@ -103,7 +103,8 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
                 if regression_type in ["gaussian"]:
                     X = np.concatenate([features, penalty1, penalty2], axis=0)
                     Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
-                    model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)  # Ridgeじゃないただの線形回帰
+                    model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
+                    # α=0だとただのlinear regression ただRidgeのほうが計算時間早い
 
                 # ここから、テストセットの特徴量計算
                 features1 = [
@@ -787,21 +788,21 @@ if __name__ == '__main__':
         # "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
         # "../parameter_nomax/parameter_RuSS_ridgecv.txt",
 
-        "../parameter_0206/parameter_cbs_gaussian.txt",
-        "../parameter_0206/parameter_cbs_ridgecv.txt",
-        "../parameter_0206/parameter_cbs_PLS.txt",
-        "../parameter_0206/parameter_cbs_lassocv.txt",
-        "../parameter_0206/parameter_cbs_elasticnetcv.txt",
-        "../parameter_0206/parameter_dip-chloride_PLS.txt",
-        "../parameter_0206/parameter_dip-chloride_lassocv.txt",
-        "../parameter_0206/parameter_dip-chloride_gaussian.txt",
-        "../parameter_0206/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter_0206/parameter_dip-chloride_ridgecv.txt",
-        "../parameter_0206/parameter_RuSS_gaussian.txt",
-        "../parameter_0206/parameter_RuSS_PLS.txt",
-        "../parameter_0206/parameter_RuSS_lassocv.txt",
-        "../parameter_0206/parameter_RuSS_elasticnetcv.txt",
-        "../parameter_0206/parameter_RuSS_ridgecv.txt",
+        "../parameter_0207/parameter_cbs_gaussian.txt",
+        "../parameter_0207/parameter_cbs_ridgecv.txt",
+        "../parameter_0207/parameter_cbs_PLS.txt",
+        "../parameter_0207/parameter_cbs_lassocv.txt",
+        "../parameter_0207/parameter_cbs_elasticnetcv.txt",
+        "../parameter_0207/parameter_dip-chloride_PLS.txt",
+        "../parameter_0207/parameter_dip-chloride_lassocv.txt",
+        "../parameter_0207/parameter_dip-chloride_gaussian.txt",
+        "../parameter_0207/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter_0207/parameter_dip-chloride_ridgecv.txt",
+        "../parameter_0207/parameter_RuSS_gaussian.txt",
+        "../parameter_0207/parameter_RuSS_PLS.txt",
+        "../parameter_0207/parameter_RuSS_lassocv.txt",
+        "../parameter_0207/parameter_RuSS_elasticnetcv.txt",
+        "../parameter_0207/parameter_RuSS_ridgecv.txt",
 
 
     ]:

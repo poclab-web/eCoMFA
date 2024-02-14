@@ -55,22 +55,22 @@ if __name__ == '__main__':
                             # "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
                             # "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
 
-        "../parameter_0206/parameter_cbs_gaussian.txt",
-        "../parameter_0206/parameter_cbs_gaussian.txt",
-        "../parameter_0206/parameter_cbs_ridgecv.txt",
-        "../parameter_0206/parameter_cbs_PLS.txt",
-        "../parameter_0206/parameter_cbs_lassocv.txt",
-        "../parameter_0206/parameter_cbs_elasticnetcv.txt",
-        "../parameter_0206/parameter_RuSS_gaussian.txt",
-        "../parameter_0206/parameter_RuSS_lassocv.txt",
-        "../parameter_0206/parameter_RuSS_PLS.txt",
-        "../parameter_0206/parameter_RuSS_elasticnetcv.txt",
-        "../parameter_0206/parameter_RuSS_ridgecv.txt",
-        "../parameter_0206/parameter_dip-chloride_PLS.txt",
-        "../parameter_0206/parameter_dip-chloride_lassocv.txt",
-        "../parameter_0206/parameter_dip-chloride_gaussian.txt",
-        "../parameter_0206/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter_0206/parameter_dip-chloride_ridgecv.txt",
+        "../parameter_0207/parameter_cbs_gaussian.txt",
+        "../parameter_0207/parameter_cbs_gaussian.txt",
+        "../parameter_0207/parameter_cbs_ridgecv.txt",
+        "../parameter_0207/parameter_cbs_PLS.txt",
+        "../parameter_0207/parameter_cbs_lassocv.txt",
+        "../parameter_0207/parameter_cbs_elasticnetcv.txt",
+        "../parameter_0207/parameter_RuSS_gaussian.txt",
+        "../parameter_0207/parameter_RuSS_lassocv.txt",
+        "../parameter_0207/parameter_RuSS_PLS.txt",
+        "../parameter_0207/parameter_RuSS_elasticnetcv.txt",
+        "../parameter_0207/parameter_RuSS_ridgecv.txt",
+        "../parameter_0207/parameter_dip-chloride_PLS.txt",
+        "../parameter_0207/parameter_dip-chloride_lassocv.txt",
+        "../parameter_0207/parameter_dip-chloride_gaussian.txt",
+        "../parameter_0207/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter_0207/parameter_dip-chloride_ridgecv.txt",
                             ]:
 
 
@@ -93,10 +93,10 @@ if __name__ == '__main__':
         #                                                                       ]):
         # UPEUQDJSUFHFQP-UHFFFAOYSA-N ,WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N,RIFKADJTWUGDOV-UHFFFAOYSA-N,
         #KRIOVPPHQSLHCZ-UHFFFAOYSA-N,CKGKXGQVRVAKEA-UHFFFAOYSA-N,AJKVQEKCUACUMD-UHFFFAOYSA-N,VRZSUVFVIIVLPV-UHFFFAOYSA-N
-        for feature, cube_file_name in zip(["MF_ESP","MF_Dt"  ], [
-            "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube",
-            "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube",
-
+        cubeinchikey="../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N"
+        for feature, cube_file_name in zip(["MF_ESP_cutoff","MF_Dt"  ], [
+            cubeinchikey+"/ESP02_0.cube",
+            cubeinchikey+"/Dt02_0.cube",
                 ]):
             df = pd.read_csv(dir_name + "/moleculer_field.csv")
             df=mfunfolding(df)
@@ -192,7 +192,7 @@ if __name__ == '__main__':
                     print(line,file=f)
 
             print(xyz)
-            if True:
+            if False:
                 if feature == "MF_ESP":
                     ESP0 = cube[0:6+n_atom]
                     ESP1=cube[6+n_atom:]
@@ -202,7 +202,35 @@ if __name__ == '__main__':
                         replaceespl = [str(0) if float(i2) > 0 else i2 for i2 in espl]
                         q=' '.join(replaceespl)
                         ESP1list.append(q)
-                    with open("../errortest/espcubetest.cube", "w") as f:
+                    with open("../errortest/nonnucleaarespcube.cube", "w") as f:
                         print("\n".join(ESP0), file=f)
                         print("\n".join(ESP1list), file=f)
+
+            if True:
+                if feature =="MF_ESP_cutoff":
+                    with open(cubeinchikey+"/Dt02_0.cube", "r", encoding="UTF-8") as f:
+                        cubeDt = f.read().splitlines()
+                    n_atomDt = int(cube[2].split()[0])
+                    xyz = cube[6:6 + n_atom]
+                    ESP0 = cube[0:6 + n_atom]
+                    ESP1 = cube[6 + n_atom:]
+                    ESP1list = []
+                    xyzDt = cubeDt[6:6 + n_atomDt]
+                    Dt0 = cubeDt[0:6 + n_atomDt]
+                    Dt1 = cubeDt[6 + n_atomDt:]
+                    Dt1list = []
+                    for i in range(len(ESP1)):
+                        espl = ESP1[i].split()
+                        dtl =Dt1[i].split()
+                        replaceespl = [espl1 if float(dtl1) <0.01 else str(0) for dtl1,espl1 in zip(dtl,espl)]
+                        q = ' '.join(replaceespl)
+                        ESP1list.append(q)
+                    with open("../errortest/cutoffespcube.cube", "w") as f:
+                        print("\n".join(ESP0), file=f)
+                        print("\n".join(ESP1list), file=f)
+
+
+
+
+
 
