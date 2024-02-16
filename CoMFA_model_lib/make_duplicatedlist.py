@@ -5,7 +5,9 @@ df1 = pd.read_excel("../arranged_dataset/cbs.xlsx").dropna(subset=['smiles']).dr
 df2=pd.read_excel("../arranged_dataset/DIP-chloride.xlsx").dropna(subset=['smiles']).drop_duplicates(subset="inchikey")
 df3 =pd.read_excel("../arranged_dataset/Russ.xlsx").dropna(subset=['smiles']).drop_duplicates(subset="inchikey")
 df = pd.concat([df1,df2,df3])
+print(len(set(df["inchikey"])))
 df=df[df.duplicated(subset="inchikey")]
+
 df1=df1.rename(columns={'ΔΔG.expt.': 'ΔΔG.expt.cbs'})
 df2=df2.rename(columns={'ΔΔG.expt.': 'ΔΔG.expt.dip'})
 df3=df3.rename(columns={'ΔΔG.expt.': 'ΔΔG.expt.Ru'})
@@ -47,9 +49,9 @@ for p in df.index:
 df['ΔΔG.expt.Ru']=r
 
 
-df_cbs= pd.read_excel("../result/cbs_gaussian_nomax/result_loo.xlsx")
-df_dip = pd.read_excel("../result/dip-chloride_gaussian_nomax/result_loo.xlsx")
-df_Russ = pd.read_excel("../result/RuSS_gaussian_nomax/result_loo.xlsx")
+df_cbs= pd.read_excel("../result/0206/cbs_gaussian/result_loo.xlsx")
+df_dip = pd.read_excel("../result/0206/dip-chloride_gaussian/result_loo.xlsx")
+df_Russ = pd.read_excel("../result/0206/RuSS_gaussian/result_loo.xlsx")
 
 t=[]
 for p in df.index:
