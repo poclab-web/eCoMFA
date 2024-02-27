@@ -10,15 +10,15 @@ out_file_name2="/grid_coordinate_dip-chloride"
 out_file_name3="/grid_coordinate_RuSS"
 
 if __name__ == '__main__':
-    for param_file_name in ["../parameter_nomax/parameter_cbs_gaussian.txt",
-                            "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
-                            "../parameter_nomax/parameter_RuSS_gaussian.txt"]:
+    for param_file_name in ["../parameter_0216/parameter_cbs_gaussian.txt",
+                            "../parameter_0216/parameter_dip-chloride_gaussian.txt",
+                            "../parameter_0216/parameter_RuSS_gaussian.txt"]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
-        gridinterval = 1
-        xgrid =4.8
+        gridinterval = 0.25
+        xgrid =4.3
         ygrid =2.0
-        zgrid =5.0
+        zgrid =5.5
         # sr = {"x":np.round(np.arange(-4.75,0,0.5),2),
         #       "y":np.round(np.arange(-2.75,3,0.5),2),
         #       "z":np.round(np.arange(-4.75,5,0.5),2)}

@@ -140,7 +140,7 @@ for i, param_file_names in enumerate(filename):
         df = pd.read_excel("{}/result_loo.xlsx".format(input_dir_name))
         try:
             df_test = pd.read_excel("{}/result_5crossvalid.xlsx".format(input_dir_name))
-            print("true")
+
         except:
             None
         RMSE = np.sqrt(mean_squared_error(df_test["ΔΔG.expt."], df_test["ΔΔG.crosstest"]))
@@ -148,13 +148,18 @@ for i, param_file_names in enumerate(filename):
 
     # np.savetxt("{}/RMSE.csv".format(param["out_dir_name"]), RMSE)
     lis=[i-0.3,i - 0.15, i, i + 0.15,i+0.3]
+
+
     if i==2:
         bars =ax.bar(lis,RMSEs,color="red", width=0.15,label =["Gaussian penalized","PLS","Ridge","Elastic Net","Lasso"])
+        # bars =ax.bar(lis,RMSEs,color="red", width=0.15,label =["Gaussian penalized","PLS","Ridge","Elastic Net","Lasso"])
     else:
         bars = ax.bar(lis, RMSEs, color="red", width=0.15)
     ax.bar_label(bars, labels=["{:.2f}".format(_) for _ in RMSEs], rotation=60, label_type='center')  # ,fmt='%.2f'
     for i, b in enumerate(bars):
+        print(i)
         b.set_alpha(i/5+0.2)#plt.cm.jet(1. * i / (3 - 1)))
+
         #ax.bar_label(bars, labels=["CBS","Ru cat.","DIP"],label_type='center')  # ,fmt='%.2f'
     #ax.bar_label(bar2, labels=["+{:.2f}".format(_) for _ in l[:, 0]], rotation=60, label_type='center')
 ax.legend(loc='upper left',ncol=5, fontsize=8,)  # 凡例

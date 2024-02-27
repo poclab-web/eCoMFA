@@ -7,7 +7,7 @@
 "cut_psi4_energy":2,
 "cut_psi4_rmsd":0.5,
 "one_point_level": "b3lyp/6-31g(d)",
-"cube_dir_name": "../cube_aligned_b3lyp_6-31g(d)",
+"cube_dir_name": "../cube_aligned_/b3lyp_6-31g(d)",
 "grid_dir_name": "../../../grid_features/origin",
 "grid_coordinates_dir":"/grid_coordinate_cbs",
 "grid_sizefile":"4.8,1.88,4.88,0.25",

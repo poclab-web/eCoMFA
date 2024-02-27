@@ -22,21 +22,21 @@
 #         "../parameter/parameter_RuSS_gaussian_FP.txt",
 #     ]:
 for param_file_name in [
-    "../parameter_0207/parameter_cbs_gaussian.txt",
-    "../parameter_0207/parameter_cbs_PLS.txt",
-    "../parameter_0207/parameter_cbs_ridgecv.txt",
-    "../parameter_0207/parameter_cbs_lassocv.txt",
-    "../parameter_0207/parameter_cbs_elasticnetcv.txt",
-    "../parameter_0207/parameter_dip-chloride_PLS.txt",
-    "../parameter_0207/parameter_dip-chloride_lassocv.txt",
-    "../parameter_0207/parameter_dip-chloride_gaussian.txt",
-    "../parameter_0207/parameter_dip-chloride_elasticnetcv.txt",
-    "../parameter_0207/parameter_dip-chloride_ridgecv.txt",
-    "../parameter_0207/parameter_RuSS_gaussian.txt",
-    "../parameter_0207/parameter_RuSS_lassocv.txt",
-    "../parameter_0207/parameter_RuSS_PLS.txt",
-    "../parameter_0207/parameter_RuSS_elasticnetcv.txt",
-    "../parameter_0207/parameter_RuSS_ridgecv.txt",
+    "../parameter_0226/parameter_cbs_gaussian.txt",
+    "../parameter_0226/parameter_cbs_PLS.txt",
+    "../parameter_0226/parameter_cbs_ridgecv.txt",
+    "../parameter_0226/parameter_cbs_lassocv.txt",
+    "../parameter_0226/parameter_cbs_elasticnetcv.txt",
+    "../parameter_0226/parameter_dip-chloride_PLS.txt",
+    "../parameter_0226/parameter_dip-chloride_lassocv.txt",
+    "../parameter_0226/parameter_dip-chloride_gaussian.txt",
+    "../parameter_0226/parameter_dip-chloride_elasticnetcv.txt",
+    "../parameter_0226/parameter_dip-chloride_ridgecv.txt",
+    "../parameter_0226/parameter_RuSS_gaussian.txt",
+    "../parameter_0226/parameter_RuSS_lassocv.txt",
+    "../parameter_0226/parameter_RuSS_PLS.txt",
+    "../parameter_0226/parameter_RuSS_elasticnetcv.txt",
+    "../parameter_0226/parameter_RuSS_ridgecv.txt",
 
 ]:
 
@@ -44,31 +44,32 @@ for param_file_name in [
         data_lines = f.read()
     try:
     # 文字列置換
-        data_lines = data_lines.replace("origin", "0207")
+        data_lines = data_lines.replace("origin", "0226")
 
     except:
         None
 
 
-    try:
-    # 文字列置換
-        data_lines = data_lines.replace("4.8,1.5,4.5,1", "4.8,1.88,4.88,0.25")
 
-    except:
-        None
     # try:
     # # 文字列置換
-    #     data_lines = data_lines.replace("../../../../grid_features", "../grid_features")
+    #     data_lines = data_lines.replace("4.8,1.88,4.88,0.25", "4.3,1.88,5.38,0.25")
     #
     # except:
     #     None
-
     try:
     # 文字列置換
-        data_lines = data_lines.replace("Dt ESP", "Dt ESP_cutoff")
+        data_lines = data_lines.replace("../cube_aligned_b3lyp_6-31g(d)", "../cube_aligned_/b3lyp_6-31g(d)")
 
     except:
         None
+
+    # try:
+    # # 文字列置換
+    #     data_lines = data_lines.replace("Dt ESP", "Dt ESP_cutoff")
+    #
+    # except:
+    #     None
     # try:
     # # 文字列置換
     #     data_lines = data_lines.replace("Dt ESP_cutoff_cutoff", "Dt ESP_cutoff")

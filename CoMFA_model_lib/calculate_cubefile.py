@@ -89,7 +89,7 @@ def cube_to_pkl(dirs_name):
 
 
 if __name__ == '__main__':
-    param_file_name = "../parameter/parameter_cbs.txt"  # _MP2
+    param_file_name = "../parameter_0222/parameter_cbs_gaussian.txt"  # _MP2
     #output_dir_name = "/Users/macmini_m1_2022/PycharmProjects/CoMFA_model/cube_aligned_b3lyp_6-31g(d)"  # "./psi4_cube_aligned"#_MP2
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
