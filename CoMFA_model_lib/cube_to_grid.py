@@ -210,7 +210,7 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
 if __name__ == '__main__':
 
-    for param_file_name in ["../parameter_0207/parameter_cbs_gaussian.txt","../parameter_0207/parameter_dip-chloride_gaussian.txt","../parameter_0207/parameter_RuSS_gaussian.txt"]:
+    for param_file_name in ["../parameter_0222/parameter_cbs_gaussian.txt","../parameter_0222/parameter_RuSS_gaussian.txt","../parameter_0222/parameter_dip-chloride_gaussian.txt",]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
 
@@ -237,3 +237,4 @@ if __name__ == '__main__':
         for mol in df["mol"]:
             energy_to_Boltzmann_distribution(mol, RT=0.54)
             read_cube(param["cube_dir_name"], dfp, mol,grid_dir_name+"/[{}]".format(param["grid_sizefile"])+"/"+mol.GetProp("InchyKey"))
+        print("complete")
