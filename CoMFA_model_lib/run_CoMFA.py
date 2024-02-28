@@ -233,15 +233,37 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
         Y = df["ΔΔG.expt."].values
 
         if regression_type == "lassocv":
-            model = linear_model.LassoCV(fit_intercept=False, cv=5).fit(features, Y)
+            model = linear_model.LassoCV(n_alphas=10,fit_intercept=False, cv=5).fit(features, Y)
+            print("alphas_")
+            print(model.alphas_)
+            print("alpha")
+            print(model.alpha_)
+            print("model.mse_path_")
+            print(model.mse_path_)
+            raise ValueError
+
 
         elif regression_type == "PLS":
             model = PLSRegression(n_components=5).fit(features, Y)
         elif regression_type == "ridgecv":
 
-            model = RidgeCV(fit_intercept=False, cv=5).fit(features, Y)
+            model = RidgeCV(alphas=(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024),fit_intercept=False, cv=5).fit(features, Y)
+            print("alpha")
+            print(model.alpha_)
+            print("best_score_")
+            print(model.best_score_)
+
+            raise ValueError
         elif regression_type == "elasticnetcv":
-            model = ElasticNetCV(fit_intercept=False, cv=5).fit(features, Y)
+            model = ElasticNetCV(n_alphas=10,fit_intercept=False, cv=5).fit(features, Y)
+            print("alphas_")
+            print(model.alphas_)
+            print("alpha")
+            print(model.alpha_)
+            raise ValueError
+
+
+
         df["ΔΔG.train"] = model.predict(features)
 
         os.makedirs(param["moleculer_field_dir"], exist_ok=True)
@@ -274,11 +296,6 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
         df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
         all_hparam=True
         if all_hparam :
-            # for L1, L2 in zip(dfp["Dtparam"], dfp["ESP_cutoffparam"]):
-            p1=dfp["Dtparam"]
-            p2=dfp["ESP_cutoffparam"]
-
-            dfp["ESP_cutoffparam"]
             for L1, L2 in zip(dfp["Dtparam"], dfp["ESP_cutoffparam"]):
                 print([L1, L2])
                 penalty1 = np.concatenate([L1 * penalty, np.zeros(penalty.shape)], axis=1)
@@ -291,6 +308,7 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
                 df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[
                                                                         penalty.shape[0]:penalty.shape[0] * 2]
                 df_mf.to_csv((param["moleculer_field_dir"] + "/{}/".format(L1) + "moleculer_field.csv"))
+                df_mf.to_excel((param["moleculer_field_dir"] + "/{}/".format(L1) + "moleculer_field.csv"))
 
 
 
@@ -362,6 +380,7 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
             Y = df.iloc[train_index]["ΔΔG.expt."].values
             if regression_type == "lassocv":
                 model = linear_model.LassoCV(fit_intercept=False, cv=5).fit(features, Y)
+
             elif regression_type == "PLS":
                 model = PLSRegression(n_components=5).fit(features, Y)
             elif regression_type == "ridgecv":
@@ -724,21 +743,24 @@ if __name__ == '__main__':
         # "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
         # "../parameter_nomax/parameter_RuSS_ridgecv.txt",
 
-        "../parameter_0222/parameter_cbs_gaussian.txt",
-        "../parameter_0222/parameter_cbs_ridgecv.txt",
-        "../parameter_0222/parameter_cbs_PLS.txt",
-        "../parameter_0222/parameter_cbs_lassocv.txt",
-        "../parameter_0222/parameter_cbs_elasticnetcv.txt",
-        "../parameter_0222/parameter_RuSS_gaussian.txt",
-        "../parameter_0222/parameter_RuSS_PLS.txt",
-        "../parameter_0222/parameter_RuSS_lassocv.txt",
-        "../parameter_0222/parameter_RuSS_elasticnetcv.txt",
-        "../parameter_0222/parameter_RuSS_ridgecv.txt",
-        "../parameter_0222/parameter_dip-chloride_PLS.txt",
-        "../parameter_0222/parameter_dip-chloride_lassocv.txt",
-        "../parameter_0222/parameter_dip-chloride_gaussian.txt",
-        "../parameter_0222/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter_0222/parameter_dip-chloride_ridgecv.txt",
+        "../parameter_0227/parameter_cbs_elasticnetcv.txt",
+        "../parameter_0227/parameter_cbs_ridgecv.txt",
+        "../parameter_0227/parameter_cbs_lassocv.txt",
+
+        "../parameter_0227/parameter_cbs_gaussian.txt",
+        "../parameter_0227/parameter_cbs_PLS.txt",
+
+
+        "../parameter_0227/parameter_RuSS_gaussian.txt",
+        "../parameter_0227/parameter_RuSS_PLS.txt",
+        "../parameter_0227/parameter_RuSS_lassocv.txt",
+        "../parameter_0227/parameter_RuSS_elasticnetcv.txt",
+        "../parameter_0227/parameter_RuSS_ridgecv.txt",
+        "../parameter_0227/parameter_dip-chloride_PLS.txt",
+        "../parameter_0227/parameter_dip-chloride_lassocv.txt",
+        "../parameter_0227/parameter_dip-chloride_gaussian.txt",
+        "../parameter_0227/parameter_dip-chloride_elasticnetcv.txt",
+        "../parameter_0227/parameter_dip-chloride_ridgecv.txt",
 
 
 

@@ -15,7 +15,7 @@ if __name__ == '__main__':
                             "../parameter_0216/parameter_RuSS_gaussian.txt"]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
-        gridinterval = 0.25
+        gridinterval = 1
         xgrid =4.3
         ygrid =2.0
         zgrid =5.5
