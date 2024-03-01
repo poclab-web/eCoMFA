@@ -1,23 +1,21 @@
-import pandas as pd
-import calculate_conformation
+import copy
+import json
 import os
-from sklearn import linear_model
-from sklearn.metrics import r2_score, mean_squared_error
-import numpy as np
-from rdkit.Chem import PandasTools
-from sklearn.model_selection import LeaveOneOut, KFold
-from sklearn.cross_decomposition import PLSRegression
-from sklearn.linear_model import RidgeCV
-from sklearn.linear_model import ElasticNetCV
-from sklearn.model_selection import train_test_split
 import time
 import warnings
-import json
-import csv
 
-"""
-feature_num
-"""
+import numpy as np
+import pandas as pd
+from rdkit.Chem import PandasTools
+from sklearn import linear_model
+from sklearn.cross_decomposition import PLSRegression
+from sklearn.linear_model import ElasticNetCV
+from sklearn.linear_model import RidgeCV
+from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.model_selection import KFold
+
+import calculate_conformation
+
 warnings.simplefilter('ignore')
 
 
@@ -93,7 +91,7 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
                 features1 = features1 / np.std(features1_)
                 features2 = features2 / np.std(features2_)
                 features_train = np.concatenate([features1, features2], axis=1)
-                features = features_train #/ np.std(features_train, axis=0)
+                features = features_train  # / np.std(features_train, axis=0)
 
                 if regression_type in ["gaussian"]:
                     X = np.concatenate([features, penalty1, penalty2], axis=0)
@@ -117,7 +115,7 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
                 features1 = features1 / np.std(features1_)
                 features2 = features2 / np.std(features2_)
                 features_test = np.concatenate([features1, features2], axis=1)
-                features = features_test #/ np.std(features_train, axis=0)
+                features = features_test  # / np.std(features_train, axis=0)
 
                 predict = model.predict(features)
                 if maxmin == "True":
@@ -154,45 +152,41 @@ def grid_search(fold, features_dir_name, regression_features, feature_number, df
     p.to_csv(param["out_dir_name"] + "/hyperparam.csv")
 
 
-import copy
-
 def df1unfolding(df):
-
-
     df_y = copy.deepcopy(df)
-    df_y["y"]=-df_y["y"]
+    df_y["y"] = -df_y["y"]
 
     df_z = copy.deepcopy(df)
-    df_z["z"]=-df_z["z"]
-    df_z["Dt"]=-df_z["Dt"]
+    df_z["z"] = -df_z["z"]
+    df_z["Dt"] = -df_z["Dt"]
     df_z["ESP_cutoff"] = -df_z["ESP_cutoff"]
-    df_yz= copy.deepcopy(df)
-    df_yz["y"]=-df_yz["y"]
-    df_yz["z"]=-df_yz["z"]
-    df_yz["Dt"]=-df_yz["Dt"]
+    df_yz = copy.deepcopy(df)
+    df_yz["y"] = -df_yz["y"]
+    df_yz["z"] = -df_yz["z"]
+    df_yz["Dt"] = -df_yz["Dt"]
     df_yz["ESP_cutoff"] = -df_yz["ESP_cutoff"]
 
     df = pd.concat([df, df_y, df_z, df_yz]).sort_values(by=["x", "y", "z"])
 
     return df
-def zunfolding(df,regression_features):
 
+
+def zunfolding(df, regression_features):
     df.to_csv("../errortest/dfbefore.csv")
     df_z = copy.deepcopy(df)
-    df_z["z"]=-df_z["z"]
-    df_z["MF_Dt"]=-df_z["MF_Dt"]
+    df_z["z"] = -df_z["z"]
+    df_z["MF_Dt"] = -df_z["MF_Dt"]
 
-    df_z["MF_{}".format(regression_features.split()[1])]=-df_z["MF_{}".format(regression_features.split()[1])]
+    df_z["MF_{}".format(regression_features.split()[1])] = -df_z["MF_{}".format(regression_features.split()[1])]
 
-
-    df = pd.concat([df ,df_z ]).sort_values(['x', 'y',"z"], ascending=[True, True,True])#.sort_values(by=["x", "y", "z"])
+    df = pd.concat([df, df_z]).sort_values(['x', 'y', "z"],
+                                           ascending=[True, True, True])  # .sort_values(by=["x", "y", "z"])
     df.to_csv("../errortest/dfafter.csv")
     return df
 
 
 def leave_one_out(fold, features_dir_name, regression_features, df, out_file_name, param,
-                  regression_type, dfp,p=None):
-
+                  regression_type, dfp, p=None):
     penalty = np.load("../penalty/penalty.npy")
     if fold:
         grid_features_name = "{}/{}/feature_yz.csv"
@@ -208,24 +202,23 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
                      "{}".format(regression_features.split()[1])].values for mol
                  in df["mol"]]
     features1unfold = [pd.read_csv("{}/{}/feature_y.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
-                     "{}".format(regression_features.split()[0])].values for mol
-                 in df["mol"]]
+                           "{}".format(regression_features.split()[0])].values for mol
+                       in df["mol"]]
     features2unfold = [pd.read_csv("{}/{}/feature_y.csv".format(features_dir_name, mol.GetProp("InchyKey")))[
-                     "{}".format(regression_features.split()[1])].values for mol
-                 in df["mol"]]
+                           "{}".format(regression_features.split()[1])].values for mol
+                       in df["mol"]]
 
-    features1_=np.array(features1)
+    features1_ = np.array(features1)
 
-
-    features1=features1/np.std(features1_)
-    features2_=np.array(features2)
+    features1 = features1 / np.std(features1_)
+    features2_ = np.array(features2)
     features1_unfold = np.array(features1unfold)
     features2_unfold = np.array(features2unfold)
-    features2=features2/np.std(features2_)
+    features2 = features2 / np.std(features2_)
     features_train = np.concatenate([features1, features2], axis=1)
     # np.save(param["moleculer_field_dir"]+"/trainstd", np.std(features1, axis=0))
-    features = features_train #/ np.std(features_train, axis=0)
-    features=np.nan_to_num(features)
+    features = features_train  # / np.std(features_train, axis=0)
+    features = np.nan_to_num(features)
 
     df_mf = pd.read_csv(grid_features_name.format(features_dir_name, "KWOLFJPFCHCOCG-UHFFFAOYSA-N"))
     df_mf.to_csv("../errortest/dfmf.csv")
@@ -233,36 +226,35 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
         Y = df["ΔΔG.expt."].values
 
         if regression_type == "lassocv":
-            model = linear_model.LassoCV(n_alphas=10,fit_intercept=False, cv=5).fit(features, Y)
+            model = linear_model.LassoCV(n_alphas=10, fit_intercept=False, cv=5).fit(features, Y)
             print("alphas_")
             print(model.alphas_)
             print("alpha")
             print(model.alpha_)
             print("model.mse_path_")
             print(model.mse_path_)
-            raise ValueError
+            # raise ValueError
 
 
         elif regression_type == "PLS":
-            model = PLSRegression(n_components=5).fit(features, Y)
+            model = PLSRegression(n_components=3).fit(features, Y)
         elif regression_type == "ridgecv":
 
-            model = RidgeCV(alphas=(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024),fit_intercept=False, cv=5).fit(features, Y)
+            model = RidgeCV(alphas=(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024), fit_intercept=False, cv=5).fit(
+                features, Y)
             print("alpha")
             print(model.alpha_)
             print("best_score_")
             print(model.best_score_)
 
-            raise ValueError
+            # raise ValueError
         elif regression_type == "elasticnetcv":
-            model = ElasticNetCV(n_alphas=10,fit_intercept=False, cv=5).fit(features, Y)
+            model = ElasticNetCV(n_alphas=10, fit_intercept=False, cv=5).fit(features, Y)
             print("alphas_")
             print(model.alphas_)
             print("alpha")
             print(model.alpha_)
-            raise ValueError
-
-
+            # raise ValueError
 
         df["ΔΔG.train"] = model.predict(features)
 
@@ -278,7 +270,7 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
             df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[int(model.coef_.shape[0] / 2):int(
                 model.coef_.shape[0])]
         print("writemoleculerfield")
-        # df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
+        df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
 
     if regression_type in ["gaussian"]:
         print("loocv printp")
@@ -294,8 +286,8 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
         os.makedirs(param["moleculer_field_dir"], exist_ok=True)
         df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
         df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[penalty.shape[0]:penalty.shape[0] * 2]
-        all_hparam=True
-        if all_hparam :
+        all_hparam = True
+        if all_hparam:
             for L1, L2 in zip(dfp["Dtparam"], dfp["ESP_cutoffparam"]):
                 print([L1, L2])
                 penalty1 = np.concatenate([L1 * penalty, np.zeros(penalty.shape)], axis=1)
@@ -303,29 +295,26 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
                 X = np.concatenate([features, penalty1, penalty2], axis=0)
                 Y = np.concatenate([df["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
                 model = linear_model.LinearRegression(fit_intercept=False).fit(X, Y)
-                os.makedirs(param["moleculer_field_dir"]+ "/{}/".format(L1) , exist_ok=True)
+                os.makedirs(param["moleculer_field_dir"] + "/{}/".format(L1), exist_ok=True)
                 df_mf["MF_{}".format(regression_features.split()[0])] = model.coef_[:penalty.shape[0]]
                 df_mf["MF_{}".format(regression_features.split()[1])] = model.coef_[
                                                                         penalty.shape[0]:penalty.shape[0] * 2]
                 df_mf.to_csv((param["moleculer_field_dir"] + "/{}/".format(L1) + "moleculer_field.csv"))
-                df_mf.to_excel((param["moleculer_field_dir"] + "/{}/".format(L1) + "moleculer_field.csv"))
-
-
-
-
+                # df_mf.to_excel((param["moleculer_field_dir"] + "/{}/".format(L1) + "moleculer_field.csv"))
 
     df["{}_contribution".format(regression_features.split()[0])] = np.sum(
-        features1 * df_mf["MF_{}".format(regression_features.split()[0])].values, axis=1)#/ np.std(features1, axis=0)
+        features1 * df_mf["MF_{}".format(regression_features.split()[0])].values, axis=1)  # / np.std(features1, axis=0)
 
     df["{}_contribution".format(regression_features.split()[1])] = np.sum(
-        features2 * df_mf["MF_{}".format(regression_features.split()[1])].values, axis=1)#/ (np.std(features2, axis=0)) )
+        features2 * df_mf["MF_{}".format(regression_features.split()[1])].values,
+        axis=1)  # / (np.std(features2, axis=0)) )
 
     df_mf["{}_std".format(regression_features.split()[0])] = np.std(features1_)
     df_mf["{}_std".format(regression_features.split()[1])] = np.std(features2_)
     df_mf.to_csv((param["moleculer_field_dir"] + "/" + "moleculer_field.csv"))
     df_unfold = df_mf
-    if fold :
-        df_unfold = zunfolding(df_mf,regression_features)
+    if fold:
+        df_unfold = zunfolding(df_mf, regression_features)
 
         # df_unfold["Dt_std"] =np.std(features1_unfold)
         # df_unfold["ESP_std"] = np.std(features2_unfold)
@@ -336,23 +325,22 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
     ESPR2s = []
 
     for mol in df["mol"]:
-        df1 = pd.read_csv("{}/{}/feature_y.csv".format(features_dir_name, mol.GetProp("InchyKey"))).sort_values(['x', 'y',"z"], ascending=[True, True,True])
+        df1 = pd.read_csv("{}/{}/feature_y.csv".format(features_dir_name, mol.GetProp("InchyKey"))).sort_values(
+            ['x', 'y', "z"], ascending=[True, True, True])
         df1["DtR1"] = df1["Dt"].values / df_unfold["Dt_std"].values * df_unfold["MF_Dt"].values
-        df1["ESPR1"] = df1["{}".format(regression_features.split()[1])].values / df_unfold["ESP_std"].values * df_unfold["MF_{}".format(regression_features.split()[1])].values
+        df1["ESPR1"] = df1["{}".format(regression_features.split()[1])].values / df_unfold["ESP_std"].values * \
+                       df_unfold["MF_{}".format(regression_features.split()[1])].values
         df1.to_csv("../errortest/df1R1R2.csv")
-        DtR1s.append(df1[(df1["z"] >0)  ]["DtR1"].sum())
-        DtR2s.append(df1[(df1["z"] < 0) ]["DtR1"].sum())
-        ESPR1s.append(df1[(df1["z"] > 0) ]["ESPR1"].sum())
-        ESPR2s.append(df1[(df1["z"] < 0) ]["ESPR1"].sum())
+        DtR1s.append(df1[(df1["z"] > 0)]["DtR1"].sum())
+        DtR2s.append(df1[(df1["z"] < 0)]["DtR1"].sum())
+        ESPR1s.append(df1[(df1["z"] > 0)]["ESPR1"].sum())
+        ESPR2s.append(df1[(df1["z"] < 0)]["ESPR1"].sum())
     df["DtR1"] = DtR1s
     df["DtR2"] = DtR2s
-    df["DtR1R2"]=df["DtR1"]+df["DtR2"]
+    df["DtR1R2"] = df["DtR1"] + df["DtR2"]
     df["ESPR1"] = ESPR1s
     df["ESPR2"] = ESPR2s
     df["ESPR1R2"] = df["ESPR1"] + df["ESPR2"]
-
-
-
 
     # ここからテストセットの実行
 
@@ -370,26 +358,26 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
                              "{}".format(regression_features.split()[1])].values
                          for
                          mol in df.iloc[train_index]["mol"]]
-            features1_=np.array(features1)
-            features2_=np.array(features2)
-            features1=features1/np.std(features1_)
-            features2=features2/np.std(features2_)
+            features1_ = np.array(features1)
+            features2_ = np.array(features2)
+            features1 = features1 / np.std(features1_)
+            features2 = features2 / np.std(features2_)
             features_train = np.concatenate([features1, features2], axis=1)
-            features = features_train #/ np.std(features_train, axis=0)
-            features=np.nan_to_num(features)
+            features = features_train  # / np.std(features_train, axis=0)
+            features = np.nan_to_num(features)
             Y = df.iloc[train_index]["ΔΔG.expt."].values
             if regression_type == "lassocv":
                 model = linear_model.LassoCV(fit_intercept=False, cv=5).fit(features, Y)
 
             elif regression_type == "PLS":
-                model = PLSRegression(n_components=5).fit(features, Y)
+                model = PLSRegression(n_components=3).fit(features, Y)
             elif regression_type == "ridgecv":
                 model = RidgeCV(fit_intercept=False, cv=5).fit(features, Y)
             elif regression_type == "elasticnetcv":
                 model = ElasticNetCV(fit_intercept=False, cv=5).fit(features, Y)
             else:
                 print("regressionerror")
-                raise ValueError
+                # raise ValueError
 
             features1 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                              "{}".format(regression_features.split()[0])].values
@@ -399,13 +387,13 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
                              "{}".format(regression_features.split()[1])].values
                          for
                          mol in df.iloc[test_index]["mol"]]
-            features1=np.array(features1)
-            features2=np.array(features2)
-            features1=features1/np.std(features1_)
-            features2=features2/np.std(features2_)
+            features1 = np.array(features1)
+            features2 = np.array(features2)
+            features1 = features1 / np.std(features1_)
+            features2 = features2 / np.std(features2_)
             features_test = np.concatenate([features1, features2], axis=1)
-            features = features_test# / np.std(features_train, axis=0)
-            features=np.nan_to_num(features)
+            features = features_test  # / np.std(features_train, axis=0)
+            features = np.nan_to_num(features)
             predict = model.predict(features)
 
             if regression_type == "PLS":
@@ -450,7 +438,7 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
             hparam1 = p['{}param'.format(regression_features.split()[0])].values
             hparam2 = p['{}param'.format(regression_features.split()[1])].values
             features_train = np.concatenate([features1, features2], axis=1)
-            features = features_train #/ np.std(features_train, axis=0)
+            features = features_train  # / np.std(features_train, axis=0)
             penalty1 = np.concatenate([hparam1 * penalty, np.zeros(penalty.shape)], axis=1)
             penalty2 = np.concatenate([np.zeros(penalty.shape), hparam2 * penalty], axis=1)
             X = np.concatenate([features, penalty1, penalty2], axis=0)
@@ -470,7 +458,7 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
             features1 = features1 / np.std(features1_)
             features2 = features2 / np.std(features2_)
             features_test = np.concatenate([features1, features2], axis=1)
-            features = features_test #/ np.std(features_train, axis=0)
+            features = features_test  # / np.std(features_train, axis=0)
 
             predict = model.predict(features)
             # if maxmin == "True":
@@ -517,6 +505,7 @@ def leave_one_out(fold, features_dir_name, regression_features, df, out_file_nam
     # p.to_csv(param["out_dir_name"] + "/hyperparamloocv.csv")
 
     return model
+
 
 # def train_testfold(fold, features_dir_name, regression_features, feature_number, df, gridsearch_file_name,
 #                    looout_file_name, testout_file_name, param, fplist, regression_type, maxmin, dfp):
@@ -611,7 +600,6 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
 
     df_train = df
 
-
     p = None
     if param["Regression_type"] in "gaussian":
         grid_search(fold, features_dir_name, regression_features, feature_number, df_train, dfp,
@@ -619,7 +607,7 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
                     regression_type, maxmin)
         if param["cat"] == "cbs":
 
-            p=pd.read_csv(param["out_dir_name"] + "/hyperparam.csv")
+            p = pd.read_csv(param["out_dir_name"] + "/hyperparam.csv")
         elif param["cat"] == "dip":
 
             p = pd.read_csv(param["out_dir_name"] + "/hyperparam.csv")
@@ -629,11 +617,11 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
         else:
             print("Not exist gridsearch result")
         leave_one_out(fold, features_dir_name, regression_features, df_train,
-                      looout_file_name, param, regression_type, dfp,p)  # 分子場の出力　looの出力
+                      looout_file_name, param, regression_type, dfp, p)  # 分子場の出力　looの出力
     else:
         leave_one_out(fold, features_dir_name, regression_features, df_train,  # 分子場の出力　looの出力
                       looout_file_name, param,
-                      regression_type,dfp, p=None)
+                      regression_type, dfp, p=None)
     df = df.sample(frac=1, random_state=0)
 
     kf = KFold(n_splits=5)
@@ -649,12 +637,12 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
         features2 = [pd.read_csv(grid_features_name.format(features_dir_name, mol.GetProp("InchyKey")))[
                          "{}".format(regression_features.split()[1])].values for mol
                      in df_train["mol"]]
-        features1_=np.array(features1)
-        features1=features1/np.std(features1)
-        features2_=np.array(features2)
-        features2=features2/np.std(features2)
+        features1_ = np.array(features1)
+        features1 = features1 / np.std(features1)
+        features2_ = np.array(features2)
+        features2 = features2 / np.std(features2)
         features_train = np.concatenate([features1, features2], axis=1)
-        features = features_train# / np.std(features_train, axis=0)
+        features = features_train  # / np.std(features_train, axis=0)
         print(features.shape)
         # if regression_type == "lassocv" or regression_type == "PLS" or regression_type == "ridgecv" or regression_type == "elasticnetcv":
         Y = df_train["ΔΔG.expt."].values
@@ -662,7 +650,7 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
         if regression_type == "lassocv":
             model = linear_model.LassoCV(fit_intercept=False, cv=5).fit(features, Y)
         elif regression_type == "PLS":
-            model = PLSRegression(n_components=5).fit(features, Y)
+            model = PLSRegression(n_components=3).fit(features, Y)
         elif regression_type == "ridgecv":
             model = RidgeCV(fit_intercept=False, cv=5).fit(features, Y)
         elif regression_type == "elasticnetcv":
@@ -685,20 +673,18 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
                          "{}".format(regression_features.split()[1])].values
                      for
                      mol in df_test["mol"]]
-        features1=np.array(features1)
-        features2=np.array(features2)
-        features1=features1/np.std(features1_)
-        features2=features2/np.std(features2_)
+        features1 = np.array(features1)
+        features2 = np.array(features2)
+        features1 = features1 / np.std(features1_)
+        features2 = features2 / np.std(features2_)
         features_test = np.concatenate([features1, features2], axis=1)
-        features = features_test# / np.std(features_train, axis=0)
+        features = features_test  # / np.std(features_train, axis=0)
         testpredict = model.predict(features)
-
 
         if regression_type == "PLS":
             testlist.extend([_[0] for _ in testpredict])
         else:
             testlist.extend(testpredict)
-
 
     df["ΔΔG.crosstest"] = testlist
     r2 = r2_score(df["ΔΔG.expt."], df["ΔΔG.crosstest"])
@@ -743,26 +729,28 @@ if __name__ == '__main__':
         # "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
         # "../parameter_nomax/parameter_RuSS_ridgecv.txt",
 
-        "../parameter_0227/parameter_cbs_elasticnetcv.txt",
+        "../parameter_0227/parameter_cbs_gaussian.txt",
+        "../parameter_0227/parameter_dip-chloride_gaussian.txt",
+        "../parameter_0227/parameter_RuSS_gaussian.txt",
+
+
+        "../parameter_0227/parameter_cbs_PLS.txt",
+        "../parameter_0227/parameter_dip-chloride_PLS.txt",
+        "../parameter_0227/parameter_RuSS_PLS.txt",
+
         "../parameter_0227/parameter_cbs_ridgecv.txt",
+        "../parameter_0227/parameter_dip-chloride_ridgecv.txt",
+        "../parameter_0227/parameter_RuSS_ridgecv.txt",
+
+        "../parameter_0227/parameter_cbs_elasticnetcv.txt",
         "../parameter_0227/parameter_cbs_lassocv.txt",
 
-        "../parameter_0227/parameter_cbs_gaussian.txt",
-        "../parameter_0227/parameter_cbs_PLS.txt",
 
-
-        "../parameter_0227/parameter_RuSS_gaussian.txt",
-        "../parameter_0227/parameter_RuSS_PLS.txt",
         "../parameter_0227/parameter_RuSS_lassocv.txt",
         "../parameter_0227/parameter_RuSS_elasticnetcv.txt",
-        "../parameter_0227/parameter_RuSS_ridgecv.txt",
-        "../parameter_0227/parameter_dip-chloride_PLS.txt",
         "../parameter_0227/parameter_dip-chloride_lassocv.txt",
-        "../parameter_0227/parameter_dip-chloride_gaussian.txt",
+
         "../parameter_0227/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter_0227/parameter_dip-chloride_ridgecv.txt",
-
-
 
     ]:
 
@@ -799,8 +787,7 @@ if __name__ == '__main__':
         looout_file_name = param["out_dir_name"] + "/result_loonondfold.xlsx"
         testout_file_name = param["out_dir_name"] + "/result_train_test.xlsx"
         crosstestout_file_name = param["out_dir_name"] + "/result_5crossvalidnonfold.xlsx"
-        if  fold:
-
+        if fold:
             looout_file_name = param["out_dir_name"] + "/result_loo.xlsx"
             crosstestout_file_name = param["out_dir_name"] + "/result_5crossvalid.xlsx"
         # if traintest:

@@ -49,10 +49,12 @@ for param_file_name in [
     except:
         None
 
-
-
+    try:# 文字列置換[5,3,5,0.5]
+        data_lines = data_lines.replace("4.3,1.5,4.5.1", "5,3,5,0.5")
+    except:
+        None
     try:
-    # 文字列置換
+    # 文字列置換[5,3,5,0.5]
         data_lines = data_lines.replace("4.3,1.5,4.5.1", "4.3,1.5,4.5,1")
 
     except:

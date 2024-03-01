@@ -33,8 +33,8 @@ def read_cube(dir_name,dfp,mol,out_name):
         def fdt(n,feature):
             try:
                 ans=float(feature[3 + 3 + n_atom+n//6].split()[n%6])
-                if ans>0.1:
-                    ans=0.1
+                if ans>1:
+                    ans=1
             except:
                 ans=0
             return ans
@@ -210,10 +210,10 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
 if __name__ == '__main__':
 
-    for param_file_name in ["../parameter_0227/parameter_cbs_gaussian.txt","../parameter_0227/parameter_RuSS_gaussian.txt","../parameter_0227/parameter_dip-chloride_gaussian.txt",]:
+    for param_file_name in ["../parameter_0227/parameter_cbs_gaussian.txt","../parameter_0227/parameter_RuSS_gaussian.txt","../parameter_0227/parameter_dip-chloride_gaussian.txt",][::-1]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
-
+        print(param)
         #座標を読み込む
         # "data_file_path"
         # df1 = pd.read_excel( "../arranged_dataset/cbs.xls")
@@ -235,6 +235,7 @@ if __name__ == '__main__':
         grid_dir_name=param["grid_dir_name"]
         #グリッド情報に変換
         for mol in df["mol"]:
+            print(mol.GetProp("InchyKey"))
             energy_to_Boltzmann_distribution(mol, RT=0.54)
             read_cube(param["cube_dir_name"], dfp, mol,grid_dir_name+"/[{}]".format(param["grid_sizefile"])+"/"+mol.GetProp("InchyKey"))
         print("complete")
