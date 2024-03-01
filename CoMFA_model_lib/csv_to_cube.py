@@ -55,22 +55,25 @@ if __name__ == '__main__':
                             # "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
                             # "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
 
-        "../parameter_0207/parameter_cbs_gaussian.txt",
-        "../parameter_0207/parameter_cbs_gaussian.txt",
-        "../parameter_0207/parameter_cbs_ridgecv.txt",
-        "../parameter_0207/parameter_cbs_PLS.txt",
-        "../parameter_0207/parameter_cbs_lassocv.txt",
-        "../parameter_0207/parameter_cbs_elasticnetcv.txt",
-        "../parameter_0207/parameter_RuSS_gaussian.txt",
-        "../parameter_0207/parameter_RuSS_lassocv.txt",
-        "../parameter_0207/parameter_RuSS_PLS.txt",
-        "../parameter_0207/parameter_RuSS_elasticnetcv.txt",
-        "../parameter_0207/parameter_RuSS_ridgecv.txt",
-        "../parameter_0207/parameter_dip-chloride_PLS.txt",
-        "../parameter_0207/parameter_dip-chloride_lassocv.txt",
-        "../parameter_0207/parameter_dip-chloride_gaussian.txt",
-        "../parameter_0207/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter_0207/parameter_dip-chloride_ridgecv.txt",
+        "../parameter_0227/parameter_cbs_gaussian.txt",
+        "../parameter_0227/parameter_RuSS_gaussian.txt",
+        "../parameter_0227/parameter_dip-chloride_gaussian.txt",
+
+        # "../parameter_0207/parameter_cbs_gaussian.txt",
+        # "../parameter_0207/parameter_cbs_ridgecv.txt",
+        # "../parameter_0207/parameter_cbs_PLS.txt",
+        # "../parameter_0207/parameter_cbs_lassocv.txt",
+        # "../parameter_0207/parameter_cbs_elasticnetcv.txt",
+        # "../parameter_0227/parameter_RuSS_gaussian.txt",
+        # "../parameter_0207/parameter_RuSS_lassocv.txt",
+        # "../parameter_0207/parameter_RuSS_PLS.txt",
+        # "../parameter_0207/parameter_RuSS_elasticnetcv.txt",
+        # "../parameter_0207/parameter_RuSS_ridgecv.txt",
+        # "../parameter_0207/parameter_dip-chloride_PLS.txt",
+        # "../parameter_0207/parameter_dip-chloride_lassocv.txt",
+        # "../parameter_0227/parameter_dip-chloride_gaussian.txt",
+        # "../parameter_0207/parameter_dip-chloride_elasticnetcv.txt",
+        # "../parameter_0207/parameter_dip-chloride_ridgecv.txt",
                             ]:
 
 
@@ -94,7 +97,7 @@ if __name__ == '__main__':
         # UPEUQDJSUFHFQP-UHFFFAOYSA-N ,WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N,RIFKADJTWUGDOV-UHFFFAOYSA-N,
         #KRIOVPPHQSLHCZ-UHFFFAOYSA-N,CKGKXGQVRVAKEA-UHFFFAOYSA-N,AJKVQEKCUACUMD-UHFFFAOYSA-N,VRZSUVFVIIVLPV-UHFFFAOYSA-N
         cubeinchikey="../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N"
-        for feature, cube_file_name in zip(["MF_ESP_cutoff","MF_Dt"  ], [
+        for feature, cube_file_name in zip(["MF_ESP","MF_Dt"  ], [
             cubeinchikey+"/ESP02_0.cube",
             cubeinchikey+"/Dt02_0.cube",
                 ]):

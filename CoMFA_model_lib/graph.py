@@ -15,23 +15,23 @@ for i,param_file_name in enumerate([
 # "../parameter/parameter_dip-chloride_gaussian.txt",
 # "../parameter/parameter_RuSS_gaussian.txt",
 #
-"../parameter_0206/parameter_cbs_gaussian.txt",
- "../parameter_0206/parameter_cbs_PLS.txt",
- "../parameter_0206/parameter_cbs_ridgecv.txt",
- "../parameter_0206/parameter_cbs_elasticnetcv.txt",
-"../parameter_0206/parameter_cbs_lassocv.txt",
+"../parameter_0227/parameter_cbs_gaussian.txt",
+ "../parameter_0227/parameter_cbs_PLS.txt",
+ "../parameter_0227/parameter_cbs_ridgecv.txt",
+ "../parameter_0227/parameter_cbs_elasticnetcv.txt",
+"../parameter_0227/parameter_cbs_lassocv.txt",
 
-"../parameter_0206/parameter_dip-chloride_gaussian.txt",
-"../parameter_0206/parameter_dip-chloride_PLS.txt",
-"../parameter_0206/parameter_dip-chloride_ridgecv.txt",
-"../parameter_0206/parameter_dip-chloride_elasticnetcv.txt",
-"../parameter_0206/parameter_dip-chloride_lassocv.txt",
+"../parameter_0227/parameter_dip-chloride_gaussian.txt",
+"../parameter_0227/parameter_dip-chloride_PLS.txt",
+"../parameter_0227/parameter_dip-chloride_ridgecv.txt",
+"../parameter_0227/parameter_dip-chloride_elasticnetcv.txt",
+"../parameter_0227/parameter_dip-chloride_lassocv.txt",
 
-"../parameter_0206/parameter_RuSS_gaussian.txt",
-"../parameter_0206/parameter_RuSS_PLS.txt",
-"../parameter_0206/parameter_RuSS_ridgecv.txt",
-"../parameter_0206/parameter_RuSS_elasticnetcv.txt",
-"../parameter_0206/parameter_RuSS_lassocv.txt",
+"../parameter_0227/parameter_RuSS_gaussian.txt",
+"../parameter_0227/parameter_RuSS_PLS.txt",
+"../parameter_0227/parameter_RuSS_ridgecv.txt",
+"../parameter_0227/parameter_RuSS_elasticnetcv.txt",
+"../parameter_0227/parameter_RuSS_lassocv.txt",
 # "../parameter_nomax/parameter_cbs_gaussian.txt",
 #  "../parameter_nomax/parameter_cbs_PLS.txt",
 #  "../parameter_nomax/parameter_cbs_ridgecv.txt",
@@ -68,8 +68,8 @@ for i,param_file_name in enumerate([
     # ax = fig.add_subplot(4, 2, i+1)
     ax = fig.add_subplot(3, 5, i+1)
     # ax =  subplot(2, 2, i)
-    ax.plot([-2.5,2.5], [-2.5,2.5],color="Gray")
-    df_test["ΔΔG.crosstest"]=np.where(np.abs(df_test["ΔΔG.crosstest"].values) < 2.5, df_test["ΔΔG.crosstest"].values, 2.5 * np.sign(df_test["ΔΔG.crosstest"].values))
+    ax.plot([-3,3], [-3,3],color="Gray")
+    #df_test["ΔΔG.crosstest"]=np.where(np.abs(df_test["ΔΔG.crosstest"].values) < 2.5, df_test["ΔΔG.crosstest"].values, 2.5 * np.sign(df_test["ΔΔG.crosstest"].values))
 
     print(df_test["ΔΔG.crosstest"].values)
     # ax.plot(df["ΔΔG.expt."], df["ΔΔG.loo"], "s", color="red",markersize=4 , alpha=0.5,label="loo $q^2$ = {:.2f}".format(r2_score(df["ΔΔG.expt."], df["ΔΔG.loo"])))
@@ -106,7 +106,7 @@ fig.tight_layout()
 plt.subplots_adjust(hspace=0.6)
 #plt.text(-35, 10, "(A) (S)-CBS-Me", fontsize=12)
 os.makedirs(save_dir,exist_ok=True)
-plt.savefig(save_dir+"/plot.png",transparent=True, dpi=300)
+plt.savefig(save_dir+"/plot.png",transparent=False, dpi=300)
 
 fig =plt.figure(figsize=(3*5, 3*3))
 margin = 0.2  # 0 <margin< 1
@@ -115,15 +115,15 @@ x = np.arange(3)
 fig, ax = plt.subplots(figsize=(6.4, 4))
 
 labels=["CBS cat.","DIP-Chloride","Ru cat."]
-labels=["(S)-CBS-Me","(-)-DIP-Chloride","$trans$-[RuC$\mathrm{l_2}$\n{(S)-xylbipap}{(S)-daipen}]"]
+labels=["(S)-CBS-Me","(-)-DIP-Chloride","$trans$-[RuC$\mathrm{l_2}$\n{(S)-XylBINAP}{(S)-DAIPEN}]"]
 print(labels)
 # filename=[["../parameter_nomax/parameter_cbs_gaussian.txt","../parameter_nomax/parameter_cbs_PLS.txt","../parameter_nomax/parameter_cbs_ridgecv.txt","../parameter_nomax/parameter_cbs_elasticnetcv.txt","../parameter_nomax/parameter_cbs_lassocv.txt"],
 #            ["../parameter_nomax/parameter_dip-chloride_gaussian.txt","../parameter_nomax/parameter_dip-chloride_PLS.txt","../parameter_nomax/parameter_dip-chloride_ridgecv.txt","../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt","../parameter_nomax/parameter_dip-chloride_lassocv.txt"],
 #             ["../parameter_nomax/parameter_RuSS_gaussian.txt","../parameter_nomax/parameter_RuSS_PLS.txt","../parameter_nomax/parameter_RuSS_ridgecv.txt","../parameter_nomax/parameter_RuSS_elasticnetcv.txt","../parameter_nomax/parameter_RuSS_lassocv.txt"]]
 
-filename=[["../parameter_0206/parameter_cbs_gaussian.txt","../parameter_0206/parameter_cbs_PLS.txt","../parameter_0206/parameter_cbs_ridgecv.txt","../parameter_0206/parameter_cbs_elasticnetcv.txt","../parameter_0206/parameter_cbs_lassocv.txt"],
-           ["../parameter_0206/parameter_dip-chloride_gaussian.txt","../parameter_0206/parameter_dip-chloride_PLS.txt","../parameter_0206/parameter_dip-chloride_ridgecv.txt","../parameter_0206/parameter_dip-chloride_elasticnetcv.txt","../parameter_0206/parameter_dip-chloride_lassocv.txt"],
-            ["../parameter_0206/parameter_RuSS_gaussian.txt","../parameter_0206/parameter_RuSS_PLS.txt","../parameter_0206/parameter_RuSS_ridgecv.txt","../parameter_0206/parameter_RuSS_elasticnetcv.txt","../parameter_0206/parameter_RuSS_lassocv.txt"]]
+filename=[["../parameter_0227/parameter_cbs_gaussian.txt","../parameter_0227/parameter_cbs_PLS.txt","../parameter_0227/parameter_cbs_ridgecv.txt","../parameter_0227/parameter_cbs_elasticnetcv.txt","../parameter_0227/parameter_cbs_lassocv.txt"],
+           ["../parameter_0227/parameter_dip-chloride_gaussian.txt","../parameter_0227/parameter_dip-chloride_PLS.txt","../parameter_0227/parameter_dip-chloride_ridgecv.txt","../parameter_0227/parameter_dip-chloride_elasticnetcv.txt","../parameter_0227/parameter_dip-chloride_lassocv.txt"],
+            ["../parameter_0227/parameter_RuSS_gaussian.txt","../parameter_0227/parameter_RuSS_PLS.txt","../parameter_0227/parameter_RuSS_ridgecv.txt","../parameter_0227/parameter_RuSS_elasticnetcv.txt","../parameter_0227/parameter_RuSS_lassocv.txt"]]
 
 
 for i, param_file_names in enumerate(filename):
@@ -166,7 +166,7 @@ ax.legend(loc='upper left',ncol=5, fontsize=8,)  # 凡例
 
 ax.set_xticks(x)
 ax.set_xlim(0-(1-margin)/3-margin, 2+(1-margin)/3+margin)
-# ax.set_ylim(0, 1.5)
+ax.set_ylim(0, 1.5)
 ax.set_yticks([0,0.5,1,1.5])
 ax.set_xticklabels(["{}".format(label) for label in labels])#, rotation=20
 ax.set_xlabel("Data sets")
