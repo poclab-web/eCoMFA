@@ -1,5 +1,4 @@
-import csv
-
+import glob
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
@@ -8,94 +7,132 @@ import json
 import numpy as np
 from sklearn.metrics import r2_score, mean_squared_error
 
+
+
+# for i,param_file_name in enumerate([
+# # "../parameter/parameter_cbs_gaussian.txt",
+# # "../parameter/parameter_dip-chloride_gaussian.txt",
+# # "../parameter/parameter_RuSS_gaussian.txt",
+# #
+# "../parameter_0227/parameter_cbs_gaussian.txt",
+#  "../parameter_0227/parameter_cbs_PLS.txt",
+#  "../parameter_0227/parameter_cbs_ridgecv.txt",
+#  "../parameter_0227/parameter_cbs_elasticnetcv.txt",
+# "../parameter_0227/parameter_cbs_lassocv.txt",
+#
+# "../parameter_0227/parameter_dip-chloride_gaussian.txt",
+# "../parameter_0227/parameter_dip-chloride_PLS.txt",
+# "../parameter_0227/parameter_dip-chloride_ridgecv.txt",
+# "../parameter_0227/parameter_dip-chloride_elasticnetcv.txt",
+# "../parameter_0227/parameter_dip-chloride_lassocv.txt",
+#
+# "../parameter_0227/parameter_RuSS_gaussian.txt",
+# "../parameter_0227/parameter_RuSS_PLS.txt",
+# "../parameter_0227/parameter_RuSS_ridgecv.txt",
+# "../parameter_0227/parameter_RuSS_elasticnetcv.txt",
+# "../parameter_0227/parameter_RuSS_lassocv.txt",
+# # "../parameter_nomax/parameter_cbs_gaussian.txt",
+# #  "../parameter_nomax/parameter_cbs_PLS.txt",
+# #  "../parameter_nomax/parameter_cbs_ridgecv.txt",
+# #  "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
+# # "../parameter_nomax/parameter_cbs_lassocv.txt",
+# #
+# # "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
+# # "../parameter_nomax/parameter_dip-chloride_PLS.txt",
+# # "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
+# # "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
+# # "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
+# #
+# # "../parameter_nomax/parameter_RuSS_gaussian.txt",
+# # "../parameter_nomax/parameter_RuSS_PLS.txt",
+# # "../parameter_nomax/parameter_RuSS_ridgecv.txt",
+# # "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
+# # "../parameter_nomax/parameter_RuSS_lassocv.txt",
+#
+#
+#
+#     ]):
+#
+#     with open(param_file_name, "r") as f:
+#         param = json.loads(f.read())
+with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
+    param = json.loads(f.read())
+print(param)
+
+fig =plt.figure(figsize=(3*3,1*3))
+i=0
+for file in glob.glob("../arranged_dataset/*.xlsx"):
+    i+=1
+    file_name = os.path.splitext(os.path.basename(file))[0]
+    save_path = param["out_dir_name"] + "/" + file_name
+    dfp=pd.read_csv(save_path+"/result.csv")
+    plt.xscale("log")
+    ax = fig.add_subplot(1,3, i)
+    ax.set_ylim(0, 1)
+
+    ax.set_title(file_name)
+    ax.set_yticks([0, 0.5, 1])
+    # ax.plot(dfp["lambda"],dfp["Gaussian_test_RMSE"],color="blue",label="Gaussian")
+    # ax.plot(dfp["lambda"], dfp["lasso_test_RMSE"],color="red",label="lasso")
+    # ax.plot(dfp["lambda"], dfp["ridge_test_RMSE"],color="green",label="ridge")
+
+    ax.plot(dfp["lambda"],dfp["Gaussian_test_r2"],color="blue",label="Gaussian")
+    ax.plot(dfp["lambda"], dfp["lasso_test_r2"],color="red",label="lasso")
+    ax.plot(dfp["lambda"], dfp["ridge_test_r2"],color="green",label="ridge")
+    ax.legend(loc='lower right', fontsize=6)
+    #ax.set_xticks([-2, 0, 2])
+
+plt.savefig("../figs/rmse.png", transparent=False, dpi=300)
+
+
 fig =plt.figure(figsize=(3*5, 3*3+1))
+i=0
+for file in glob.glob("../arranged_dataset/*.xlsx"):
+    df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)
+    for regression_type in ["gaussian","ridgecv","PLS","lassocv","elasticnetcv"]:
+        i+=1
+        file_name = os.path.splitext(os.path.basename(file))[0]
 
-for i,param_file_name in enumerate([
-# "../parameter/parameter_cbs_gaussian.txt",
-# "../parameter/parameter_dip-chloride_gaussian.txt",
-# "../parameter/parameter_RuSS_gaussian.txt",
-#
-"../parameter_0227/parameter_cbs_gaussian.txt",
- "../parameter_0227/parameter_cbs_PLS.txt",
- "../parameter_0227/parameter_cbs_ridgecv.txt",
- "../parameter_0227/parameter_cbs_elasticnetcv.txt",
-"../parameter_0227/parameter_cbs_lassocv.txt",
+        input_dir_name=param["out_dir_name"]+"/" + file_name+regression_type
+        save_dir="../figs"#param["fig_file_dir"]
+        df = pd.read_excel("{}/result_loo.xlsx".format(input_dir_name))
+        try:
+            df_test = pd.read_excel("{}/result_5crossvalid.xlsx".format(input_dir_name))
+            print(len(df_test))
+            print("true")
+        except:
+            None
+        # ax = fig.add_subplot(4, 2, i+1)
+        ax = fig.add_subplot(3, 5, i)
+        # ax =  subplot(2, 2, i)
+        ax.plot([-3,3], [-3,3],color="Gray")
+        #df_test["ΔΔG.crosstest"]=np.where(np.abs(df_test["ΔΔG.crosstest"].values) < 2.5, df_test["ΔΔG.crosstest"].values, 2.5 * np.sign(df_test["ΔΔG.crosstest"].values))
 
-"../parameter_0227/parameter_dip-chloride_gaussian.txt",
-"../parameter_0227/parameter_dip-chloride_PLS.txt",
-"../parameter_0227/parameter_dip-chloride_ridgecv.txt",
-"../parameter_0227/parameter_dip-chloride_elasticnetcv.txt",
-"../parameter_0227/parameter_dip-chloride_lassocv.txt",
+        print(df_test["ΔΔG.crosstest"].values)
+        # ax.plot(df["ΔΔG.expt."], df["ΔΔG.loo"], "s", color="red",markersize=4 , alpha=0.5,label="loo $q^2$ = {:.2f}".format(r2_score(df["ΔΔG.expt."], df["ΔΔG.loo"])))
+        # ax.plot(df["ΔΔG.expt."], df["ΔΔG.train"], "x",color="Black", markersize=4 ,alpha=0.5,label="train $r^2$ = {:.2f}".format(r2_score(df["ΔΔG.expt."], df["ΔΔG.train"])))
+        try:
+            ax.plot(df_test["ΔΔG.expt."], df_test["ΔΔG.crosstest"], "o",color="Blue",markersize=4 , alpha=0.5,label="test $r^2$ = {:.2f}".format(r2_score(df_test["ΔΔG.expt."], df_test["ΔΔG.crosstest"])))
+        except:
+            None
+        ax.legend(loc = 'lower right',fontsize=6) #凡例
 
-"../parameter_0227/parameter_RuSS_gaussian.txt",
-"../parameter_0227/parameter_RuSS_PLS.txt",
-"../parameter_0227/parameter_RuSS_ridgecv.txt",
-"../parameter_0227/parameter_RuSS_elasticnetcv.txt",
-"../parameter_0227/parameter_RuSS_lassocv.txt",
-# "../parameter_nomax/parameter_cbs_gaussian.txt",
-#  "../parameter_nomax/parameter_cbs_PLS.txt",
-#  "../parameter_nomax/parameter_cbs_ridgecv.txt",
-#  "../parameter_nomax/parameter_cbs_elasticnetcv.txt",
-# "../parameter_nomax/parameter_cbs_lassocv.txt",
-#
-# "../parameter_nomax/parameter_dip-chloride_gaussian.txt",
-# "../parameter_nomax/parameter_dip-chloride_PLS.txt",
-# "../parameter_nomax/parameter_dip-chloride_ridgecv.txt",
-# "../parameter_nomax/parameter_dip-chloride_elasticnetcv.txt",
-# "../parameter_nomax/parameter_dip-chloride_lassocv.txt",
-#
-# "../parameter_nomax/parameter_RuSS_gaussian.txt",
-# "../parameter_nomax/parameter_RuSS_PLS.txt",
-# "../parameter_nomax/parameter_RuSS_ridgecv.txt",
-# "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
-# "../parameter_nomax/parameter_RuSS_lassocv.txt",
-
-
-
-    ]):
-
-    with open(param_file_name, "r") as f:
-        param = json.loads(f.read())
-    input_dir_name=param["out_dir_name"]
-    save_dir=param["fig_file_dir"]
-    df = pd.read_excel("{}/result_loo.xlsx".format(input_dir_name))
-    try:
-        df_test = pd.read_excel("{}/result_5crossvalid.xlsx".format(input_dir_name))
-        print(len(df_test))
-        print("true")
-    except:
-        None
-    # ax = fig.add_subplot(4, 2, i+1)
-    ax = fig.add_subplot(3, 5, i+1)
-    # ax =  subplot(2, 2, i)
-    ax.plot([-3,3], [-3,3],color="Gray")
-    #df_test["ΔΔG.crosstest"]=np.where(np.abs(df_test["ΔΔG.crosstest"].values) < 2.5, df_test["ΔΔG.crosstest"].values, 2.5 * np.sign(df_test["ΔΔG.crosstest"].values))
-
-    print(df_test["ΔΔG.crosstest"].values)
-    # ax.plot(df["ΔΔG.expt."], df["ΔΔG.loo"], "s", color="red",markersize=4 , alpha=0.5,label="loo $q^2$ = {:.2f}".format(r2_score(df["ΔΔG.expt."], df["ΔΔG.loo"])))
-    # ax.plot(df["ΔΔG.expt."], df["ΔΔG.train"], "x",color="Black", markersize=4 ,alpha=0.5,label="train $r^2$ = {:.2f}".format(r2_score(df["ΔΔG.expt."], df["ΔΔG.train"])))
-    try:
-        ax.plot(df_test["ΔΔG.expt."], df_test["ΔΔG.crosstest"], "o",color="Blue",markersize=4 , alpha=0.5,label="test $r^2$ = {:.2f}".format(r2_score(df_test["ΔΔG.expt."], df_test["ΔΔG.crosstest"])))
-    except:
-        None
-    ax.legend(loc = 'lower right',fontsize=6) #凡例
-
-    # ax.text(-2.5, 2.0, "$\mathrm{N_{training}}$ = "+"{}\n".format(len(df))+"$\mathrm{N_{test}}$ = "+"{}".format(len(df_test)), fontsize=8)
-    ax.text(0.8, 0.15, "N = "+"{}".format(len(df_test)), fontsize=8,transform=ax.transAxes)
-    ax.set_xticks([-2, 0, 2])
-    ax.set_yticks([-2, 0, 2])
-    ax.set_xlabel("ΔΔ${G_{expt}}$ [kcal/mol]")
-    ax.set_ylabel("ΔΔ${G_{predict}}$ [kcal/mol]")
-    ax.set_title(param["title"])
-    # ax.set_title(param["title"]+"(N={})".format(len(df)))
-    #RMSE = np.sqrt(mean_squared_error(df_test["ΔΔG.expt."], df_test["ΔΔG.crosstest"]))
-    ax.set_xlim(-3,3)
-    ax.set_ylim(-3,3)
-    #np.savetxt("{}/RMSE.csv".format(param["out_dir_name"]), RMSE)
-    #rmse=[]
-    #rmse.append(RMSE)
-    #p=pd.DataFrame(rmse)
-    #p.to_csv("{}/RMSE.csv".format(param["out_dir_name"]))
+        # ax.text(-2.5, 2.0, "$\mathrm{N_{training}}$ = "+"{}\n".format(len(df))+"$\mathrm{N_{test}}$ = "+"{}".format(len(df_test)), fontsize=8)
+        ax.text(0.8, 0.15, "N = "+"{}".format(len(df_test)), fontsize=8,transform=ax.transAxes)
+        ax.set_xticks([-2, 0, 2])
+        ax.set_yticks([-2, 0, 2])
+        ax.set_xlabel("ΔΔ${G_{expt}}$ [kcal/mol]")
+        ax.set_ylabel("ΔΔ${G_{predict}}$ [kcal/mol]")
+        ax.set_title(regression_type)
+        # ax.set_title(param["title"]+"(N={})".format(len(df)))
+        #RMSE = np.sqrt(mean_squared_error(df_test["ΔΔG.expt."], df_test["ΔΔG.crosstest"]))
+        ax.set_xlim(-3,3)
+        ax.set_ylim(-3,3)
+        #np.savetxt("{}/RMSE.csv".format(param["out_dir_name"]), RMSE)
+        #rmse=[]
+        #rmse.append(RMSE)
+        #p=pd.DataFrame(rmse)
+        #p.to_csv("{}/RMSE.csv".format(param["out_dir_name"]))
 
 
 

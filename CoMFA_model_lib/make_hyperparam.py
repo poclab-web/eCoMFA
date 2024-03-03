@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product
 import os
 
-out_dir_name="../penalty_param"
+out_dir_name= "../old/penalty_param"
 out_file_name="/penalty_param.csv"
 if __name__ == '__main__':#cbsだいたい0.01あたりから,dip0.1あたりから
     # sr = {"λ1":np.arange(0.05,0.2,0.05)*10,
