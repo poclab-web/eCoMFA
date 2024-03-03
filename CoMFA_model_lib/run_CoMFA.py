@@ -18,8 +18,8 @@ warnings.simplefilter('ignore')
 
 def Gaussian_penalized(grid_dir,df,dfp,gaussian_penalize,save_name):
     #Gaussian Lasso Ridgeを行う。#PLSなどは別？
-
-    penalty = np.load(gaussian_penalize)
+    df_coord=pd.read_csv(gaussian_penalize+"/coordinates_yz.csv")
+    penalty = np.load(gaussian_penalize+"/penalty.npy")
     features_all = []
     for mol in df["mol"]:
         df_grid = pd.read_csv("{}/{}/feature_yz.csv".format(grid_dir, mol.GetProp("InchyKey")))
@@ -39,8 +39,8 @@ def Gaussian_penalized(grid_dir,df,dfp,gaussian_penalize,save_name):
         penalty_L=[[L * penalty, np.zeros(penalty.shape)],
                       [np.zeros(penalty.shape), L * penalty]]
         X = np.block([[features],
-                      [L * penalty, np.zeros(penalty.shape)],
-                      [np.zeros(penalty.shape), L * penalty]])
+                      penalty_L[0],
+                      penalty_L[1]])
         Y = np.concatenate([df["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
         model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
         Gaussian_penalized_models.append(model)
@@ -48,6 +48,17 @@ def Gaussian_penalized(grid_dir,df,dfp,gaussian_penalize,save_name):
         Ridge_models.append(ridge)
         lasso=linear_model.Lasso(alpha=L/100,fit_intercept=False).fit(features,df["ΔΔG.expt."])
         Lasso_models.append(lasso)
+
+        gaussian_coef=model.coef_
+        n=int(gaussian_coef.shape[0] / 2)
+        df_coord["Gaussian_Dt"]=gaussian_coef[:n]
+        df_coord["Gaussian_ESP"]=gaussian_coef[n:]
+        df_coord["Ridge_Dt"]=ridge.coef_[:n]
+        df_coord["Ridge_ESP"]=ridge.coef_[n:]
+        df_coord["Lasso_Dt"]=lasso.coef_[:n]
+        df_coord["Lasso_ESP"]=lasso.coef_[n:]
+        df_coord.to_csv(save_name+"/molecular_filed{}.csv".format(L))
+
         kf = KFold(n_splits=5, shuffle=False)
         gaussian_predicts=[]
         ridge_predicts=[]
@@ -904,14 +915,14 @@ if __name__ == '__main__':
         with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
             param = json.loads(f.read())
         print(param)
-        df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)
+        df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True).sample(frac=1, random_state=0)
 
         # print(param_file_name)
         # with open(param_file_name, "r") as f:
         #     param = json.loads(f.read())
         file_name = os.path.splitext(os.path.basename(file))[0]
 
-        features_dir_name = param["grid_coordinates"]+file_name+ "/"  # param["grid_dir_name"] + "/[{}]/".format(param["grid_sizefile"])
+        features_dir_name = param["grid_coordinates"]+file_name#+ "/"  # param["grid_dir_name"] + "/[{}]/".format(param["grid_sizefile"])
         print(features_dir_name)
         # fparranged_dataname = param["fpdata_file_path"]
         # df_fplist = pd.read_csv(fparranged_dataname).dropna(subset=['smiles']).reset_index(drop=True)
@@ -925,7 +936,7 @@ if __name__ == '__main__':
         df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
         print("dfbefore")
         print(len(df))
-        df = df[[os.path.isdir(features_dir_name + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+        df = df[[os.path.isdir(features_dir_name +"/"+ mol.GetProp("InchyKey")) for mol in df["mol"]]]
         print("dfafter")
         print(len(df))
         df["mol"].apply(lambda mol: calculate_conformation.read_xyz(mol, xyz_dir_name + "/" + mol.GetProp("InchyKey")))
@@ -934,7 +945,7 @@ if __name__ == '__main__':
         # dfp=np.load(param["grid_coordinates"]+"/penalty_param.npy")
         save_path=param["out_dir_name"] + "/" + file_name
         os.makedirs(save_path,exist_ok=True)
-        Gaussian_penalized(features_dir_name,df,dfp,param["grid_coordinates"]+"/penalty.npy",save_path)
+        Gaussian_penalized(features_dir_name,df,dfp,param["grid_coordinates"],save_path)
         # looout_file_name = param["out_dir_name"] +file_name+ "/result_loonondfold.xlsx"
         # testout_file_name = param["out_dir_name"] +file_name+ "/result_train_test.xlsx"
         # crosstestout_file_name = param["out_dir_name"] +file_name+ "/result_5crossvalidnonfold.xlsx"
