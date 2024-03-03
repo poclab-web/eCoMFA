@@ -34,8 +34,8 @@ def read_cube(dir_name, dfp, mol, out_name):
         def fdt(n, feature):
             try:
                 ans = float(feature[3 + 3 + n_atom + n // 6].split()[n % 6])
-                if ans > 1:
-                    ans = 1
+                if ans > 0.1:
+                    ans = 0.1
             except:
                 ans = 0
             return ans

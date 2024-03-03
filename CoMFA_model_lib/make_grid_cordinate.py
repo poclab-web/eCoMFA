@@ -21,8 +21,7 @@ if __name__ == '__main__':
         orient = [-5.0, -3.0, -5.0]
         size = [13 + 5, 8 * 2, 13 * 2]
         interval = 0.4
-        out_dir_name = "../../../grid_coordinates"+"/[{},{},{}]".format(orient, size,
-                                                           interval)
+        out_dir_name = "../../../grid_coordinates"+"/[{},{},{}]".format(orient, size,interval)
         # if False:
         #     xgrid, ygrid, zgrid, gridinterval = [5, 3, 5, 0.5]  # [float(_) for _ in l]
         #     y_up = np.arange(gridinterval / 2, ygrid, gridinterval)
@@ -55,7 +54,9 @@ if __name__ == '__main__':
 
         dfp.to_csv(filename)
         print(filename)
-
+        dfp_yz=dfp[(dfp["y"]>0)&(dfp["z"]>0)].sort_values(['x', 'y', "z"], ascending=[True, True, True])
+        print(dfp_yz)
+        dfp_yz.to_csv((out_dir_name+"/coordinates_yz.csv"))
     if True:
         # if True:  # fold:
         #     # xyz = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, df["mol"].iloc[0].GetProp("InchyKey")))[
@@ -71,25 +72,25 @@ if __name__ == '__main__':
         d_yz = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, -1]), axis=1) for _ in xyz])
 
         def gauss_func(d):
-            sigma = 0.5
-            leng = 1
+            sigma = interval
+            leng = interval
             ans = 1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
                   * np.exp(-d ** 2 / (2 * sigma ** 2))
             return ans
 
 
-        penalty = np.where(d < 0.5 * 3, gauss_func(d), 0)
-        penalty_y = np.where(d_y < 0.5 * 3, gauss_func(d_y), 0)
-        penalty_z = np.where(d_z < 0.5 * 3, gauss_func(d_z), 0)
-        penalty_yz = np.where(d_yz < 0.5 * 3, gauss_func(d_yz), 0)
-        if True:  # fold:
-            penalty = penalty + penalty_y + penalty_z + penalty_yz
-            # grid_features_name = "{}/{}/feature_yz.csv"
-        else:
-            penalty = penalty + penalty_y
-            # grid_features_name = "{}/{}/feature_y.csv"
+        penalty = np.where(d < interval * 3, gauss_func(d), 0)
+        penalty_y = np.where(d_y < interval * 3, gauss_func(d_y), 0)
+        penalty_z = np.where(d_z < interval * 3, gauss_func(d_z), 0)
+        penalty_yz = np.where(d_yz < interval * 3, gauss_func(d_yz), 0)
+        # if True:  # fold:
+        penalty = penalty + penalty_y + penalty_z + penalty_yz
+        # grid_features_name = "{}/{}/feature_yz.csv"
+        # else:
+        #     penalty = penalty + penalty_y
+        #     # grid_features_name = "{}/{}/feature_y.csv"
 
-        penalty = penalty / np.max(np.sum(penalty, axis=0))
+        penalty = penalty #/ np.max(np.sum(penalty, axis=0))
         # np.fill_diagonal(penalty, -1)
         penalty = penalty - np.identity(penalty.shape[0])# * np.sum(penalty, axis=0)
         print(penalty)
