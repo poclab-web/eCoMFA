@@ -1,3 +1,4 @@
+import glob
 import json
 import os
 import pandas as pd
@@ -176,16 +177,18 @@ def read_xyz(mol, input_dir_name):
 
 
 if __name__ == '__main__':
-    param_file_name = "../parameter/parameter_cbs.txt"
+    param_file_name = "../parameter/structural optimization/structural optimization.txt"#"../parameter/parameter_cbs.txt"
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     print(param)
-    data_file_path = "../arranged_dataset/cbs.xlsx"
-
-    df1 = pd.read_excel(data_file_path)
-    df2=pd.read_excel("../arranged_dataset/DIP-chloride.xlsx")
-    df3 =pd.read_excel("../arranged_dataset/Russ.xlsx")
-    df = pd.concat([df1, df2,df3]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
+    dfs=[]
+    for path in glob.glob("../arranged_dataset/*.xlsx"):
+        df = pd.read_excel(path)
+        dfs.append(df)
+    # df1 = pd.read_excel(data_file_path)
+    # df2=pd.read_excel("../arranged_dataset/DIP-chloride.xls")
+    # df3 =pd.read_excel("../arranged_dataset/Russ.xls")
+    df = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
 
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
     df = df.dropna(subset=['mol'])
@@ -193,27 +196,23 @@ if __name__ == '__main__':
     df = df.sort_values("molwt")  # [:2]
     print(df)
 
-    MMFF_out_dir_name = "../MMFF_optimization"
-    psi4_out_dir_name = "../psi4_optimization"
-    psi4_aligned_dir_name = "../psi4_optimization_aligned"
-    # df=df[df["smiles"] == "CCCCCCCCC#CC(=O)C(CC)(CC)CCC"]
-    df = df[df["smiles"] != "C(=O)(C1=CC=CO1)CCCCC"]
-    df = df[df["smiles"] != "C(=O)(CN(C)c1ccccc1)C"]
-    df = df[df["smiles"] != "CCCCCCCCC#CC(=O)C(CC)(CC)CCC"]
-    df = df[df["smiles"] != "CCCCCCCCC#CC(=O)C(CC)(CC)CCC"]
-    df = df[df["smiles"] != "c1cc(OC)c(OC)cc1CCN(C(=O)c1ccccc1)CC(=O)c1ccc(OCc2ccccc2)cc1"]
 
+    # df=df[df["smiles"] == "CCCCCCCCC#CC(=O)C(CC)(CC)CCC"]
+    #df = df[df["smiles"] != "C(=O)(C1=CC=CO1)CCCCC"]
+    # df = df[df["smiles"] != "C(=O)(CN(C)c1ccccc1)C"]
+    # df = df[df["smiles"] != "CCCCCCCCC#CC(=O)C(CC)(CC)CCC"]
+    # df = df[df["smiles"] != "CCCCCCCCC#CC(=O)C(CC)(CC)CCC"]
+    # df = df[df["smiles"] != "c1cc(OC)c(OC)cc1CCN(C(=O)c1ccccc1)CC(=O)c1ccc(OCc2ccccc2)cc1"]
     #df = df[df["smiles"] != "C(=O)(C(c1ccccc1)(c1ccccc1)c1ccccc1)C"]
     #df = df[df["smiles"] != "c1ccccc1C(C)(C)C(=O)C#CCCCCCCCC"]
     #for smiles in df["smiles"][df["smiles"] == "C(=O)(CN(C)c1ccccc1)C"]:C(=O)(C1CCCCC1)Cc2ccccc2
     # for smiles in df["smiles"]:
     for smiles in df["smiles"]:
-        print("longsmiles")
         print(smiles)
         mol = get_mol(smiles)
-        MMFF_out_dirs_name = MMFF_out_dir_name + "/" + mol.GetProp("InchyKey")
-        psi4_out_dirs_name = psi4_out_dir_name + "/"+param["optimize_level"] + "/" + mol.GetProp("InchyKey")
-        psi4_aligned_dirs_name = psi4_aligned_dir_name + "/" +param["optimize_level"]+"/" +mol.GetProp("InchyKey")
+        MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")
+        psi4_out_dirs_name = param["psi4_out_dir_name"] +  "/" + mol.GetProp("InchyKey")#"/"+param["optimize_level"] +
+        psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" +mol.GetProp("InchyKey")#"/" +param["optimize_level"]+
         if not os.path.isdir(MMFF_out_dirs_name):
             CalcConfsEnergies(mol)
             highenergycut(mol, param["cut_MMFF_energy"])
