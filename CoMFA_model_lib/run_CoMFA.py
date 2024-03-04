@@ -46,7 +46,7 @@ def Gaussian_penalized(grid_dir,df,dfp,gaussian_penalize,save_name):
         Gaussian_penalized_models.append(model)
         ridge = linear_model.Ridge(alpha=L, fit_intercept=False).fit(features,df["ΔΔG.expt."])
         Ridge_models.append(ridge)
-        lasso=linear_model.Lasso(alpha=L/100,fit_intercept=False).fit(features,df["ΔΔG.expt."])
+        lasso=linear_model.Lasso(alpha=L/10,fit_intercept=False).fit(features,df["ΔΔG.expt."])
         Lasso_models.append(lasso)
 
         gaussian_coef=model.coef_
@@ -59,7 +59,7 @@ def Gaussian_penalized(grid_dir,df,dfp,gaussian_penalize,save_name):
         df_coord["Lasso_ESP"]=lasso.coef_[n:]
         df_coord.to_csv(save_name+"/molecular_filed{}.csv".format(L))
 
-        kf = KFold(n_splits=5, shuffle=False)
+        kf = KFold(n_splits=2, shuffle=False)
         gaussian_predicts=[]
         ridge_predicts=[]
         lasso_predicts=[]
@@ -79,7 +79,7 @@ def Gaussian_penalized(grid_dir,df,dfp,gaussian_penalize,save_name):
             Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], np.zeros(penalty.shape[0] * 2)], axis=0)
             model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
             ridge = linear_model.Ridge(alpha=L, fit_intercept=False).fit(features_training, df.iloc[train_index]["ΔΔG.expt."])
-            lasso=linear_model.Lasso(alpha=L/100,fit_intercept=False).fit(features_training,df.iloc[train_index]["ΔΔG.expt."])
+            lasso=linear_model.Lasso(alpha=L/10,fit_intercept=False).fit(features_training,df.iloc[train_index]["ΔΔG.expt."])
             # features_test = []
             # for mol in df.iloc[test_index]["mol"]:
             #     df_grid = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))
@@ -867,6 +867,7 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
 
 
 if __name__ == '__main__':
+    time.sleep(60*10)
     start = time.perf_counter()  # 計測開始
 
     # for param_file_name in [
@@ -915,7 +916,7 @@ if __name__ == '__main__':
         with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
             param = json.loads(f.read())
         print(param)
-        df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True).sample(frac=1, random_state=0)
+        df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)
 
         # print(param_file_name)
         # with open(param_file_name, "r") as f:
@@ -943,9 +944,11 @@ if __name__ == '__main__':
 
         dfp = pd.read_csv(param["grid_coordinates"]+"/penalty_param.csv")  # [:1]
         # dfp=np.load(param["grid_coordinates"]+"/penalty_param.npy")
-        save_path=param["out_dir_name"] + "/" + file_name
-        os.makedirs(save_path,exist_ok=True)
-        Gaussian_penalized(features_dir_name,df,dfp,param["grid_coordinates"],save_path)
+        for _ in range(5):
+            df=df.sample(frac=1, random_state=0)
+            save_path=param["out_dir_name"] + "/" + file_name+"/"+str(_)
+            os.makedirs(save_path,exist_ok=True)
+            Gaussian_penalized(features_dir_name,df,dfp,param["grid_coordinates"],save_path)
         # looout_file_name = param["out_dir_name"] +file_name+ "/result_loonondfold.xlsx"
         # testout_file_name = param["out_dir_name"] +file_name+ "/result_train_test.xlsx"
         # crosstestout_file_name = param["out_dir_name"] +file_name+ "/result_5crossvalidnonfold.xlsx"

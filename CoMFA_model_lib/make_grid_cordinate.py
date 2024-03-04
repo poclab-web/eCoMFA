@@ -21,6 +21,10 @@ if __name__ == '__main__':
         orient = [-5.0, -3.0, -5.0]
         size = [13 + 5, 8 * 2, 13 * 2]
         interval = 0.4
+        #[[-4.65, -2.85, -4.65],[22, 20, 32],0.3]
+        orient = [-4.65, -2.85, -4.65]
+        size = [16 + 6, 10 * 2, 16 * 2]
+        interval = 0.3
         out_dir_name = "../../../grid_coordinates"+"/[{},{},{}]".format(orient, size,interval)
         # if False:
         #     xgrid, ygrid, zgrid, gridinterval = [5, 3, 5, 0.5]  # [float(_) for _ in l]
@@ -72,7 +76,7 @@ if __name__ == '__main__':
         d_yz = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, -1]), axis=1) for _ in xyz])
 
         def gauss_func(d):
-            sigma = interval
+            sigma = interval*2
             leng = interval
             ans = 1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
                   * np.exp(-d ** 2 / (2 * sigma ** 2))
