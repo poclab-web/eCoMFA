@@ -17,36 +17,42 @@ import glob
 def mfunfolding(df):
     df_y = copy.deepcopy(df)
     df_y["y"] = -df_y["y"]
-
     df_z = copy.deepcopy(df)
     df_z["z"] = -df_z["z"]
-    df_z["MF_Dt"] = -df_z["MF_Dt"]
-
     df_yz = copy.deepcopy(df)
     df_yz["y"] = -df_yz["y"]
     df_yz["z"] = -df_yz["z"]
-    df_yz["MF_Dt"] = -df_yz["MF_Dt"]
-    try:
-        try:
-            df_z["MF_ESP_cutoff"] = -df_z["MF_ESP_cutoff"]
-            df_yz["MF_ESP_cutoff"] = -df_yz["MF_ESP_cutoff"]
-        except:
-            df_z["MF_ESP"] = -df_z["MF_ESP"]
-            df_yz["MF_ESP"] = -df_yz["MF_ESP"]
-    except:
-        None
+
+    # df_z["MF_Dt"] = -df_z["MF_Dt"]
+    # df_yz["MF_Dt"] = -df_yz["MF_Dt"]
+    # try:
+    #     try:
+    #         df_z["MF_ESP_cutoff"] = -df_z["MF_ESP_cutoff"]
+    #         df_yz["MF_ESP_cutoff"] = -df_yz["MF_ESP_cutoff"]
+    #     except:
+    #         df_z["MF_ESP"] = -df_z["MF_ESP"]
+    #         df_yz["MF_ESP"] = -df_yz["MF_ESP"]
+    # except:
+    #     None
 
     df = pd.concat([df, df_y, df_z, df_yz]).sort_values(by=["x", "y", "z"], ascending=[True, True, True])
     return df
 
 def zunfolding(df,regression_features):
-    df.to_csv("../errortest/dfbefore.csv")
+
     df_z = copy.deepcopy(df)
     df_z["z"]=-df_z["z"]
-    df_z["MF_Dt"]=-df_z["MF_Dt"]
-    df_z["MF_{}".format(regression_features.split()[1])]=-df_z["MF_{}".format(regression_features.split()[1])]
+    # 対象となる文字列
+    feature1 = 'Dt'
+    feature2 = "ESP"
+
+
+    # 対象文字列を含む列名を取得
+    column_inc_specific_feature = [column for column in df_z.columns if (feature1 or feature2) in column]
+    df_z[column_inc_specific_feature]=-df_z[column_inc_specific_feature]
+    # df_z["MF_{}".format(regression_features.split()[1])]=-df_z["MF_{}".format(regression_features.split()[1])]
     df = pd.concat([df ,df_z ]).sort_values(['x', 'y',"z"], ascending=[True, True,True])#.sort_values(by=["x", "y", "z"])
-    df.to_csv("../errortest/dfafter.csv")
+
     return df
 
 if __name__ == '__main__':
@@ -55,36 +61,20 @@ if __name__ == '__main__':
     #     "../parameter_0227/parameter_RuSS_gaussian.txt",
     #     "../parameter_0227/parameter_dip-chloride_gaussian.txt",
     # ]:
-    for file in glob.glob("../result/{}".format("*")+"/molecular_filed{}.csv".format("*")):
+    for file in glob.glob("../result/*/molecular_filed*.csv"):
         df= pd.read_csv(file)
-        # with open(param_file_name, "r") as f:
-        #     param = json.loads(f.read())
-        # features_dir_name = param["moleculer_field_dir"]
-        # fold = True
-        # dir_name = param["moleculer_field_dir"]
-        # os.makedirs(dir_name, exist_ok=True)
-        df = pd.read_csv(
-            dir_name + "/moleculer_field.csv")
+
+
         df_unfold = df
         df_unfold = mfunfolding(df_unfold)
         df_unfold
-        # "{}/{}/feature_yz.csv".format(features_dir_name, inchykey))
-        # for feature,cube_file_name in zip(["MF_Dt","MF_ESP","MF_ESP_cutoff"],["../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube",
-        #                                                       "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube",
-        #                                                     "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube"
-        #                                                                       ]):
-        # UPEUQDJSUFHFQP-UHFFFAOYSA-N ,WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N,RIFKADJTWUGDOV-UHFFFAOYSA-N,
-        # KRIOVPPHQSLHCZ-UHFFFAOYSA-N,CKGKXGQVRVAKEA-UHFFFAOYSA-N,AJKVQEKCUACUMD-UHFFFAOYSA-N,VRZSUVFVIIVLPV-UHFFFAOYSA-N
+
         cubeinchikey = "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N"
         for feature, cube_file_name in zip(["MF_ESP", "MF_Dt"], [
             cubeinchikey + "/ESP02_0.cube",
             cubeinchikey + "/Dt02_0.cube",
         ]):
-            df = pd.read_csv(dir_name + "/moleculer_field.csv")
-            df = mfunfolding(df)
 
-            df.sort_values(by=["x", "y", "z"])
-            df.to_csv(dir_name + "/moleculer_fieldunfold.csv")
 
             # inchykey = "WRYKPYJMRHQDBM-UHFFFAOYSA-N"
             with open(cube_file_name, "r", encoding="UTF-8") as f:
