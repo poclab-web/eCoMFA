@@ -24,8 +24,8 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
     #
     #     df=df[df["βOH"]!=True]
     if True :
-        df=df[df["smiles"]!="C(=O)(c1ccc(Br)cc1)CCC(=C(C)O2)N=C2c1ccccc1"]
-        df=df[df["smiles"]!="O=C(C3=CCCC3)CC1=C(OC)C(C)=C2C(C(OC2)=O)=C1[Si](C(C)(C)C)(C)C"]
+        # df=df[df["smiles"]!="C(=O)(c1ccc(Br)cc1)CCC(=C(C)O2)N=C2c1ccccc1"]
+        # df=df[df["smiles"]!="O=C(C3=CCCC3)CC1=C(OC)C(C)=C2C(C(OC2)=O)=C1[Si](C(C)(C)C)(C)C"]
         df=df[df["smiles"]!="C(=O)(c1ccc(F)cc1)CCCN2CCN(C3=NCC(F)C=N3)CC2"]
         df=df[df["smiles"]!="c1ccccc1C(C)(C)C(=O)C#CCCCCCCCC"]
         df = df[df["smiles"] != "CCCCCCCCC#CC(=O)C(C)(C)CC=C"]
