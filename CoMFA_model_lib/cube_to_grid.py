@@ -1,14 +1,15 @@
 import glob
 import json
 import os
+
 import numpy as np
 import pandas as pd
+
 import calculate_conformation
 
 
 def read_cube(dir_name, dfp, mol, out_name):
     os.makedirs(out_name, exist_ok=True)
-
     for conf in mol.GetConformers():
         Dt_file = "{}/{}/Dt02_{}.cube".format(dir_name, mol.GetProp("InchyKey"), conf.GetId())
         with open(Dt_file, "r", encoding="UTF-8") as f:
@@ -21,11 +22,11 @@ def read_cube(dir_name, dfp, mol, out_name):
             LUMO = f.read().splitlines()
         l = np.array([_.split() for _ in Dt[2:6]])
         n_atom = int(l[0, 0])
-        x0 = l[0, 1:].astype(float) * 0.52917720859
+        x0 = l[0, 1:].astype(float)  # * 0.52917720859
         size = l[1:, 0].astype(int)
         # axis = l[1:, 1:].astype(float)*0.52917720859
-        grid = (dfp[["x", "y", "z"]].values - x0) / (0.2 * 0.52917720859)
-        grid = np.round(grid).astype(int)
+        grid = dfp[["x", "y", "z"]].values /0.52917720859 - x0
+        grid = np.round(grid/0.2).astype(int)
         cond1 = np.all(grid < size, axis=1)
         cond2 = np.all(np.zeros(3) <= grid, axis=1)
         cond_all = np.all(np.stack([cond1, cond2]), axis=0)
@@ -47,7 +48,6 @@ def read_cube(dir_name, dfp, mol, out_name):
                     ans = 0.1
             except:
                 ans = 0
-
             return ans
 
         # 20240105 坂口　作成
@@ -68,7 +68,6 @@ def read_cube(dir_name, dfp, mol, out_name):
                     ans = 0
             except:
                 ans = 0
-
             return ans
 
         ##
@@ -120,14 +119,14 @@ def read_cube(dir_name, dfp, mol, out_name):
                                  feature].values
             # dfp_yz = dfp_yz.sort_values(['x', 'y', "z"], ascending=[True, True, True])  # そとにでる
             dfp_yz[feature] = \
-            dfp[(dfp["y"] > 0) & (dfp["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
-                feature].values \
-            + dfp[(dfp["y"] < 0) & (dfp["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
-                feature].values \
-            - dfp[(dfp["y"] > 0) & (dfp["z"] < 0)].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
-                feature].values \
-            - dfp[(dfp["y"] < 0) & (dfp["z"] < 0)].sort_values(['x', 'y', "z"], ascending=[True, False, False])[
-                feature].values
+                dfp[(dfp["y"] > 0) & (dfp["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
+                    feature].values \
+                + dfp[(dfp["y"] < 0) & (dfp["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
+                    feature].values \
+                - dfp[(dfp["y"] > 0) & (dfp["z"] < 0)].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
+                    feature].values \
+                - dfp[(dfp["y"] < 0) & (dfp["z"] < 0)].sort_values(['x', 'y', "z"], ascending=[True, False, False])[
+                    feature].values
             # if False:
             #     l_y = []
             #     l_z = []
@@ -230,9 +229,9 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
 if __name__ == '__main__':
     for file in glob.glob("../arranged_dataset/*.xlsx"):
-    # for param_file_name in ["../parameter_0227/parameter_cbs_gaussian.txt",
-    #                         "../parameter_0227/parameter_RuSS_gaussian.txt",
-    #                         "../parameter_0227/parameter_dip-chloride_gaussian.txt", ][::-1]:
+        # for param_file_name in ["../parameter_0227/parameter_cbs_gaussian.txt",
+        #                         "../parameter_0227/parameter_RuSS_gaussian.txt",
+        #                         "../parameter_0227/parameter_dip-chloride_gaussian.txt", ][::-1]:
 
         with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
             param = json.loads(f.read())
@@ -264,14 +263,15 @@ if __name__ == '__main__':
         # #else:
         #     dfp = pd.read_csv(
         #         "../grid_coordinates" + param["grid_coordinates_dir"] + "/[{}].csv".format(param["grid_sizefile"]))
-        dfp = pd.read_csv(param["grid_coordinates"]+"/coordinates.csv")
+        dfp = pd.read_csv(param["grid_coordinates"] + "/coordinates.csv")
         print(dfp)
 
-        #grid_dir_name = param["grid_dir_name"]
+        # grid_dir_name = param["grid_dir_name"]
         # グリッド情報に変換
-        file_name=os.path.splitext(os.path.basename(file))[0]
+        file_name = os.path.splitext(os.path.basename(file))[0]
         for mol, RT in df[["mol", "RT"]].values:
             print(mol.GetProp("InchyKey"))
             energy_to_Boltzmann_distribution(mol, RT)  # 温度が対応できていない#ボルツマン分布は最後のほうが良さそう
-            read_cube(param["cube_dir_name"], dfp, mol,param["grid_coordinates"]+file_name+"/" + mol.GetProp("InchyKey"))#grid_dir_name + "/[{}]".format(param["grid_sizefile"]) +
+            read_cube(param["cube_dir_name"], dfp, mol, param["grid_coordinates"] + file_name + "/" + mol.GetProp(
+                "InchyKey"))  # grid_dir_name + "/[{}]".format(param["grid_sizefile"]) +
         print("complete")
