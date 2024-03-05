@@ -86,13 +86,7 @@ if __name__ == '__main__':
         fold=True
         dir_name=param["moleculer_field_dir"]
         os.makedirs(dir_name, exist_ok=True)
-        df=pd.read_csv(dir_name+"/moleculer_field.csv")#"{}/{}/feature_yz.csv".format(features_dir_name, inchykey))
-        # for feature,cube_file_name in zip(["MF_Dt","MF_ESP","MF_ESP_cutoff"],["../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube",
-        #                                                       "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube",
-        #                                                     "../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N/ESP02_0.cube"
-        #                                                                       ]):
-        # UPEUQDJSUFHFQP-UHFFFAOYSA-N ,WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N WYJOVVXUZNRJQY-UHFFFAOYSA-N,PFIKCDNZZJYSMK-UHFFFAOYSA-N,RIFKADJTWUGDOV-UHFFFAOYSA-N,
-        #KRIOVPPHQSLHCZ-UHFFFAOYSA-N,CKGKXGQVRVAKEA-UHFFFAOYSA-N,AJKVQEKCUACUMD-UHFFFAOYSA-N,VRZSUVFVIIVLPV-UHFFFAOYSA-N
+        df=pd.read_csv(dir_name+"/moleculer_field.csv")
         cubeinchikey="../cube_aligned_b3lyp_6-31g(d)/KWOLFJPFCHCOCG-UHFFFAOYSA-N"
         for feature, cube_file_name in zip(["MF_ESP_cutoff","MF_Dt"  ], [
             cubeinchikey+"/ESP02_0.cube",
@@ -100,41 +94,7 @@ if __name__ == '__main__':
                 ]):
             df = pd.read_csv(dir_name + "/moleculer_field.csv")
             df=mfunfolding(df)
-            # if fold:
-            #     df = pd.read_csv(dir_name + "/moleculer_field.csv")
-            #     df_y=copy.deepcopy(df)
-            #     df_z = copy.deepcopy(df)
-            #     df_y["y"]=-df_y["y"]
-            #     df_y=df_y[(df_y["z"] > 0)&(df_y["y"] < 0)]
-            #     #df_y.to_csv(dir_name + "/moleculer_fieldtesty.csv")
-            #     df_z = df_z[(df_z["y"] !=0) & (df_z["z"] > 0) ]
-            #     df_z["z"]=-df_z["z"]
-            #     #df_z.to_csv(dir_name + "/moleculer_fieldtestz.csv")
-            #     df_z[feature] = -df_z[feature]
-            #     #df_z.to_csv(dir_name + "/moleculer_fieldtestz.csv")
-            #     df_yz=copy.deepcopy(df)
-            #     df_yz["y"] = -df_yz["y"]
-            #     df_yz["z"] = -df_yz["z"]
-            #     df_z0 = copy.deepcopy(df[df["z"]==1])
-            #     df_z0[feature]=0
-            #     df_z0["z"]=0
-            #     #df_z0.to_csv(dir_name + "/moleculer_fieldtestz0.csv")
-            #     #df_z0=df_z0[df_z0["y"]!=0]
-            #     df_z01=copy.deepcopy(df_z0)
-            #     df_z01["y"]=-df_z01["y"]
-            #     df_z01 = df_z01[df_z01["y"] != 0]
-            #     #df_z01.to_csv(dir_name + "/moleculer_fieldtestyz.csv")
-            #     df_yz1 = copy.deepcopy(df_yz)
-            #     # print(df_yz)
-            #     # print(df_yz1)
-            #     df_yz.to_csv(dir_name + "/moleculer_fieldtestyz1.csv")
-            #     df_yz["y"]=df_yz1[df_yz1["z"]<=0]["y"]
-            #     df_yz[feature]=-df_yz[feature]
-            #     #df_yz.to_csv(dir_name + "/moleculer_fieldtestyz.csv")
-            #     df=pd.concat([df_z0,df_z01,df,df_y,df_z,df_yz]).sort_values(by=["x","y","z"])
-            #
-            # else:
-            #     None
+
             df.sort_values(by=["x","y","z"])
             df.to_csv(dir_name+"/moleculer_fieldunfold.csv")
 
