@@ -743,26 +743,26 @@ if __name__ == '__main__':
         # "../parameter_nomax/parameter_RuSS_elasticnetcv.txt",
         # "../parameter_nomax/parameter_RuSS_ridgecv.txt",
 
-        "../parameter_0227/parameter_cbs_elasticnetcv.txt",
-        "../parameter_0227/parameter_cbs_ridgecv.txt",
-        "../parameter_0227/parameter_cbs_lassocv.txt",
+        # "../parameter_0227/parameter_cbs_elasticnetcv.txt",
+        # "../parameter_0227/parameter_cbs_ridgecv.txt",
+        # "../parameter_0227/parameter_cbs_lassocv.txt",
+        #
+        # "../parameter_0227/parameter_cbs_gaussian.txt",
+        # "../parameter_0227/parameter_cbs_PLS.txt",
+        #
+        #
+        # "../parameter_0227/parameter_RuSS_gaussian.txt",
+        # "../parameter_0227/parameter_RuSS_PLS.txt",
+        # "../parameter_0227/parameter_RuSS_lassocv.txt",
+        # "../parameter_0227/parameter_RuSS_elasticnetcv.txt",
+        # "../parameter_0227/parameter_RuSS_ridgecv.txt",
+        # "../parameter_0227/parameter_dip-chloride_PLS.txt",
+        # "../parameter_0227/parameter_dip-chloride_lassocv.txt",
+        # "../parameter_0227/parameter_dip-chloride_gaussian.txt",
+        # "../parameter_0227/parameter_dip-chloride_elasticnetcv.txt",
+        # "../parameter_0227/parameter_dip-chloride_ridgecv.txt",
 
-        "../parameter_0227/parameter_cbs_gaussian.txt",
-        "../parameter_0227/parameter_cbs_PLS.txt",
-
-
-        "../parameter_0227/parameter_RuSS_gaussian.txt",
-        "../parameter_0227/parameter_RuSS_PLS.txt",
-        "../parameter_0227/parameter_RuSS_lassocv.txt",
-        "../parameter_0227/parameter_RuSS_elasticnetcv.txt",
-        "../parameter_0227/parameter_RuSS_ridgecv.txt",
-        "../parameter_0227/parameter_dip-chloride_PLS.txt",
-        "../parameter_0227/parameter_dip-chloride_lassocv.txt",
-        "../parameter_0227/parameter_dip-chloride_gaussian.txt",
-        "../parameter_0227/parameter_dip-chloride_elasticnetcv.txt",
-        "../parameter_0227/parameter_dip-chloride_ridgecv.txt",
-
-
+        "../parameter_0306/parameter_cbs_gaussian.txt",
 
     ]:
 

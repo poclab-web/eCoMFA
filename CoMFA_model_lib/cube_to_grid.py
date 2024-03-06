@@ -210,7 +210,7 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
 if __name__ == '__main__':
 
-    for param_file_name in ["../parameter_0227/parameter_cbs_gaussian.txt","../parameter_0227/parameter_RuSS_gaussian.txt","../parameter_0227/parameter_dip-chloride_gaussian.txt",]:
+    for param_file_name in ["../parameter_0306/parameter_cbs_gaussian.txt","../parameter_0306/parameter_RuSS_gaussian.txt","../parameter_0306/parameter_dip-chloride_gaussian.txt",]:
         with open(param_file_name, "r") as f:
             param = json.loads(f.read())
 
