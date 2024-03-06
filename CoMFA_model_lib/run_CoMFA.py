@@ -1,4 +1,3 @@
-import copy
 import glob
 import json
 import os
@@ -22,16 +21,24 @@ warnings.simplefilter('ignore')
 
 def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     # Gaussian Lasso Ridgeを行う。#PLSなどは別？
-    df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv")
+    df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"], ascending=[True, True, True])
     penalty = np.load(gaussian_penalize + "/penalty.npy")
 
-    features_all = []
-    for mol in df["mol"]:
-        df_grid = pd.read_csv("{}/{}/feature_yz.csv".format(grid_dir, mol.GetProp("InchyKey")))
-        feat = df_grid[["Dt"]].values
-        features_all.append(feat)
-    features_all = np.array(features_all).transpose(2, 0, 1)
-    print(features_all.shape)
+    # features_all = []
+    # for mol in df["mol"]:
+    #     l=[]
+    #     for conf in mol.GetConformers():
+    #         data=pd.read_csv("{}/{}/data_yz_{}.pkl".format(grid_dir, mol.GetProp("InchyKey"),conf.GetId()))
+    #         l.append(data["Dt"].values)
+    #     #df_grid = pd.read_csv("{}/{}/feature_yz.csv".format(grid_dir, mol.GetProp("InchyKey")))
+    #     feat = df_grid[["Dt"]].values
+    #     features_all.append(feat)
+    #features_all=df["Dt"].values
+
+    # print(np.array(df["Dt"].tolist()).reshape(len(df),-1,1).shape)
+    features_all = np.array(df["Dt"].tolist()).reshape(len(df),-1,1).transpose(2, 0, 1)
+    # print(features_all.shape)
+    # print(features_all)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
 
     features = features_all / std
@@ -67,7 +74,7 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
 
         gaussian_coef = model.coef_
         n = int(gaussian_coef.shape[0] / features_all.shape[0])
-        df_coord["Gaussian_Dt"] = gaussian_coef[:n]
+        df_coord["Gaussian_Dt"] = df_coord["x"]#gaussian_coef[:n]
         # df_coord["Gaussian_ESP"]=gaussian_coef[n:]
         df_coord["Ridge_Dt"] = ridge.coef_[:n]
         # df_coord["Ridge_ESP"]=ridge.coef_[n:]
@@ -75,16 +82,12 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
         # df_coord["Lasso_ESP"]=lasso.coef_[n:]
         df_coord.to_csv(save_name + "/molecular_filed{}.csv".format(L))
 
-        kf = KFold(n_splits=2, shuffle=False)
+        kf = KFold(n_splits=5, shuffle=False)
         gaussian_predicts = []
         ridge_predicts = []
         lasso_predicts = []
         for (train_index, test_index) in kf.split(df):
-            # features_training = []
-            # for mol in df.iloc[train_index]["mol"]:
-            #     df_grid = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))
-            #     feat = df_grid[["Dt", "ESP"]].values
-            #     features_training.append(feat)
+
             features_training = features_all[:, train_index]  # np.array(features_all)[train_index].transpose(2, 0, 1)
             std = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
             features_training = features_training / std
@@ -96,11 +99,7 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
                                                                          df.iloc[train_index]["ΔΔG.expt."])
             lasso = linear_model.Lasso(alpha=L , fit_intercept=False).fit(features_training,
                                                                                df.iloc[train_index]["ΔΔG.expt."])
-            # features_test = []
-            # for mol in df.iloc[test_index]["mol"]:
-            #     df_grid = pd.read_csv("{}/{}/feature_yz.csv".format(features_dir_name, mol.GetProp("InchyKey")))
-            #     feat = df_grid[["Dt", "ESP"]].values
-            #     features_test.append(feat)
+
 
             features_test = features_all[:, test_index]  # np.array(features_all)[test_index].transpose(2, 0, 1)
             features_test = features_test / std
@@ -152,10 +151,11 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     df["test_predict"] = dfp[dfp["Gaussian_test_RMSE"] == dfp["Gaussian_test_RMSE"].min()].iloc[0][
         "Gaussian_test_predict"]
     df["error"] = df["test_predict"] - df["ΔΔG.expt."]
+    df=df.sort_values(by='error', key=abs,ascending=[False])
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     # df = df[[ "smiles", "ROMol","inchikey","er.", "RT", "ΔΔG.expt."]].drop_duplicates(subset="inchikey")#,"ΔΔminG.expt.","ΔΔmaxG.expt."
     # df = df[["smiles", "ROMol", "er.", "RT"]]
-    print(df.columns)
+    print(dfp["Gaussian_test_r2"].max())
     PandasTools.SaveXlsxFromFrame(df, save_name + "/result_test.xlsx", size=(100, 100))
     # df.to_excel(save_name + "/test.xlsx")
     # plt.plot(df["ΔΔG.expt."],df["test_predict"],"o")
@@ -891,6 +891,13 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
     print(len(df))
     PandasTools.SaveXlsxFromFrame(df, testout_file_name, size=(100, 100))
 
+def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
+    energies = np.array([float(conf.GetProp("energy")) for conf in mol.GetConformers()])
+    energies = energies - np.min(energies)
+    rates = np.exp(-energies / RT)
+    rates = rates / sum(rates)
+    for conf, rate in zip(mol.GetConformers(), rates):
+        conf.SetProp("Boltzmann_distribution", str(rate))
 
 if __name__ == '__main__':
     # time.sleep(60*10)
@@ -942,7 +949,7 @@ if __name__ == '__main__':
         with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
             param = json.loads(f.read())
         print(param)
-        df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)
+        df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)#[:50]
 
         # print(param_file_name)
         # with open(param_file_name, "r") as f:
@@ -964,18 +971,37 @@ if __name__ == '__main__':
         df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
         print("dfbefore")
         print(len(df))
-        df = df[[os.path.isdir(features_dir_name + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+        #df = df[[os.path.isdir(features_dir_name + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+
+        df=df[[os.path.isdir("{}/{}".format(param["grid_coordinates"], mol.GetProp("InchyKey")))for mol in df["mol"]]]
+        print(len(df))
         print("dfafter")
         print(len(df))
         df["mol"].apply(lambda mol: calculate_conformation.read_xyz(mol, xyz_dir_name + "/" + mol.GetProp("InchyKey")))
 
         dfp = pd.read_csv(param["grid_coordinates"] + "/penalty_param.csv")  # [:1]
         # dfp=np.load(param["grid_coordinates"]+"/penalty_param.npy")
+        Dts=[]
+        for mol, RT in df[["mol", "RT"]].values:
+
+            print(mol.GetProp("InchyKey"))
+            energy_to_Boltzmann_distribution(mol, RT)
+            Dt = []
+            weights=[]
+            for conf in mol.GetConformers():
+                data = pd.read_pickle("{}/{}/data_yz{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId()))
+                Dt.append(data["Dt"].values)
+                weight = float(conf.GetProp("Boltzmann_distribution"))
+                weights.append(weight)
+            Dt_=np.average(Dt, weights=weights, axis=0)
+            Dts.append(Dt_)
+        df["Dt"]=Dts
+
         for _ in range(5):
-            df = df.sample(frac=1, random_state=0)
+            df_= df.sample(frac=1, random_state=_)
             save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
             os.makedirs(save_path, exist_ok=True)
-            Gaussian_penalized(features_dir_name, df, dfp, param["grid_coordinates"], save_path)
+            Gaussian_penalized(features_dir_name, df_, dfp, param["grid_coordinates"], save_path)
         # looout_file_name = param["out_dir_name"] +file_name+ "/result_loonondfold.xlsx"
         # testout_file_name = param["out_dir_name"] +file_name+ "/result_train_test.xlsx"
         # crosstestout_file_name = param["out_dir_name"] +file_name+ "/result_5crossvalidnonfold.xlsx"

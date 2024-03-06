@@ -5,7 +5,7 @@ import pandas as pd
 
 
 def make_grid_coordinate(orient, size, interval):
-    out_dir_name = "../../../grid_coordinates" + "/[{},{},{}]".format(orient, size, interval)
+    out_dir_name = "../../../grid_coordinates" + "/[{}] [{}] {}".format(" ".join(map(str, orient))," ".join(map(str, size)), interval)
     # l = []
     # for x in product(range(size[0]),range(size[1]),range(size[2])):
     #     ans = np.array(orient) + np.array(x) * interval
@@ -23,7 +23,7 @@ def make_grid_coordinate(orient, size, interval):
     dfp.to_csv(filename)
     print(filename)
     dfp_yz = dfp[(dfp["y"] > 0) & (dfp["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, True, True])
-    print(dfp_yz)
+
     dfp_yz.to_csv((out_dir_name + "/coordinates_yz.csv"))
 
     l = np.array(l)
@@ -47,9 +47,9 @@ def make_grid_coordinate(orient, size, interval):
     penalty_yz = np.where(d_yz < interval * 3, gauss_func(d_yz), 0)
 
     penalty = penalty + penalty_y + penalty_z + penalty_yz
+    penalty = penalty / np.max(np.sum(penalty, axis=0))
+    penalty = penalty - np.identity(penalty.shape[0])/ np.sum(penalty, axis=0)
 
-    penalty = penalty - np.identity(penalty.shape[0]) # * np.sum(penalty, axis=0)
-    print(penalty)
 
     filename = out_dir_name + "/penalty.npy"  # + "/" + param["grid_coordinates_dir"]
     np.save(filename, penalty)
@@ -75,3 +75,9 @@ if __name__ == '__main__':
     size = [16 + 6, 10 * 2, 16 * 2]
     interval = 0.3
     make_grid_coordinate(orient, size, interval)
+    # [-5.0 -1.8 -5.0] [18 10 26] 0.4
+    orient = [-5.0, -1.8, -5.0]
+    size = [13 + 5, 5 * 2, 13 * 2]
+    interval = 0.4
+    make_grid_coordinate(orient, size, interval)
+
