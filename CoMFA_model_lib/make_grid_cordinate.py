@@ -1,4 +1,5 @@
 import os
+from itertools import product
 
 import numpy as np
 import pandas as pd
@@ -6,16 +7,17 @@ import pandas as pd
 
 def make_grid_coordinate(orient, size, interval):
     out_dir_name = "../../../grid_coordinates" + "/[{}] [{}] {}".format(" ".join(map(str, orient))," ".join(map(str, size)), interval)
-    # l = []
-    # for x in product(range(size[0]),range(size[1]),range(size[2])):
-    #     ans = np.array(orient) + np.array(x) * interval
-    #     ans = ans.tolist()
-    #     l.append(ans)
-    # ans=np.array(product(range(size[0]),range(size[1]),range(size[2])))
-    l = np.array(np.meshgrid(range(size[0]), range(size[1]), range(size[2]))).T.reshape(-1, 3) * interval + np.array(
-        orient)
-    dfp = pd.DataFrame(data=l, columns=["x", "y", "z"])
-    print(dfp)
+    l = []
+    for x in product(range(size[0]),range(size[1]),range(size[2])):
+        ans = np.array(orient) + np.array(x) * interval
+        ans = ans.tolist()
+        l.append(ans)
+    #ans=np.array(product(range(size[0]),range(size[1]),range(size[2])))
+    # l = np.sort(np.meshgrid(range(size[0]), range(size[1]), range(size[2]))).T.reshape(-1, 3) * interval + np.array(
+    #     orient)
+    print(l)
+    dfp = pd.DataFrame(data=l, columns=["x", "y", "z"]).sort_values(['x', 'y', "z"], ascending=[True, True, True])
+    # print(dfp)
     os.makedirs(out_dir_name, exist_ok=True)  # + "/" + param["grid_coordinates_dir"]
 
     filename = out_dir_name + "/coordinates.csv"  # + "/" + param["grid_coordinates_dir"]
@@ -25,8 +27,8 @@ def make_grid_coordinate(orient, size, interval):
     dfp_yz = dfp[(dfp["y"] > 0) & (dfp["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, True, True])
 
     dfp_yz.to_csv((out_dir_name + "/coordinates_yz.csv"))
-
-    l = np.array(l)
+    # print(dfp_yz)
+    l=np.array(l)
     xyz = l[(l[:, 1] > 0) & (l[:, 2] > 0)]
 
     d = np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])

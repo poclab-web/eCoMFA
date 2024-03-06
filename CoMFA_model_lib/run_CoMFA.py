@@ -74,7 +74,7 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
 
         gaussian_coef = model.coef_
         n = int(gaussian_coef.shape[0] / features_all.shape[0])
-        df_coord["Gaussian_Dt"] = df_coord["x"]#gaussian_coef[:n]
+        df_coord["Gaussian_Dt"] = gaussian_coef[:n]
         # df_coord["Gaussian_ESP"]=gaussian_coef[n:]
         df_coord["Ridge_Dt"] = ridge.coef_[:n]
         # df_coord["Ridge_ESP"]=ridge.coef_[n:]
