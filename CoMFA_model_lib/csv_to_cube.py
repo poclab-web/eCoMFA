@@ -78,8 +78,8 @@ if __name__ == '__main__':
         df_z = copy.deepcopy(df)
         df_z["z"] = -df_z["z"]
         df_yz = copy.deepcopy(df)
-        # df_yz[["y"]] = -df_yz[["y"]]
-        # df_yz["z"] = -df_yz["z"]
+        df_yz[["y"]] = -df_yz[["y"]]
+        df_yz["z"] = -df_yz["z"]
 
         feature1 = 'Dt'
         feature2 = "ESP"
@@ -91,7 +91,7 @@ if __name__ == '__main__':
         # df_z[column_inc_specific_feature] = -df_z[column_inc_specific_feature]
         # df_yz[column_inc_specific_feature] = -df_yz[column_inc_specific_feature]
 
-        # df = pd.concat([df, df_y, df_z, df_yz])
+        df = pd.concat([df, df_y, df_z, df_yz])
         df=df.sort_values(by=["x", "y", "z"], ascending=[True, True, True])
 
         # to_cube_file_name = file[:-4] + "val" + ".csv"
