@@ -1,4 +1,7 @@
 import json
+from itertools import product
+
+import numpy as np
 import pandas as pd
 from rdkit.Chem.Descriptors import ExactMolWt
 from rdkit import Chem
@@ -55,35 +58,39 @@ def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
         i += 1
 
 
-# def cube_to_pkl(dirs_name):
-#     i = 0
-#     while os.path.isfile("{}/optimized{}.xyz".format(dirs_name + "calculating", i)):
-#         with open("{}/Dt02_{}.cube".format(dirs_name + "calculating", i), 'r', encoding='UTF-8') as f:
-#             Dt = f.read().splitlines()
-#         with open("{}/ESP02_{}.cube".format(dirs_name + "calculating", i), 'r', encoding='UTF-8') as f:
-#             ESP = f.read().splitlines()
-#         with open("{}/LUMO02_{}.cube".format(dirs_name + "calculating", i), 'r', encoding='UTF-8') as f:
-#             LUMO = f.read().splitlines()
-#         with open("{}/DUAL02_{}.cube".format(dirs_name + "calculating", i), 'r', encoding='UTF-8') as f:
-#             DUAL = f.read().splitlines()
-#
-#         l = np.array([_.split() for _ in Dt[2:6]])
-#         n_atom = int(l[0, 0])
-#         x0 = l[0, 1:].astype(float)
-#         size = l[1:, 0].astype(int)
-#         axis = l[1:, 1:].astype(float)
-#         Dt = np.concatenate([_.split() for _ in Dt[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
-#         ESP = np.concatenate([_.split() for _ in ESP[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
-#         LUMO = np.concatenate([_.split() for _ in LUMO[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
-#         DUAL = np.concatenate([_.split() for _ in DUAL[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
-#         l = np.array(list(product(range(size[0]), range(size[1]), range(size[2])))) @ axis + x0
-#         l = l * psi4.constants.bohr2angstroms
-#         arr = np.concatenate([l, Dt, ESP, LUMO, DUAL], axis=1)
-#         df = pd.DataFrame(arr, columns=["x", "y", "z", "Dt", "ESP", "LUMO", "DUAL"])
-#         df.to_pickle(dirs_name + "calculating" + "/data{}.pkl".format(i))
-#         i += 1
-#     if i != 0:
-#         os.rename(dirs_name + "calculating", dirs_name)
+def cube_to_pkl(dirs_name):
+
+    i = 0
+    while os.path.isfile("{}/optimized{}.xyz".format(dirs_name , i)):#+ "calculating"
+        # if os.path.isfile(dirs_name + "/data{}.pkl".format(i)):
+        #     i+=1
+        #     continue
+        with open("{}/Dt02_{}.cube".format(dirs_name , i), 'r', encoding='UTF-8') as f:#+ "calculating"
+            Dt = f.read().splitlines()
+        with open("{}/ESP02_{}.cube".format(dirs_name , i), 'r', encoding='UTF-8') as f:#+ "calculating"
+            ESP = f.read().splitlines()
+        with open("{}/LUMO02_{}.cube".format(dirs_name , i), 'r', encoding='UTF-8') as f:#+ "calculating"
+            LUMO = f.read().splitlines()
+        with open("{}/DUAL02_{}.cube".format(dirs_name , i), 'r', encoding='UTF-8') as f:#+ "calculating"
+            DUAL = f.read().splitlines()
+
+        l = np.array([_.split() for _ in Dt[2:6]])
+        n_atom = int(l[0, 0])
+        x0 = l[0, 1:].astype(float)
+        size = l[1:, 0].astype(int)
+        axis = l[1:, 1:].astype(float)
+        Dt = np.concatenate([_.split() for _ in Dt[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        ESP = np.concatenate([_.split() for _ in ESP[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        LUMO = np.concatenate([_.split() for _ in LUMO[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        DUAL = np.concatenate([_.split() for _ in DUAL[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        l = np.array(list(product(range(size[0]), range(size[1]), range(size[2])))) @ axis + x0
+        l = l * psi4.constants.bohr2angstroms
+        arr = np.concatenate([l, Dt, ESP, LUMO, DUAL], axis=1)
+        df = pd.DataFrame(arr, columns=["x", "y", "z", "Dt", "ESP", "LUMO", "DUAL"])
+        df.to_pickle(dirs_name + "/data{}.pkl".format(i))
+        i += 1
+    # if i != 0:
+    #     os.rename(dirs_name + "calculating", dirs_name)
 
 
 if __name__ == '__main__':
@@ -109,7 +116,7 @@ if __name__ == '__main__':
 
     print(df)
 
-    while True:
+    if True:
         for smiles in df["smiles"]:
             print(smiles)
             mol = calculate_conformation.get_mol(smiles)
@@ -122,5 +129,5 @@ if __name__ == '__main__':
                     os.rename(output_dirs_name +"calculating",output_dirs_name)
                 except:
                     None
-                #cube_to_pkl(output_dirs_name)
+            cube_to_pkl(output_dirs_name)
         time.sleep(10)
