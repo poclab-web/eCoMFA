@@ -62,9 +62,9 @@ def cube_to_pkl(dirs_name):
 
     i = 0
     while os.path.isfile("{}/optimized{}.xyz".format(dirs_name , i)):#+ "calculating"
-        # if os.path.isfile(dirs_name + "/data{}.pkl".format(i)):
-        #     i+=1
-        #     continue
+        if os.path.isfile(dirs_name + "/data{}.pkl".format(i)):
+            i+=1
+            continue
         with open("{}/Dt02_{}.cube".format(dirs_name , i), 'r', encoding='UTF-8') as f:#+ "calculating"
             Dt = f.read().splitlines()
         with open("{}/ESP02_{}.cube".format(dirs_name , i), 'r', encoding='UTF-8') as f:#+ "calculating"

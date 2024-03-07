@@ -88,8 +88,8 @@ if __name__ == '__main__':
         column_inc_specific_feature = [column for column in df_z.columns if
                                        (feature1 in column) or (feature2 in column)]
 
-        # df_z[column_inc_specific_feature] = -df_z[column_inc_specific_feature]
-        # df_yz[column_inc_specific_feature] = -df_yz[column_inc_specific_feature]
+        df_z[column_inc_specific_feature] = -df_z[column_inc_specific_feature]
+        df_yz[column_inc_specific_feature] = -df_yz[column_inc_specific_feature]
 
         df = pd.concat([df, df_y, df_z, df_yz])
         df=df.sort_values(by=["x", "y", "z"], ascending=[True, True, True])

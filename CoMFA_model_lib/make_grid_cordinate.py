@@ -15,7 +15,7 @@ def make_grid_coordinate(orient, size, interval):
     #ans=np.array(product(range(size[0]),range(size[1]),range(size[2])))
     # l = np.sort(np.meshgrid(range(size[0]), range(size[1]), range(size[2]))).T.reshape(-1, 3) * interval + np.array(
     #     orient)
-    print(l)
+    # print(l)
     dfp = pd.DataFrame(data=l, columns=["x", "y", "z"]).sort_values(['x', 'y', "z"], ascending=[True, True, True])
     # print(dfp)
     os.makedirs(out_dir_name, exist_ok=True)  # + "/" + param["grid_coordinates_dir"]
@@ -49,10 +49,10 @@ def make_grid_coordinate(orient, size, interval):
     penalty_yz = np.where(d_yz < interval * 3, gauss_func(d_yz), 0)
 
     penalty = penalty + penalty_y + penalty_z + penalty_yz
-    penalty = penalty / np.max(np.sum(penalty, axis=0))
-    penalty = penalty - np.identity(penalty.shape[0])/ np.sum(penalty, axis=0)
+    penalty = penalty/ np.max(np.sum(penalty, axis=0))
+    penalty = penalty - np.identity(penalty.shape[0])#/ np.sum(penalty, axis=0)
 
-
+    # penalty=np.identity(penalty.shape[0])
     filename = out_dir_name + "/penalty.npy"  # + "/" + param["grid_coordinates_dir"]
     np.save(filename, penalty)
 

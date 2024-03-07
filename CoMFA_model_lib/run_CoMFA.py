@@ -21,7 +21,8 @@ warnings.simplefilter('ignore')
 
 def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     # Gaussian Lasso Ridgeを行う。#PLSなどは別？
-    df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"], ascending=[True, True, True])
+    df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
+                                                                                  ascending=[True, True, True])
     penalty = np.load(gaussian_penalize + "/penalty.npy")
 
     # features_all = []
@@ -33,10 +34,10 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     #     #df_grid = pd.read_csv("{}/{}/feature_yz.csv".format(grid_dir, mol.GetProp("InchyKey")))
     #     feat = df_grid[["Dt"]].values
     #     features_all.append(feat)
-    #features_all=df["Dt"].values
+    # features_all=df["Dt"].values
 
     # print(np.array(df["Dt"].tolist()).reshape(len(df),-1,1).shape)
-    features_all = np.array(df["Dt"].tolist()).reshape(len(df),-1,1).transpose(2, 0, 1)
+    features_all = np.array(df["Dt"].tolist()).reshape(len(df), -1, 1).transpose(2, 0, 1)
     # print(features_all.shape)
     # print(features_all)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
@@ -45,12 +46,11 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     features = np.concatenate(features, axis=1)
     zeros = np.zeros(penalty.shape[0] * features_all.shape[0])
 
-    Gaussian_penalized_models = []
-    Ridge_models = []
-    Lasso_models = []
-    gaussian_predicts_list = []
-    ridge_predicts_list = []
-    lasso_predicts_list = []
+    models = []
+    # gaussian_predicts_list = []
+    # ridge_predicts_list = []
+    # lasso_predicts_list = []
+    predicts = []
     for L in dfp["lambda"]:
         penalty_L = []
         for _ in range(features_all.shape[0]):
@@ -66,11 +66,12 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
         X = np.block([[features]] + penalty_L)
         Y = np.concatenate([df["ΔΔG.expt."], zeros], axis=0)
         model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
-        Gaussian_penalized_models.append(model)
+        # Gaussian_penalized_models.append(model)
+        # Ridge_models.append(ridge)
+        # Lasso_models.append(lasso)
         ridge = linear_model.Ridge(alpha=L, fit_intercept=False).fit(features, df["ΔΔG.expt."])
-        Ridge_models.append(ridge)
-        lasso = linear_model.Lasso(alpha=L , fit_intercept=False).fit(features, df["ΔΔG.expt."])
-        Lasso_models.append(lasso)
+        lasso = linear_model.Lasso(alpha=L, fit_intercept=False).fit(features, df["ΔΔG.expt."])
+        models.append([model, ridge, lasso])
 
         gaussian_coef = model.coef_
         n = int(gaussian_coef.shape[0] / features_all.shape[0])
@@ -87,7 +88,6 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
         ridge_predicts = []
         lasso_predicts = []
         for (train_index, test_index) in kf.split(df):
-
             features_training = features_all[:, train_index]  # np.array(features_all)[train_index].transpose(2, 0, 1)
             std = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
             features_training = features_training / std
@@ -95,11 +95,11 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
             X = np.block([[features_training]] + penalty_L)
             Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], zeros], axis=0)
             model = linear_model.Ridge(alpha=0, fit_intercept=False).fit(X, Y)
+            # model=linear_model.LinearRegression(fit_intercept=False).fit(X,Y)
             ridge = linear_model.Ridge(alpha=L, fit_intercept=False).fit(features_training,
                                                                          df.iloc[train_index]["ΔΔG.expt."])
-            lasso = linear_model.Lasso(alpha=L , fit_intercept=False).fit(features_training,
-                                                                               df.iloc[train_index]["ΔΔG.expt."])
-
+            lasso = linear_model.Lasso(alpha=L, fit_intercept=False).fit(features_training,
+                                                                         df.iloc[train_index]["ΔΔG.expt."])
 
             features_test = features_all[:, test_index]  # np.array(features_all)[test_index].transpose(2, 0, 1)
             features_test = features_test / std
@@ -111,47 +111,68 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
             ridge_predicts.extend(ridge_predict)
             lasso_predict = lasso.predict(features_test)
             lasso_predicts.extend(lasso_predict)
-        gaussian_predicts_list.append(gaussian_predicts)
-        ridge_predicts_list.append(ridge_predicts)
-        lasso_predicts_list.append(lasso_predicts)
-    dfp["Gaussian_model"] = Gaussian_penalized_models
-    dfp["Gaussian_regression_predict"] = dfp["Gaussian_model"].apply(lambda model: model.predict(features))
-    dfp["Gaussian_regression_r2"] = dfp["Gaussian_regression_predict"].apply(
+        # gaussian_predicts_list.append(gaussian_predicts)
+        # ridge_predicts_list.append(ridge_predicts)
+        # lasso_predicts_list.append(lasso_predicts)
+        predicts.append([gaussian_predicts, ridge_predicts, lasso_predicts])
+    dfp[["Gaussian_model", "Ridge_model", "Lasso_model"]] = models
+    dfp[["Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict"]] = dfp[
+        ["Gaussian_model", "Ridge_model", "Lasso_model"]].applymap(lambda model: model.predict(features))
+    dfp[["Gaussian_regression_r2", "Ridge_regression_r2", "Lasso_regression_r2"]] = dfp[
+        ["Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict"]].applymap(
         lambda predict: r2_score(df["ΔΔG.expt."], predict))
-    dfp["Gaussian_regression_RMSE"] = dfp["Gaussian_regression_predict"].apply(
+    dfp[["Gaussian_regression_RMSE", "Ridge_regression_RMSE", "Lasso_regression_RMSE"]] = dfp[[
+        "Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict"]].applymap(
+        lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+    # dfp["Gaussian_regression_predict"] = dfp["Gaussian_model"].apply(lambda model: model.predict(features))
+    # dfp["Gaussian_regression_r2"] = dfp["Gaussian_regression_predict"].apply(
+    #     lambda predict: r2_score(df["ΔΔG.expt."], predict))
+    # dfp["Gaussian_regression_RMSE"] = dfp["Gaussian_regression_predict"].apply(
+    #     lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+
+    # dfp["Ridge_model"] = Ridge_models
+    # dfp["Ridge_regression_predict"] = dfp["Ridge_model"].apply(lambda model: model.predict(features))
+    # dfp["Ridge_regression_r2"] = dfp["Ridge_regression_predict"].apply(
+    #     lambda predict: r2_score(df["ΔΔG.expt."], predict))
+    # dfp["Ridge_regression_RMSE"] = dfp["Ridge_regression_predict"].apply(
+    #     lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+
+    # dfp["Lasso_model"] = Lasso_models
+    # dfp["Lasso_regression_predict"] = dfp["Lasso_model"].apply(lambda model: model.predict(features))
+    # dfp["Lasso_regression_r2"] = dfp["Lasso_regression_predict"].apply(
+    #     lambda predict: r2_score(df["ΔΔG.expt."], predict))
+    # dfp["Lasso_regression_RMSE"] = dfp["Lasso_regression_predict"].apply(
+    #     lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+    dfp[["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict"]] = predicts
+    dfp[["Gaussian_test_r2", "ridge_test_r2", "lasso_test_r2"]] = dfp[
+        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict"]].applymap(
+        lambda predict: r2_score(df["ΔΔG.expt."], predict))
+    dfp[["Gaussian_test_r", "ridge_test_r", "lasso_test_r"]] = dfp[
+        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict"]].applymap(
+        lambda predict: np.corrcoef(df["ΔΔG.expt."], predict)[1,0])
+    dfp[["Gaussian_test_RMSE", "ridge_test_RMSE", "lasso_test_RMSE"]] = dfp[
+        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict"]].applymap(
         lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
 
-    dfp["Ridge_model"] = Ridge_models
-    dfp["Ridge_regression_predict"] = dfp["Ridge_model"].apply(lambda model: model.predict(features))
-    dfp["Ridge_regression_r2"] = dfp["Ridge_regression_predict"].apply(lambda predict: r2_score(df["ΔΔG.expt."], predict))
-    dfp["Ridge_regression_RMSE"] = dfp["Ridge_regression_predict"].apply(
-        lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+    # dfp["Gaussian_test_predict"] = gaussian_predicts_list
+    # dfp["Gaussian_test_r2"] = dfp["Gaussian_test_predict"].apply(lambda predict: r2_score(df["ΔΔG.expt."], predict))
+    # dfp["Gaussian_test_RMSE"] = dfp["Gaussian_test_predict"].apply(
+    #     lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
 
-    dfp["Lasso_model"] = Lasso_models
-    dfp["Lasso_regression_predict"] = dfp["Lasso_model"].apply(lambda model: model.predict(features))
-    dfp["Lasso_regression_r2"] = dfp["Lasso_regression_predict"].apply(lambda predict: r2_score(df["ΔΔG.expt."], predict))
-    dfp["Lasso_regression_RMSE"] = dfp["Lasso_regression_predict"].apply(
-        lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+    # dfp["ridge_test_predict"] = ridge_predicts_list
+    # dfp["ridge_test_r2"] = dfp["ridge_test_predict"].apply(lambda predict: r2_score(df["ΔΔG.expt."], predict))
+    # dfp["ridge_test_RMSE"] = dfp["ridge_test_predict"].apply(
+    #     lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
 
-    dfp["Gaussian_test_predict"] = gaussian_predicts_list
-    dfp["Gaussian_test_r2"] = dfp["Gaussian_test_predict"].apply(lambda predict: r2_score(df["ΔΔG.expt."], predict))
-    dfp["Gaussian_test_RMSE"] = dfp["Gaussian_test_predict"].apply(
-        lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+    # dfp["lasso_test_predict"] = lasso_predicts_list
+    # dfp["lasso_test_r2"] = dfp["lasso_test_predict"].apply(lambda predict: r2_score(df["ΔΔG.expt."], predict))
+    # dfp["lasso_test_RMSE"] = dfp["lasso_test_predict"].apply(
+    #     lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
 
-    dfp["ridge_test_predict"] = ridge_predicts_list
-    dfp["ridge_test_r2"] = dfp["ridge_test_predict"].apply(lambda predict: r2_score(df["ΔΔG.expt."], predict))
-    dfp["ridge_test_RMSE"] = dfp["ridge_test_predict"].apply(
-        lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
-
-    dfp["lasso_test_predict"] = lasso_predicts_list
-    dfp["lasso_test_r2"] = dfp["lasso_test_predict"].apply(lambda predict: r2_score(df["ΔΔG.expt."], predict))
-    dfp["lasso_test_RMSE"] = dfp["lasso_test_predict"].apply(
-        lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
-
-    df["test_predict"] = dfp[dfp["Gaussian_test_RMSE"] == dfp["Gaussian_test_RMSE"].min()].iloc[0][
+    df["test_predict"] = dfp[dfp["Gaussian_test_r"] == dfp["Gaussian_test_r"].max()].iloc[0][
         "Gaussian_test_predict"]
     df["error"] = df["test_predict"] - df["ΔΔG.expt."]
-    df=df.sort_values(by='error', key=abs,ascending=[False])
+    df = df.sort_values(by='error', key=abs, ascending=[False])
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     # df = df[[ "smiles", "ROMol","inchikey","er.", "RT", "ΔΔG.expt."]].drop_duplicates(subset="inchikey")#,"ΔΔminG.expt.","ΔΔmaxG.expt."
     # df = df[["smiles", "ROMol", "er.", "RT"]]
@@ -891,6 +912,7 @@ def doublecrossvalidation(fold, features_dir_name, regression_features, feature_
     print(len(df))
     PandasTools.SaveXlsxFromFrame(df, testout_file_name, size=(100, 100))
 
+
 def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
     energies = np.array([float(conf.GetProp("energy")) for conf in mol.GetConformers()])
     energies = energies - np.min(energies)
@@ -899,8 +921,9 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
     for conf, rate in zip(mol.GetConformers(), rates):
         conf.SetProp("Boltzmann_distribution", str(rate))
 
+
 if __name__ == '__main__':
-    # time.sleep(60*10)
+    # time.sleep(60*100)
     start = time.perf_counter()  # 計測開始
 
     # for param_file_name in [
@@ -949,7 +972,7 @@ if __name__ == '__main__':
         with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
             param = json.loads(f.read())
         print(param)
-        df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)#[:50]
+        df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
 
         # print(param_file_name)
         # with open(param_file_name, "r") as f:
@@ -971,34 +994,32 @@ if __name__ == '__main__':
         df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
         print("dfbefore")
         print(len(df))
-        #df = df[[os.path.isdir(features_dir_name + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+        # df = df[[os.path.isdir(features_dir_name + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
 
-        df=df[[os.path.isdir("{}/{}".format(param["grid_coordinates"], mol.GetProp("InchyKey")))for mol in df["mol"]]]
-        print(len(df))
-        print("dfafter")
-        print(len(df))
+        df = df[
+            [os.path.isdir("{}/{}".format(param["grid_coordinates"], mol.GetProp("InchyKey"))) for mol in df["mol"]]]
         df["mol"].apply(lambda mol: calculate_conformation.read_xyz(mol, xyz_dir_name + "/" + mol.GetProp("InchyKey")))
 
         dfp = pd.read_csv(param["grid_coordinates"] + "/penalty_param.csv")  # [:1]
         # dfp=np.load(param["grid_coordinates"]+"/penalty_param.npy")
-        Dts=[]
+        Dts = []
         for mol, RT in df[["mol", "RT"]].values:
 
-            print(mol.GetProp("InchyKey"))
             energy_to_Boltzmann_distribution(mol, RT)
             Dt = []
-            weights=[]
+            weights = []
             for conf in mol.GetConformers():
-                data = pd.read_pickle("{}/{}/data_yz{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId()))
+                data = pd.read_pickle(
+                    "{}/{}/data_yz{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId()))
                 Dt.append(data["Dt"].values)
                 weight = float(conf.GetProp("Boltzmann_distribution"))
                 weights.append(weight)
-            Dt_=np.average(Dt, weights=weights, axis=0)
+            Dt_ = np.average(Dt, weights=weights, axis=0)
             Dts.append(Dt_)
-        df["Dt"]=Dts
+        df["Dt"] = Dts
 
         for _ in range(5):
-            df_= df.sample(frac=1, random_state=_)
+            df_ = df.sample(frac=1, random_state=_)
             save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
             os.makedirs(save_path, exist_ok=True)
             Gaussian_penalized(features_dir_name, df_, dfp, param["grid_coordinates"], save_path)
