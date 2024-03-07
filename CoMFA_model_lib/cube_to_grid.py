@@ -21,7 +21,7 @@ def pkl_to_featurevalue(dir_name, dfp, mol,out_name):#グリッド特徴量を�
         filename = "{}/{}/data{}.pkl".format(dir_name, mol.GetProp("InchyKey"), conf.GetId())
         print(filename)
         data = pd.read_pickle(filename)
-        data["Dt"]=data["Dt"].where(data["Dt"]<1,1)
+        data["Dt"]=data["Dt"].where(data["Dt"]<10,10)
         # #data[["x","y","z"]]=data[["x","y","z"]]
         # cond_x=[]
         # cond_y=[]

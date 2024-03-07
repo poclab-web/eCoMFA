@@ -65,9 +65,9 @@ for file in glob.glob("../arranged_dataset/*.xlsx"):
     i+=1
     file_name = os.path.splitext(os.path.basename(file))[0]
     ax = fig.add_subplot(1, 3, i)
-    ax.set_ylim(0, 1)
+    ax.set_ylim(0.5, 1)
     ax.set_title(file_name)
-    ax.set_yticks([0, 0.5, 1])
+    ax.set_yticks([0.5, 1])
     for _ in range(5):
         save_path = param["out_dir_name"] + "/" + file_name+"/"+str(_)
         dfp=pd.read_csv(save_path+"/result.csv")
@@ -77,9 +77,9 @@ for file in glob.glob("../arranged_dataset/*.xlsx"):
         # ax.plot(dfp["lambda"], dfp["lasso_test_RMSE"],color="red",label="lasso")
         # ax.plot(dfp["lambda"], dfp["ridge_test_RMSE"],color="green",label="ridge")
 
-        ax.plot(dfp["lambda"],dfp["Gaussian_test_r2"],color="blue",label="Gaussian",linewidth=1,alpha=0.5)
-        ax.plot(dfp["lambda"], dfp["lasso_test_r2"],color="red",label="lasso",linewidth=1,alpha=0.5)
-        ax.plot(dfp["lambda"], dfp["ridge_test_r2"],color="green",label="ridge",linewidth=1,alpha=0.5)
+        ax.plot(dfp["lambda"],dfp["Gaussian_test_r"],color="blue",label="Gaussian",linewidth=1,alpha=0.5)
+        ax.plot(dfp["lambda"], dfp["lasso_test_r"],color="red",label="lasso",linewidth=1,alpha=0.5)
+        ax.plot(dfp["lambda"], dfp["ridge_test_r"],color="green",label="ridge",linewidth=1,alpha=0.5)
         ax.legend(loc='lower right', fontsize=6)
         #ax.set_xticks([-2, 0, 2])
         plt.xscale("log")
