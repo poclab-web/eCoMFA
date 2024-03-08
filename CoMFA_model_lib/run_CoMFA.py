@@ -124,6 +124,8 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     dfp[["Gaussian_regression_RMSE", "Ridge_regression_RMSE", "Lasso_regression_RMSE"]] = dfp[[
         "Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict"]].applymap(
         lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+
+
     # dfp["Gaussian_regression_predict"] = dfp["Gaussian_model"].apply(lambda model: model.predict(features))
     # dfp["Gaussian_regression_r2"] = dfp["Gaussian_regression_predict"].apply(
     #     lambda predict: r2_score(df["ΔΔG.expt."], predict))
@@ -169,10 +171,15 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     # dfp["lasso_test_RMSE"] = dfp["lasso_test_predict"].apply(
     #     lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
 
-    df["test_predict"] = dfp[dfp["Gaussian_test_r"] == dfp["Gaussian_test_r"].max()].iloc[0][
+    df["Gaussian_predict"]=dfp[dfp["Gaussian_test_r"] == dfp["Gaussian_test_r"].max()].iloc[0][
         "Gaussian_test_predict"]
-    df["error"] = df["test_predict"] - df["ΔΔG.expt."]
-    df = df.sort_values(by='error', key=abs, ascending=[False])
+    df["Ridge_predict"]=dfp[dfp["ridge_test_r"] == dfp["ridge_test_r"].max()].iloc[0][
+        "ridge_test_predict"]
+    df["Lasso_predict"] = dfp[dfp["lasso_test_r"] == dfp["lasso_test_r"].max()].iloc[0]["lasso_test_predict"]
+    df["Gaussian_error"]=df["Gaussian_predict"]-df["ΔΔG.expt."]
+    # df[["Gaussian_error","Ridge_error","Lasso_error"]] = df[["Gaussian_predict","Ridge_predict","Lasso_predict",]].applymap(lambda test:test - df["ΔΔG.expt."].values)
+    #print(df)
+    df = df.sort_values(by='Gaussian_error', key=abs, ascending=[False])
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     # df = df[[ "smiles", "ROMol","inchikey","er.", "RT", "ΔΔG.expt."]].drop_duplicates(subset="inchikey")#,"ΔΔminG.expt.","ΔΔmaxG.expt."
     # df = df[["smiles", "ROMol", "er.", "RT"]]
@@ -1023,6 +1030,7 @@ if __name__ == '__main__':
             save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
             os.makedirs(save_path, exist_ok=True)
             Gaussian_penalized(features_dir_name, df_, dfp, param["grid_coordinates"], save_path)
+
         # looout_file_name = param["out_dir_name"] +file_name+ "/result_loonondfold.xlsx"
         # testout_file_name = param["out_dir_name"] +file_name+ "/result_train_test.xlsx"
         # crosstestout_file_name = param["out_dir_name"] +file_name+ "/result_5crossvalidnonfold.xlsx"

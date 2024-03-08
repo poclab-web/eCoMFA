@@ -95,7 +95,7 @@ for file in glob.glob("../arranged_dataset/*.xlsx"):
     ax.set_ylim(-3, 3)
     ax.set_title(file_name)
     ax.set_yticks([-3,3])
-    for _ in range(5):
+    for _ in range(1):
         save_path = param["out_dir_name"] + "/" + file_name+"/"+str(_)
         dfp=pd.read_excel(save_path+"/result_test.xlsx")
 
@@ -104,13 +104,39 @@ for file in glob.glob("../arranged_dataset/*.xlsx"):
         # ax.plot(dfp["lambda"], dfp["lasso_test_RMSE"],color="red",label="lasso")
         # ax.plot(dfp["lambda"], dfp["ridge_test_RMSE"],color="green",label="ridge")
 
-        ax.plot(dfp["ΔΔG.expt."],dfp["test_predict"],"o",color="blue",label="Gaussian",linewidth=1,alpha=0.5)
-        # ax.plot(dfp["lambda"], dfp["lasso_test_r2"],color="red",label="lasso",linewidth=1,alpha=0.5)
-        # ax.plot(dfp["lambda"], dfp["ridge_test_r2"],color="green",label="ridge",linewidth=1,alpha=0.5)
+        ax.plot(dfp["ΔΔG.expt."],dfp["Gaussian_predict"],"o",color="blue",label="Gaussian",alpha=0.5)
+        ax.plot(dfp["ΔΔG.expt."], dfp["Ridge_predict"],"o",color="red",label="Lasso",alpha=0.5)
+        ax.plot(dfp["ΔΔG.expt."], dfp["Lasso_predict"],"o",color="green",label="Ridge",alpha=0.5)
         ax.legend(loc='lower right', fontsize=6)
         #ax.set_xticks([-2, 0, 2])
 
 plt.savefig("../figs/test_predict.png", transparent=False, dpi=300)
+
+fig =plt.figure(figsize=(3*3,3*3))
+i=0
+for file in glob.glob("../arranged_dataset/*.xlsx"):
+    file_name = os.path.splitext(os.path.basename(file))[0]
+
+    for _ in range(1):
+
+        save_path = param["out_dir_name"] + "/" + file_name+"/"+str(_)
+        dfp=pd.read_excel(save_path+"/result_test.xlsx")
+        for name in ["Gaussian_predict","Ridge_predict","Lasso_predict"]:
+            i += 1
+            ax = fig.add_subplot(3, 3, i)
+            ax.set_ylim(-3, 3)
+            ax.set_title(file_name)
+            ax.set_yticks([-3, 3])
+
+            # ax.plot(dfp["lambda"],dfp["Gaussian_test_RMSE"],color="blue",label="Gaussian")
+            # ax.plot(dfp["lambda"], dfp["lasso_test_RMSE"],color="red",label="lasso")
+            # ax.plot(dfp["lambda"], dfp["ridge_test_RMSE"],color="green",label="ridge")
+
+            ax.plot(dfp["ΔΔG.expt."],dfp[name],"o",color="blue",label=name,alpha=0.5)
+            ax.legend(loc='lower right', fontsize=6)
+            #ax.set_xticks([-2, 0, 2])
+
+plt.savefig("../figs/test_predict_.png", transparent=False, dpi=300)
 
 fig =plt.figure(figsize=(3*5, 3*3+1))
 i=0
