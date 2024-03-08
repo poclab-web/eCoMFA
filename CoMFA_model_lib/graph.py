@@ -76,10 +76,14 @@ for file in glob.glob("../arranged_dataset/*.xlsx"):
         # ax.plot(dfp["lambda"],dfp["Gaussian_test_RMSE"],color="blue",label="Gaussian")
         # ax.plot(dfp["lambda"], dfp["lasso_test_RMSE"],color="red",label="lasso")
         # ax.plot(dfp["lambda"], dfp["ridge_test_RMSE"],color="green",label="ridge")
-
-        ax.plot(dfp["lambda"],dfp["Gaussian_test_r"],color="blue",label="Gaussian",linewidth=1,alpha=0.5)
-        ax.plot(dfp["lambda"], dfp["lasso_test_r"],color="red",label="lasso",linewidth=1,alpha=0.5)
-        ax.plot(dfp["lambda"], dfp["ridge_test_r"],color="green",label="ridge",linewidth=1,alpha=0.5)
+        if _ == 1:
+            ax.plot(dfp["lambda"],dfp["Gaussian_test_r"],color="blue",label="Gaussian",linewidth=1,alpha=0.5)
+            ax.plot(dfp["lambda"], dfp["lasso_test_r"],color="red",label="lasso",linewidth=1,alpha=0.5)
+            ax.plot(dfp["lambda"], dfp["ridge_test_r"],color="green",label="ridge",linewidth=1,alpha=0.5)
+        else:
+            ax.plot(dfp["lambda"],dfp["Gaussian_test_r"],color="blue",linewidth=1,alpha=0.5)
+            ax.plot(dfp["lambda"], dfp["lasso_test_r"],color="red",linewidth=1,alpha=0.5)
+            ax.plot(dfp["lambda"], dfp["ridge_test_r"],color="green",linewidth=1,alpha=0.5)
         ax.legend(loc='lower right', fontsize=6)
         #ax.set_xticks([-2, 0, 2])
         plt.xscale("log")
@@ -104,12 +108,23 @@ for file in glob.glob("../arranged_dataset/*.xlsx"):
         # ax.plot(dfp["lambda"], dfp["lasso_test_RMSE"],color="red",label="lasso")
         # ax.plot(dfp["lambda"], dfp["ridge_test_RMSE"],color="green",label="ridge")
 
-        ax.plot(dfp["ΔΔG.expt."],dfp["Gaussian_predict"],"o",color="blue",label="Gaussian",alpha=0.5)
-        ax.plot(dfp["ΔΔG.expt."], dfp["Ridge_predict"],"o",color="red",label="Lasso",alpha=0.5)
-        ax.plot(dfp["ΔΔG.expt."], dfp["Lasso_predict"],"o",color="green",label="Ridge",alpha=0.5)
-        ax.legend(loc='lower right', fontsize=6)
-        #ax.set_xticks([-2, 0, 2])
 
+        # ax.plot(dfp["ΔΔG.expt."],dfp["Gaussian_predict"],"o",color="blue",label="Gaussian",alpha=0.5)
+        # ax.plot(dfp["ΔΔG.expt."], dfp["Ridge_predict"],"o",color="red",label="Lasso",alpha=0.5)
+        # ax.plot(dfp["ΔΔG.expt."], dfp["Lasso_predict"],"o",color="green",label="Ridge",alpha=0.5)
+        ax.plot(dfp["ΔΔG.expt."], dfp["Gaussian_predict"], "o",label="_nolegend_" ,color="blue",  alpha=0.5)
+        ax.plot(dfp["ΔΔG.expt."], dfp["Ridge_predict"], "o",label="_nolegend_", color="red", alpha=0.5)
+        ax.plot(dfp["ΔΔG.expt."], dfp["Lasso_predict"], "o",label="_nolegend_", color="green",  alpha=0.5)
+
+        # dfplegend["Gaussian_predict","Ridge_predict","Lasso_predict"] =0
+
+
+
+        #ax.set_xticks([-2, 0, 2])
+    ax.scatter([], [], color="blue", label="Gaussian", alpha=0.5)
+    ax.scatter([], [], color="red", label="Lasso", alpha=0.5)
+    ax.scatter([], [], color="green", label="Ridge", alpha=0.5)
+    ax.legend(loc='lower right', fontsize=6)
 plt.savefig("../figs/test_predict.png", transparent=False, dpi=300)
 
 fig =plt.figure(figsize=(3*3,3*3))
@@ -138,6 +153,12 @@ for file in glob.glob("../arranged_dataset/*.xlsx"):
 
 plt.savefig("../figs/test_predict_.png", transparent=False, dpi=300)
 
+
+
+
+
+
+#ここから先はエラー
 fig =plt.figure(figsize=(3*5, 3*3+1))
 i=0
 for file in glob.glob("../arranged_dataset/*.xlsx"):
