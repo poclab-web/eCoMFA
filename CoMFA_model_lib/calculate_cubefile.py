@@ -30,6 +30,11 @@ def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
             molecule = psi4.geometry(mol_input)
             input_energy = rl[1]
         energy, wfn = psi4.energy(level, molecule=molecule, return_wfn=True)
+        # HOMO = scf_wfn.epsilon_a_subset("AO", "ALL")[scf_wfn.nalpha()]
+        # LUMO = scf_wfn.epsilon_a_subset("AO", "ALL")[scf_wfn.nalpha() + 1]
+        with open(output_dir_name + "/epsilon.txt", "w") as f:
+            epsilon=wfn.epsilon_a_subset("AO","ALL").np[wfn.nalpha()-1]
+            print(epsilon,file=f)
         psi4.set_options({'cubeprop_tasks': ['frontier_orbitals'],
                           "cubic_grid_spacing": [0.2, 0.2, 0.2]
                           })
@@ -37,7 +42,7 @@ def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
         os.rename(glob.glob(output_dir_name + "/Psi_a_*_LUMO.cube")[0], output_dir_name + "/LUMO02_{}.cube".format(i))
         os.remove(glob.glob(output_dir_name + "/Psi_a_*_HOMO.cube")[0])
 
-        psi4.set_options({'cubeprop_tasks': ['esp'],
+        psi4.set_options({'cubeprop_tasks': ['esp',"lol","elf"],
                           "cubic_grid_spacing": [0.2, 0.2, 0.2]
                           })
         psi4.cubeprop(wfn)
@@ -118,16 +123,17 @@ if __name__ == '__main__':
 
     if True:
         for smiles in df["smiles"]:
-            print(smiles)
-            mol = calculate_conformation.get_mol(smiles)
-            input_dirs_name = param["psi4_aligned_dir_name"]+"/"+ mol.GetProp("InchyKey")
-            output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")
-            if not os.path.isdir(output_dirs_name):
-                print(mol.GetProp("InchyKey"))
-                psi4calculation(input_dirs_name, output_dirs_name +"calculating", param["one_point_level"])
-                try:
-                    os.rename(output_dirs_name +"calculating",output_dirs_name)
-                except:
-                    None
-            cube_to_pkl(output_dirs_name)
+            if "Cl" in smiles:
+                print(smiles)
+                mol = calculate_conformation.get_mol(smiles)
+                input_dirs_name = param["psi4_aligned_dir_name"]+"/"+ mol.GetProp("InchyKey")
+                output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")
+                if not os.path.isdir(output_dirs_name):
+                    print(mol.GetProp("InchyKey"))
+                    psi4calculation(input_dirs_name, output_dirs_name +"calculating", param["one_point_level"])
+                    try:
+                        os.rename(output_dirs_name +"calculating",output_dirs_name)
+                    except:
+                        None
+                cube_to_pkl(output_dirs_name)
         time.sleep(10)

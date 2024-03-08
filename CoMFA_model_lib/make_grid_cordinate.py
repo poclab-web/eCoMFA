@@ -67,7 +67,7 @@ if __name__ == '__main__':
     size = [10 + 4, 6 * 2, 10 * 2]
     interval = 0.5
     make_grid_coordinate(orient, size, interval)
-    # [[-5.0, -3.0, -5.0],[18, 16, 26],0.4]
+    # [-5.0 -3.0 -5.0] [18 16 26] 0.4
     orient = [-5.0, -3.0, -5.0]
     size = [13 + 5, 8 * 2, 13 * 2]
     interval = 0.4
