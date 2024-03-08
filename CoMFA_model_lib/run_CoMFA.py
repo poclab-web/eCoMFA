@@ -51,7 +51,7 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     # ridge_predicts_list = []
     # lasso_predicts_list = []
     predicts = []
-    for L in dfp["lambda"]:
+    for L ,n_num in zip(dfp["lambda"],range(1,len(dfp)+1)):
         penalty_L = []
         for _ in range(features_all.shape[0]):
             penalty_L_ = []
@@ -61,6 +61,7 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
                 else:
                     penalty_L_.append(np.zeros(penalty.shape))
             penalty_L.append(penalty_L_)
+
         # penalty_L=[[L * penalty, np.zeros(penalty.shape)],
         #               [np.zeros(penalty.shape), L * penalty]]
         X = np.block([[features]] + penalty_L)
@@ -71,7 +72,9 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
         # Lasso_models.append(lasso)
         ridge = linear_model.Ridge(alpha=L, fit_intercept=False).fit(features, df["ΔΔG.expt."])
         lasso = linear_model.Lasso(alpha=L, fit_intercept=False).fit(features, df["ΔΔG.expt."])
-        models.append([model, ridge, lasso])
+        features_norm=features/np.std(features,axis=0)
+        pls = PLSRegression(n_components=n_num).fit(features_norm, df["ΔΔG.expt."])
+        models.append([model, ridge, lasso,pls])
 
         gaussian_coef = model.coef_
         n = int(gaussian_coef.shape[0] / features_all.shape[0])
@@ -81,12 +84,14 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
         # df_coord["Ridge_ESP"]=ridge.coef_[n:]
         df_coord["Lasso_Dt"] = lasso.coef_[:n]
         # df_coord["Lasso_ESP"]=lasso.coef_[n:]
+        df_coord["PLS_Dt"] = pls.coef_[0][:n]*np.std(features,axis=0)
         df_coord.to_csv(save_name + "/molecular_filed{}.csv".format(L))
 
         kf = KFold(n_splits=5, shuffle=False)
         gaussian_predicts = []
         ridge_predicts = []
         lasso_predicts = []
+        pls_predicts = []
         for (train_index, test_index) in kf.split(df):
             features_training = features_all[:, train_index]  # np.array(features_all)[train_index].transpose(2, 0, 1)
             std = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
@@ -100,6 +105,9 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
                                                                          df.iloc[train_index]["ΔΔG.expt."])
             lasso = linear_model.Lasso(alpha=L, fit_intercept=False).fit(features_training,
                                                                          df.iloc[train_index]["ΔΔG.expt."])
+            features_training_norm = features_training / np.std(features_training, axis=0)
+            pls = PLSRegression(n_components=n_num).fit(features_training_norm,
+                                                                     df.iloc[train_index]["ΔΔG.expt."])
 
             features_test = features_all[:, test_index]  # np.array(features_all)[test_index].transpose(2, 0, 1)
             features_test = features_test / std
@@ -111,18 +119,22 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
             ridge_predicts.extend(ridge_predict)
             lasso_predict = lasso.predict(features_test)
             lasso_predicts.extend(lasso_predict)
+            features_test_norm = features_test / np.std(features_test, axis=0)
+            pls_predict = pls.predict(features_test_norm)
+            pls_predicts.extend([_[0] for _ in pls_predict])
+
         # gaussian_predicts_list.append(gaussian_predicts)
         # ridge_predicts_list.append(ridge_predicts)
         # lasso_predicts_list.append(lasso_predicts)
-        predicts.append([gaussian_predicts, ridge_predicts, lasso_predicts])
-    dfp[["Gaussian_model", "Ridge_model", "Lasso_model"]] = models
-    dfp[["Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict"]] = dfp[
-        ["Gaussian_model", "Ridge_model", "Lasso_model"]].applymap(lambda model: model.predict(features))
-    dfp[["Gaussian_regression_r2", "Ridge_regression_r2", "Lasso_regression_r2"]] = dfp[
-        ["Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict"]].applymap(
+        predicts.append([gaussian_predicts, ridge_predicts, lasso_predicts,pls_predicts])
+    dfp[["Gaussian_model", "Ridge_model", "Lasso_model","PLS_model"]] = models
+    dfp[["Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict", "PLS_regression_predict"]] \
+        = dfp[["Gaussian_model", "Ridge_model", "Lasso_model" ,"PLS_model"]].applymap(lambda model: model.predict(features))
+    dfp[["Gaussian_regression_r2", "Ridge_regression_r2", "Lasso_regression_r2" ,"PLS_regression_r2"]] = dfp[
+        ["Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict" ,"PLS_regression_predict"]].applymap(
         lambda predict: r2_score(df["ΔΔG.expt."], predict))
-    dfp[["Gaussian_regression_RMSE", "Ridge_regression_RMSE", "Lasso_regression_RMSE"]] = dfp[[
-        "Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict"]].applymap(
+    dfp[["Gaussian_regression_RMSE", "Ridge_regression_RMSE", "Lasso_regression_RMSE" , "PLS_regression_RMSE"]] = dfp[[
+        "Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict" ,"PLS_regression_predict"]].applymap(
         lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
 
 
@@ -145,15 +157,15 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     #     lambda predict: r2_score(df["ΔΔG.expt."], predict))
     # dfp["Lasso_regression_RMSE"] = dfp["Lasso_regression_predict"].apply(
     #     lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
-    dfp[["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict"]] = predicts
-    dfp[["Gaussian_test_r2", "ridge_test_r2", "lasso_test_r2"]] = dfp[
-        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict"]].applymap(
+    dfp[["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict","pls_test_predict"]] = predicts
+    dfp[["Gaussian_test_r2", "ridge_test_r2", "lasso_test_r2", "pls_test_r2"]] = dfp[
+        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict" ,"pls_test_predict"]].applymap(
         lambda predict: r2_score(df["ΔΔG.expt."], predict))
-    dfp[["Gaussian_test_r", "ridge_test_r", "lasso_test_r"]] = dfp[
-        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict"]].applymap(
+    dfp[["Gaussian_test_r", "ridge_test_r", "lasso_test_r", "pls_test_r"]] = dfp[
+        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]].applymap(
         lambda predict: np.corrcoef(df["ΔΔG.expt."], predict)[1,0])
-    dfp[["Gaussian_test_RMSE", "ridge_test_RMSE", "lasso_test_RMSE"]] = dfp[
-        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict"]].applymap(
+    dfp[["Gaussian_test_RMSE", "ridge_test_RMSE", "lasso_test_RMSE", "pls_test_RMSE"]] = dfp[
+        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]].applymap(
         lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
 
     # dfp["Gaussian_test_predict"] = gaussian_predicts_list
@@ -176,6 +188,7 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     df["Ridge_predict"]=dfp[dfp["ridge_test_r"] == dfp["ridge_test_r"].max()].iloc[0][
         "ridge_test_predict"]
     df["Lasso_predict"] = dfp[dfp["lasso_test_r"] == dfp["lasso_test_r"].max()].iloc[0]["lasso_test_predict"]
+    df["PLS_predict"] = dfp[dfp["pls_test_r"] == dfp["pls_test_r"].max()].iloc[0]["pls_test_predict"]
     df["Gaussian_error"]=df["Gaussian_predict"]-df["ΔΔG.expt."]
     # df[["Gaussian_error","Ridge_error","Lasso_error"]] = df[["Gaussian_predict","Ridge_predict","Lasso_predict",]].applymap(lambda test:test - df["ΔΔG.expt."].values)
     #print(df)
@@ -183,7 +196,10 @@ def Gaussian_penalized(grid_dir, df, dfp, gaussian_penalize, save_name):
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     # df = df[[ "smiles", "ROMol","inchikey","er.", "RT", "ΔΔG.expt."]].drop_duplicates(subset="inchikey")#,"ΔΔminG.expt.","ΔΔmaxG.expt."
     # df = df[["smiles", "ROMol", "er.", "RT"]]
+    print("gaussian r2")
     print(dfp["Gaussian_test_r2"].max())
+    print("pls r2")
+    print(dfp["pls_test_r2"].max())
     PandasTools.SaveXlsxFromFrame(df, save_name + "/result_test.xlsx", size=(100, 100))
     # df.to_excel(save_name + "/test.xlsx")
     # plt.plot(df["ΔΔG.expt."],df["test_predict"],"o")
