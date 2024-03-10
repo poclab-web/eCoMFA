@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
     if True:
         for smiles in df["smiles"]:
-            if "Cl" in smiles:
+            if True:#smiles=="c1ccccc1OCN(C)CC(=O)c1ccccc1":#"Cl" in smiles:
                 print(smiles)
                 mol = calculate_conformation.get_mol(smiles)
                 input_dirs_name = param["psi4_aligned_dir_name"]+"/"+ mol.GetProp("InchyKey")
