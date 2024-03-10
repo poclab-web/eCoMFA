@@ -37,26 +37,26 @@ def make_grid_coordinate(orient, size, interval):
     d_yz = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, -1]), axis=1) for _ in xyz])
 
     def gauss_func(d):
-        sigma = interval  # *2
+        sigma = interval  *2
         leng = interval
         ans = 1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
               * np.exp(-d ** 2 / (2 * sigma ** 2))
         return ans
 
-    penalty = np.where(d < interval * 3, gauss_func(d), 0)
-    penalty_y = np.where(d_y < interval * 3, gauss_func(d_y), 0)
-    penalty_z = np.where(d_z < interval * 3, gauss_func(d_z), 0)
-    penalty_yz = np.where(d_yz < interval * 3, gauss_func(d_yz), 0)
+    penalty = np.where(d < interval*2 * 3, gauss_func(d), 0)
+    penalty_y = np.where(d_y < interval*2 * 3, gauss_func(d_y), 0)
+    penalty_z = np.where(d_z < interval*2 * 3, gauss_func(d_z), 0)
+    penalty_yz = np.where(d_yz < interval*2 * 3, gauss_func(d_yz), 0)
 
-    penalty = penalty + penalty_y + penalty_z + penalty_yz
+    penalty = penalty + penalty_y - penalty_z - penalty_yz
     penalty = penalty/ np.max(np.sum(penalty, axis=0))
-    penalty = penalty - np.identity(penalty.shape[0])#/ np.sum(penalty, axis=0)
-
+    penalty = penalty - np.identity(penalty.shape[0])#* np.sum(penalty, axis=1)
+    print(np.sum(penalty,axis=1))
     # penalty=np.identity(penalty.shape[0])
     filename = out_dir_name + "/penalty.npy"  # + "/" + param["grid_coordinates_dir"]
     np.save(filename, penalty)
 
-    list = np.logspace(-5, 10, num=16, base=2)#2**np.arange(10)#[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+    list = np.logspace(-5, 15, num=16, base=2)#2**np.arange(10)#[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
     df = pd.DataFrame(list, columns=["lambda"])
     df.to_csv(out_dir_name + "/penalty_param.csv")
 
@@ -83,3 +83,8 @@ if __name__ == '__main__':
     interval = 0.4
     make_grid_coordinate(orient, size, interval)
 
+    # [-5.8 -3.8 -5.8] [20 20 30] 0.4
+    orient = [-5.8, -3.8, -5.8]
+    size = [15 + 5, 10 * 2, 15 * 2]
+    interval = 0.4
+    make_grid_coordinate(orient, size, interval)
