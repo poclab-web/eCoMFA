@@ -1,15 +1,16 @@
+import glob
 import json
+import os
+import time
 from itertools import product
 
 import numpy as np
 import pandas as pd
-from rdkit.Chem.Descriptors import ExactMolWt
-from rdkit import Chem
-import calculate_conformation
 import psi4
-import os
-import glob
-import time
+from rdkit import Chem
+from rdkit.Chem.Descriptors import ExactMolWt
+
+import calculate_conformation
 
 
 def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
@@ -19,6 +20,7 @@ def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
 
     psi4.set_options({'cubeprop_filepath': output_dir_name})
     i = 0
+    print("{}/optimized{}.xyz".format(input_dir_name, i))
     while os.path.isfile("{}/optimized{}.xyz".format(input_dir_name, i)):
         os.makedirs(output_dir_name, exist_ok=True)
         print("{}/optimized{}.xyz".format(input_dir_name, i))
@@ -33,8 +35,8 @@ def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
         # HOMO = scf_wfn.epsilon_a_subset("AO", "ALL")[scf_wfn.nalpha()]
         # LUMO = scf_wfn.epsilon_a_subset("AO", "ALL")[scf_wfn.nalpha() + 1]
         with open(output_dir_name + "/epsilon.txt", "w") as f:
-            epsilon=wfn.epsilon_a_subset("AO","ALL").np[wfn.nalpha()-1]
-            print(epsilon,file=f)
+            epsilon = wfn.epsilon_a_subset("AO", "ALL").np[wfn.nalpha() - 1]
+            print(epsilon, file=f)
         psi4.set_options({'cubeprop_tasks': ['frontier_orbitals'],
                           "cubic_grid_spacing": [0.2, 0.2, 0.2]
                           })
@@ -42,7 +44,7 @@ def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
         os.rename(glob.glob(output_dir_name + "/Psi_a_*_LUMO.cube")[0], output_dir_name + "/LUMO02_{}.cube".format(i))
         os.remove(glob.glob(output_dir_name + "/Psi_a_*_HOMO.cube")[0])
 
-        psi4.set_options({'cubeprop_tasks': ['esp',"lol","elf"],
+        psi4.set_options({'cubeprop_tasks': ['esp', "lol", "elf"],
                           "cubic_grid_spacing": [0.2, 0.2, 0.2]
                           })
         psi4.cubeprop(wfn)
@@ -64,19 +66,18 @@ def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
 
 
 def cube_to_pkl(dirs_name):
-
     i = 0
-    while os.path.isfile("{}/optimized{}.xyz".format(dirs_name , i)):#+ "calculating"
+    while os.path.isfile("{}/optimized{}.xyz".format(dirs_name, i)):  # + "calculating"
         if os.path.isfile(dirs_name + "/data{}.pkl".format(i)):
-            i+=1
+            i += 1
             continue
-        with open("{}/Dt02_{}.cube".format(dirs_name , i), 'r', encoding='UTF-8') as f:#+ "calculating"
+        with open("{}/Dt02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
             Dt = f.read().splitlines()
-        with open("{}/ESP02_{}.cube".format(dirs_name , i), 'r', encoding='UTF-8') as f:#+ "calculating"
+        with open("{}/ESP02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
             ESP = f.read().splitlines()
-        with open("{}/LUMO02_{}.cube".format(dirs_name , i), 'r', encoding='UTF-8') as f:#+ "calculating"
+        with open("{}/LUMO02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
             LUMO = f.read().splitlines()
-        with open("{}/DUAL02_{}.cube".format(dirs_name , i), 'r', encoding='UTF-8') as f:#+ "calculating"
+        with open("{}/DUAL02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
             DUAL = f.read().splitlines()
 
         l = np.array([_.split() for _ in Dt[2:6]])
@@ -99,8 +100,8 @@ def cube_to_pkl(dirs_name):
 
 
 if __name__ == '__main__':
-    param_file_name = "../parameter/single-point-calculation/wB97X-D_def2-TZVP.txt"#"../parameter_0221/parameter_cbs_gaussian.txt"  # _MP2
-    #output_dir_name = "/Users/macmini_m1_2022/PycharmProjects/CoMFA_model/cube_aligned_b3lyp_6-31g(d)"  # "./psi4_cube_aligned"#_MP2
+    param_file_name = "../parameter/single-point-calculation/wB97X-D_def2-TZVP.txt"  # "../parameter_0221/parameter_cbs_gaussian.txt"  # _MP2
+    # output_dir_name = "/Users/macmini_m1_2022/PycharmProjects/CoMFA_model/cube_aligned_b3lyp_6-31g(d)"  # "./psi4_cube_aligned"#_MP2
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     print(param)
@@ -117,22 +118,22 @@ if __name__ == '__main__':
     df = df.dropna(subset=['mol'])
     df["molwt"] = df["smiles"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
     df = df.sort_values("molwt")  # [:2]
-    #df = df[[os.path.isdir(features_dir_name + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+    # df = df[[os.path.isdir(features_dir_name + mol.GetProp("InchyKey")) for mol in df["mol"]]]
 
     print(df)
 
     if True:
         for smiles in df["smiles"]:
-            if True:#smiles=="c1ccccc1OCN(C)CC(=O)c1ccccc1":#"Cl" in smiles:
+            if True:  # smiles=="c1ccccc1OCN(C)CC(=O)c1ccccc1":#"Cl" in smiles:
                 print(smiles)
                 mol = calculate_conformation.get_mol(smiles)
-                input_dirs_name = param["psi4_aligned_dir_name"]+"/"+ mol.GetProp("InchyKey")
+                input_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp("InchyKey")
                 output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")
                 if not os.path.isdir(output_dirs_name):
                     print(mol.GetProp("InchyKey"))
-                    psi4calculation(input_dirs_name, output_dirs_name +"calculating", param["one_point_level"])
+                    psi4calculation(input_dirs_name, output_dirs_name + "calculating", param["one_point_level"])
                     try:
-                        os.rename(output_dirs_name +"calculating",output_dirs_name)
+                        os.rename(output_dirs_name + "calculating", output_dirs_name)
                     except:
                         None
                 cube_to_pkl(output_dirs_name)

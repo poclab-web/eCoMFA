@@ -1,14 +1,15 @@
 import glob
+import heapq
 import json
 import os
-import pandas as pd
-from rdkit import Chem
-from rdkit.Chem.Descriptors import ExactMolWt
-from rdkit.Chem import AllChem
-import heapq
-from rdkit.Geometry import Point3D
+
 import numpy as np
+import pandas as pd
 import psi4
+from rdkit import Chem
+from rdkit.Chem import AllChem
+from rdkit.Chem.Descriptors import ExactMolWt
+from rdkit.Geometry import Point3D
 
 
 def GetCommonStructure(mol, common_structure):
@@ -35,18 +36,29 @@ def get_mol(smiles):
     return mol
 
 
-def CalcConfsEnergies(mol):
+# def CalcConfsEnergies(mol):
+#     AllChem.EmbedMultipleConfs(mol, numConfs=param["numConfs"], randomSeed=1, pruneRmsThresh=0.01,
+#                                numThreads=0)
+#     for conf in mol.GetConformers():
+#         mmff = AllChem.MMFFGetMoleculeForceField(mol, AllChem.MMFFGetMoleculeProperties(mol),
+#                                                  confId=conf.GetId())  # nomal force field
+#         # mmff=AllChem.UFFGetMoleculeForceField(mol,confId=cid) # other force field
+#         mmff.Minimize()
+#         # energy=psi4_calc.calc_energy(mol, confid=cidId) # calc energy by psi4
+#         energy = mmff.CalcEnergy()
+#         conf.SetProp("energy", str(energy))
+def CalcConfsEnergies(mol, force_field):
     AllChem.EmbedMultipleConfs(mol, numConfs=param["numConfs"], randomSeed=1, pruneRmsThresh=0.01,
                                numThreads=0)
     for conf in mol.GetConformers():
-        mmff = AllChem.MMFFGetMoleculeForceField(mol, AllChem.MMFFGetMoleculeProperties(mol),
-                                                 confId=conf.GetId())  # nomal force field
-        # mmff=AllChem.UFFGetMoleculeForceField(mol,confId=cid) # other force field
-        mmff.Minimize()
-        # energy=psi4_calc.calc_energy(mol, confid=cidId) # calc energy by psi4
-        energy = mmff.CalcEnergy()
+        if force_field == "MMFF":
+            ff = AllChem.MMFFGetMoleculeForceField(mol, AllChem.MMFFGetMoleculeProperties(mol),
+                                                   confId=conf.GetId())  # nomal force field
+        if force_field == "UFF":
+            ff = AllChem.UFFGetMoleculeForceField(mol, confId=conf.GetId())  # other force field
+        ff.Minimize()
+        energy = ff.CalcEnergy()
         conf.SetProp("energy", str(energy))
-
 
 def highenergycut(mol, energy):
     l = []
@@ -141,27 +153,32 @@ def conf_to_xyz(mol, out_dir_name):
     except:
         None
 
+
 def psi4optimization(input_dir_name, output_dir_name, level="hf/sto-3g"):
     psi4.set_num_threads(nthread=4)
     psi4.set_memory("4GB")
     psi4.set_options({'geom_maxiter': 10000})
     i = 0
     while os.path.isfile("{}/optimized{}.xyz".format(input_dir_name, i)):
-        # psi4.set_output_file(dir + "/{}/calculation.log".format(i))
-        with open("{}/optimized{}.xyz".format(input_dir_name, i), "r") as f:
-            ans = f.read()
-            molecule = psi4.geometry(ans)
+        try:
+            # psi4.set_output_file(dir + "/{}/calculation.log".format(i))
+            with open("{}/optimized{}.xyz".format(input_dir_name, i), "r") as f:
+                ans = f.read()
+                molecule = psi4.geometry(ans)
 
-        energy = psi4.optimize(level, molecule=molecule)
-        os.makedirs(output_dir_name, exist_ok=True)
-        file = "{}/optimized{}.xyz".format(output_dir_name, i)
-        print(file)
-        open(file, 'w')
-        with open(file, 'w') as f:
-            print(molecule.natom(), file=f)
-            print(energy * psi4.constants.hartree2kcalmol, file=f)
-            print("\n".join(molecule.save_string_xyz().split('\n')[1:]), file=f)
-        i += 1
+            energy = psi4.optimize(level, molecule=molecule)
+            os.makedirs(output_dir_name, exist_ok=True)
+            file = "{}/optimized{}.xyz".format(output_dir_name, i)
+            print(file)
+            open(file, 'w')
+            with open(file, 'w') as f:
+                print(molecule.natom(), file=f)
+                print(energy * psi4.constants.hartree2kcalmol, file=f)
+                print("\n".join(molecule.save_string_xyz().split('\n')[1:]), file=f)
+            i += 1
+        except:
+            i += 1
+            None
 
 
 def read_xyz(mol, input_dir_name):
@@ -177,17 +194,15 @@ def read_xyz(mol, input_dir_name):
 
 
 if __name__ == '__main__':
-    param_file_name = "../parameter/structural optimization/structural optimization.txt"#"../parameter/parameter_cbs.txt"
+    param_file_name = "../parameter/structural optimization/structural optimization.txt"  # "../parameter/parameter_cbs.txt"
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     print(param)
-    dfs=[]
+    dfs = []
     for path in glob.glob("../arranged_dataset/*.xlsx"):
         df = pd.read_excel(path)
         dfs.append(df)
-    # df1 = pd.read_excel(data_file_path)
-    # df2=pd.read_excel("../arranged_dataset/DIP-chloride.xls")
-    # df3 =pd.read_excel("../arranged_dataset/Russ.xls")
+
     df = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
 
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
@@ -195,45 +210,49 @@ if __name__ == '__main__':
     df["molwt"] = df["smiles"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
     df = df.sort_values("molwt")  # [:2]
     print(df)
-
-
-    # df=df[df["smiles"] == "CCCCCCCCC#CC(=O)C(CC)(CC)CCC"]
-    #df = df[df["smiles"] != "C(=O)(C1=CC=CO1)CCCCC"]
-    # df = df[df["smiles"] != "C(=O)(CN(C)c1ccccc1)C"]
-    # df = df[df["smiles"] != "CCCCCCCCC#CC(=O)C(CC)(CC)CCC"]
-    # df = df[df["smiles"] != "CCCCCCCCC#CC(=O)C(CC)(CC)CCC"]
-    # df = df[df["smiles"] != "c1cc(OC)c(OC)cc1CCN(C(=O)c1ccccc1)CC(=O)c1ccc(OCc2ccccc2)cc1"]
-    #df = df[df["smiles"] != "C(=O)(C(c1ccccc1)(c1ccccc1)c1ccccc1)C"]
-    #df = df[df["smiles"] != "c1ccccc1C(C)(C)C(=O)C#CCCCCCCCC"]
-    #for smiles in df["smiles"][df["smiles"] == "C(=O)(CN(C)c1ccccc1)C"]:C(=O)(C1CCCCC1)Cc2ccccc2
-    # for smiles in df["smiles"]:
     for smiles in df["smiles"]:
         print(smiles)
         mol = get_mol(smiles)
-        MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")
-        psi4_out_dirs_name = param["psi4_out_dir_name"] +  "/" + mol.GetProp("InchyKey")#"/"+param["optimize_level"] +
-        psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" +mol.GetProp("InchyKey")#"/" +param["optimize_level"]+
-        if not os.path.isdir(MMFF_out_dirs_name):
-            CalcConfsEnergies(mol)
-            highenergycut(mol, param["cut_MMFF_energy"])
-            rmsdcut(mol, param["cut_MMFF_rmsd"])
-            delconformer(mol, param["max_conformer"])
-            ConfTransform(mol)
-            conf_to_xyz(mol, MMFF_out_dirs_name)
-        # elif (os.path.isdir(MMFF_out_dirs_name)) and (os.path.isdir(psi4_aligned_dirs_name)):
-        #     print("error")
-        #     raise ValueError
-        #     shutil.rmtree('temp/dir/')
+        try:
+            MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")
+            psi4_out_dirs_name = param["psi4_out_dir_name"] + "/" + mol.GetProp("InchyKey")  # "/"+param["optimize_level"] +
+            psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp(
+                "InchyKey")  # "/" +param["optimize_level"]+
+            if not os.path.isdir(MMFF_out_dirs_name):
+                CalcConfsEnergies(mol,"MMFF")
+                highenergycut(mol, param["cut_MMFF_energy"])
+                rmsdcut(mol, param["cut_MMFF_rmsd"])
+                delconformer(mol, param["max_conformer"])
+                ConfTransform(mol)
+                conf_to_xyz(mol, MMFF_out_dirs_name)
 
-        if not os.path.isdir(psi4_aligned_dirs_name):
-            try:
-                psi4optimization(MMFF_out_dirs_name, psi4_out_dirs_name , param["optimize_level"])
-                read_xyz(mol, psi4_out_dirs_name )
+            if not os.path.isdir(psi4_aligned_dirs_name):
+                psi4optimization(MMFF_out_dirs_name, psi4_out_dirs_name, param["optimize_level"])
+                read_xyz(mol, psi4_out_dirs_name)
                 highenergycut(mol, param["cut_psi4_energy"])
                 rmsdcut(mol, param["cut_psi4_rmsd"])
                 ConfTransform(mol)
                 conf_to_xyz(mol, psi4_aligned_dirs_name)
-                #ヨウ素に対する計算を考える。
-            except:
-                continue
-        print("{}smilescomplete".format(smiles))
+
+        except:
+            # try:
+            MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")+"UFF"
+            psi4_out_dirs_name = param["psi4_out_dir_name"] + "/" + mol.GetProp(
+                "InchyKey")+"UFF"  # "/"+param["optimize_level"] +
+            psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp(
+                "InchyKey")+"UFF"  # "/" +param["optimize_level"]+
+            if not os.path.isdir(MMFF_out_dirs_name):
+                CalcConfsEnergies(mol, "UFF")
+                highenergycut(mol, param["cut_MMFF_energy"])
+                rmsdcut(mol, param["cut_MMFF_rmsd"])
+                delconformer(mol, param["max_conformer"])
+                ConfTransform(mol)
+                conf_to_xyz(mol, MMFF_out_dirs_name)
+
+            if not os.path.isdir(psi4_aligned_dirs_name):
+                psi4optimization(MMFF_out_dirs_name, psi4_out_dirs_name, param["optimize_level"])
+                read_xyz(mol, psi4_out_dirs_name)
+                highenergycut(mol, param["cut_psi4_energy"])
+                rmsdcut(mol, param["cut_psi4_rmsd"])
+                ConfTransform(mol)
+                conf_to_xyz(mol, psi4_aligned_dirs_name)
