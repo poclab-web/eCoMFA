@@ -61,14 +61,15 @@ import glob
 #
 #     return df
 
+
+
 if __name__ == '__main__':
     # for param_file_name in [
     #     "../parameter_0227/parameter_cbs_gaussian.txt",
     #     "../parameter_0227/parameter_RuSS_gaussian.txt",
     #     "../parameter_0227/parameter_dip-chloride_gaussian.txt",
     # ]:
-    all_file ="../../../result/*/*/molecular_filed*.csv"
-    for file in glob.glob(all_file):
+    for file in glob.glob("../../../result/*/RuSS/0/molecular_filed*.csv"):
         print(file)
         df= pd.read_csv(file)
         # df = mfunfolding(df)

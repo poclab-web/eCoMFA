@@ -30,7 +30,7 @@ def make_grid_coordinate(orient, size, interval):
     dfp_yz.to_csv((out_dir_name + "/coordinates_yz.csv"))
     # print(dfp_yz)
 
-    list = np.logspace(0, 20, num=10, base=2)  # 2**np.arange(10)#[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+    list = np.logspace(0, 13, num=14, base=2)  # 2**np.arange(10)#[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
     df = pd.DataFrame(list, columns=["lambda"])
     df.to_csv(out_dir_name + "/penalty_param.csv")
     for n in range(1,11):
@@ -68,10 +68,10 @@ def make_penalty(l, n,out_dir_name):
 
 if __name__ == '__main__':
     # [-4.75 -2.75 -4.75] [14 12 20] 0.5
-    orient = [-4.75, -2.75, -4.75]
-    size = [10 + 4, 6 * 2, 10 * 2]
-    interval = 0.5
-    make_grid_coordinate(orient, size, interval)
+    # orient = [-4.75, -2.75, -4.75]
+    # size = [10 + 4, 6 * 2, 10 * 2]
+    # interval = 0.5
+    # make_grid_coordinate(orient, size, interval)
     # [-5.0 -3.0 -5.0] [18 16 26] 0.4
     orient = [-5.0, -3.0, -5.0]
     size = [13 + 5, 8 * 2, 13 * 2]
@@ -94,6 +94,23 @@ if __name__ == '__main__':
     interval = 0.4
     make_grid_coordinate(orient, size, interval)
 
+    # [-5.8 -3.4 -5.8] [20 18 30] 0.4
+    orient = [-5.8, -3.4, -5.8]
+    size = [15 + 5, 9 * 2, 15 * 2]
+    interval = 0.4
+    make_grid_coordinate(orient, size, interval)
+
+    # [-2.0 -1.5 -1.5] [4 4 4] 1.0
+    orient = [-2.0, -1.5, -1.5]
+    size = [3 + 1, 2* 2,  2 * 2]
+    interval = 1.0
+    make_grid_coordinate(orient, size, interval)
+
+    # [-5.8 -3.0 -5.8] [20 16 30] 0.4
+    orient = [-5.8, -3.0, -5.8]
+    size = [15 + 5, 8 * 2, 15 * 2]
+    interval = 0.4
+    make_grid_coordinate(orient, size, interval)
     # # [-5.875 -3.875 -5.875] [32 32 48] 0.25
     # orient = [-5.875, -3.875, -5.875]
     # size = [24 + 8, 16 * 2, 24 * 2]
