@@ -174,12 +174,13 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
     dfp.to_csv(save_name + "/n_comparison.csv")
     print(save_name)
 
-def regression_comparison(df, dfp, gaussian_penalize, save_name):
+def regression_comparison(df, dfp, gaussian_penalize, save_name,n):
     # Gaussian Lasso Ridgeを行う。#PLSなどは別？
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
                                                                                   ascending=[True, True, True])
 
-    penalty = np.load(gaussian_penalize + "/penalty4.npy")
+    penalty = np.load(gaussian_penalize + "/penalty{}.npy".format(str(n)))
+
 
 
     features_all = np.array(df["Dt"].tolist()).reshape(len(df), -1, 1).transpose(2, 0, 1)
@@ -1045,120 +1046,153 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
     for conf, rate in zip(mol.GetConformers(), rates):
         conf.SetProp("Boltzmann_distribution", str(rate))
 
+def select_σ_n(file_name):
+    Gaussian = [[] for i in range(10)]
+    for _ in range(5):
+        save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
+        print(save_path)
+        dfp_n = pd.read_csv(save_path + "/n_comparison.csv")
+        for j in range(1, 11):
+            Gaussian[j - 1].append(dfp_n["Gaussian_test_r2{}".format(j)].values.tolist())
+            # ax.plot(dfp["lambda"], dfp["lasso_test_r2"], color="red", linewidth=1, alpha=0.05)
+            # ax.plot(dfp["lambda"], dfp["ridge_test_r2"], color="green", linewidth=1, alpha=0.05)
+            # ax2.plot(range(1, len(dfp["lambda"]) + 1), dfp["pls_test_r2"], color="orange", linewidth=1, alpha=0.05)
+    gave = [[] for i in range(10)]
+    for j in range(1, 11):
+        gave[j -1].append(np.average(Gaussian[j-1]))
+    # print(Gaussian)
+    print("gave")
+    print(gave)
+
+    print(np.argmax(gave))
+    q=np.argmax(gave)
+    n= q+1
+    print(n)
+    return n
+        # print(Gaussian[j-1])
+        # ax.plot(dfp["lambda"], np.average(Gaussian[j - 1], axis=0), "o",
+        #         label="n = " + str(j) + "\n{:.3f}".format(),
+        #         color=cm.hsv(j / 10), alpha=1)
+
 
 if __name__ == '__main__':
     # time.sleep(60*60*4)
     start = time.perf_counter()  # 計測開始
-
-    for file in glob.glob("../arranged_dataset/*.xlsx")[::-1]:
-        with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
+    for paramfile in glob.glob("../parameter/cube_to_grid/*.txt")[::-1]:
+        with open(paramfile, "r") as f:
             param = json.loads(f.read())
-        print(param)
-        df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
+        for file in glob.glob("../arranged_dataset/*.xlsx")[::-1]:
+            # with open("../parameter/cube_to_grid/cube_to_grid0313.txt", "r") as f:
+            #     param = json.loads(f.read())
 
-        file_name = os.path.splitext(os.path.basename(file))[0]
+            print(param)
+            df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
 
-        features_dir_name = param[
-                                "grid_coordinates"] + file_name  # + "/"  # param["grid_dir_name"] + "/[{}]/".format(param["grid_sizefile"])
-        print(features_dir_name)
-        # fparranged_dataname = param["fpdata_file_path"]
-        # df_fplist = pd.read_csv(fparranged_dataname).dropna(subset=['smiles']).reset_index(drop=True)
-        # fplist = pd.read_csv(param["fplist"]).columns.values.tolist()
-        xyz_dir_name = param["cube_dir_name"]
-        # df = pd.read_excel(param["data_file_path"]).dropna(subset=['smiles']).reset_index(drop=True)  # [:10]
-        print("dflen")
-        print(len(df))
+            file_name = os.path.splitext(os.path.basename(file))[0]
 
-        # df = pd.concat([df, df_fplist], axis=1)
-        # df = df.dropna(subset=['smiles']).reset_index(drop=True)
-        df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
-        print("dfbefore")
-        print(len(df))
-        # df = df[[os.path.isdir(features_dir_name + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+            features_dir_name = param[
+                                    "grid_coordinates"] + file_name  # + "/"  # param["grid_dir_name"] + "/[{}]/".format(param["grid_sizefile"])
+            print(features_dir_name)
+            # fparranged_dataname = param["fpdata_file_path"]
+            # df_fplist = pd.read_csv(fparranged_dataname).dropna(subset=['smiles']).reset_index(drop=True)
+            # fplist = pd.read_csv(param["fplist"]).columns.values.tolist()
+            xyz_dir_name = param["cube_dir_name"]
+            # df = pd.read_excel(param["data_file_path"]).dropna(subset=['smiles']).reset_index(drop=True)  # [:10]
+            print("dflen")
+            print(len(df))
 
-        df = df[
-            [os.path.isdir("{}/{}".format(param["grid_coordinates"], mol.GetProp("InchyKey"))) for mol in df["mol"]]]
-        df["mol"].apply(lambda mol: calculate_conformation.read_xyz(mol, xyz_dir_name + "/" + mol.GetProp("InchyKey")))
-        print(len(df))
+            # df = pd.concat([df, df_fplist], axis=1)
+            # df = df.dropna(subset=['smiles']).reset_index(drop=True)
+            df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
+            print("dfbefore")
+            print(len(df))
+            # df = df[[os.path.isdir(features_dir_name + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
 
-        dfp = pd.read_csv(param["grid_coordinates"] + "/penalty_param.csv")  # [:1]
-        # dfp=np.load(param["grid_coordinates"]+"/penalty_param.npy")
-        Dts = []
-        for mol, RT in df[["mol", "RT"]].values:
-            energy_to_Boltzmann_distribution(mol, RT)
-            Dt = []
-            # weights = []
-            for conf in mol.GetConformers():
-                data = pd.read_pickle(
-                    "{}/{}/data{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId()))
-                Dt.append(data["Dt"].values.tolist())
-                # weight = float(conf.GetProp("Boltzmann_distribution"))
-                # weights.append(weight)
-                # data = pd.read_pickle(
-                #     "{}/{}/data_yz{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId()))
-                # Dt.append(data["Dt"].values)
-            Dt = np.array(Dt)
-            w = np.exp(-Dt / np.sqrt(np.average(Dt ** 2, axis=0)).reshape(1, -1))
-            we = np.array([float(conf.GetProp("Boltzmann_distribution")) for conf in mol.GetConformers()]).reshape(-1,
-                                                                                                                   1)
-            Dt_ = np.average(Dt, weights=we * w, axis=0)
-            data["Dt"] = np.nan_to_num(Dt_)
-            dfp_yz = data[(data["y"] > 0) & (data["z"] > 0)][["x", "y", "z"]].sort_values(['x', 'y', "z"],
-                                                                                          ascending=[True, True,
-                                                                                                     True])  # そとにでる
-            feature = ["Dt"]
-            dfp_yz[feature] = \
-                data[(data["y"] > 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
-                    feature].values \
-                + data[(data["y"] < 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
-                    feature].values \
-                - data[(data["y"] > 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
-                    feature].values \
-                - data[(data["y"] < 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"], ascending=[True, False, False])[
-                    feature].values
-            Dts.append(dfp_yz[feature].values.tolist())
-        df["Dt"] = Dts
-        # if False:
-        #     df_ = df.sort_values(by=["ΔΔG.expt."])
-        #     save_path = param["out_dir_name"] + "/" + file_name + "/sorted"
-        #     os.makedirs(save_path, exist_ok=True)
-        #     Gaussian_penalized(features_dir_name, df_, dfp, param["grid_coordinates"], save_path)
-        for _ in range(5):
-            df_ = df.sample(frac=1, random_state=_)
-            save_path = param["out_dir_name"] + "/" + file_name + "/comparison"+str(_)
-            os.makedirs(save_path, exist_ok=True)
-            Gaussian_penalized(df_, dfp, param["grid_coordinates"], save_path)
-        # for _ in range(100):
-        #     df_ = df.sample(frac=1, random_state=_)
-        #     save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
-        #     os.makedirs(save_path, exist_ok=True)
-        #     regression_comparison( df_, dfp, param["grid_coordinates"], save_path)
+            df = df[
+                [os.path.isdir("{}/{}".format(param["grid_coordinates"], mol.GetProp("InchyKey"))) for mol in df["mol"]]]
+            df["mol"].apply(lambda mol: calculate_conformation.read_xyz(mol, xyz_dir_name + "/" + mol.GetProp("InchyKey")))
+            print(len(df))
 
-        # looout_file_name = param["out_dir_name"] +file_name+ "/result_loonondfold.xlsx"
-        # testout_file_name = param["out_dir_name"] +file_name+ "/result_train_test.xlsx"
-        # crosstestout_file_name = param["out_dir_name"] +file_name+ "/result_5crossvalidnonfold.xlsx"
-        # if fold:
+            dfp = pd.read_csv(param["grid_coordinates"] + "/penalty_param.csv")  # [:1]
+            # dfp=np.load(param["grid_coordinates"]+"/penalty_param.npy")
+            Dts = []
+            for mol, RT in df[["mol", "RT"]].values:
+                energy_to_Boltzmann_distribution(mol, RT)
+                Dt = []
+                # weights = []
+                for conf in mol.GetConformers():
+                    data = pd.read_pickle(
+                        "{}/{}/data{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId()))
+                    Dt.append(data["Dt"].values.tolist())
+                    # weight = float(conf.GetProp("Boltzmann_distribution"))
+                    # weights.append(weight)
+                    # data = pd.read_pickle(
+                    #     "{}/{}/data_yz{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId()))
+                    # Dt.append(data["Dt"].values)
+                Dt = np.array(Dt)
+                w = np.exp(-Dt / np.sqrt(np.average(Dt ** 2, axis=0)).reshape(1, -1))
+                we = np.array([float(conf.GetProp("Boltzmann_distribution")) for conf in mol.GetConformers()]).reshape(-1,
+                                                                                                                       1)
+                Dt_ = np.average(Dt, weights=we * w, axis=0)
+                data["Dt"] = np.nan_to_num(Dt_)
+                dfp_yz = data[(data["y"] > 0) & (data["z"] > 0)][["x", "y", "z"]].sort_values(['x', 'y', "z"],
+                                                                                              ascending=[True, True,
+                                                                                                         True])  # そとにでる
+                feature = ["Dt"]
+                dfp_yz[feature] = \
+                    data[(data["y"] > 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
+                        feature].values \
+                    + data[(data["y"] < 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
+                        feature].values \
+                    - data[(data["y"] > 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
+                        feature].values \
+                    - data[(data["y"] < 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"], ascending=[True, False, False])[
+                        feature].values
+                Dts.append(dfp_yz[feature].values.tolist())
+            df["Dt"] = Dts
+            # if False:
+            #     df_ = df.sort_values(by=["ΔΔG.expt."])
+            #     save_path = param["out_dir_name"] + "/" + file_name + "/sorted"
+            #     os.makedirs(save_path, exist_ok=True)
+            #     Gaussian_penalized(features_dir_name, df_, dfp, param["grid_coordinates"], save_path)
+            for _ in range(5):
+                df_ = df.sample(frac=1, random_state=_)
+                save_path = param["out_dir_name"] + "/" + file_name + "/comparison"+str(_)
+                os.makedirs(save_path, exist_ok=True)
+                Gaussian_penalized(df_, dfp, param["grid_coordinates"], save_path)
+            n = select_σ_n(file_name)
+            print(n)
+            for _ in range(30):
+                df_ = df.sample(frac=1, random_state=_)
+                save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
+                os.makedirs(save_path, exist_ok=True)
+                regression_comparison( df_, dfp, param["grid_coordinates"], save_path, n)
 
-        # if traintest:
-        #     train_testfold(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
-        #                    gridsearch_file_name
-        #                    , looout_file_name, testout_file_name, param, fplist, param["Regression_type"],
-        #                    param["maxmin"], dfp)
-        # for regression_type in ["gaussian", "ridgecv", "PLS", "lassocv", "elasticnetcv"]:
-        #     dir_name = param["out_dir_name"] + "/" + file_name + regression_type
-        #     os.makedirs(dir_name, exist_ok=True)
-        #     gridsearch_file_name = dir_name + "/result_grid_search.csv"
-        #     looout_file_name = dir_name + "/result_loo.xlsx"
-        #     crosstestout_file_name = dir_name + "/result_5crossvalid.xlsx"
-        #     doublecrossvalidation(True, features_dir_name, param["Regression_features"], None, df,
-        #                           gridsearch_file_name, looout_file_name,
-        #                           crosstestout_file_name, param, regression_type,
-        #                           False, dfp, file_name)
+            # looout_file_name = param["out_dir_name"] +file_name+ "/result_loonondfold.xlsx"
+            # testout_file_name = param["out_dir_name"] +file_name+ "/result_train_test.xlsx"
+            # crosstestout_file_name = param["out_dir_name"] +file_name+ "/result_5crossvalidnonfold.xlsx"
+            # if fold:
 
-    end = time.perf_counter()  # 計測終了
-    print("Finish")
+            # if traintest:
+            #     train_testfold(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
+            #                    gridsearch_file_name
+            #                    , looout_file_name, testout_file_name, param, fplist, param["Regression_type"],
+            #                    param["maxmin"], dfp)
+            # for regression_type in ["gaussian", "ridgecv", "PLS", "lassocv", "elasticnetcv"]:
+            #     dir_name = param["out_dir_name"] + "/" + file_name + regression_type
+            #     os.makedirs(dir_name, exist_ok=True)
+            #     gridsearch_file_name = dir_name + "/result_grid_search.csv"
+            #     looout_file_name = dir_name + "/result_loo.xlsx"
+            #     crosstestout_file_name = dir_name + "/result_5crossvalid.xlsx"
+            #     doublecrossvalidation(True, features_dir_name, param["Regression_features"], None, df,
+            #                           gridsearch_file_name, looout_file_name,
+            #                           crosstestout_file_name, param, regression_type,
+            #                           False, dfp, file_name)
 
-    print('{:.2f}'.format(end - start))
+        end = time.perf_counter()  # 計測終了
+        print("Finish")
+
+        print('{:.2f}'.format(end - start))
     # path_w = '../errortest/alltime.txt'
     #
     # s = end - start

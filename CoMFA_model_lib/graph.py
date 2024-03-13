@@ -5,7 +5,6 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
 # for i,param_file_name in enumerate([
 # # "../parameter/parameter_cbs_gaussian.txt",
 # # "../parameter/parameter_dip-chloride_gaussian.txt",
@@ -54,17 +53,40 @@ import pandas as pd
 #         param = json.loads(f.read())
 from matplotlib import cm
 
-with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
+with open("../parameter/cube_to_grid/cube_to_grid0313.txt", "r") as f:
     param = json.loads(f.read())
 print(param)
+# with open("../parameter/cube_to_grid/cube_to_grid0313.txt", "r") as f:
+#     param = json.loads(f.read())
+# print(param)
+
 
 fig = plt.figure(figsize=(3 * 3, 1 * 3 + 0.5))
 i = 0
-for file, label in zip(glob.glob("../arranged_dataset/*.xlsx")[1:],
-                       ["(-)-DIP-Chloride", "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
-                        "($S$)-Me-CBS"]):
+# for file, label in zip(glob.glob(
+#         "../arranged_dataset/*.xlsx"
+# ),
+#                        [
+#                            "($S$)-Me-CBS",
+#                         "(-)-DIP-Chloride",
+#                         "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
+#                         ]):
+for file, label in zip(["../arranged_dataset/cbs.xlsx",
+    "../arranged_dataset/DIP-chloride.xlsx",
+    "../arranged_dataset/RuSS.xlsx"
+],
+        [
+            "($S$)-Me-CBS",
+            "(-)-DIP-Chloride",
+            "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
+        ]):
+    print(file)
+
+
     i += 1
     file_name = os.path.splitext(os.path.basename(file))[0]
+    print(file_name)
+
     ax = fig.add_subplot(1, 3, i)
     plt.xscale("log")
     # ax2 = ax.twiny()
@@ -76,10 +98,10 @@ for file, label in zip(glob.glob("../arranged_dataset/*.xlsx")[1:],
     # Gaussian3 = []
     # Gaussian4 = []
     # Gaussian5 = []
-    Gaussian=[[] for i in range(10)]
+    Gaussian = [[] for i in range(10)]
     print(Gaussian)
     for _ in range(5):
-        save_path = param["out_dir_name"] + "/" + file_name + "/comparison"+str(_)
+        save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
         print(save_path)
         dfp = pd.read_csv(save_path + "/n_comparison.csv")
         # Gaussian1.append(dfp["Gaussian_test_r21"].values.tolist())
@@ -91,18 +113,19 @@ for file, label in zip(glob.glob("../arranged_dataset/*.xlsx")[1:],
         # Lasso.append(dfp["lasso_test_r2"].values.tolist())
         # Ridge.append(dfp["ridge_test_r2"].values.tolist())
         # PLS.append(dfp["pls_test_r2"].values.tolist())
-        for j in range(1,11):
-            ax.plot(dfp["lambda"], dfp["Gaussian_test_r2{}".format(j)], color=cm.hsv(j/10), linewidth=1, alpha=0.05)
-            Gaussian[j-1].append(dfp["Gaussian_test_r2{}".format(j)].values.tolist())
+        for j in range(1, 11):
+            ax.plot(dfp["lambda"], dfp["Gaussian_test_r2{}".format(j)], color=cm.hsv(j / 10), linewidth=1, alpha=0.05)
+            Gaussian[j - 1].append(dfp["Gaussian_test_r2{}".format(j)].values.tolist())
 
             # ax.plot(dfp["lambda"], dfp["lasso_test_r2"], color="red", linewidth=1, alpha=0.05)
             # ax.plot(dfp["lambda"], dfp["ridge_test_r2"], color="green", linewidth=1, alpha=0.05)
             # ax2.plot(range(1, len(dfp["lambda"]) + 1), dfp["pls_test_r2"], color="orange", linewidth=1, alpha=0.05)
     print(Gaussian)
-    for j in range(1,11):
+    for j in range(1, 11):
         # print(Gaussian[j-1])
-        ax.plot(dfp["lambda"], np.average(Gaussian[j-1], axis=0), "o",
-                label="n = "+str(j)+"\nMAX{:.3f}".format(np.max(np.average(Gaussian[j-1], axis=0))), color=cm.hsv(j/10), alpha=1)
+        ax.plot(dfp["lambda"], np.average(Gaussian[j - 1], axis=0), "o",
+                label="n = " + str(j) + "\n{:.3f}".format(np.max(np.average(Gaussian[j - 1], axis=0))),
+                color=cm.hsv(j / 10), alpha=1)
     # ax.plot(dfp["lambda"], np.average(Gaussian2, axis=0), "o",
     #         label="Gaussian2\nMAX{:.2f}".format(np.max(np.average(Gaussian2, axis=0))), color=cm.hsv(2/5), alpha=1)
     # ax.plot(dfp["lambda"], np.average(Gaussian3, axis=0), "o",
@@ -122,11 +145,27 @@ for file, label in zip(glob.glob("../arranged_dataset/*.xlsx")[1:],
 fig.tight_layout()
 plt.savefig("../figs/n_comparison.png", transparent=False, dpi=300)
 
+
 fig = plt.figure(figsize=(3 * 3, 1 * 3 + 0.5))
 i = 0
-for file, label in zip(glob.glob("../arranged_dataset/*.xlsx"),
-                       ["(-)-DIP-Chloride", "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
-                        "($S$)-Me-CBS"]):
+# for file, label in zip(glob.glob("../arranged_dataset/*.xlsx"
+#
+#
+#                                  ),
+#                        ["($S$)-Me-CBS",
+#                            "(-)-DIP-Chloride",
+#                         "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
+#                         ]):
+for file, label in zip(["../arranged_dataset/cbs.xlsx",
+                        "../arranged_dataset/DIP-chloride.xlsx",
+                        "../arranged_dataset/RuSS.xlsx"
+                        ],
+                       [
+                           "($S$)-Me-CBS",
+                           "(-)-DIP-Chloride",
+                           "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
+                       ]):
+
     i += 1
     file_name = os.path.splitext(os.path.basename(file))[0]
     ax = fig.add_subplot(1, 3, i)
@@ -165,17 +204,29 @@ for file, label in zip(glob.glob("../arranged_dataset/*.xlsx"),
     ax2.set_xlabel("number of components", fontsize=10)
     ax.set_ylabel("$r^2_{test}$", fontsize=10)
     ax2.set_xticks([1, 5, 10, 15])
+    print("Gaussian", np.std(Gaussian, axis=0))
 
 fig.tight_layout()
 plt.savefig("../figs/rmse.png", transparent=False, dpi=300)
-
-
+print("rmse.png_complete")
 
 fig = plt.figure(figsize=(3 * 3, 1 * 3))
 i = 0
-for file, label in zip(glob.glob("../arranged_dataset/*.xlsx"),
-                       ["(-)-DIP-Chloride", "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
-                        "($S$)-CBS-Me"]):
+# for file, label in zip(glob.glob("../arranged_dataset/*.xlsx"),
+#                        [
+#                            "($S$)-CBS-Me",
+#                            "(-)-DIP-Chloride",
+#                         "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]"
+#                         ]):
+for file, label in zip(["../arranged_dataset/cbs.xlsx",
+    "../arranged_dataset/DIP-chloride.xlsx",
+    "../arranged_dataset/RuSS.xlsx"
+],
+        [
+            "($S$)-Me-CBS",
+            "(-)-DIP-Chloride",
+            "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
+        ]):
     i += 1
     file_name = os.path.splitext(os.path.basename(file))[0]
     ax = fig.add_subplot(1, 3, i)
@@ -184,7 +235,8 @@ for file, label in zip(glob.glob("../arranged_dataset/*.xlsx"),
     ax.set_title(label)
     ax.set_xticks([-5, 0, 5])
     ax.set_yticks([-5, 0, 5])
-    for _ in range(100):
+    for _ in range(30):
+
         save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
         dfp = pd.read_excel(save_path + "/result_test.xlsx")
 
@@ -228,19 +280,31 @@ for _, name in zip(range(4), ["Gaussian", "Ridge", "Lasso", "PLS"]):
     ax_.set_ylabel("ΔΔ${G_{predict}}$ [kcal/mol]", fontsize=10)
     ax.append(ax_)
 fig.tight_layout()
-for h, (file, data) in enumerate(zip(glob.glob("../arranged_dataset/*.xlsx"),
-                                     ["(-)-DIP-Chloride", "$trans$-[RuC$\mathrm{l_2}${($S$)-XylBINAP}{($S$)-DAIPEN}]",
-                                      "($S$)-CBS-Me"])):
+# for h, (file, data) in enumerate(zip(glob.glob("../arranged_dataset/*.xlsx"),
+#                                      [
+#                                         "($S$)-CBS-Me",
+#                                          "(-)-DIP-Chloride",
+#                                       "$trans$-[RuC$\mathrm{l_2}${($S$)-XylBINAP}{($S$)-DAIPEN}]",
+#                                      ])):
+for h,(file, data) in enumerate(zip(["../arranged_dataset/cbs.xlsx",
+    "../arranged_dataset/DIP-chloride.xlsx",
+    "../arranged_dataset/RuSS.xlsx"
+],
+        [
+            "($S$)-Me-CBS",
+            "(-)-DIP-Chloride",
+            "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
+        ])):
     file_name = os.path.splitext(os.path.basename(file))[0]
-    for _ in range(100):
+    for _ in range(30):
         save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
         dfp = pd.read_excel(save_path + "/result_test.xlsx")
         for i, name in enumerate(["Gaussian_predict", "Ridge_predict", "Lasso_predict", "PLS_predict"]):
             ax[i].plot(dfp["ΔΔG.expt."], dfp[name], "o", color=["blue", "red", "green", "orange"][h],
-                       markeredgecolor="none", alpha=0.5,markersize=4)
+                       markeredgecolor="none", alpha=0.5, markersize=4)
             if _ == 0:
                 ax[i].plot(dfp["ΔΔG.expt."], dfp[name], "o", color=["blue", "red", "green", "orange"][h],
-                           markeredgecolor="none", label=data, alpha=0.5,markersize=4)
+                           markeredgecolor="none", label=data, alpha=0.5, markersize=4)
                 # ax.set_xticks([-2, 0, 2])
     ax[i].legend(loc='upper center', bbox_to_anchor=(0.5 - 2, -0.2), ncol=4, fontsize=10)
 fig.tight_layout()

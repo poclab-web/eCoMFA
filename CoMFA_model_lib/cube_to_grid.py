@@ -104,7 +104,7 @@ if __name__ == '__main__':
         df = pd.read_excel(path)
         dfs.append(df)
     df = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
-    with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
+    with open("../parameter/cube_to_grid/cube_to_grid0314.txt", "r") as f:
         param = json.loads(f.read())
     print(param)
     df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
