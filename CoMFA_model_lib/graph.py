@@ -53,7 +53,7 @@ import pandas as pd
 #         param = json.loads(f.read())
 from matplotlib import cm
 
-with open("../parameter/cube_to_grid/cube_to_grid0313.txt", "r") as f:
+with open("../parameter/cube_to_grid/cube_to_grid0314.txt", "r") as f:
     param = json.loads(f.read())
 print(param)
 # with open("../parameter/cube_to_grid/cube_to_grid0313.txt", "r") as f:
