@@ -1100,7 +1100,7 @@ if __name__ == '__main__':
     # time.sleep(60*60*4)
     start = time.perf_counter()  # 計測開始
     for file in glob.glob("../arranged_dataset/*.xlsx"):
-        with open("../parameter/cube_to_grid/cube_to_grid0313.txt", "r") as f:
+        with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
             param = json.loads(f.read())
             print(param)
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
@@ -1222,19 +1222,19 @@ if __name__ == '__main__':
                 # Gaussian_penalized(df_, dfp, param["grid_coordinates"], save_path)
             from multiprocessing import Pool
 
-            p = Pool(4)
+            p = Pool(5)
             p.map(GP, inputs)
             n = select_σ_n(file_name)
-            # n=3
+            n=3
             inputs = []
-            for _ in range(30):
+            for _ in range(50):
                 df_ = df.sample(frac=1, random_state=_)
                 save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
                 os.makedirs(save_path, exist_ok=True)
                 input = df_, dfp, param["grid_coordinates"], save_path, n
                 inputs.append(input)
                 # regression_comparison(df_, dfp, param["grid_coordinates"], save_path, n)
-            p = Pool(4)
+            p = Pool(5)
             p.map(RC, inputs)
     end = time.perf_counter()  # 計測終了
     print('Finish{:.2f}'.format(end - start))

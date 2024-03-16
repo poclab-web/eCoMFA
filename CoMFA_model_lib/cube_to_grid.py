@@ -1,7 +1,9 @@
+import copy
 import glob
 import json
 import os
 import time
+from multiprocessing import Pool
 
 import numpy as np
 import pandas as pd
@@ -18,10 +20,10 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
     d_y = (drop_dupl_y.iloc[1] - drop_dupl_y.iloc[0]) / 2
     d_z = (drop_dupl_z.iloc[1] - drop_dupl_z.iloc[0]) / 2
     for conf in mol.GetConformers():
-        outfilename = "{}/{}/data{}.pkl".format(out_name, mol.GetProp("InchyKey"), conf.GetId())
+        outfilename = "{}/data{}.pkl".format(out_name, conf.GetId())
         # if os.path.isfile(outfilename):
         #     continue
-        filename = "{}/{}/data{}.pkl".format(dir_name, mol.GetProp("InchyKey"), conf.GetId())
+        filename = "{}/data{}.pkl".format(dir_name, conf.GetId())
         print(filename)
         data = pd.read_pickle(filename)
         # print(data)
@@ -62,8 +64,8 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
                 # data_xy = data_x[data_x["y"] == y]
                 data_xy = data_x[data_x["y{}".format(y)]]
                 for z in range(len(drop_dupl_z)):
-                    Dt_ = np.sum(data_xy[data_xy["z{}".format(z)]]["Dt"].values) * (0.2 * 0.52917721067) ** 3
-                    # Dt_ = np.average(data_xy[data_xy["z{}".format(z)]]["Dt"].values)
+                    # Dt_ = np.sum(data_xy[data_xy["z{}".format(z)]]["Dt"].values) * (0.2 * 0.52917721067) ** 3
+                    Dt_ = np.average(data_xy[data_xy["z{}".format(z)]]["Dt"].values)
                     Dt.append(Dt_)
         print(time.time() - start)
         # start=time.time()
@@ -97,14 +99,17 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
         # filename = "{}/{}/data_yz{}.pkl".format(out_name, mol.GetProp("InchyKey"), conf.GetId())
         # dfp_yz.to_pickle(filename)
 
-
+def PF(input):
+    cube_dir_name, dfp, mol, grid_coordinates=input
+    print(mol)
+    pkl_to_featurevalue(cube_dir_name, dfp, mol, grid_coordinates)
 if __name__ == '__main__':
     dfs = []
     for path in glob.glob("../arranged_dataset/*.xlsx"):
         df = pd.read_excel(path)
         dfs.append(df)
     df = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
-    with open("../parameter/cube_to_grid/cube_to_grid0315.txt", "r") as f:
+    with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
         param = json.loads(f.read())
     print(param)
     df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
@@ -113,6 +118,11 @@ if __name__ == '__main__':
         lambda mol: calculate_conformation.read_xyz(mol, param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")))
     dfp = pd.read_csv(param["grid_coordinates"] + "/coordinates.csv")
     print(dfp)
+    inputs=[]
     for mol in df["mol"]:
         os.makedirs(param["grid_coordinates"] + "/" + mol.GetProp("InchyKey"), exist_ok=True)
-        pkl_to_featurevalue(param["cube_dir_name"], dfp, mol, param["grid_coordinates"])
+        input=param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey")
+        inputs.append(input)
+        # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
+    p = Pool(4)
+    p.map(PF, inputs)
