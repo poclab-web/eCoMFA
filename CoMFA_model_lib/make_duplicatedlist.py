@@ -49,40 +49,40 @@ for p in df.index:
 df['ΔΔG.expt.Ru']=r
 
 
-df_cbs= pd.read_excel("../result/0206/cbs_gaussian/result_loo.xlsx")
-df_dip = pd.read_excel("../result/0206/dip-chloride_gaussian/result_loo.xlsx")
-df_Russ = pd.read_excel("../result/0206/RuSS_gaussian/result_loo.xlsx")
-
-t=[]
-for p in df.index:
-    l = []
-    for i in df_cbs.index:
-        if df["inchikey"][p]==df_cbs["inchikey"][i]:
-
-            q=df_cbs["ΔΔG.loo"][i]
-            l.append(q)
-    t.append(l)
-df['ΔΔG.pre.cbs']=t
-
-s=[]
-for p in df.index:
-    l = []
-    for i in df_dip.index:
-        if str(df["inchikey"][p])==str(df_dip["inchikey"][i]):
-            q=df_dip["ΔΔG.loo"][i]
-            l.append(q)
-    s.append(l)
-df['ΔΔG.pre.dip']=s
-
-r=[]
-for p in df.index:
-    l = []
-    for i in df_Russ.index:
-        if str(df["inchikey"][p])==str(df_Russ["inchikey"][i]):
-            q=df_Russ["ΔΔG.loo"][i]
-            l.append(q)
-    r.append(l)
-df["ΔΔG.pre.RuSS"]=r
+# df_cbs= pd.read_excel("../result/0206/cbs_gaussian/result_loo.xlsx")
+# df_dip = pd.read_excel("../result/0206/dip-chloride_gaussian/result_loo.xlsx")
+# df_Russ = pd.read_excel("../result/0206/RuSS_gaussian/result_loo.xlsx")
+#
+# t=[]
+# for p in df.index:
+#     l = []
+#     for i in df_cbs.index:
+#         if df["inchikey"][p]==df_cbs["inchikey"][i]:
+#
+#             q=df_cbs["ΔΔG.loo"][i]
+#             l.append(q)
+#     t.append(l)
+# df['ΔΔG.pre.cbs']=t
+#
+# s=[]
+# for p in df.index:
+#     l = []
+#     for i in df_dip.index:
+#         if str(df["inchikey"][p])==str(df_dip["inchikey"][i]):
+#             q=df_dip["ΔΔG.loo"][i]
+#             l.append(q)
+#     s.append(l)
+# df['ΔΔG.pre.dip']=s
+#
+# r=[]
+# for p in df.index:
+#     l = []
+#     for i in df_Russ.index:
+#         if str(df["inchikey"][p])==str(df_Russ["inchikey"][i]):
+#             q=df_Russ["ΔΔG.loo"][i]
+#             l.append(q)
+#     r.append(l)
+# df["ΔΔG.pre.RuSS"]=r
 
 
 os.makedirs("../datalist", exist_ok=True)

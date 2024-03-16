@@ -1,6 +1,13 @@
 import glob
-import json
+
 import os
+
+os.environ["OMP_NUM_THREADS"] = "2"
+os.environ["OPENBLAS_NUM_THREADS"] = "2"
+os.environ["MKL_NUM_THREADS"] = "2"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "2"
+os.environ["NUMEXPR_NUM_THREADS"] = "2"
+import json
 import time
 import warnings
 
@@ -11,7 +18,7 @@ from sklearn import linear_model
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.model_selection import KFold
-
+from numpy.linalg import solve
 import calculate_conformation
 
 warnings.simplefilter('ignore')
@@ -42,6 +49,23 @@ warnings.simplefilter('ignore')
 #
 #     def coef_(self):
 #         return self.x
+def CV(input):
+    features_all, train_index, test_index, penalty_L, zeros = input
+    features_training = features_all[:,
+                        train_index]
+    std = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
+    features_training = np.concatenate(features_training / std, axis=1)
+    X = np.block([[features_training]] + penalty_L).astype('float32')
+    Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], zeros], axis=0).astype('float32')
+
+    start = time.time()
+    x = np.linalg.solve(X.T @ X, X.T @ Y)
+
+    features_test = features_all[:, test_index]
+    features_test = np.concatenate(features_test / std, axis=1)
+    predict = np.sum(x * features_test, axis=1).tolist()
+    return predict
+
 
 def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
@@ -66,10 +90,13 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
                         penalty_L_.append(np.zeros(penalty.shape))
                 penalty_L.append(penalty_L_)
 
-            X = np.block([[features]] + penalty_L)
-            Y = np.concatenate([df["ΔΔG.expt."], zeros], axis=0)
+            X = np.block([[features]] + penalty_L).astype('float32')
+            Y = np.concatenate([df["ΔΔG.expt."], zeros], axis=0).astype('float32')
+
             start = time.time()
             gaussian_coef = np.linalg.solve(X.T @ X, X.T @ Y)
+            print(time.time() - start)
+
             gaussians.append(gaussian_coef.tolist())
             n_ = int(gaussian_coef.shape[0] / features_all.shape[0])
             df_coord["Gaussian_Dt"] = gaussian_coef[:n_]
@@ -77,13 +104,15 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
 
             kf = KFold(n_splits=3, shuffle=False)
             gaussian_predicts = []
+
             for (train_index, test_index) in kf.split(df):
                 features_training = features_all[:,
                                     train_index]
                 std = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
                 features_training = np.concatenate(features_training / std, axis=1)
-                X = np.block([[features_training]] + penalty_L)
-                Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], zeros], axis=0)
+                X = np.block([[features_training]] + penalty_L).astype('float32')
+                Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], zeros], axis=0).astype('float32')
+
                 start = time.time()
                 x = np.linalg.solve(X.T @ X, X.T @ Y)
 
@@ -256,13 +285,32 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
         ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]].applymap(
         lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
 
-    df["Gaussian_predict"] = dfp[dfp["Gaussian_test_r"] == dfp["Gaussian_test_r"].max()].iloc[0][
-        "Gaussian_test_predict"]
-    df["Ridge_predict"] = dfp[dfp["ridge_test_r"] == dfp["ridge_test_r"].max()].iloc[0][
-        "ridge_test_predict"]
-    df["Lasso_predict"] = dfp[dfp["lasso_test_r"] == dfp["lasso_test_r"].max()].iloc[0]["lasso_test_predict"]
-    df["PLS_predict"] = dfp[dfp["pls_test_r"] == dfp["pls_test_r"].max()].iloc[0]["pls_test_predict"]
-    df["Gaussian_error"] = df["Gaussian_predict"] - df["ΔΔG.expt."]
+    features_R1 = np.array(df["DtR1"].tolist()).reshape(len(df), -1, 1).transpose(2, 0, 1)
+    features_R1 = np.concatenate(features_R1 / std, axis=1)
+    dfp["Gaussian_regression_predictR1"] = np.sum(gaussians * features_R1, axis=2).tolist()
+    dfp[["Ridge_regression_predictR1", "Lasso_regression_predictR1", "PLS_regression_predictR1"]] \
+        = dfp[["Ridge_model", "Lasso_model", "PLS_model"]].applymap(lambda model: model.predict(features_R1))
+
+    features_R2 = np.array(df["DtR2"].tolist()).reshape(len(df), -1, 1).transpose(2, 0, 1)
+    features_R2 = np.concatenate(features_R2 / std, axis=1)
+    dfp["Gaussian_regression_predictR2"] = np.sum(gaussians * features_R2, axis=2).tolist()
+    dfp[["Ridge_regression_predictR2", "Lasso_regression_predictR2", "PLS_regression_predictR2"]] \
+        = dfp[["Ridge_model", "Lasso_model", "PLS_model"]].applymap(lambda model: model.predict(features_R2))
+    # df["Gaussian_predict"] = dfp[dfp["Gaussian_test_r"] == dfp["Gaussian_test_r"].max()].iloc[0][
+    #     "Gaussian_test_predict"]
+    # df["Ridge_predict"] = dfp[dfp["ridge_test_r"] == dfp["ridge_test_r"].max()].iloc[0][
+    #     "ridge_test_predict"]
+    # df["Lasso_predict"] = dfp[dfp["lasso_test_r"] == dfp["lasso_test_r"].max()].iloc[0]["lasso_test_predict"]
+    # df["PLS_predict"] = dfp[dfp["pls_test_r"] == dfp["pls_test_r"].max()].iloc[0]["pls_test_predict"]
+    df[["Gaussian_test", "Gaussian_regression", "Gaussian_R1", "Gaussian_R2"]] = \
+        dfp.loc[dfp["Gaussian_test_r"].idxmax()][
+            ["Gaussian_test_predict", "Gaussian_regression_predict", "Gaussian_regression_predictR1",
+             "Gaussian_regression_predictR2"]]
+    df["Ridge_test"] = dfp.loc[dfp["ridge_test_r"].idxmax()]["ridge_test_predict"]
+    df["Lasso_test"] = dfp.loc[dfp["lasso_test_r"].idxmax()]["lasso_test_predict"]
+    df["PLS_test"] = dfp.loc[dfp["pls_test_r"].idxmax()]["pls_test_predict"]
+
+    df["Gaussian_error"] = df["Gaussian_test"] - df["ΔΔG.expt."]
     # df[["Gaussian_error","Ridge_error","Lasso_error"]] = df[["Gaussian_predict","Ridge_predict","Lasso_predict",]].applymap(lambda test:test - df["ΔΔG.expt."].values)
     df = df.sort_values(by='Gaussian_error', key=abs, ascending=[False])
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
@@ -1038,98 +1086,178 @@ def select_σ_n(file_name):
     #         color=cm.hsv(j / 10), alpha=1)
 
 
+def GP(input):
+    df_, dfp, grid_coordinates, save_path = input
+    Gaussian_penalized(df_, dfp, grid_coordinates, save_path)
+
+
+def RC(input):
+    df_, dfp, grid_coordinates, save_path, n = input
+    regression_comparison(df_, dfp, grid_coordinates, save_path, n)
+
+
 if __name__ == '__main__':
     # time.sleep(60*60*4)
     start = time.perf_counter()  # 計測開始
     for file in glob.glob("../arranged_dataset/*.xlsx"):
-        with open("../parameter/cube_to_grid/cube_to_grid0314.txt", "r") as f:
+        with open("../parameter/cube_to_grid/cube_to_grid0313.txt", "r") as f:
             param = json.loads(f.read())
             print(param)
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             file_name = os.path.splitext(os.path.basename(file))[0]
             features_dir_name = param["grid_coordinates"] + file_name
             print(features_dir_name)
-            print("dflen",len(df))
+            print("dflen", len(df))
             df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
             # df = df[[os.path.isdir(features_dir_name + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
             df = df[
                 [os.path.isdir("{}/{}".format(param["grid_coordinates"], mol.GetProp("InchyKey"))) for mol in
                  df["mol"]]]
             df["mol"].apply(
-                lambda mol: calculate_conformation.read_xyz(mol, param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")))
-            print("dflen",len(df))
+                lambda mol: calculate_conformation.read_xyz(mol,
+                                                            param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")))
+            print("dflen", len(df))
             dfp = pd.read_csv(param["grid_coordinates"] + "/penalty_param.csv")
             Dts = []
+            DtR1 = []
+            DtR2 = []
+
             for mol, RT in df[["mol", "RT"]].values:
                 energy_to_Boltzmann_distribution(mol, RT)
+                # ボルツマン分布をfor文で書く。
+                # y,-yの情報をソートしてappend
+                # softminを取る
                 Dt = []
+                we = []
                 for conf in mol.GetConformers():
                     data = pd.read_pickle(
                         "{}/{}/data{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId()))
-                    Dt.append(data["Dt"].values.tolist())
+                    Bd = float(conf.GetProp("Boltzmann_distribution"))
+                    if False:
+                        we.append(Bd)
+                        Dt.append(data["Dt"].values.tolist())
+                    else:
+                        we.extend([Bd, Bd])
+                        Dt.extend([data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
+                                       "Dt"].values.tolist(),
+                                   data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
+                                       "Dt"].values.tolist()])
                 Dt = np.array(Dt)
                 w = np.exp(-Dt / np.sqrt(np.average(Dt ** 2, axis=0)).reshape(1, -1))
-                we = np.array([float(conf.GetProp("Boltzmann_distribution")) for conf in mol.GetConformers()]).reshape(
-                    -1, 1)
+                # we = np.array([float(conf.GetProp("Boltzmann_distribution")) for conf in mol.GetConformers()]).reshape(
+                #     -1, 1)
+                we = np.array(we).reshape(-1, 1)
                 Dt_ = np.average(Dt, weights=we * w, axis=0)
-                data["Dt"] = np.nan_to_num(Dt_)
-                dfp_yz = data[(data["y"] > 0) & (data["z"] > 0)][["x", "y", "z"]].sort_values(['x', 'y', "z"],
-                                                                                              ascending=[True, True,
-                                                                                                         True])
-                feature = ["Dt"]
-                dfp_yz[feature] = \
-                    data[(data["y"] > 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
-                        feature].values \
-                    + \
-                    data[(data["y"] < 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
-                        feature].values \
-                    - \
-                    data[(data["y"] > 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
-                        feature].values \
-                    - data[(data["y"] < 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"],
-                                                                          ascending=[True, False, False])[
-                        feature].values
-                Dts.append(dfp_yz[feature].values.tolist())
+                if True:
+                    data_y = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
+                    data_y["Dt"] = np.nan_to_num(Dt_)
+                    data_yz = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
+                    data_yz["Dt"] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
+                                        "Dt"].values - \
+                                    data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
+                                        "Dt"].values
+                    data_yz["DtR1"] = \
+                    data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values
+                    data_yz["DtR2"] = \
+                    data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])["Dt"].values
+                    dfp_yz = data_yz.copy()
+                else:
+                    data["Dt"] = np.nan_to_num(Dt_)
+                    dfp_yz = data[(data["y"] > 0) & (data["z"] > 0)][["x", "y", "z"]].sort_values(['x', 'y', "z"],
+                                                                                                  ascending=[True, True,
+                                                                                                             True])
+                    # feature = ["Dt"]
+                    dfp_yz["Dt"] = \
+                        data[(data["y"] > 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"],
+                                                                            ascending=[True, True, True])[
+                            "Dt"].values \
+                        + \
+                        data[(data["y"] < 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"],
+                                                                            ascending=[True, False, True])[
+                            "Dt"].values \
+                        - \
+                        data[(data["y"] > 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"],
+                                                                            ascending=[True, True, False])[
+                            "Dt"].values \
+                        - data[(data["y"] < 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"],
+                                                                              ascending=[True, False, False])[
+                            "Dt"].values
+
+                    dfp_yz["DtR1"] = \
+                        data[(data["y"] > 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"],
+                                                                            ascending=[True, True, True])[
+                            "Dt"].values \
+                        + \
+                        data[(data["y"] < 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"],
+                                                                            ascending=[True, False, True])[
+                            "Dt"].values
+                    dfp_yz["DtR2"] = \
+                        -data[(data["y"] > 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"],
+                                                                             ascending=[True, True, False])[
+                            "Dt"].values \
+                        - data[(data["y"] < 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"],
+                                                                              ascending=[True, False, False])[
+                            "Dt"].values
+                Dts.append(dfp_yz["Dt"].values.tolist())
+                DtR1.append(dfp_yz["DtR1"].values.tolist())
+                DtR2.append(dfp_yz["DtR2"].values.tolist())
+
             df["Dt"] = Dts
+            df["DtR1"] = DtR1
+            df["DtR2"] = DtR2
             # if False:
             #     df_ = df.sort_values(by=["ΔΔG.expt."])
             #     save_path = param["out_dir_name"] + "/" + file_name + "/sorted"
             #     os.makedirs(save_path, exist_ok=True)
             #     Gaussian_penalized(features_dir_name, df_, dfp, param["grid_coordinates"], save_path)
-            for _ in range(2):
+
+            inputs = []
+            for _ in range(10):
                 df_ = df.sample(frac=1, random_state=_)
                 save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
                 os.makedirs(save_path, exist_ok=True)
-                Gaussian_penalized(df_, dfp, param["grid_coordinates"], save_path)
-            n=select_σ_n(file_name)
-            for _ in range(2):
+                input = df_, dfp, param["grid_coordinates"], save_path
+                inputs.append(input)
+                # GP(input)
+                # Gaussian_penalized(df_, dfp, param["grid_coordinates"], save_path)
+            from multiprocessing import Pool
+
+            p = Pool(4)
+            p.map(GP, inputs)
+            n = select_σ_n(file_name)
+            # n=3
+            inputs = []
+            for _ in range(30):
                 df_ = df.sample(frac=1, random_state=_)
                 save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
                 os.makedirs(save_path, exist_ok=True)
-                regression_comparison(df_, dfp, param["grid_coordinates"], save_path, n)
-
+                input = df_, dfp, param["grid_coordinates"], save_path, n
+                inputs.append(input)
+                # regression_comparison(df_, dfp, param["grid_coordinates"], save_path, n)
+            p = Pool(4)
+            p.map(RC, inputs)
     end = time.perf_counter()  # 計測終了
     print('Finish{:.2f}'.format(end - start))
-            # looout_file_name = param["out_dir_name"] +file_name+ "/result_loonondfold.xlsx"
-            # testout_file_name = param["out_dir_name"] +file_name+ "/result_train_test.xlsx"
-            # crosstestout_file_name = param["out_dir_name"] +file_name+ "/result_5crossvalidnonfold.xlsx"
-            # if fold:
+    # looout_file_name = param["out_dir_name"] +file_name+ "/result_loonondfold.xlsx"
+    # testout_file_name = param["out_dir_name"] +file_name+ "/result_train_test.xlsx"
+    # crosstestout_file_name = param["out_dir_name"] +file_name+ "/result_5crossvalidnonfold.xlsx"
+    # if fold:
 
-            # if traintest:
-            #     train_testfold(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
-            #                    gridsearch_file_name
-            #                    , looout_file_name, testout_file_name, param, fplist, param["Regression_type"],
-            #                    param["maxmin"], dfp)
-            # for regression_type in ["gaussian", "ridgecv", "PLS", "lassocv", "elasticnetcv"]:
-            #     dir_name = param["out_dir_name"] + "/" + file_name + regression_type
-            #     os.makedirs(dir_name, exist_ok=True)
-            #     gridsearch_file_name = dir_name + "/result_grid_search.csv"
-            #     looout_file_name = dir_name + "/result_loo.xlsx"
-            #     crosstestout_file_name = dir_name + "/result_5crossvalid.xlsx"
-            #     doublecrossvalidation(True, features_dir_name, param["Regression_features"], None, df,
-            #                           gridsearch_file_name, looout_file_name,
-            #                           crosstestout_file_name, param, regression_type,
-            #                           False, dfp, file_name)
+    # if traintest:
+    #     train_testfold(fold, features_dir_name, param["Regression_features"], param["feature_number"], df,
+    #                    gridsearch_file_name
+    #                    , looout_file_name, testout_file_name, param, fplist, param["Regression_type"],
+    #                    param["maxmin"], dfp)
+    # for regression_type in ["gaussian", "ridgecv", "PLS", "lassocv", "elasticnetcv"]:
+    #     dir_name = param["out_dir_name"] + "/" + file_name + regression_type
+    #     os.makedirs(dir_name, exist_ok=True)
+    #     gridsearch_file_name = dir_name + "/result_grid_search.csv"
+    #     looout_file_name = dir_name + "/result_loo.xlsx"
+    #     crosstestout_file_name = dir_name + "/result_5crossvalid.xlsx"
+    #     doublecrossvalidation(True, features_dir_name, param["Regression_features"], None, df,
+    #                           gridsearch_file_name, looout_file_name,
+    #                           crosstestout_file_name, param, regression_type,
+    #                           False, dfp, file_name)
 
     # path_w = '../errortest/alltime.txt'
     #

@@ -69,7 +69,7 @@ if __name__ == '__main__':
     #     "../parameter_0227/parameter_RuSS_gaussian.txt",
     #     "../parameter_0227/parameter_dip-chloride_gaussian.txt",
     # ]:
-    for file in glob.glob("../../../result/*/RuSS/0/molecular_filed*.csv"):
+    for file in glob.glob("../../../result/[-5.8 -3.4 -5.8*/*/0/molecular_filed1024.0.csv"):
         print(file)
         df= pd.read_csv(file)
         # df = mfunfolding(df)
@@ -101,7 +101,7 @@ if __name__ == '__main__':
         print(column_inc_specific_feature)
 
         #df[(df["x"]>0)&(df["y"]>0)][column_inc_specific_feature]=1
-        cubeinchikey = "../cube_aligned_/wB97X-D_def2-TZVP/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"
+        cubeinchikey = "../cube_aligned_/wB97X-D_def2-TZVP/RIFKADJTWUGDOV-UHFFFAOYSA-N/Dt02_0.cube"
         with open(cubeinchikey, "r", encoding="UTF-8") as f:
             cube = f.read().splitlines()
         n_atom = int(cube[2].split()[0])
