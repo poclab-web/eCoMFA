@@ -10,8 +10,8 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
     # df = pd.read_csv(from_file_path)  # .iloc[:5]
     df = pd.read_excel(from_file_path,engine="openpyxl")
     # print(len(df))
-    print(df)
-    print(df.columns)
+    # print(df)
+    # print(df.columns)
     df = df.dropna(subset=["smiles"])
     # print(len(df))
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
@@ -37,7 +37,9 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
                                     "c1ccccc1C(C)(C)C(=O)C#CCCCCCCCC",
                                     "CCCCCCCCC#CC(=O)C(C)(C)CC=C",
                                     "O=C(C#C[Si](C)(C)C)C=C",
-                                    "O=C1C(c2ccc(C(=O)OCC)cc2)=CCC1"])]
+                                    "O=C1C(c2ccc(C(=O)OCC)cc2)=CCC1",
+                                    "COc1cccc(OC)c1C(=O)C"
+                                    ])]
     if True:
         df = df[df["mol"].map(lambda mol:
                               not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl]"))
@@ -60,7 +62,7 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
     PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100))
 
     # print(len(df))
-    print("finish")
+    print("finish",len(df))
 
 
 if __name__ == '__main__':

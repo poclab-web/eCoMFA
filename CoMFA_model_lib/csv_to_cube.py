@@ -69,7 +69,7 @@ if __name__ == '__main__':
     #     "../parameter_0227/parameter_RuSS_gaussian.txt",
     #     "../parameter_0227/parameter_dip-chloride_gaussian.txt",
     # ]:
-    for file in glob.glob("../../../result/[-5.8 -3.4 -5.8*/*/0/molecular_filed1024.0.csv"):
+    for file in glob.glob("../../../result/[-5.8 -3.8 -5.8*/*/0/molecular_filed1024.0.csv"):
         print(file)
         df= pd.read_csv(file)
         # df = mfunfolding(df)

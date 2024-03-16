@@ -1,4 +1,3 @@
-import glob
 import json
 import os
 
@@ -6,24 +5,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-
 from matplotlib import cm
 
-with open("../parameter/cube_to_grid/cube_to_grid0313.txt", "r") as f:
+with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
     param = json.loads(f.read())
 print(param)
 
 fig = plt.figure(figsize=(3 * 3, 1 * 3 + 0.5))
 i = 0
 for file, label in zip(["../arranged_dataset/cbs.xlsx",
-    "../arranged_dataset/DIP-chloride.xlsx",
-    "../arranged_dataset/RuSS.xlsx"
-],
-        [
-            "($S$)-Me-CBS",
-            "(-)-DIP-Chloride",
-            "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
-        ]):
+                        "../arranged_dataset/DIP-chloride.xlsx",
+                        "../arranged_dataset/RuSS.xlsx"
+                        ],
+                       [
+                           "($S$)-Me-CBS",
+                           "(-)-DIP-Chloride",
+                           "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
+                       ]):
     print(file)
     i += 1
     file_name = os.path.splitext(os.path.basename(file))[0]
@@ -35,22 +33,22 @@ for file, label in zip(["../arranged_dataset/cbs.xlsx",
     # ax.set_yticks([0.50, 0.75, 1.00])
     Gaussian = [[] for i in range(10)]
     print(Gaussian)
-    dfps=[]
+    dfps = []
     for _ in range(5):
         save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
         print(save_path)
         dfp = pd.read_csv(save_path + "/n_comparison.csv")
-        for j in range(1, 11):
-            dfp["Gaussian_test_r2"]=dfp["Gaussian_test_r2{}".format(j)]
-            dfp["n"]=j+1
+        for j in range(1,11):
+            dfp["Gaussian_test_r2"] = dfp["Gaussian_test_r2{}".format(j)]
+            # dfp["n"] = j + 1
             dfps.append(dfp.copy())
             # ax.plot(dfp["lambda"], dfp["Gaussian_test_r2{}".format(j)], color=cm.hsv(j / 10), linewidth=1, alpha=0.05)
-            Gaussian[j - 1].append(dfp["Gaussian_test_r2{}".format(j)].values.tolist())
+            Gaussian[j-1].append(dfp["Gaussian_test_r2{}".format(j)].values.tolist())
     print(Gaussian)
-    dfs=pd.concat(dfps)
-    for j in range(1, 11):
-        ax.plot(dfp["lambda"], np.average(Gaussian[j - 1], axis=0), "-",
-                label="n = " + str(j) + "\n{:.3f}".format(np.max(np.average(Gaussian[j - 1], axis=0))),
+    dfs = pd.concat(dfps)
+    for j in range(10):
+        ax.plot(dfp["lambda"], np.average(Gaussian[j ], axis=0), "-",
+                label="n = " + str(j) + "\n{:.3f}".format(np.max(np.average(Gaussian[j ], axis=0))),
                 color=cm.hsv(j / 10), alpha=1)
     print(dfs)
     # sns.lineplot(x="lambda",y="Gaussian_test_r2",data=dfs.sort_values(["n"]),ci=None,hue="n",legend="full",palette="hls")
@@ -59,7 +57,6 @@ for file, label in zip(["../arranged_dataset/cbs.xlsx",
     ax.set_ylabel("$r^2_{test}$", fontsize=10)
 fig.tight_layout()
 plt.savefig("../figs/n_comparison.png", transparent=False, dpi=300)
-
 
 fig = plt.figure(figsize=(3 * 3, 1 * 3 + 0.5))
 i = 0
@@ -84,7 +81,7 @@ for file, label in zip(["../arranged_dataset/cbs.xlsx",
     Lasso = []
     Ridge = []
     PLS = []
-    dfps=[]
+    dfps = []
     for _ in range(30):
         save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
         dfp = pd.read_csv(save_path + "/result.csv")
@@ -102,7 +99,7 @@ for file, label in zip(["../arranged_dataset/cbs.xlsx",
 
         dfp["test_r2"] = dfp["pls_test_r2"]
         dfp["method"] = "PLS"
-        dfp["n"]=range(1, len(dfp["lambda"]) + 1)
+        dfp["n"] = range(1, len(dfp["lambda"]) + 1)
         dfps.append(dfp.copy())
 
         Gaussian.append(dfp["Gaussian_test_r2"].values.tolist())
@@ -113,11 +110,12 @@ for file, label in zip(["../arranged_dataset/cbs.xlsx",
         # ax.plot(dfp["lambda"], dfp["lasso_test_r2"], color="red", linewidth=1, alpha=0.05)
         # ax.plot(dfp["lambda"], dfp["ridge_test_r2"], color="green", linewidth=1, alpha=0.05)
         ax2.plot(range(1, len(dfp["lambda"]) + 1), dfp["pls_test_r2"], color="orange", linewidth=1, alpha=0.05)
-    dfs=pd.concat(dfps)
-    sns.lineplot(x="lambda",y="test_r2",data=dfs[~(dfs["method"]=="PLS")].sort_values(["method"]),hue="method",legend="full",palette="hls",ax=ax)
-    sns.lineplot(x="n",y="test_r2",data=dfs[dfs["method"]=="PLS"].sort_values(["method"]),hue=None,legend="full",palette="hls",ax=ax2)
+    dfs = pd.concat(dfps)
+    sns.lineplot(x="lambda", y="test_r2", data=dfs[~(dfs["method"] == "PLS")].sort_values(["method"]), hue="method",
+                 legend="full", palette="hls", ax=ax)
+    sns.lineplot(x="n", y="test_r2", data=dfs[dfs["method"] == "PLS"].sort_values(["method"]), hue=None, legend="full",
+                 palette="hls", ax=ax2)
     # sns.lineplot(x="n",y="test_r2",data=dfs[dfs["method"]=="PLS"].sort_values(["method"])[:1],hue="method",legend="full",palette="hls",ax=ax2)
-
 
     # ax.plot(dfp["lambda"], np.average(Gaussian, axis=0), "o",
     #         label="Gaussian\nMAX{:.2f}".format(np.max(np.average(Gaussian, axis=0))), color="blue", alpha=1)
@@ -144,14 +142,14 @@ fig = plt.figure(figsize=(3 * 3, 1 * 3))
 i = 0
 
 for file, label in zip(["../arranged_dataset/cbs.xlsx",
-    "../arranged_dataset/DIP-chloride.xlsx",
-    "../arranged_dataset/RuSS.xlsx"
-],
-        [
-            "($S$)-Me-CBS",
-            "(-)-DIP-Chloride",
-            "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
-        ]):
+                        "../arranged_dataset/DIP-chloride.xlsx",
+                        "../arranged_dataset/RuSS.xlsx"
+                        ],
+                       [
+                           "($S$)-Me-CBS",
+                           "(-)-DIP-Chloride",
+                           "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
+                       ]):
     i += 1
     file_name = os.path.splitext(os.path.basename(file))[0]
     ax = fig.add_subplot(1, 3, i)
@@ -161,7 +159,6 @@ for file, label in zip(["../arranged_dataset/cbs.xlsx",
     ax.set_xticks([-5, 0, 5])
     ax.set_yticks([-5, 0, 5])
     for _ in range(30):
-
         save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
         dfp = pd.read_excel(save_path + "/result_test.xlsx")
 
@@ -215,24 +212,24 @@ fig.tight_layout()
 # Ridges = []
 # Lassos = []
 # PLSs = []
-Gaussian=[[]for _ in range(30)]
-Ridge=[[]for _ in range(30)]
-Lasso=[[]for _ in range(30)]
-PLS=[[]for _ in range(30)]
-for h,(file, data) in enumerate(zip(["../arranged_dataset/cbs.xlsx",
-    "../arranged_dataset/DIP-chloride.xlsx",
-    "../arranged_dataset/RuSS.xlsx"
-],
-        [
-            "($S$)-Me-CBS",
-            "(-)-DIP-Chloride",
-            "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
-        ])):
+Gaussian = [[] for _ in range(30)]
+Ridge = [[] for _ in range(30)]
+Lasso = [[] for _ in range(30)]
+PLS = [[] for _ in range(30)]
+for h, (file, data) in enumerate(zip(["../arranged_dataset/cbs.xlsx",
+                                      "../arranged_dataset/DIP-chloride.xlsx",
+                                      "../arranged_dataset/RuSS.xlsx"
+                                      ],
+                                     [
+                                         "($S$)-Me-CBS",
+                                         "(-)-DIP-Chloride",
+                                         "$trans$-[RuC$\mathrm{l_2}${($S$)-XylBINAP}{($S$)-DAIPEN}]",
+                                     ])):
     file_name = os.path.splitext(os.path.basename(file))[0]
-    Gaussian_=[]
-    Ridge_=[]
-    Lasso_=[]
-    PLS_=[]
+    Gaussian_ = []
+    Ridge_ = []
+    Lasso_ = []
+    PLS_ = []
     for _ in range(30):
         save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
         dfp = pd.read_excel(save_path + "/result_test.xlsx").sort_values(["smiles"])
@@ -242,7 +239,7 @@ for h,(file, data) in enumerate(zip(["../arranged_dataset/cbs.xlsx",
             # if _ == 0:
             #     ax[i].plot(dfp["ΔΔG.expt."], dfp[name], "o", color=["blue", "red", "green", "orange"][h],
             #                markeredgecolor="none", label=data, alpha=1, markersize=4)
-                # ax.set_xticks([-2, 0, 2])
+            # ax.set_xticks([-2, 0, 2])
         Gaussian_.append(dfp["Gaussian_test"].values.tolist())
         Ridge_.append(dfp["Ridge_test"].values.tolist())
         Lasso_.append(dfp["Lasso_test"].values.tolist())
@@ -257,7 +254,7 @@ for h,(file, data) in enumerate(zip(["../arranged_dataset/cbs.xlsx",
     # PLSs.append(PLS)
     # l[0].extend(Gaussian)
 
-    ax[0].plot(dfp["ΔΔG.expt."], np.average(Gaussian_,axis=0), "o", color=["blue", "red", "green", "orange"][h],
+    ax[0].plot(dfp["ΔΔG.expt."], np.average(Gaussian_, axis=0), "o", color=["blue", "red", "green", "orange"][h],
                markeredgecolor="none", label=data, alpha=1, markersize=4)
     ax[1].plot(dfp["ΔΔG.expt."], np.average(Ridge_, axis=0), "o", color=["blue", "red", "green", "orange"][h],
                markeredgecolor="none", label=data, alpha=1, markersize=4)
@@ -265,15 +262,15 @@ for h,(file, data) in enumerate(zip(["../arranged_dataset/cbs.xlsx",
                markeredgecolor="none", label=data, alpha=1, markersize=4)
     ax[3].plot(dfp["ΔΔG.expt."], np.average(PLS_, axis=0), "o", color=["blue", "red", "green", "orange"][h],
                markeredgecolor="none", label=data, alpha=1, markersize=4)
-    ax[i].legend(loc='upper center', bbox_to_anchor=(0.5 - 2, -0.2), ncol=4, fontsize=10)
+    ax[i].legend(loc='upper center', bbox_to_anchor=(0.5 - 2, -0.17), ncol=4, fontsize=10)
 fig.tight_layout()
 
 plt.savefig("../figs/test_predict_.png", transparent=False, dpi=300)
 
-print("Gaussian",np.average(np.std(Gaussian,axis=0)))
-print("Ridge",np.average(np.std(Ridge,axis=0)))
-print("Lasso",np.average(np.std(Lasso,axis=0)))
-print("PLS",np.average(np.std(PLS,axis=0)))
+print("Gaussian", np.average(np.std(Gaussian, axis=0)))
+print("Ridge", np.average(np.std(Ridge, axis=0)))
+print("Lasso", np.average(np.std(Lasso, axis=0)))
+print("PLS", np.average(np.std(PLS, axis=0)))
 
 # Gaussians = np.array(Gaussians)
 # Ridges = np.array(Ridges)
