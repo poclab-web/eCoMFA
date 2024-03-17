@@ -14,8 +14,8 @@ import calculate_conformation
 
 
 def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
-    psi4.set_num_threads(nthread=2)
-    psi4.set_memory("2GB")
+    psi4.set_num_threads(nthread=6)
+    psi4.set_memory("4GB")
     # psi4.set_options({'geom_maxiter': 1000})
 
     psi4.set_options({'cubeprop_filepath': output_dir_name})
@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
     print(df)
 
-    if True:
+    while True:
         for smiles in df["smiles"]:
             if True:  # smiles=="c1ccccc1OCN(C)CC(=O)c1ccccc1":#"Cl" in smiles:
                 print(smiles)

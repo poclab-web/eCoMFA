@@ -104,6 +104,7 @@ def PF(input):
     print(mol)
     pkl_to_featurevalue(cube_dir_name, dfp, mol, grid_coordinates)
 if __name__ == '__main__':
+    # time.sleep(60*60*6)
     dfs = []
     for path in glob.glob("../arranged_dataset/*.xlsx"):
         df = pd.read_excel(path)

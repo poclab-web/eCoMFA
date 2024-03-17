@@ -34,7 +34,7 @@ for file, label in zip(["../arranged_dataset/cbs.xlsx",
     Gaussian = [[] for i in range(10)]
     print(Gaussian)
     dfps = []
-    for _ in range(5):
+    for _ in range(10):
         save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
         print(save_path)
         dfp = pd.read_csv(save_path + "/n_comparison.csv")
@@ -82,7 +82,7 @@ for file, label in zip(["../arranged_dataset/cbs.xlsx",
     Ridge = []
     PLS = []
     dfps = []
-    for _ in range(30):
+    for _ in range(50):
         save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
         dfp = pd.read_csv(save_path + "/result.csv")
 
@@ -158,7 +158,7 @@ for file, label in zip(["../arranged_dataset/cbs.xlsx",
     ax.set_title(label)
     ax.set_xticks([-5, 0, 5])
     ax.set_yticks([-5, 0, 5])
-    for _ in range(30):
+    for _ in range(50):
         save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
         dfp = pd.read_excel(save_path + "/result_test.xlsx")
 
@@ -212,10 +212,10 @@ fig.tight_layout()
 # Ridges = []
 # Lassos = []
 # PLSs = []
-Gaussian = [[] for _ in range(30)]
-Ridge = [[] for _ in range(30)]
-Lasso = [[] for _ in range(30)]
-PLS = [[] for _ in range(30)]
+Gaussian = [[] for _ in range(50)]
+Ridge = [[] for _ in range(50)]
+Lasso = [[] for _ in range(50)]
+PLS = [[] for _ in range(50)]
 for h, (file, data) in enumerate(zip(["../arranged_dataset/cbs.xlsx",
                                       "../arranged_dataset/DIP-chloride.xlsx",
                                       "../arranged_dataset/RuSS.xlsx"
@@ -230,7 +230,7 @@ for h, (file, data) in enumerate(zip(["../arranged_dataset/cbs.xlsx",
     Ridge_ = []
     Lasso_ = []
     PLS_ = []
-    for _ in range(30):
+    for _ in range(50):
         save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
         dfp = pd.read_excel(save_path + "/result_test.xlsx").sort_values(["smiles"])
         for i, name in enumerate(["Gaussian_test", "Ridge_test", "Lasso_test", "PLS_test"]):

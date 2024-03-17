@@ -183,14 +183,17 @@ def psi4optimization(input_dir_name, output_dir_name, level="hf/sto-3g"):
 
 def read_xyz(mol, input_dir_name):
     mol.RemoveAllConformers()
-    i = 0
-    while os.path.isfile("{}/optimized{}.xyz".format(input_dir_name, i)):
-        conf = Chem.MolFromXYZFile("{}/optimized{}.xyz".format(input_dir_name, i)).GetConformer(-1)
-        with open("{}/optimized{}.xyz".format(input_dir_name, i), "r") as f:
+    # i = 0
+    # while os.path.isfile("{}/optimized{}.xyz".format(input_dir_name, i)):
+    for filename in sorted(glob.glob("{}/optimized?.xyz".format(input_dir_name))):
+        # conf = Chem.MolFromXYZFile("{}/optimized{}.xyz".format(input_dir_name, i)).GetConformer(-1)
+        conf = Chem.MolFromXYZFile(filename).GetConformer(-1)
+        # with open("{}/optimized{}.xyz".format(input_dir_name, i), "r") as f:
+        with open(filename, "r") as f:
             energy = f.read().split("\n")[1]
             conf.SetProp("energy", energy)
         mol.AddConformer(conf, assignId=True)
-        i += 1
+        # i += 1
 
 
 if __name__ == '__main__':
@@ -213,7 +216,7 @@ if __name__ == '__main__':
     for smiles in df["smiles"]:
         print(smiles)
         mol = get_mol(smiles)
-        try:
+        if True or smiles!="C1CCCCC1C#CC(=O)C(C)(C)C":
             MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")
             psi4_out_dirs_name = param["psi4_out_dir_name"] + "/" + mol.GetProp("InchyKey")  # "/"+param["optimize_level"] +
             psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp(
@@ -234,7 +237,7 @@ if __name__ == '__main__':
                 ConfTransform(mol)
                 conf_to_xyz(mol, psi4_aligned_dirs_name)
 
-        except:
+        if not os.path.isfile(psi4_aligned_dirs_name+"/optimized0.xyz"):
             # try:
             MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")+"UFF"
             psi4_out_dirs_name = param["psi4_out_dir_name"] + "/" + mol.GetProp(
