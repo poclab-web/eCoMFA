@@ -36,7 +36,7 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
     df["RT"] = 1.99 * 10 ** -3 * df["temperature"].values
     df["ΔΔG.expt."] = df["RT"].values * np.log(100 / df["er."].values - 1)
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    #print(df[df.duplicated(subset='inchikey')][["inchikey","smiles"]])
+    print(df[df.duplicated(subset='inchikey')][["inchikey","smiles"]])
     df = df[["smiles", "ROMol", "inchikey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
         subset="inchikey")
     PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100))

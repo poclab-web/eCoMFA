@@ -6,7 +6,7 @@ import pandas as pd
 
 
 def make_grid_coordinate(orient, size, interval):
-    out_dir_name = "../../../grid_coordinates" + "/[{}] [{}] {}".format(" ".join(map(str, orient)),
+    out_dir_name = "../../../grid_coordinates" + "/{} {} {}".format(" ".join(map(str, orient)),
                                                                         " ".join(map(str, size)), interval)
     l = []
     for x in product(range(size[0]), range(size[1]), range(size[2])):
@@ -30,8 +30,9 @@ def make_grid_coordinate(orient, size, interval):
     dfp_yz.to_csv((out_dir_name + "/coordinates_yz.csv"))
     # print(dfp_yz)
 
-    list = np.logspace(0, 13, num=14, base=2)  # 2**np.arange(10)#[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+    list = np.logspace(0, 13, num=14, base=2).astype(int)  # 2**np.arange(10)#[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
     df = pd.DataFrame(list, columns=["lambda"])
+    df["n_components"]=np.arange(1,15)
     df.to_csv(out_dir_name + "/penalty_param.csv")
     for n in range(1,11):
         make_penalty(l, n, out_dir_name)

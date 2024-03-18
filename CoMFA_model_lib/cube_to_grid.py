@@ -3,12 +3,14 @@ import glob
 import json
 import os
 import time
+import warnings
 from multiprocessing import Pool
 
 import numpy as np
 import pandas as pd
 
 import calculate_conformation
+warnings.simplefilter('ignore')
 
 
 def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量を計算　ボルツマン分布の加重はしないでデータセットの区別もなし。
@@ -31,7 +33,7 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
         data["y"] = np.round((data["y"].values - min(drop_dupl_y)) / (d_y * 2)).astype(int)
         data["z"] = np.round((data["z"].values - min(drop_dupl_z)) / (d_z * 2)).astype(int)
         # data=data[min(drop_dupl_x)-d_x<data["x"]]
-        data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
+        # data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
         # #data[["x","y","z"]]=data[["x","y","z"]]
         # cond_x=[]
         # cond_y=[]
@@ -125,5 +127,5 @@ if __name__ == '__main__':
         input=param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey")
         inputs.append(input)
         # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
-    p = Pool(4)
+    p = Pool(5)
     p.map(PF, inputs)

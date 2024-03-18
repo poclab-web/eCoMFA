@@ -2,6 +2,7 @@ import glob
 import heapq
 import json
 import os
+import subprocess
 
 import numpy as np
 import pandas as pd
@@ -59,6 +60,7 @@ def CalcConfsEnergies(mol, force_field):
         ff.Minimize()
         energy = ff.CalcEnergy()
         conf.SetProp("energy", str(energy))
+
 
 def highenergycut(mol, energy):
     l = []
@@ -196,6 +198,56 @@ def read_xyz(mol, input_dir_name):
         # i += 1
 
 
+def gaussianfrequency(input_dir_name, output_dir_name, level="hf/sto-3g"):
+    calc_condition = "# freq " + level
+    charge_and_mult = '0 1'
+    i = 0
+    while os.path.isfile("{}/optimized{}.xyz".format(input_dir_name, i)):
+        os.makedirs(output_dir_name, exist_ok=True)
+        with open("{}/optimized{}.xyz".format(input_dir_name, i), "r") as f:
+            ans = "\n".join(f.read().split("\n")[2:])
+        with open("{}/gaussianinput{}.gjf".format(output_dir_name, i), 'w') as f:
+            print("%nprocshared=10", file=f)
+            print("%mem=12GB", file=f)
+            print('%chk= {}.chk'.format(i), file=f)  # smiles
+            print(calc_condition, file=f)
+
+            print('', file=f)
+            print('good luck!', file=f)
+            print('', file=f)
+            # print(head,file=f)
+            print(charge_and_mult, file=f)
+
+            print(ans, file=f)
+        i += 1
+
+
+def run_gaussian(filenames):
+    """
+    Gaussianを使用して指定されたファイルを計算する関数
+    """
+    print(filenames)
+    for filename in glob.glob(filenames + "/*.gjf"):
+        try:
+            cmd = "source ~/.bash_profile ; g16 {}".format(filename)
+            print(cmd)
+            subprocess.call(cmd, shell=True)
+            print(f'{filename} の計算が完了しました。')
+
+            # outファイルを開くコマンドを実行
+            log_file = filename.replace('.gjf', '.log')
+            with open(log_file, "r") as file:
+                lines = file.readlines()
+                last_line = lines[-1].strip()
+                if last_line.startswith("Normal termination"):
+                    print("正常終了")
+                else:
+                    print("エラー")
+
+        except subprocess.CalledProcessError as e:
+            print(f'{filename} の計算中にエラーが発生しました: {e}')
+
+
 if __name__ == '__main__':
     param_file_name = "../parameter/structural optimization/structural optimization.txt"  # "../parameter/parameter_cbs.txt"
     with open(param_file_name, "r") as f:
@@ -216,34 +268,43 @@ if __name__ == '__main__':
     for smiles in df["smiles"]:
         print(smiles)
         mol = get_mol(smiles)
-        if True or smiles!="C1CCCCC1C#CC(=O)C(C)(C)C":
-            MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")
-            psi4_out_dirs_name = param["psi4_out_dir_name"] + "/" + mol.GetProp("InchyKey")  # "/"+param["optimize_level"] +
-            psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp(
-                "InchyKey")  # "/" +param["optimize_level"]+
-            if not os.path.isdir(MMFF_out_dirs_name):
-                CalcConfsEnergies(mol,"MMFF")
-                highenergycut(mol, param["cut_MMFF_energy"])
-                rmsdcut(mol, param["cut_MMFF_rmsd"])
-                delconformer(mol, param["max_conformer"])
-                ConfTransform(mol)
-                conf_to_xyz(mol, MMFF_out_dirs_name)
+        # if True or smiles != "C1CCCCC1C#CC(=O)C(C)(C)C":
+        MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")
+        psi4_out_dirs_name = param["psi4_out_dir_name"] + "/" + mol.GetProp(
+            "InchyKey")  # "/"+param["optimize_level"] +
+        psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp(
+            "InchyKey")  # "/" +param["optimize_level"]+
+        psi4_out_dirs_name_freq = param["psi4_aligned_dir_name"] + "_freq" + "/" + mol.GetProp("InchyKey")
 
-            if not os.path.isdir(psi4_aligned_dirs_name):
-                psi4optimization(MMFF_out_dirs_name, psi4_out_dirs_name, param["optimize_level"])
-                read_xyz(mol, psi4_out_dirs_name)
-                highenergycut(mol, param["cut_psi4_energy"])
-                rmsdcut(mol, param["cut_psi4_rmsd"])
-                ConfTransform(mol)
-                conf_to_xyz(mol, psi4_aligned_dirs_name)
+        if not os.path.isdir(MMFF_out_dirs_name):
+            CalcConfsEnergies(mol, "MMFF")
+            highenergycut(mol, param["cut_MMFF_energy"])
+            rmsdcut(mol, param["cut_MMFF_rmsd"])
+            delconformer(mol, param["max_conformer"])
+            ConfTransform(mol)
+            conf_to_xyz(mol, MMFF_out_dirs_name)
 
-        if not os.path.isfile(psi4_aligned_dirs_name+"/optimized0.xyz"):
+        if not os.path.isdir(psi4_aligned_dirs_name):
+            psi4optimization(MMFF_out_dirs_name, psi4_out_dirs_name, param["optimize_level"])
+            read_xyz(mol, psi4_out_dirs_name)
+            highenergycut(mol, param["cut_psi4_energy"])
+            rmsdcut(mol, param["cut_psi4_rmsd"])
+            ConfTransform(mol)
+            conf_to_xyz(mol, psi4_aligned_dirs_name)
+
+        if not os.path.isdir(psi4_out_dirs_name_freq):
+            gaussianfrequency(psi4_aligned_dirs_name, psi4_out_dirs_name_freq + "_calculating",
+                              param["optimize_level"])
+            run_gaussian(psi4_out_dirs_name_freq + "_calculating")
+            os.rename(psi4_out_dirs_name_freq + "_calculating", psi4_out_dirs_name_freq)
+
+        if not os.path.isfile(psi4_aligned_dirs_name + "/optimized0.xyz"):
             # try:
-            MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")+"UFF"
+            MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey") + "UFF"
             psi4_out_dirs_name = param["psi4_out_dir_name"] + "/" + mol.GetProp(
-                "InchyKey")+"UFF"  # "/"+param["optimize_level"] +
+                "InchyKey") + "UFF"  # "/"+param["optimize_level"] +
             psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp(
-                "InchyKey")+"UFF"  # "/" +param["optimize_level"]+
+                "InchyKey") + "UFF"  # "/" +param["optimize_level"]+
             if not os.path.isdir(MMFF_out_dirs_name):
                 CalcConfsEnergies(mol, "UFF")
                 highenergycut(mol, param["cut_MMFF_energy"])
