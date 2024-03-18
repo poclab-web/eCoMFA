@@ -5,6 +5,7 @@ import time
 import warnings
 from multiprocessing import Pool
 
+import cclib
 import numpy as np
 import pandas as pd
 from numpy.linalg import solve
@@ -289,8 +290,37 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
     rates = rates / sum(rates)
     for conf, rate in zip(mol.GetConformers(), rates):
         conf.SetProp("Boltzmann_distribution", str(rate))
+if True:
+    def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
-
+        energies = []
+        for conf in mol.GetConformers():
+            line = json.loads(conf.GetProp("freq"))
+            energies.append(float(line[0] - line[1] * RT / 1.99e-3))
+        energies = np.array(energies)
+        energies = energies - np.min(energies)
+        rates = np.exp(-energies / RT)
+        rates = rates / np.sum(rates)
+        for conf, rate in zip(mol.GetConformers(), rates):
+            conf.SetProp("Boltzmann_distribution", str(rate))
+def is_normal_frequencies(filename):
+    try:
+        with open(filename, 'r') as f:
+            lines = f.readlines()
+            frequencies_lines = [line for line in lines if 'Frequencies' in line]
+            for l in frequencies_lines:
+                splited = l.split()
+                values = splited[2:]
+                values = [float(v) for v in values]
+                for v in values:
+                    if v < 0:
+                        f.close()
+                        # print(filename)
+                        return False
+            f.close()
+        return True
+    except:
+        return False
 # def select_σ_n(file_name):
 #     Gaussian = [[] for i in range(10)]
 #     for _ in range(5):
@@ -347,16 +377,39 @@ if __name__ == '__main__':
             df = df[
                 [os.path.isdir("{}/{}".format(param["grid_coordinates"], mol.GetProp("InchyKey"))) for mol in
                  df["mol"]]]
+            df=df[[os.path.isdir("{}/{}".format(param["freq_dir"], mol.GetProp("InchyKey"))) for mol in
+                 df["mol"]]]
+            freq=[]
+            for mol in df["mol"]:
+                freq_ = all([is_normal_frequencies(path) for path in
+                            sorted(
+                                glob.glob(
+                                    param["freq_dir"] + "/" + mol.GetProp("InchyKey") + "/gaussianinput?.log"))])
+                print(mol.GetProp("InchyKey"),freq_)
+                freq.append(freq_)
+            df=df[freq]
             df["mol"].apply(
                 lambda mol: calculate_conformation.read_xyz(mol,
                                                             param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")))
+            for mol in df["mol"]:
+                dirs_name_freq = param["freq_dir"] + "/" + mol.GetProp("InchyKey") + "/gaussianinput?.log"
+                print(dirs_name_freq)
+                for path, conf in zip(
+                        sorted(glob.glob(dirs_name_freq)),
+                        mol.GetConformers()):
+                    # print(path)
+                    data = cclib.io.ccread(path)
+                    ent = data.enthalpy * 627.5095  # hartree
+                    entr = data.entropy * 627.5095  # hartree
+                    conf.SetProp("freq", json.dumps([ent, entr]))
+
             print("dflen", len(df))
             dfp = pd.read_csv(param["grid_coordinates"] + "/penalty_param.csv")
             Dts = []
             DtR1 = []
             DtR2 = []
-
             for mol, RT in df[["mol", "RT"]].values:
+                print(mol.GetProp("InchyKey"))
                 energy_to_Boltzmann_distribution(mol, RT)
                 Dt = []
                 we = []
