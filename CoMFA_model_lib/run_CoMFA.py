@@ -70,7 +70,7 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
                 Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], zeros], axis=0).astype('float32')
 
                 start = time.time()
-                gaussian_coef_ = np.linalg.solve(X.T @ X, X.T @ Y)
+                gaussian_coef_ = np.linalg.solve(X.T @ X, X.T @ Y) #
                 x = np.sum(gaussian_coef_ * features_training, axis=1)
                 a = np.dot(x, df.iloc[train_index]["ΔΔG.expt."].values) / (x ** 2).sum()
                 features_test = features_all[:, test_index]
@@ -361,7 +361,7 @@ def RC(input):
 
 
 if __name__ == '__main__':
-    # time.sleep(60*10)
+    # time.sleep(60*60*12)
     start = time.perf_counter()  # 計測開始
     for file in glob.glob("../arranged_dataset/*.xlsx"):
         with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:

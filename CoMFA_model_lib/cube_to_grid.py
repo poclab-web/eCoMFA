@@ -29,46 +29,58 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
         print(filename)
         data = pd.read_pickle(filename)
         # print(data)
-        data["x"] = np.round((data["x"].values - min(drop_dupl_x)) / (d_x * 2)).astype(int)
-        data["y"] = np.round((data["y"].values - min(drop_dupl_y)) / (d_y * 2)).astype(int)
-        data["z"] = np.round((data["z"].values - min(drop_dupl_z)) / (d_z * 2)).astype(int)
-        # data=data[min(drop_dupl_x)-d_x<data["x"]]
-        # data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
-        # #data[["x","y","z"]]=data[["x","y","z"]]
-        # cond_x=[]
-        # cond_y=[]
-        # for x in drop_dupl_x:
-        #     cond_x_=x-d_x<data["x"] and x+d_x>data["x"]
-        #     cond_y_=
         start = time.time()
-        Dt = []
-        # for x in drop_dupl_x:
-        #     data=data[x-d_x<data["x"]]
-        #     data_x=data[x+d_x>data["x"]]
-        #     for y in drop_dupl_y:
-        #         data_x=data_x[y-d_y<data_x["y"]]
-        #         data_y = data_x[y + d_y > data_x["y"]]
-        #         for z in drop_dupl_z:
-        #             data_y=data_y[z-d_z<data_y["z"]]
-        #             data_z=data_y[z+d_z>data_y["z"]]
-        #             Dt_=np.average(data_z["Dt"].values)
-        #             Dt.append(Dt_)
-        for x in range(len(drop_dupl_x)):
-            data["x{}".format(x)] = data["x"] == x
-        for y in range(len(drop_dupl_y)):
-            data["y{}".format(y)] = data["y"] == y
-        for z in range(len(drop_dupl_z)):
-            data["z{}".format(z)] = data["z"] == z
-        for x in range(len(drop_dupl_x)):
-            # data_x=data[data["x"]==x]
-            data_x = data[data["x{}".format(x)]]
+
+        if True:
+            D=0.1*0.52917720859
+            Dt = []
+            for x in drop_dupl_x:
+                data=data[x-d_x<data["x"]+D]
+                data_x=data[x+d_x>data["x"]-D]
+                for y in drop_dupl_y:
+                    data_x=data_x[y-d_y<data_x["y"]+D]
+                    data_y = data_x[y + d_y > data_x["y"]-D]
+                    for z in drop_dupl_z:
+                        data_y=data_y[z-d_z<data_y["z"]+D]
+                        data_z=data_y[z+d_z>data_y["z"]-D]
+                        Dt_=np.sum(data_z["Dt"].values*
+                                  (np.where(data_z["x"].values-(x-d_x)<D,data_z["x"].values-(x-d_x),D)+np.where(x+d_x-data_z["x"].values<D,x+d_x-data_z["x"].values,D))*
+                                  (np.where(data_z["y"].values-(y-d_y)<D,data_z["y"].values-(y-d_y),D)+np.where(y+d_y-data_z["y"].values<D,y+d_y-data_z["y"].values,D))*
+                                  (np.where(data_z["z"].values-(z-d_z)<D,data_z["z"].values-(z-d_z),D)+np.where(z+d_z-data_z["z"].values<D,z+d_z-data_z["z"].values,D)))
+                        # Dt_=np.average(data_z["Dt"].values)
+                        Dt.append(Dt_)
+            print(time.time() - start)
+
+        else:
+            data["x"] = np.round((data["x"].values - min(drop_dupl_x)) / (d_x * 2)).astype(int)
+            data["y"] = np.round((data["y"].values - min(drop_dupl_y)) / (d_y * 2)).astype(int)
+            data["z"] = np.round((data["z"].values - min(drop_dupl_z)) / (d_z * 2)).astype(int)
+            # data=data[min(drop_dupl_x)-d_x<data["x"]]
+            # data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
+            # #data[["x","y","z"]]=data[["x","y","z"]]
+            # cond_x=[]
+            # cond_y=[]
+            # for x in drop_dupl_x:
+            #     cond_x_=x-d_x<data["x"] and x+d_x>data["x"]
+            #     cond_y_=
+            start = time.time()
+            Dt = []
+            for x in range(len(drop_dupl_x)):
+                data["x{}".format(x)] = data["x"] == x
             for y in range(len(drop_dupl_y)):
-                # data_xy = data_x[data_x["y"] == y]
-                data_xy = data_x[data_x["y{}".format(y)]]
-                for z in range(len(drop_dupl_z)):
-                    # Dt_ = np.sum(data_xy[data_xy["z{}".format(z)]]["Dt"].values) * (0.2 * 0.52917721067) ** 3
-                    Dt_ = np.average(data_xy[data_xy["z{}".format(z)]]["Dt"].values)
-                    Dt.append(Dt_)
+                data["y{}".format(y)] = data["y"] == y
+            for z in range(len(drop_dupl_z)):
+                data["z{}".format(z)] = data["z"] == z
+            for x in range(len(drop_dupl_x)):
+                # data_x=data[data["x"]==x]
+                data_x = data[data["x{}".format(x)]]
+                for y in range(len(drop_dupl_y)):
+                    # data_xy = data_x[data_x["y"] == y]
+                    data_xy = data_x[data_x["y{}".format(y)]]
+                    for z in range(len(drop_dupl_z)):
+                        # Dt_ = np.sum(data_xy[data_xy["z{}".format(z)]]["Dt"].values) * (0.2 * 0.52917721067) ** 3
+                        Dt_ = np.average(data_xy[data_xy["z{}".format(z)]]["Dt"].values)
+                        Dt.append(Dt_)
         print(time.time() - start)
         # start=time.time()
         # for i,x in enumerate(dfp[["x","y","z"]].values):
