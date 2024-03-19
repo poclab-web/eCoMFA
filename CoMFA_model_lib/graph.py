@@ -186,6 +186,7 @@ for file, label in zip(["../arranged_dataset/cbs.xlsx",
     ax.legend(loc='lower right', fontsize=6)
     ax.set_xlabel("ΔΔ${G_{expt}}$ [kcal/mol]", fontsize=10)
     ax.set_ylabel("ΔΔ${G_{predict}}$ [kcal/mol]", fontsize=10)
+    print("dfp",len(dfp))
 fig.tight_layout()
 plt.savefig("../figs/test_predict.png", transparent=False, dpi=300)
 
