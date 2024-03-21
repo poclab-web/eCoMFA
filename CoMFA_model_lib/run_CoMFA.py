@@ -4,7 +4,7 @@ import os
 import time
 import warnings
 from multiprocessing import Pool
-
+import time
 import cclib
 import numpy as np
 import pandas as pd
@@ -29,6 +29,7 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
 
     for n in range(1, 11):
         penalty = np.load(gaussian_penalize + "/penalty{}.npy".format(n))
+        ptp = np.load(gaussian_penalize + "/ptp{}.npy".format(n))
         zeros = np.zeros(penalty.shape[0] * features_all.shape[0])
         gaussians = []
         predicts = []
@@ -43,15 +44,29 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
                         penalty_L_.append(np.zeros(penalty.shape))
                 penalty_L.append(penalty_L_)
 
-            X = np.block([[features]] + penalty_L).astype('float32')
-            Y = np.concatenate([df["ΔΔG.expt."], zeros], axis=0).astype('float32')
+            # X = np.block([[features]] + penalty_L)#.astype('float32')
+            # Y = np.concatenate([df["ΔΔG.expt."], zeros], axis=0)#.astype('float32')
+
+            # start = time.time()
+            # gaussian_coef = np.linalg.solve(X.T @ X, X.T @ Y)
+            # print("before",gaussian_coef,"t=",time.time() - start)
 
             start = time.time()
-            gaussian_coef = np.linalg.solve(X.T @ X, X.T @ Y)
+            X = features
+            Y = df["ΔΔG.expt."].values
+            gaussian_coef = np.linalg.solve(X.T @ X+L*ptp, X.T @ Y)
+            # print("after",gaussian_coef,"t=",time.time() - start)
+
+
+            # start = time.time()
+            # gaussian_coef=linear_model.ridge_regression(X,Y,alpha=L)#.coef_
+            # linear_model.Ridge(alpha=L, fit_intercept=False).fit(X,
+            #                                                      Y)
+            # print("ridge",time.time()-start)
+
             x = np.sum(gaussian_coef * features, axis=1)
             a = np.dot(x, df["ΔΔG.expt."].values) / (x ** 2).sum()
             # print(a)
-            # print(time.time() - start)
 
             gaussians.append(gaussian_coef * a.tolist())
             n_ = int(gaussian_coef.shape[0] / features_all.shape[0])
@@ -66,11 +81,19 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
                                     train_index]
                 std = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
                 features_training = np.concatenate(features_training / std, axis=1)
-                X = np.block([[features_training]] + penalty_L).astype('float32')
-                Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], zeros], axis=0).astype('float32')
+
+                # start=time.time()
+                # X = np.block([[features_training]] + penalty_L).astype('float32')
+                # Y = np.concatenate([df.iloc[train_index]["ΔΔG.expt."], zeros], axis=0).astype('float32')
+                # gaussian_coef_ = np.linalg.solve(X.T @ X, X.T @ Y)
+                # print("before_",gaussian_coef_,time.time()-start)
 
                 start = time.time()
-                gaussian_coef_ = np.linalg.solve(X.T @ X, X.T @ Y) #
+                X = features_training
+                Y = df.iloc[train_index]["ΔΔG.expt."]
+                gaussian_coef_ = np.linalg.solve(X.T @ X + L * ptp, X.T @ Y)
+                # print("after_", gaussian_coef_, "t=", time.time() - start)
+
                 x = np.sum(gaussian_coef_ * features_training, axis=1)
                 a = np.dot(x, df.iloc[train_index]["ΔΔG.expt."].values) / (x ** 2).sum()
                 features_test = features_all[:, test_index]
@@ -290,6 +313,7 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
     rates = rates / sum(rates)
     for conf, rate in zip(mol.GetConformers(), rates):
         conf.SetProp("Boltzmann_distribution", str(rate))
+
 if True:
     def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
@@ -361,7 +385,7 @@ def RC(input):
 
 
 if __name__ == '__main__':
-    # time.sleep(60*60*12)
+    # time.sleep(60*60*14)
     start = time.perf_counter()  # 計測開始
     for file in glob.glob("../arranged_dataset/*.xlsx"):
         with open("../parameter/cube_to_grid/cube_to_grid.txt", "r") as f:
@@ -387,7 +411,7 @@ if __name__ == '__main__':
                                     param["freq_dir"] + "/" + mol.GetProp("InchyKey") + "/gaussianinput?.log"))])
                 print(mol.GetProp("InchyKey"),freq_)
                 freq.append(freq_)
-            df=df[freq]
+            # df=df[freq]
             df["mol"].apply(
                 lambda mol: calculate_conformation.read_xyz(mol,
                                                             param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")))
@@ -496,7 +520,7 @@ if __name__ == '__main__':
             #     Gaussian_penalized(features_dir_name, df_, dfp, param["grid_coordinates"], save_path)
 
             inputs = []
-            for _ in range(0):
+            for _ in range(10):
                 df_ = df.sample(frac=1, random_state=_)
                 save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
                 os.makedirs(save_path, exist_ok=True)
