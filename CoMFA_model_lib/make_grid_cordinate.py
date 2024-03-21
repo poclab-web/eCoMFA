@@ -66,6 +66,9 @@ def make_penalty(l, n,out_dir_name):
     # penalty=np.identity(penalty.shape[0])
     filename = out_dir_name + "/penalty{}.npy".format(n)  # + "/" + param["grid_coordinates_dir"]
     np.save(filename, penalty)
+    ptp=penalty.T@penalty
+    filename = out_dir_name + "/ptp{}.npy".format(n)
+    np.save(filename, ptp)
 
 if __name__ == '__main__':
     # [-4.75 -2.75 -4.75] [14 12 20] 0.5
