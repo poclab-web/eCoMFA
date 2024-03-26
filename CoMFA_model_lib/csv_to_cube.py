@@ -4,7 +4,7 @@ import glob
 import pandas as pd
 
 if __name__ == '__main__':
-    for file in glob.glob("../../../result/-5.8 -3.8 -5.8*/*/0/molecular_filed1024.0.csv"):
+    for file in glob.glob("../../../result/*/*/comparison0/mo*1024.csv"):
         print(file)
         df = pd.read_csv(file)
         # df = mfunfolding(df)
@@ -36,7 +36,7 @@ if __name__ == '__main__':
         print(column_inc_specific_feature)
 
         # df[(df["x"]>0)&(df["y"]>0)][column_inc_specific_feature]=1
-        cubeinchikey = "../cube_aligned_/wB97X-D_def2-TZVP/RIFKADJTWUGDOV-UHFFFAOYSA-N/Dt02_0.cube"
+        cubeinchikey = "../cube_aligned/wB97X-D_def2-TZVP20240308_1/RIFKADJTWUGDOV-UHFFFAOYSA-N/Dt02_0.cube"
         with open(cubeinchikey, "r", encoding="UTF-8") as f:
             cube = f.read().splitlines()
         n_atom = int(cube[2].split()[0])

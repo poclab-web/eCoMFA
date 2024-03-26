@@ -23,11 +23,12 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
         # "CCCCCCCCC#CC(=O)C(C)(C)CC=C",
         # "O=C(C#C[Si](C)(C)C)C=C",
         # "O=C1C(c2ccc(C(=O)OCC)cc2)=CCC1",
-        "COc1cccc(OC)c1C(=O)C"
+        # "COc1cccc(OC)c1C(=O)C",
+        # "C1=C(Br)C(=O)CC1"
     ])]
     print(len(df))
     df = df[df["mol"].map(lambda mol:
-                          not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F]"))
+                          not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl,Br]"))
                           and not mol.HasSubstructMatch(Chem.MolFromSmarts("[I,#7]"))
                           and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][OH1]"))
                           and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[OH1]"))
