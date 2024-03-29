@@ -341,7 +341,7 @@ def RC(input):
 
 if __name__ == '__main__':
     # time.sleep(60*60*1)
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/*0.25.txt")):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/*0.50.txt")):
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
@@ -429,7 +429,7 @@ if __name__ == '__main__':
                 w = np.exp(-Dt / np.sqrt(np.average(Dt ** 2, axis=0)).reshape(1, -1))
                 # we = np.array([float(conf.GetProp("Boltzmann_distribution")) for conf in mol.GetConformers()]).reshape(
                 #     -1, 1)
-                we = np.array(we).reshape(-1, 1)*w
+                we = np.array(we).reshape(-1, 1)#*w
                 # print(Dt.shape, we.shape, w.shape)
                 Dt_ = np.average(Dt, weights=we * np.ones(Dt.shape), axis=0)
                 if False:
