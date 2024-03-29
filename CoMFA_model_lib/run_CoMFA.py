@@ -349,14 +349,18 @@ if __name__ == '__main__':
         for file in glob.glob("../arranged_dataset/*.xlsx")[1:]+glob.glob("../arranged_dataset/*.xlsx")[0:1]:
 
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
+            print(len(df))
             file_name = os.path.splitext(os.path.basename(file))[0]
             features_dir_name = param["grid_coordinates"] + file_name
             print(features_dir_name)
             df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
             # df = df[[os.path.isdir(features_dir_name + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+            print(len(df))
             df = df[
                 [os.path.isdir("{}/{}".format(param["grid_coordinates"], mol.GetProp("InchyKey"))) for mol in
                  df["mol"]]]
+            print(len(df))
+
             df = df[[os.path.isdir("{}/{}".format(param["freq_dir"], mol.GetProp("InchyKey"))) for mol in
                      df["mol"]]]
             # df = df[
