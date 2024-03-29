@@ -6,7 +6,7 @@ from rdkit import Chem
 from rdkit.Chem import PandasTools
 
 
-def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
+def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
     df = pd.read_excel(from_file_path, engine="openpyxl")
     print(from_file_path,len(df))
     df = df.dropna(subset=["smiles"])
@@ -29,9 +29,13 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
     print(len(df))
     df = df[df["mol"].map(lambda mol:
                           not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl,Br]"))
-                          and not mol.HasSubstructMatch(Chem.MolFromSmarts("[I,#7]"))
+                          and not mol.HasSubstructMatch(Chem.MolFromSmarts("[I]"))
                           and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][OH1]"))
                           and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[OH1]"))
+                          )]
+    if flag:
+        df=df[df["mol"].map(lambda mol:
+                          not mol.HasSubstructMatch(Chem.MolFromSmarts("[I,#7]"))
                           )]
     print(len(df))
     df["RT"] = 1.99 * 10 ** -3 * df["temperature"].values
@@ -47,6 +51,6 @@ def make_dataset(from_file_path, out_file_name):  # in ["dr.expt.BH3"]:
 if __name__ == '__main__':
     to_dir_path = "../arranged_dataset"
     os.makedirs(to_dir_path, exist_ok=True)
-    make_dataset("../sampledata/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx")
-    make_dataset("../sampledata/DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx")
-    make_dataset("../sampledata/Ru_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx")
+    make_dataset("../sampledata/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx",True)
+    make_dataset("../sampledata/DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx",False)
+    make_dataset("../sampledata/Ru_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx",False)

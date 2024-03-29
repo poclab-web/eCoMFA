@@ -1,0 +1,8 @@
+{
+"cube_dir_name": "../cube_aligned/wB97X-D_def2-TZVP20240308_1",
+"grid_coordinates":"../../../grid_coordinates/-4.375 -3.875 -4.875 28 32 40 0.25",
+"out_dir_name":"../../../result/-4.375 -3.875 -4.875 28 32 40 0.25",
+"freq_dir":"/Users/macmini_m1_2022/PycharmProjects/CoMFA_model/psi4_optimization_aligned/b3lyp_6-31gd_freq",
+"fig_dir":"/Users/macmini_m1_2022/PycharmProjects/CoMFA_model/figs/-4.375 -3.875 -4.875 28 32 40 0.25",
+"sigma":"0.75"
+}

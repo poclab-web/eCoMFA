@@ -340,13 +340,13 @@ def RC(input):
 
 
 if __name__ == '__main__':
-    # time.sleep(60*10)
+    # time.sleep(60*60*1)
     for param_name in sorted(glob.glob("../parameter/cube_to_grid/*0.25.txt")):
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
         start = time.perf_counter()  # 計測開始
-        for file in glob.glob("../arranged_dataset/*.xlsx"):
+        for file in glob.glob("../arranged_dataset/*.xlsx")[1:]+glob.glob("../arranged_dataset/*.xlsx")[0:1]:
 
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             file_name = os.path.splitext(os.path.basename(file))[0]
@@ -412,7 +412,7 @@ if __name__ == '__main__':
                     data = pd.read_pickle(
                         "{}/{}/data{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId()))
                     Bd = float(conf.GetProp("Boltzmann_distribution"))
-                    if False:
+                    if True:
                         we.append(Bd)
                         Dt.append(data["Dt"].values.tolist())
                     else:
@@ -428,7 +428,7 @@ if __name__ == '__main__':
                 we = np.array(we).reshape(-1, 1)*w
                 # print(Dt.shape, we.shape, w.shape)
                 Dt_ = np.average(Dt, weights=we * np.ones(Dt.shape), axis=0)
-                if True:
+                if False:
                     data_y = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
                     data_y["Dt"] = np.nan_to_num(Dt_)
                 else:

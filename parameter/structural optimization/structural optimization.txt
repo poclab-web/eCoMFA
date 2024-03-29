@@ -1,0 +1,12 @@
+{
+"MMFF_out_dir_name" : "/Users/macmini_m1_2022/PycharmProjects/CoMFA_model/MMFF_optimization",
+"numConfs": 1000,
+"cut_MMFF_energy":4,
+"cut_MMFF_rmsd":0.5,
+"max_conformer":5,
+"psi4_out_dir_name":"/Users/macmini_m1_2022/PycharmProjects/CoMFA_model/psi4_optimization/b3lyp_6-31gd",
+"psi4_aligned_dir_name": "/Users/macmini_m1_2022/PycharmProjects/CoMFA_model/psi4_optimization_aligned/b3lyp_6-31gd",
+"optimize_level": "b3lyp/6-31g(d)",
+"cut_psi4_energy":2,
+"cut_psi4_rmsd":0.5
+}
