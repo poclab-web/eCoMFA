@@ -32,13 +32,16 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
         filename = "{}/data{}.pkl".format(dir_name, conf.GetId())
         print(filename)
         data = pd.read_pickle(filename)
-        # data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
+        data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
+        data["ESP"] = data["ESP"].where(data["ESP"] < 0, 0)
+
         # print(data)
         start = time.time()
 
         if True:
             D = 0.1 * 0.52917720859
             Dt = []
+            ESP=[]
             for x in drop_dupl_x:
                 data = data[x - d_x < data["x"] + D]
                 data_x = data[x + d_x > data["x"] - D]
@@ -58,34 +61,44 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
                                      (np.where(data_z["z"].values - (z - d_z) < D, data_z["z"].values - (z - d_z),
                                                D) + np.where(z + d_z - data_z["z"].values < D,
                                                              z + d_z - data_z["z"].values, D)))
-
+                        ESP_ = np.sum(data_z["ESP"].values *
+                                     (np.where(data_z["x"].values - (x - d_x) < D, data_z["x"].values - (x - d_x),
+                                               D) + np.where(x + d_x - data_z["x"].values < D,
+                                                             x + d_x - data_z["x"].values, D)) *
+                                     (np.where(data_z["y"].values - (y - d_y) < D, data_z["y"].values - (y - d_y),
+                                               D) + np.where(y + d_y - data_z["y"].values < D,
+                                                             y + d_y - data_z["y"].values, D)) *
+                                     (np.where(data_z["z"].values - (z - d_z) < D, data_z["z"].values - (z - d_z),
+                                               D) + np.where(z + d_z - data_z["z"].values < D,
+                                                             z + d_z - data_z["z"].values, D)))
                         # Dt_=np.average(data_z["Dt"].values)
                         Dt.append(Dt_)
-        else:
-            leng = 1
-            sigma = leng
-
-            def gauss_func(d):
-
-                ans = 1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
-                      * np.exp(-d ** 2 / (2 * sigma ** 2))
-                return ans
-
-            D = 3 * sigma
-            Dt = []
-            for x in drop_dupl_x:
-                data = data[x < data["x"] + D]
-                data_x = data[x > data["x"] - D]
-                for y in drop_dupl_y:
-                    data_x = data_x[y < data_x["y"] + D]
-                    data_y = data_x[y > data_x["y"] - D]
-                    for z in drop_dupl_z:
-                        data_y = data_y[z < data_y["z"] + D]
-                        data_z = data_y[z > data_y["z"] - D]
-                        d = np.linalg.norm(data_z[["x", "y", "z"]].values - np.array([x, y, z]), axis=1)
-                        Dt_ = np.average(data_z["Dt"].values, weights=np.where(d < sigma * 3, gauss_func(d), 0))
-                        # Dt_ = np.sum(data_z["Dt"].values *np.where(d<3,exp(-d**2),0))
-                        Dt.append(Dt_)
+                        ESP.append(ESP_)
+        # else:
+        #     leng = 1
+        #     sigma = leng
+        #
+        #     def gauss_func(d):
+        #
+        #         ans = 1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
+        #               * np.exp(-d ** 2 / (2 * sigma ** 2))
+        #         return ans
+        #
+        #     D = 3 * sigma
+        #     Dt = []
+        #     for x in drop_dupl_x:
+        #         data = data[x < data["x"] + D]
+        #         data_x = data[x > data["x"] - D]
+        #         for y in drop_dupl_y:
+        #             data_x = data_x[y < data_x["y"] + D]
+        #             data_y = data_x[y > data_x["y"] - D]
+        #             for z in drop_dupl_z:
+        #                 data_y = data_y[z < data_y["z"] + D]
+        #                 data_z = data_y[z > data_y["z"] - D]
+        #                 d = np.linalg.norm(data_z[["x", "y", "z"]].values - np.array([x, y, z]), axis=1)
+        #                 Dt_ = np.average(data_z["Dt"].values, weights=np.where(d < sigma * 3, gauss_func(d), 0))
+        #                 # Dt_ = np.sum(data_z["Dt"].values *np.where(d<3,exp(-d**2),0))
+        #                 Dt.append(Dt_)
         print(time.time() - start)
 
         # else:
@@ -121,6 +134,7 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
         print(time.time() - start)
 
         dfp["Dt"] = np.nan_to_num(Dt)
+        dfp["ESP"] = np.nan_to_num(ESP)
         dfp.to_pickle(outfilename)
 
 
@@ -141,7 +155,7 @@ if __name__ == '__main__':
     print("len=",len(dfs))
     dfs["mol"] = dfs["smiles"].apply(calculate_conformation.get_mol)
 
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/*0.25.txt")):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/*0.50.txt")):
         df = copy.deepcopy(dfs)
         with open(param_name, "r") as f:
             param = json.loads(f.read())

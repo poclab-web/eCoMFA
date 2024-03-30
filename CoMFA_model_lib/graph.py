@@ -43,7 +43,7 @@ for param_name in glob.glob("../parameter/cube_to_grid/*0.50.txt"):#-4.5~2.5 -3~
         ax.set_xticks([1, 100, 10000])
         Gaussian = [[] for i in range(10)]
         dfps = []
-        for _ in range(8):
+        for _ in range(4):
             save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
             # print(save_path)
             dfp = pd.read_csv(save_path + "/n_comparison.csv")
@@ -94,13 +94,13 @@ for param_name in glob.glob("../parameter/cube_to_grid/*0.50.txt"):#-4.5~2.5 -3~
         # ax.set_yticks([0.5, 1.0, 1.5, 2.0, 2.5, 3.0])
         ax.set_ylim(0.6, 1.2)
         ax.set_yticks([0.6,0.7,0.8,0.9,1.0,1.2])
-        ax.set_xticks([1, 100, 10000])
+        ax.set_xticks([0.001, 0, 100])
         Gaussian = []
         Lasso = []
         Ridge = []
         PLS = []
         dfps = []
-        for _ in range(16):
+        for _ in range(4):
             save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
             dfp = pd.read_csv(save_path + "/result.csv")
 
@@ -162,67 +162,67 @@ for param_name in glob.glob("../parameter/cube_to_grid/*0.50.txt"):#-4.5~2.5 -3~
     fig.tight_layout()
     plt.savefig(param["fig_dir"]+"/rmse.png", transparent=False, dpi=300)
     print("rmse.png_complete")
+    if False:
+        fig = plt.figure(figsize=(3 * 3, 1 * 3))
+        i = 0
 
-    fig = plt.figure(figsize=(3 * 3, 1 * 3))
-    i = 0
+        for file, label in zip(["../arranged_dataset/cbs.xlsx",
+                                "../arranged_dataset/DIP-chloride.xlsx",
+                                "../arranged_dataset/RuSS.xlsx"
+                                ],
+                               [
+                                   "($S$)-Me-CBS",
+                                   "(-)-DIP-Chloride",
+                                   "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
+                               ]):
+            i += 1
+            file_name = os.path.splitext(os.path.basename(file))[0]
+            ax = fig.add_subplot(1, 3, i)
+            ax.set_ylim(-5, 5)
+            ax.set_xlim(-5, 5)
+            ax.set_title(label)
+            ax.set_xticks([-5, 0, 5])
+            ax.set_yticks([-5, 0, 5])
+            dfps = []
+            for _ in range(16):
+                save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
+                dfp = pd.read_excel(save_path + "/result_test.xlsx")
+                dfps.append(dfp)
+                # ax.plot(dfp["lambda"],dfp["Gaussian_test_RMSE"],color="blue",label="Gaussian")
+                # ax.plot(dfp["lambda"], dfp["lasso_test_RMSE"],color="red",label="lasso")
+                # ax.plot(dfp["lambda"], dfp["ridge_test_RMSE"],color="green",label="ridge")
+                # ax.plot(dfp["ΔΔG.expt."],dfp["Gaussian_predict"],"o",color="blue",label="Gaussian",alpha=0.5)
+                # ax.plot(dfp["ΔΔG.expt."], dfp["Ridge_predict"],"o",color="red",label="Lasso",alpha=0.5)
+                # ax.plot(dfp["ΔΔG.expt."], dfp["Lasso_predict"],"o",color="green",label="Ridge",alpha=0.5)
 
-    for file, label in zip(["../arranged_dataset/cbs.xlsx",
-                            "../arranged_dataset/DIP-chloride.xlsx",
-                            "../arranged_dataset/RuSS.xlsx"
-                            ],
-                           [
-                               "($S$)-Me-CBS",
-                               "(-)-DIP-Chloride",
-                               "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]",
-                           ]):
-        i += 1
-        file_name = os.path.splitext(os.path.basename(file))[0]
-        ax = fig.add_subplot(1, 3, i)
-        ax.set_ylim(-5, 5)
-        ax.set_xlim(-5, 5)
-        ax.set_title(label)
-        ax.set_xticks([-5, 0, 5])
-        ax.set_yticks([-5, 0, 5])
-        dfps = []
-        for _ in range(16):
-            save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
-            dfp = pd.read_excel(save_path + "/result_test.xlsx")
-            dfps.append(dfp)
-            # ax.plot(dfp["lambda"],dfp["Gaussian_test_RMSE"],color="blue",label="Gaussian")
-            # ax.plot(dfp["lambda"], dfp["lasso_test_RMSE"],color="red",label="lasso")
-            # ax.plot(dfp["lambda"], dfp["ridge_test_RMSE"],color="green",label="ridge")
-            # ax.plot(dfp["ΔΔG.expt."],dfp["Gaussian_predict"],"o",color="blue",label="Gaussian",alpha=0.5)
-            # ax.plot(dfp["ΔΔG.expt."], dfp["Ridge_predict"],"o",color="red",label="Lasso",alpha=0.5)
-            # ax.plot(dfp["ΔΔG.expt."], dfp["Lasso_predict"],"o",color="green",label="Ridge",alpha=0.5)
-
-            # ax.plot(dfp["ΔΔG.expt."], dfp["Gaussian_test"], "o", label="Gaussian" if _ == 1 else None, color='blue',
-            #         markeredgecolor="none", alpha=0.1)
-            # ax.plot(dfp["ΔΔG.expt."], dfp["Ridge_test"], "o", label="Ridge" if _ == 1 else None, color="red",
-            #         markeredgecolor="none", alpha=0.1)
-            # ax.plot(dfp["ΔΔG.expt."], dfp["Lasso_test"], "o", label="Lasso" if _ == 1 else None, color="green",
-            #         markeredgecolor="none", alpha=0.1)
-            # ax.plot(dfp["ΔΔG.expt."], dfp["PLS_test"], "o", label="PLS" if _ == 1 else None, color="orange",
-            #         markeredgecolor="none", alpha=0.1)
-            # dfplegend["Gaussian_predict","Ridge_predict","Lasso_predict"] =0
-            # ax.set_xticks([-2, 0, 2])
-        dfp = pd.concat(dfps)
-        ax.plot(dfp["ΔΔG.expt."], dfp["Gaussian_test"], "o", label="Gaussian", color='blue',
-                markeredgecolor="none", alpha=0.1)
-        ax.plot(dfp["ΔΔG.expt."], dfp["Ridge_test"], "o", label="Ridge", color="red",
-                markeredgecolor="none", alpha=0.1)
-        ax.plot(dfp["ΔΔG.expt."], dfp["Lasso_test"], "o", label="Lasso", color="green",
-                markeredgecolor="none", alpha=0.1)
-        ax.plot(dfp["ΔΔG.expt."], dfp["PLS_test"], "o", label="PLS", color="orange",
-                markeredgecolor="none", alpha=0.1)
-        # ax.scatter([], [], color="blue", label="Gaussian", alpha=0.5)
-        # ax.scatter([], [], color="red", label="Lasso", alpha=0.5)
-        # ax.scatter([], [], color="green", label="Ridge", alpha=0.5)
-        ax.legend(loc='lower right', fontsize=6)
-        ax.set_xlabel("ΔΔ${G_{expt}}$ [kcal/mol]", fontsize=10)
-        ax.set_ylabel("ΔΔ${G_{predict}}$ [kcal/mol]", fontsize=10)
-        print("dfp", len(dfp))
-    fig.tight_layout()
-    plt.savefig(param["fig_dir"]+"/test_predict.png", transparent=False, dpi=300)
+                # ax.plot(dfp["ΔΔG.expt."], dfp["Gaussian_test"], "o", label="Gaussian" if _ == 1 else None, color='blue',
+                #         markeredgecolor="none", alpha=0.1)
+                # ax.plot(dfp["ΔΔG.expt."], dfp["Ridge_test"], "o", label="Ridge" if _ == 1 else None, color="red",
+                #         markeredgecolor="none", alpha=0.1)
+                # ax.plot(dfp["ΔΔG.expt."], dfp["Lasso_test"], "o", label="Lasso" if _ == 1 else None, color="green",
+                #         markeredgecolor="none", alpha=0.1)
+                # ax.plot(dfp["ΔΔG.expt."], dfp["PLS_test"], "o", label="PLS" if _ == 1 else None, color="orange",
+                #         markeredgecolor="none", alpha=0.1)
+                # dfplegend["Gaussian_predict","Ridge_predict","Lasso_predict"] =0
+                # ax.set_xticks([-2, 0, 2])
+            dfp = pd.concat(dfps)
+            ax.plot(dfp["ΔΔG.expt."], dfp["Gaussian_test"], "o", label="Gaussian", color='blue',
+                    markeredgecolor="none", alpha=0.1)
+            ax.plot(dfp["ΔΔG.expt."], dfp["Ridge_test"], "o", label="Ridge", color="red",
+                    markeredgecolor="none", alpha=0.1)
+            ax.plot(dfp["ΔΔG.expt."], dfp["Lasso_test"], "o", label="Lasso", color="green",
+                    markeredgecolor="none", alpha=0.1)
+            ax.plot(dfp["ΔΔG.expt."], dfp["PLS_test"], "o", label="PLS", color="orange",
+                    markeredgecolor="none", alpha=0.1)
+            # ax.scatter([], [], color="blue", label="Gaussian", alpha=0.5)
+            # ax.scatter([], [], color="red", label="Lasso", alpha=0.5)
+            # ax.scatter([], [], color="green", label="Ridge", alpha=0.5)
+            ax.legend(loc='lower right', fontsize=6)
+            ax.set_xlabel("ΔΔ${G_{expt}}$ [kcal/mol]", fontsize=10)
+            ax.set_ylabel("ΔΔ${G_{predict}}$ [kcal/mol]", fontsize=10)
+            print("dfp", len(dfp))
+        fig.tight_layout()
+        plt.savefig(param["fig_dir"]+"/test_predict.png", transparent=False, dpi=300)
 
     fig = plt.figure(figsize=(3 * 4, 3 * 1 + 1))
     ax = []
@@ -248,10 +248,10 @@ for param_name in glob.glob("../parameter/cube_to_grid/*0.50.txt"):#-4.5~2.5 -3~
     # Ridges = []
     # Lassos = []
     # PLSs = []
-    Gaussian = [[] for _ in range(16)]
-    Ridge = [[] for _ in range(16)]
-    Lasso = [[] for _ in range(16)]
-    PLS = [[] for _ in range(16)]
+    Gaussian = [[] for _ in range(4)]
+    Ridge = [[] for _ in range(4)]
+    Lasso = [[] for _ in range(4)]
+    PLS = [[] for _ in range(4)]
     exp = []
     for h, (file, data) in enumerate(zip(["../arranged_dataset/cbs.xlsx",
                                           "../arranged_dataset/DIP-chloride.xlsx",
@@ -267,7 +267,7 @@ for param_name in glob.glob("../parameter/cube_to_grid/*0.50.txt"):#-4.5~2.5 -3~
         Ridge_ = []
         Lasso_ = []
         PLS_ = []
-        for _ in range(16):
+        for _ in range(4):
             save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
             dfp = pd.read_excel(save_path + "/result_test.xlsx").sort_values(["smiles"])
             # for i, name in enumerate(["Gaussian_test", "Ridge_test", "Lasso_test", "PLS_test"]):

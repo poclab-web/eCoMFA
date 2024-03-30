@@ -24,8 +24,11 @@ warnings.simplefilter('ignore')
 def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
                                                                                   ascending=[True, True, True])
-    features_all = np.array(df["Dt"].tolist()).reshape(len(df), -1, 1).transpose(2, 0, 1)
+    features=["Dt","ESP"]
+    features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
+    # print(features_all.shape)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
+    # print(std)
     X = np.concatenate(features_all / std, axis=1)
     # print(sys.getsizeof(X))
     XTX = (X.T @ X).astype("float32")
@@ -33,6 +36,7 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
     XTY = (X.T @ df["ΔΔG.expt."].values).astype("float32")
     # print(sys.getsizeof(XTX),sys.getsizeof(np.tril(XTX)))
     # for n in range(1, 11):
+
     for ptpname in sorted(glob.glob(gaussian_penalize + "/ptp*.npy")):
         sigma = re.findall(gaussian_penalize + "/ptp(.*).npy", ptpname)
         n = sigma[0]
@@ -42,7 +46,7 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
         predicts = []
         for L, n_num in zip(dfp["lambda"], range(1, len(dfp) + 1)):
             start = time.time()
-            gaussian_coef = scipy.linalg.solve(XTX + L * len(df)*2/1000 * ptp, XTY, assume_a="pos").T
+            gaussian_coef = scipy.linalg.solve(XTX + L * len(df) * 2 * ptp, XTY, assume_a="pos").T
             # print("before", time.time() - start, gaussian_coef)
             # x = np.sum(gaussian_coef * features, axis=1)
             # a = np.dot(x, df["ΔΔG.expt."].values) / (x ** 2).sum()
@@ -55,23 +59,24 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
 
             kf = KFold(n_splits=5, shuffle=False)
             gaussian_predicts = []
+            start = time.time()
 
             for (train_index, test_index) in kf.split(df):
                 features_training = features_all[:, train_index]
                 std = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
                 # std = np.std(features_training, axis=(1)).reshape(features_all.shape[0], 1, -1)
-                # start = time.time()
                 X_ = np.concatenate(features_training / std, axis=1)
-                gaussian_coef_ = scipy.linalg.solve((X_.T @ X_ + L * len(train_index) *2/1000* ptp).astype("float32"),
-                                                    (X_.T @ df.iloc[train_index]["ΔΔG.expt."]).astype("float32"),
-                                                    assume_a="pos").T
-                # print("after_", gaussian_coef_, "t=", time.time() - start)
+                gaussian_coef_ = scipy.linalg.solve(
+                    (X_.T @ X_ + L * len(train_index) * 2  * ptp).astype("float32"),
+                    (X_.T @ df.iloc[train_index]["ΔΔG.expt."]).astype("float32"),
+                    assume_a="pos",check_finite=False,overwrite_a=True,overwrite_b=True).T
                 # x = np.sum(gaussian_coef_ * features_training, axis=1)
                 # a = np.dot(x, df.iloc[train_index]["ΔΔG.expt."].values) / (x ** 2).sum()
                 features_test = features_all[:, test_index]
                 features_test = np.concatenate(features_test / std, axis=1)
                 predict = np.sum(gaussian_coef_ * features_test, axis=1).tolist()
                 gaussian_predicts.extend(predict)
+            # print("t=", time.time() - start)
 
             predicts.append([gaussian_predicts])
         gaussians = np.array(gaussians)
@@ -113,7 +118,9 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
                                                                                   ascending=[True, True, True])
     ptp = np.load(gaussian_penalize + "/ptp{}.npy".format(str(n)))
-    features_all = np.array(df["Dt"].tolist()).reshape(len(df), -1, 1).transpose(2, 0, 1)
+
+    features = ["Dt","ESP"]
+    features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
     features = np.concatenate(features_all / std, axis=1)
 
@@ -121,9 +128,9 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
     gaussians = []
     predicts = []  # [[] for _ in range(4)]
     for L, n_num in zip(dfp["lambda"], dfp["n_components"]):
-        ridge = linear_model.Ridge(alpha=L * len(df)*2/1000, fit_intercept=False).fit(features, df["ΔΔG.expt."])
+        ridge = linear_model.Ridge(alpha=L * len(df) * 2 , fit_intercept=False).fit(features, df["ΔΔG.expt."])
         # print(time.time()-start)
-        lasso = linear_model.Lasso(alpha=L / 1000, fit_intercept=False).fit(features, df["ΔΔG.expt."])
+        lasso = linear_model.Lasso(alpha=L , fit_intercept=False).fit(features, df["ΔΔG.expt."])
         # print(time.time()-start)
         # features_norm = features / np.std(features, axis=0)
         # print(time.time()-start)
@@ -134,7 +141,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
         # start = time.time()
         X = features
         Y = df["ΔΔG.expt."].values
-        gaussian_coef = scipy.linalg.solve(X.T @ X + L * len(df)*2/1000 * ptp, X.T @ Y, assume_a="pos").T
+        gaussian_coef = scipy.linalg.solve(X.T @ X + L * len(df) * 2  * ptp, X.T @ Y, assume_a="pos").T
         # print("after_", gaussian_coef, time.time() - start)
 
         gaussians.append(gaussian_coef.tolist())
@@ -162,13 +169,15 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
             # start = time.time()
             X = features_training
             Y = df.iloc[train_index]["ΔΔG.expt."].values
-            gaussian_coef_ = scipy.linalg.solve(X.T @ X + L * len(train_index)*2/1000 * ptp, X.T @ Y, assume_a="pos").T
+            gaussian_coef_ = scipy.linalg.solve(X.T @ X + L * len(train_index) * 2  * ptp, X.T @ Y,
+                                                assume_a="pos").T
             # print("after__",gaussian_coef_,time.time()-start)
             # print(time.time()-start)
-            ridge = linear_model.Ridge(alpha=L * len(train_index)*2/1000, fit_intercept=False).fit(features_training,
-                                                                                            df.iloc[train_index][
-                                                                                                "ΔΔG.expt."])
-            lasso = linear_model.Lasso(alpha=L / 1000, fit_intercept=False).fit(features_training,
+            ridge = linear_model.Ridge(alpha=L * len(train_index) * 2 , fit_intercept=False).fit(
+                features_training,
+                df.iloc[train_index][
+                    "ΔΔG.expt."])
+            lasso = linear_model.Lasso(alpha=L , fit_intercept=False).fit(features_training,
                                                                                 df.iloc[train_index]["ΔΔG.expt."])
             # features_training_norm = features_training / np.std(features_training, axis=0)
             # pls = PLSRegression(n_components=n_num).fit(features_training_norm,
@@ -346,7 +355,7 @@ if __name__ == '__main__':
             param = json.loads(f.read())
         print(param)
         start = time.perf_counter()  # 計測開始
-        for file in glob.glob("../arranged_dataset/*.xlsx")[1:]+glob.glob("../arranged_dataset/*.xlsx")[0:1]:
+        for file in glob.glob("../arranged_dataset/*.xlsx"):
 
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             print(len(df))
@@ -373,7 +382,7 @@ if __name__ == '__main__':
                                  glob.glob(
                                      param["freq_dir"] + "/" + mol.GetProp("InchyKey") + "/gaussianinput?.log"))])
 
-                print(mol.GetProp("InchyKey"), freq_)
+                # print(mol.GetProp("InchyKey"), freq_)
                 freq.append(freq_)
             # df=df[freq]
             df["mol"].apply(
@@ -385,18 +394,18 @@ if __name__ == '__main__':
                     "{}/{}/data{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId())) for
                     conf in mol.GetConformers()])
 
-                print(mol.GetProp("InchyKey"), freq_)
+                # print(mol.GetProp("InchyKey"), freq_)
                 grid.append(freq_)
             df = df[grid]
             print("dflen", len(df))
 
             for mol in df["mol"]:
                 dirs_name_freq = param["freq_dir"] + "/" + mol.GetProp("InchyKey") + "/gaussianinput?.log"
-                print(dirs_name_freq)
+                # print(dirs_name_freq)
                 for path, conf in zip(
                         sorted(glob.glob(dirs_name_freq)),
                         mol.GetConformers()):
-                    print(path)
+                    # print(path)
                     data = cclib.io.ccread(path)
                     ent = data.enthalpy * 627.5095  # hartree
                     entr = data.entropy * 627.5095  # hartree
@@ -407,102 +416,73 @@ if __name__ == '__main__':
             Dts = []
             DtR1 = []
             DtR2 = []
+            ESPs = []
+            ESPR1 = []
+            ESPR2 = []
             for mol, RT in df[["mol", "RT"]].values:
-                print(mol.GetProp("InchyKey"))
+                # print(mol.GetProp("InchyKey"))
                 energy_to_Boltzmann_distribution(mol, RT)
                 Dt = []
+                ESP=[]
                 we = []
                 for conf in mol.GetConformers():
                     data = pd.read_pickle(
                         "{}/{}/data{}.pkl".format(param["grid_coordinates"], mol.GetProp("InchyKey"), conf.GetId()))
                     Bd = float(conf.GetProp("Boltzmann_distribution"))
-                    if True:
-                        we.append(Bd)
-                        Dt.append(data["Dt"].values.tolist())
-                    else:
-                        we.extend([Bd, Bd])
-                        Dt.extend([data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
-                                       "Dt"].values.tolist(),
-                                   data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
-                                       "Dt"].values.tolist()])
+                    we.append(Bd)
+                    Dt.append(data["Dt"].values.tolist())
+                    ESP.append(data["ESP"].values.tolist())
                 Dt = np.array(Dt)
+                ESP=np.array(ESP)
                 w = np.exp(-Dt / np.sqrt(np.average(Dt ** 2, axis=0)).reshape(1, -1))
-                # we = np.array([float(conf.GetProp("Boltzmann_distribution")) for conf in mol.GetConformers()]).reshape(
-                #     -1, 1)
-                we = np.array(we).reshape(-1, 1)#*w
-                # print(Dt.shape, we.shape, w.shape)
-                Dt_ = np.average(Dt, weights=we * np.ones(Dt.shape), axis=0)
-                if False:
-                    data_y = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
-                    data_y["Dt"] = np.nan_to_num(Dt_)
-                else:
-                    data["Dt"] = np.nan_to_num(Dt_)
-                    data_y = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
-                    data_y["Dt"]=data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values+data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])["Dt"].values
-
+                data["Dt"] = np.nan_to_num(np.average(Dt, weights=np.array(we).reshape(-1, 1)*np.ones(shape=ESP.shape), axis=0))
+                w = np.exp(Dt / np.sqrt(np.average(Dt ** 2, axis=0)).reshape(1, -1))
+                data["ESP"] = np.nan_to_num(np.average(ESP, weights=np.array(we).reshape(-1, 1)*np.ones(shape=ESP.shape) , axis=0))
+                data_y = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
+                data_y["Dt"] = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
+                                   "Dt"].values + \
+                               data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
+                                   "Dt"].values
+                data_y["ESP"] = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
+                                   "ESP"].values + \
+                               data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
+                                   "ESP"].values
                 data_yz = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
                 data_yz["Dt"] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
                                     "Dt"].values - \
                                 data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
                                     "Dt"].values
+                data_yz["ESP"] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
+                                    "ESP"].values - \
+                                data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
+                                    "ESP"].values
                 data_yz["DtR1"] = \
                     data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values
                 data_yz["DtR2"] = \
                     data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])["Dt"].values
+                data_yz["ESPR1"] = \
+                    data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["ESP"].values
+                data_yz["ESPR2"] = \
+                    data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])["ESP"].values
                 dfp_yz = data_yz.copy()
-                # else:
-                #     data["Dt"] = np.nan_to_num(Dt_)
-                #     dfp_yz = data[(data["y"] > 0) & (data["z"] > 0)][["x", "y", "z"]].sort_values(['x', 'y', "z"],
-                #                                                                                   ascending=[True, True,
-                #                                                                                              True])
-                #     # feature = ["Dt"]
-                #     dfp_yz["Dt"] = \
-                #         data[(data["y"] > 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"],
-                #                                                             ascending=[True, True, True])[
-                #             "Dt"].values \
-                #         + \
-                #         data[(data["y"] < 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"],
-                #                                                             ascending=[True, False, True])[
-                #             "Dt"].values \
-                #         - \
-                #         data[(data["y"] > 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"],
-                #                                                             ascending=[True, True, False])[
-                #             "Dt"].values \
-                #         - data[(data["y"] < 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"],
-                #                                                               ascending=[True, False, False])[
-                #             "Dt"].values
-                #
-                #     dfp_yz["DtR1"] = \
-                #         data[(data["y"] > 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"],
-                #                                                             ascending=[True, True, True])[
-                #             "Dt"].values \
-                #         + \
-                #         data[(data["y"] < 0) & (data["z"] > 0)].sort_values(['x', 'y', "z"],
-                #                                                             ascending=[True, False, True])[
-                #             "Dt"].values
-                #     dfp_yz["DtR2"] = \
-                #         -data[(data["y"] > 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"],
-                #                                                              ascending=[True, True, False])[
-                #             "Dt"].values \
-                #         - data[(data["y"] < 0) & (data["z"] < 0)].sort_values(['x', 'y', "z"],
-                #                                                               ascending=[True, False, False])[
-                #             "Dt"].values
+
                 Dts.append(dfp_yz["Dt"].values.tolist())
                 DtR1.append(dfp_yz["DtR1"].values.tolist())
                 DtR2.append(dfp_yz["DtR2"].values.tolist())
+                ESPs.append(dfp_yz["ESP"].values.tolist())
+                ESPR1.append(dfp_yz["ESPR1"].values.tolist())
+                ESPR2.append(dfp_yz["ESPR2"].values.tolist())
 
             df["Dt"] = Dts
             df["DtR1"] = DtR1
             df["DtR2"] = DtR2
-            # if False:
-            #     df_ = df.sort_values(by=["ΔΔG.expt."])
-            #     save_path = param["out_dir_name"] + "/" + file_name + "/sorted"
-            #     os.makedirs(save_path, exist_ok=True)
-            #     Gaussian_penalized(features_dir_name, df_, dfp, param["grid_coordinates"], save_path)
+            df["ESP"] = ESPs
+            df["ESPR1"] = ESPR1
+            df["ESPR2"] = ESPR2
 
             print("feature_calculated")
             inputs = []
-            for _ in range(8):
+            for _ in range(4):
                 df_ = df.sample(frac=1, random_state=_)
                 save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
                 os.makedirs(save_path, exist_ok=True)
@@ -520,7 +500,7 @@ if __name__ == '__main__':
             # n = select_σ_n(file_name)
             n = param["sigma"]
             inputs = []
-            for _ in range(16):
+            for _ in range(4):
                 df_ = df.sample(frac=1, random_state=_)
                 save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
                 os.makedirs(save_path, exist_ok=True)
