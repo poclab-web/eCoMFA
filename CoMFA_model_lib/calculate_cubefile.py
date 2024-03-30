@@ -14,7 +14,7 @@ import calculate_conformation
 
 
 def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
-    psi4.set_num_threads(nthread=6)
+    psi4.set_num_threads(nthread=8)
     psi4.set_memory("4GB")
     # psi4.set_options({'geom_maxiter': 1000})
 
@@ -37,23 +37,28 @@ def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
         with open(output_dir_name + "/epsilon.txt", "w") as f:
             epsilon = wfn.epsilon_a_subset("AO", "ALL").np[wfn.nalpha() - 1]
             print(epsilon, file=f)
-        psi4.set_options({'cubeprop_tasks': ['frontier_orbitals'],
-                          "cubic_grid_spacing": [0.2, 0.2, 0.2]
+        # psi4.set_options({'cubeprop_tasks': ['frontier_orbitals'],
+        #                   "cubic_grid_spacing": [0.2, 0.2, 0.2]
+        #                   })
+        # psi4.cubeprop(wfn)
+        psi4.set_options({'cubeprop_tasks': ['esp', "lol", "elf", 'frontier_orbitals','dual_descriptor'],
+                          "cubic_grid_spacing": [0.2, 0.2, 0.2],
+                          "cubic_grid_overage": [8, 8, 8]
                           })
         psi4.cubeprop(wfn)
         os.rename(glob.glob(output_dir_name + "/Psi_a_*_LUMO.cube")[0], output_dir_name + "/LUMO02_{}.cube".format(i))
-        os.remove(glob.glob(output_dir_name + "/Psi_a_*_HOMO.cube")[0])
-
-        psi4.set_options({'cubeprop_tasks': ['esp', "lol", "elf"],
-                          "cubic_grid_spacing": [0.2, 0.2, 0.2]
-                          })
-        psi4.cubeprop(wfn)
+        os.rename(glob.glob(output_dir_name + "/Psi_a_*_HOMO.cube")[0], output_dir_name + "/HOMO02_{}.cube".format(i))
+        os.rename(glob.glob(output_dir_name + "/ELFa.cube")[0], output_dir_name + "/ELF02_{}.cube".format(i))
+        os.rename(glob.glob(output_dir_name + "/LOLa.cube")[0], output_dir_name + "/LOL02_{}.cube".format(i))
+        os.remove(glob.glob(output_dir_name + "/LOLb.cube")[0])
+        os.remove(glob.glob(output_dir_name + "/ELFb.cube")[0])
+        # os.remove(glob.glob(output_dir_name + "/Psi_a_*_HOMO.cube")[0])
         os.rename(output_dir_name + "/Dt.cube", output_dir_name + "/Dt02_{}.cube".format(i))
         os.rename(output_dir_name + "/ESP.cube", output_dir_name + "/ESP02_{}.cube".format(i))
-        psi4.set_options({'cubeprop_tasks': ['dual_descriptor'],
-                          "cubic_grid_spacing": [0.2, 0.2, 0.2]
-                          })
-        psi4.cubeprop(wfn)
+        # psi4.set_options({'cubeprop_tasks': ['dual_descriptor'],
+        #                   "cubic_grid_spacing": [0.2, 0.2, 0.2]
+        #                   })
+        # psi4.cubeprop(wfn)
         os.rename(glob.glob(output_dir_name + "/DUAL_*.cube")[0], output_dir_name + "/DUAL02_{}.cube".format(i))
         # os.rename(output_dir_name + "/geom.xyz",output_dir_name + "/optimized{}.xyz".format(i))
         with open(output_dir_name + "/geom.xyz", "r") as f:

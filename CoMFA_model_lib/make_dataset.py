@@ -28,10 +28,10 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
     ])]
     print(len(df))
     df = df[df["mol"].map(lambda mol:
-                          not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl,Br]"))
+                          not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F]"))
                           and not mol.HasSubstructMatch(Chem.MolFromSmarts("[I]"))
-                          and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][OH1]"))
-                          and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[OH1]"))
+                          # and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][OH1]"))
+                          # and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[OH1]"))
                           )]
     if flag:
         df=df[df["mol"].map(lambda mol:
