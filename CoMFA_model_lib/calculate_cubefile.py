@@ -1,5 +1,6 @@
 import glob
 import json
+import multiprocessing
 import os
 import time
 from itertools import product
@@ -11,7 +12,28 @@ from rdkit import Chem
 from rdkit.Chem.Descriptors import ExactMolWt
 
 import calculate_conformation
+def gaussiansinglepoint(input_dir_name, output_dir_name, level="hf/sto-3g"):
+    calc_condition = "# sp " + level
+    charge_and_mult = '0 1'
+    i = 0
+    while os.path.isfile("{}/optimized{}.xyz".format(input_dir_name, i)):
+        os.makedirs(output_dir_name, exist_ok=True)
+        with open("{}/optimized{}.xyz".format(input_dir_name, i), "r") as f:
+            ans = "\n".join(f.read().split("\n")[2:])
+        with open("{}/gaussianinput{}.gjf".format(output_dir_name, i), 'w') as f:
+            print("%nprocshared=8", file=f)
+            print("%mem=6GB", file=f)
+            print('%chk= {}.chk'.format(i), file=f)  # smiles
+            print(calc_condition, file=f)
 
+            print('', file=f)
+            print('good luck!', file=f)
+            print('', file=f)
+            # print(head,file=f)
+            print(charge_and_mult, file=f)
+
+            print(ans, file=f)
+        i += 1
 
 def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
     psi4.set_num_threads(nthread=8)
@@ -84,6 +106,10 @@ def cube_to_pkl(dirs_name):
             LUMO = f.read().splitlines()
         with open("{}/DUAL02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
             DUAL = f.read().splitlines()
+        with open("{}/ELF02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+            ELF = f.read().splitlines()
+        with open("{}/LOL02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+            LOL = f.read().splitlines()
 
         l = np.array([_.split() for _ in Dt[2:6]])
         n_atom = int(l[0, 0])
@@ -94,15 +120,26 @@ def cube_to_pkl(dirs_name):
         ESP = np.concatenate([_.split() for _ in ESP[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
         LUMO = np.concatenate([_.split() for _ in LUMO[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
         DUAL = np.concatenate([_.split() for _ in DUAL[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        ELF = np.concatenate([_.split() for _ in ELF[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        LOL = np.concatenate([_.split() for _ in LOL[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
         l = np.array(list(product(range(size[0]), range(size[1]), range(size[2])))) @ axis + x0
         l = l * psi4.constants.bohr2angstroms
-        arr = np.concatenate([l, Dt, ESP, LUMO, DUAL], axis=1)
-        df = pd.DataFrame(arr, columns=["x", "y", "z", "Dt", "ESP", "LUMO", "DUAL"])
+        arr = np.concatenate([l, Dt, ESP, LUMO, DUAL,ELF,LOL], axis=1)
+        df = pd.DataFrame(arr, columns=["x", "y", "z", "Dt", "ESP", "LUMO", "DUAL","ELF","LOL"]).astype("float32")
         df.to_pickle(dirs_name + "/data{}.pkl".format(i))
         i += 1
     # if i != 0:
     #     os.rename(dirs_name + "calculating", dirs_name)
 
+def calc(input):
+    smiles,input_dirs_name,output_dirs_name,one_point_level=input
+    print(smiles)
+    mol = calculate_conformation.get_mol(smiles)
+    if not os.path.isdir(output_dirs_name):
+        print(mol.GetProp("InchyKey"))
+        psi4calculation(input_dirs_name, output_dirs_name + "calculating", one_point_level)
+        os.rename(output_dirs_name + "calculating", output_dirs_name)
+    cube_to_pkl(output_dirs_name)
 
 if __name__ == '__main__':
     param_file_name = "../parameter/single-point-calculation/wB97X-D_def2-TZVP.txt"  # "../parameter_0221/parameter_cbs_gaussian.txt"  # _MP2
@@ -127,19 +164,26 @@ if __name__ == '__main__':
 
     print(df)
 
+
     while True:
+        # for smiles in df["smiles"]:
+        #     if True:  # smiles=="c1ccccc1OCN(C)CC(=O)c1ccccc1":#"Cl" in smiles:
+        #         print(smiles)
+        #         mol = calculate_conformation.get_mol(smiles)
+        #         input_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp("InchyKey")
+        #         output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")
+        #         if not os.path.isdir(output_dirs_name):
+        #             print(mol.GetProp("InchyKey"))
+        #             psi4calculation(input_dirs_name, output_dirs_name + "calculating", param["one_point_level"])
+        #             os.rename(output_dirs_name + "calculating", output_dirs_name)
+        #         cube_to_pkl(output_dirs_name)
+        inputs=[]
         for smiles in df["smiles"]:
-            if True:  # smiles=="c1ccccc1OCN(C)CC(=O)c1ccccc1":#"Cl" in smiles:
-                print(smiles)
-                mol = calculate_conformation.get_mol(smiles)
-                input_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp("InchyKey")
-                output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")
-                if not os.path.isdir(output_dirs_name):
-                    print(mol.GetProp("InchyKey"))
-                    psi4calculation(input_dirs_name, output_dirs_name + "calculating", param["one_point_level"])
-                    try:
-                        os.rename(output_dirs_name + "calculating", output_dirs_name)
-                    except:
-                        None
-                cube_to_pkl(output_dirs_name)
+            mol = calculate_conformation.get_mol(smiles)
+            input_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp("InchyKey")
+            output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")
+            input=smiles,input_dirs_name,output_dirs_name,param["one_point_level"]
+            inputs.append(input)
+        p = multiprocessing.Pool(processes=1)
+        p.map(calc, inputs)
         time.sleep(10)
