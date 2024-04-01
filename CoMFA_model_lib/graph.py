@@ -12,7 +12,7 @@ from scipy import stats
 from sklearn.metrics import r2_score
 
 # time.sleep(60*60*6)
-for param_name in glob.glob("../parameter/cube_to_grid/*0.50.txt"):#-4.5~2.5 -3~3 -5~5
+for param_name in glob.glob("../parameter/cube_to_grid/*0.50_.txt"):#-4.5~2.5 -3~3 -5~5
     print(param_name)
     with open(param_name, "r") as f:
         param = json.loads(f.read())

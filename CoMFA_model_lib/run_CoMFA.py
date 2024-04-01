@@ -349,8 +349,8 @@ def RC(input):
 
 
 if __name__ == '__main__':
-    # time.sleep(60*60*1)
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/*0.50.txt")):
+    time.sleep(60*5)
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/*0.50_.txt")):
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)

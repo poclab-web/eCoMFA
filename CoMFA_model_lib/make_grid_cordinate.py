@@ -6,7 +6,7 @@ import pandas as pd
 
 
 def make_grid_coordinate(orient, size, interval):
-    out_dir_name = "../../../grid_coordinates" + "/{} {} {}".format(" ".join(map(str, orient)),
+    out_dir_name = "../../../grid_coordinates" + "/{} {} {} 20240330".format(" ".join(map(str, orient)),
                                                                         " ".join(map(str, size)), interval)
     l = []
     for x in product(range(size[0]), range(size[1]), range(size[2])):
@@ -129,10 +129,17 @@ if __name__ == '__main__':
     # interval = 0.4
     # make_grid_coordinate(orient, size, interval)
 
-
+    orient = [-4.250, -2.750, -4.750]
+    size = [14, 12 , 20 ]
+    interval = 0.50
+    make_grid_coordinate(orient, size, interval)
     orient = [-4.250, -3.750, -4.750]
     size = [14, 16 , 20 ]
     interval = 0.50
+    make_grid_coordinate(orient, size, interval)
+    orient = [-4.375, -3.875, -4.875]
+    size = [28, 16 * 2, 20 * 2]
+    interval = 0.25
     make_grid_coordinate(orient, size, interval)
     raise ValueError
 
@@ -140,10 +147,7 @@ if __name__ == '__main__':
     size = [28, 12 * 2, 20 * 2]
     interval = 0.25
     make_grid_coordinate(orient, size, interval)
-    orient = [-4.375, -3.875, -4.875]
-    size = [28, 16 * 2, 20 * 2]
-    interval = 0.25
-    make_grid_coordinate(orient, size, interval)
+
     # [-5.875 -3.875 -5.875] [32 32 48] 0.25
 
     orient = [-5.875, -3.875, -5.875]
