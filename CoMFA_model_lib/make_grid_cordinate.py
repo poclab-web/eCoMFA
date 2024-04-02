@@ -6,7 +6,7 @@ import pandas as pd
 
 
 def make_grid_coordinate(orient, size, interval):
-    out_dir_name = "../../../grid_coordinates" + "/{} {} {} 20240330".format(" ".join(map(str, orient)),
+    out_dir_name = "../../../grid_coordinates" + "/{} {} {} 20240402".format(" ".join(map(str, orient)),
                                                                         " ".join(map(str, size)), interval)
     l = []
     for x in product(range(size[0]), range(size[1]), range(size[2])):
@@ -66,16 +66,16 @@ def make_penalty(l, sigma, interval, out_dir_name):
     # penalty=np.identity(penalty.shape[0])
     # filename = out_dir_name + "/penalty{}.npy".format(n)  # + "/" + param["grid_coordinates_dir"]
     # np.save(filename, penalty)
-    penalty_L = []
-    for _ in range(2):
-        penalty_L_ = []
-        for __ in range(2):
-            if _ == __:
-                penalty_L_.append(penalty)
-            else:
-                penalty_L_.append(np.zeros(penalty.shape))
-        penalty_L.append(penalty_L_)
-    penalty=np.block(penalty_L)
+    # penalty_L = []
+    # for _ in range(2):
+    #     penalty_L_ = []
+    #     for __ in range(2):
+    #         if _ == __:
+    #             penalty_L_.append(penalty)
+    #         else:
+    #             penalty_L_.append(np.zeros(penalty.shape))
+    #     penalty_L.append(penalty_L_)
+    # penalty=np.block(penalty_L)
     ptp=penalty.T@penalty
 
     filename = out_dir_name + "/ptp{:.2f}.npy".format(sigma)
@@ -137,11 +137,20 @@ if __name__ == '__main__':
     size = [14, 16 , 20 ]
     interval = 0.50
     make_grid_coordinate(orient, size, interval)
+    orient = [-4.250, -4.750, -4.750]
+    size = [14, 20, 20]
+    interval = 0.50
+    make_grid_coordinate(orient, size, interval)
+    orient = [-4.250, -4.750, -5.750]
+    size = [14, 20, 24]
+    interval = 0.50
+    make_grid_coordinate(orient, size, interval)
+    raise ValueError
     orient = [-4.375, -3.875, -4.875]
     size = [28, 16 * 2, 20 * 2]
     interval = 0.25
     make_grid_coordinate(orient, size, interval)
-    raise ValueError
+
 
     orient = [-4.375, -2.875, -4.875]
     size = [28, 12 * 2, 20 * 2]

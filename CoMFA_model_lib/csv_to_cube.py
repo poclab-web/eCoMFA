@@ -4,10 +4,17 @@ import glob
 import pandas as pd
 
 if __name__ == '__main__':
-    for file in glob.glob("../../../result/*/*/comparison0/mo*1024.csv"):
+    flag=False
+    if flag:
+        filename="../../../result/-4.25 -3.75 -4.75 14 16 20 0.5 20240330/*/comparison0/mo*1.0.csv"
+    else:
+        filename="../../../grid_coordinates/-4.25 -4.75 -4.75 14 20 20 0.5 20240402/*/data?.pkl"
+    for file in glob.glob(filename):
         print(file)
-        df = pd.read_csv(file)
-        # df = mfunfolding(df)
+        if flag:
+            df = pd.read_csv(file)
+        else:
+            df=pd.read_pickle(file)#.sort_values(['x', 'y', "z"], ascending=[True, True, True])
 
         df_y = copy.deepcopy(df)
         df_y["y"] = -df_y["y"]
@@ -28,6 +35,9 @@ if __name__ == '__main__':
         df_yz[column_inc_specific_feature] = -df_yz[column_inc_specific_feature]
 
         df = pd.concat([df, df_y, df_z, df_yz])
+        if not flag:
+            df=pd.read_pickle(file)#.sort_values(['x', 'y', "z"], ascending=[True, True, True])
+
         df = df.sort_values(by=["x", "y", "z"], ascending=[True, True, True])
 
         # to_cube_file_name = file[:-4] + "val" + ".csv"
@@ -36,7 +46,7 @@ if __name__ == '__main__':
         print(column_inc_specific_feature)
 
         # df[(df["x"]>0)&(df["y"]>0)][column_inc_specific_feature]=1
-        cubeinchikey = "../cube_aligned/wB97X-D_def2-TZVP20240308_1/RIFKADJTWUGDOV-UHFFFAOYSA-N/Dt02_0.cube"
+        cubeinchikey = "../cube_aligned/wB97X-D_def2-TZVP20240330/ABEVIHIQUUXDMS-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
         with open(cubeinchikey, "r", encoding="UTF-8") as f:
             cube = f.read().splitlines()
         n_atom = int(cube[2].split()[0])
@@ -71,7 +81,7 @@ if __name__ == '__main__':
             print(to_cube_file_name)
             with open(to_cube_file_name, "w") as f:
                 print(0, file=f)
-                print(1, file=f)
+                print("Property: ALIE", file=f)
                 print("    {} {} {} {}".format(n_atom, drop_dupl_x.min() / 0.52917720859,
                                                drop_dupl_y.min() / 0.52917720859,
                                                drop_dupl_z.min() / 0.52917720859), file=f)

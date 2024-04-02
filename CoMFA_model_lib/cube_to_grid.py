@@ -27,8 +27,8 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
         # 入力：幅
         # dfpをdata.pklの最大・最小から決定
         outfilename = "{}/data{}.pkl".format(out_name, conf.GetId())
-        if os.path.isfile(outfilename):
-            continue
+        # if os.path.isfile(outfilename):
+        #     continue
         filename = "{}/data{}.pkl".format(dir_name, conf.GetId())
         print(filename)
         data = pd.read_pickle(filename)
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     print("len=",len(dfs))
     dfs["mol"] = dfs["smiles"].apply(calculate_conformation.get_mol)
 
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/*0.50_.txt")):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.5004022.txt")):
         df = copy.deepcopy(dfs)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
