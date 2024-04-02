@@ -24,7 +24,7 @@ warnings.simplefilter('ignore')
 def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
                                                                                   ascending=[True, True, True])
-    features=["Dt","ESP"]
+    features = ["Dt"]
     features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
     # print(features_all.shape)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
@@ -57,19 +57,20 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
             df_coord["Gaussian_Dt"] = gaussian_coef[:n_]
             df_coord.to_csv(save_name + "/molecular_filed{}{}.csv".format(n, L))
 
-            kf = KFold(n_splits=5, shuffle=False)
+            kf = KFold(n_splits=2, shuffle=False)
             gaussian_predicts = []
             start = time.time()
 
             for (train_index, test_index) in kf.split(df):
+                # train_index=test_index
                 features_training = features_all[:, train_index]
                 std = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
                 # std = np.std(features_training, axis=(1)).reshape(features_all.shape[0], 1, -1)
                 X_ = np.concatenate(features_training / std, axis=1)
                 gaussian_coef_ = scipy.linalg.solve(
-                    (X_.T @ X_ + L * len(train_index) * 2  * ptp).astype("float32"),
+                    (X_.T @ X_ + L * len(train_index) * 2 * ptp).astype("float32"),
                     (X_.T @ df.iloc[train_index]["ΔΔG.expt."]).astype("float32"),
-                    assume_a="pos",check_finite=False,overwrite_a=True,overwrite_b=True).T
+                    assume_a="pos", check_finite=False, overwrite_a=True, overwrite_b=True).T
                 # x = np.sum(gaussian_coef_ * features_training, axis=1)
                 # a = np.dot(x, df.iloc[train_index]["ΔΔG.expt."].values) / (x ** 2).sum()
                 features_test = features_all[:, test_index]
@@ -119,7 +120,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
                                                                                   ascending=[True, True, True])
     ptp = np.load(gaussian_penalize + "/ptp{}.npy".format(str(n)))
 
-    features = ["Dt","ESP"]
+    features = ["Dt"]
     features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
     features = np.concatenate(features_all / std, axis=1)
@@ -128,9 +129,9 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
     gaussians = []
     predicts = []  # [[] for _ in range(4)]
     for L, n_num in zip(dfp["lambda"], dfp["n_components"]):
-        ridge = linear_model.Ridge(alpha=L * len(df) * 2 , fit_intercept=False).fit(features, df["ΔΔG.expt."])
+        ridge = linear_model.Ridge(alpha=L * len(df) * 2, fit_intercept=False).fit(features, df["ΔΔG.expt."])
         # print(time.time()-start)
-        lasso = linear_model.Lasso(alpha=L , fit_intercept=False).fit(features, df["ΔΔG.expt."])
+        lasso = linear_model.Lasso(alpha=L, fit_intercept=False).fit(features, df["ΔΔG.expt."])
         # print(time.time()-start)
         # features_norm = features / np.std(features, axis=0)
         # print(time.time()-start)
@@ -141,7 +142,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
         # start = time.time()
         X = features
         Y = df["ΔΔG.expt."].values
-        gaussian_coef = scipy.linalg.solve(X.T @ X + L * len(df) * 2  * ptp, X.T @ Y, assume_a="pos").T
+        gaussian_coef = scipy.linalg.solve(X.T @ X + L * len(df) * 2 * ptp, X.T @ Y, assume_a="pos").T
         # print("after_", gaussian_coef, time.time() - start)
 
         gaussians.append(gaussian_coef.tolist())
@@ -155,7 +156,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
         df_coord["PLS_Dt"] = pls.coef_[0][:n] * std[0].reshape([1])
         # df_coord["PLS_Dt"] = pls.coef_[0][:n] * np.std(features, axis=0) * std[0].reshape([1])
 
-        kf = KFold(n_splits=5, shuffle=False)
+        kf = KFold(n_splits=2, shuffle=False)
         gaussian_predicts = []
         ridge_predicts = []
         lasso_predicts = []
@@ -169,16 +170,16 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
             # start = time.time()
             X = features_training
             Y = df.iloc[train_index]["ΔΔG.expt."].values
-            gaussian_coef_ = scipy.linalg.solve(X.T @ X + L * len(train_index) * 2  * ptp, X.T @ Y,
+            gaussian_coef_ = scipy.linalg.solve(X.T @ X + L * len(train_index) * 2 * ptp, X.T @ Y,
                                                 assume_a="pos").T
             # print("after__",gaussian_coef_,time.time()-start)
             # print(time.time()-start)
-            ridge = linear_model.Ridge(alpha=L * len(train_index) * 2 , fit_intercept=False).fit(
+            ridge = linear_model.Ridge(alpha=L * len(train_index) * 2, fit_intercept=False).fit(
                 features_training,
                 df.iloc[train_index][
                     "ΔΔG.expt."])
-            lasso = linear_model.Lasso(alpha=L , fit_intercept=False).fit(features_training,
-                                                                                df.iloc[train_index]["ΔΔG.expt."])
+            lasso = linear_model.Lasso(alpha=L, fit_intercept=False).fit(features_training,
+                                                                         df.iloc[train_index]["ΔΔG.expt."])
             # features_training_norm = features_training / np.std(features_training, axis=0)
             # pls = PLSRegression(n_components=n_num).fit(features_training_norm,
             #                                             df.iloc[train_index]["ΔΔG.expt."])
@@ -349,8 +350,8 @@ def RC(input):
 
 
 if __name__ == '__main__':
-    time.sleep(60*5)
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/*0.50_.txt")):
+    # time.sleep(60*60)
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.5004022.txt")):
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
@@ -423,7 +424,7 @@ if __name__ == '__main__':
                 # print(mol.GetProp("InchyKey"))
                 energy_to_Boltzmann_distribution(mol, RT)
                 Dt = []
-                ESP=[]
+                ESP = []
                 we = []
                 for conf in mol.GetConformers():
                     data = pd.read_pickle(
@@ -433,29 +434,31 @@ if __name__ == '__main__':
                     Dt.append(data["Dt"].values.tolist())
                     ESP.append(data["ESP"].values.tolist())
                 Dt = np.array(Dt)
-                ESP=np.array(ESP)
+                ESP = np.array(ESP)
                 w = np.exp(-Dt / np.sqrt(np.average(Dt ** 2, axis=0)).reshape(1, -1))
-                data["Dt"] = np.nan_to_num(np.average(Dt, weights=np.array(we).reshape(-1, 1)*np.ones(shape=ESP.shape), axis=0))
-                w = np.exp(Dt / np.sqrt(np.average(Dt ** 2, axis=0)).reshape(1, -1))
-                data["ESP"] = np.nan_to_num(np.average(ESP, weights=np.array(we).reshape(-1, 1)*np.ones(shape=ESP.shape) , axis=0))
+                data["Dt"] = np.nan_to_num(
+                    np.average(Dt, weights=np.array(we).reshape(-1, 1) * np.ones(shape=Dt.shape), axis=0))
+                w = np.exp(ESP / np.sqrt(np.average(ESP ** 2, axis=0)).reshape(1, -1))
+                data["ESP"] = np.nan_to_num(
+                    np.average(ESP, weights=np.array(we).reshape(-1, 1) * np.ones(shape=ESP.shape), axis=0))
                 data_y = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
                 data_y["Dt"] = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
                                    "Dt"].values + \
                                data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
                                    "Dt"].values
                 data_y["ESP"] = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
-                                   "ESP"].values + \
-                               data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
-                                   "ESP"].values
+                                    "ESP"].values + \
+                                data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[
+                                    "ESP"].values
                 data_yz = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
                 data_yz["Dt"] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
                                     "Dt"].values - \
                                 data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
                                     "Dt"].values
                 data_yz["ESP"] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[
-                                    "ESP"].values - \
-                                data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
-                                    "ESP"].values
+                                     "ESP"].values - \
+                                 data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])[
+                                     "ESP"].values
                 data_yz["DtR1"] = \
                     data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values
                 data_yz["DtR2"] = \
