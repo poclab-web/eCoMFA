@@ -350,13 +350,14 @@ def RC(input):
 
 
 if __name__ == '__main__':
-    # time.sleep(60*60)
+    # time.sleep(60*10)
     for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.5004022.txt")):
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
         start = time.perf_counter()  # 計測開始
         for file in glob.glob("../arranged_dataset/*.xlsx"):
+        # for file in glob.glob("../arranged_dataset/*.xlsx"):
 
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             print(len(df))
