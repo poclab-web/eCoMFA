@@ -145,11 +145,12 @@ if __name__ == '__main__':
     size = [14, 20, 24]
     interval = 0.50
     make_grid_coordinate(orient, size, interval)
-    raise ValueError
     orient = [-4.375, -3.875, -4.875]
     size = [28, 16 * 2, 20 * 2]
     interval = 0.25
     make_grid_coordinate(orient, size, interval)
+    raise ValueError
+
 
 
     orient = [-4.375, -2.875, -4.875]

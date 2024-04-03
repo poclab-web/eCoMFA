@@ -157,8 +157,8 @@ def conf_to_xyz(mol, out_dir_name):
 
 
 def psi4optimization(input_dir_name, output_dir_name, level="hf/sto-3g"):
-    psi4.set_num_threads(nthread=4)
-    psi4.set_memory("4GB")
+    psi4.set_num_threads(nthread=8)
+    psi4.set_memory("8GB")
     psi4.set_options({'geom_maxiter': 10000})
     i = 0
     while os.path.isfile("{}/optimized{}.xyz".format(input_dir_name, i)):
