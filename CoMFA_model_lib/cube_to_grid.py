@@ -27,8 +27,8 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
         # 入力：幅
         # dfpをdata.pklの最大・最小から決定
         outfilename = "{}/data{}.pkl".format(out_name, conf.GetId())
-        # if os.path.isfile(outfilename):
-        #     continue
+        if os.path.isfile(outfilename):
+            continue
         filename = "{}/data{}.pkl".format(dir_name, conf.GetId())
         print(filename)
         data = pd.read_pickle(filename)
