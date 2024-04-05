@@ -6,7 +6,7 @@ import pandas as pd
 if __name__ == '__main__':
     flag=True
     if flag:
-        filename="../../../result/-4.25 -4.75 -5.75 14 20 24 0.5 20240402/*/comparison0/mo*1.0.csv"
+        filename="../../../result/-4.25 -4.75 -5.75 14 20 24 0.5 20240402/*/comparison0/mo*64.0.csv"
     else:
         filename="../../../grid_coordinates/-4.25 -4.75 -5.75 14 20 24 0.5 20240402/*/data?.pkl"
     for file in glob.glob(filename):
