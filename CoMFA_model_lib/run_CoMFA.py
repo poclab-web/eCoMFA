@@ -24,7 +24,7 @@ warnings.simplefilter('ignore')
 def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
                                                                                   ascending=[True, True, True])
-    features = ["Dt"]
+    features = ["Dt","ESP"]
     features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
     # print(features_all.shape)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
@@ -58,6 +58,7 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
             df_coord.to_csv(save_name + "/molecular_filed{}{}.csv".format(n, L))
 
             kf = KFold(n_splits=2, shuffle=False)
+            kf = KFold(n_splits=len(df), shuffle=False)
             gaussian_predicts = []
             start = time.time()
 
@@ -120,7 +121,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
                                                                                   ascending=[True, True, True])
     ptp = np.load(gaussian_penalize + "/ptp{}.npy".format(str(n)))
 
-    features = ["Dt"]
+    features = ["Dt","ESP"]
     features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
     features = np.concatenate(features_all / std, axis=1)
@@ -157,6 +158,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
         # df_coord["PLS_Dt"] = pls.coef_[0][:n] * np.std(features, axis=0) * std[0].reshape([1])
 
         kf = KFold(n_splits=2, shuffle=False)
+        kf = KFold(n_splits=len(df), shuffle=False)
         gaussian_predicts = []
         ridge_predicts = []
         lasso_predicts = []
@@ -351,12 +353,12 @@ def RC(input):
 
 if __name__ == '__main__':
     # time.sleep(60*10)
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.5004022.txt")):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt")):
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
         start = time.perf_counter()  # 計測開始
-        for file in glob.glob("../arranged_dataset/*.xlsx"):
+        for file in glob.glob("../arranged_dataset/newrea/*"):
         # for file in glob.glob("../arranged_dataset/*.xlsx"):
 
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
@@ -486,7 +488,7 @@ if __name__ == '__main__':
 
             print("feature_calculated")
             inputs = []
-            for _ in range(4):
+            for _ in range(1):
                 df_ = df.sample(frac=1, random_state=_)
                 save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
                 os.makedirs(save_path, exist_ok=True)
@@ -504,7 +506,7 @@ if __name__ == '__main__':
             # n = select_σ_n(file_name)
             n = param["sigma"]
             inputs = []
-            for _ in range(4):
+            for _ in range(1):
                 df_ = df.sample(frac=1, random_state=_)
                 save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
                 os.makedirs(save_path, exist_ok=True)

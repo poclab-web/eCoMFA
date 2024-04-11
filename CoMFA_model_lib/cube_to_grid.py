@@ -148,7 +148,8 @@ def PF(input):
 if __name__ == '__main__':
     # time.sleep(60*60*6)
     dfs = []
-    for path in glob.glob("../arranged_dataset/*.xlsx"):
+    # for path in glob.glob("../arranged_dataset/*.xlsx"):
+    for path in glob.glob("../arranged_dataset/newrea/*"):
         df = pd.read_excel(path)
         print(len(df))
         dfs.append(df)
@@ -156,7 +157,7 @@ if __name__ == '__main__':
     print("len=",len(dfs))
     dfs["mol"] = dfs["smiles"].apply(calculate_conformation.get_mol)
 
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.5004022.txt")):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt")):
         df = copy.deepcopy(dfs)
         with open(param_name, "r") as f:
             param = json.loads(f.read())

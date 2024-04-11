@@ -254,7 +254,8 @@ if __name__ == '__main__':
         param = json.loads(f.read())
     print(param)
     dfs = []
-    for path in glob.glob("../arranged_dataset/*.xlsx"):
+    # for path in glob.glob("../arranged_dataset/*.xlsx"):
+    for path in glob.glob("../arranged_dataset/newrea/newrea.xlsx"):
         df = pd.read_excel(path)
         dfs.append(df)
 
