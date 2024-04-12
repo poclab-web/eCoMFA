@@ -358,8 +358,8 @@ if __name__ == '__main__':
             param = json.loads(f.read())
         print(param)
         start = time.perf_counter()  # 計測開始
-        for file in glob.glob("../arranged_dataset/newrea/*"):
-        # for file in glob.glob("../arranged_dataset/*.xlsx"):
+        # for file in glob.glob("../arranged_dataset/newrea/*"):
+        for file in glob.glob("../arranged_dataset/cbs.xlsx"):
 
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             print(len(df))

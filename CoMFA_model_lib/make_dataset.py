@@ -53,8 +53,8 @@ if __name__ == '__main__':
     os.makedirs(to_dir_path, exist_ok=True)
     os.makedirs(to_dir_path+"/newrea/", exist_ok=True)
 
-    # make_dataset("../sampledata/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx",True)
-    # make_dataset("../sampledata/DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx",False)
-    # make_dataset("../sampledata/RuSS_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx",False)
+    make_dataset("../sampledata/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx",True)
+    make_dataset("../sampledata/DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx",False)
+    make_dataset("../sampledata/RuSS_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx",False)
     make_dataset("../sampledata/new_rea/new_rea.xlsx", to_dir_path +"/newrea/"+"newrea.xlsx",True)
 

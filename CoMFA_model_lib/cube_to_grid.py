@@ -148,9 +148,10 @@ def PF(input):
 if __name__ == '__main__':
     # time.sleep(60*60*6)
     dfs = []
-    # for path in glob.glob("../arranged_dataset/*.xlsx"):
-    for path in glob.glob("../arranged_dataset/newrea/*"):
+    for path in glob.glob("../arranged_dataset/*.xlsx"):
+    # for path in glob.glob("../arranged_dataset/newrea/*"):
         df = pd.read_excel(path)
+        print(path)
         print(len(df))
         dfs.append(df)
     dfs = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
@@ -174,5 +175,5 @@ if __name__ == '__main__':
                 "grid_coordinates"] + "/" + mol.GetProp("InchyKey")
             inputs.append(input)
             # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
-        p = Pool(8)
+        p = Pool(4)
         p.map(PF, inputs)
