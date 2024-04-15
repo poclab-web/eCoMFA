@@ -51,10 +51,6 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
 if __name__ == '__main__':
     to_dir_path = "../arranged_dataset"
     os.makedirs(to_dir_path, exist_ok=True)
-    os.makedirs(to_dir_path+"/newrea/", exist_ok=True)
-
     make_dataset("../sampledata/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx",True)
-    make_dataset("../sampledata/DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx",False)
-    make_dataset("../sampledata/RuSS_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx",False)
-    make_dataset("../sampledata/new_rea/new_rea.xlsx", to_dir_path +"/newrea/"+"newrea.xlsx",True)
-
+    make_dataset("../sampledata/DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx",True)
+    make_dataset("../sampledata/RuSS_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx",True)

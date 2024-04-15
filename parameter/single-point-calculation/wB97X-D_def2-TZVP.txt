@@ -1,5 +1,5 @@
 {
-"psi4_aligned_dir_name": "../psi4_optimization_aligned/b3lyp_6-31gd",
+"psi4_aligned_dir_name": "G:/saka/psi4_optimization_aligned/b3lyp_6-31gd",
 "one_point_level": "wB97X-D/def2-TZVP",
-"cube_dir_name": "../cube_aligned/wB97X-D_def2-TZVP20240330"
+"cube_dir_name": "C:/Users/poclabws/Gaussian_CoMFA/wB97X-D_def2-TZVP20240405"
 }
