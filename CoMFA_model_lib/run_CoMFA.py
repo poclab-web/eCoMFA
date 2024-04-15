@@ -583,6 +583,7 @@ if __name__ == '__main__':
                 input = df_, dfp, param["grid_coordinates"], save_path, n, param["n_splits"],True
 >>>>>>> cb7fd67 (from windows)
                 inputs.append(input)
+<<<<<<< HEAD
                 input = df_, dfp, param["grid_coordinates"], save_path, n, param["n_splits"], False
                 inputs_.append(input)
             # p.map(run,inputs)
@@ -594,3 +595,13 @@ if __name__ == '__main__':
     p.map(run, inputs_)
     end = time.perf_counter()  # 計測終了
     print('Finish{:.2f}'.format(end - start))
+=======
+                # regression_comparison(df_, dfp, param["grid_coordinates"], save_path, n)
+            # p = multiprocessing.Pool(5)
+            p.map(RC, inputs)
+        end = time.perf_counter()  # 計測終了
+        print('Finish{:.2f}'.format(end - start))
+
+
+
+>>>>>>> bbdeec7 (runcomfa 保存先変更)
