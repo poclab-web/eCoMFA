@@ -12,12 +12,13 @@ from scipy import stats
 from sklearn.metrics import r2_score
 
 # time.sleep(60*60*6)
-for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"):#-4.5~2.5 -3~3 -5~5
+for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.2*0413.txt"),
+                         reverse=True):  # -4.5~2.5 -3~3 -5~5
     print(param_name)
     with open(param_name, "r") as f:
         param = json.loads(f.read())
     print(param)
-    os.makedirs(param["fig_dir"],exist_ok=True)
+    os.makedirs(param["fig_dir"], exist_ok=True)
     fig = plt.figure(figsize=(3 * 3, 1 * 3 + 0.5))
     i = 0
     for file, label in zip(["../arranged_dataset/cbs.xlsx",
@@ -43,7 +44,7 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
         ax.set_xticks([1, 100, 10000])
         Gaussian = [[] for i in range(10)]
         dfps = []
-        for _ in range(4):
+        for _ in range(10):
             save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
             # print(save_path)
             dfp = pd.read_csv(save_path + "/n_comparison.csv")
@@ -71,7 +72,7 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
     fig.tight_layout()
 
     # fig.colorbar(ax)
-    plt.savefig(param["fig_dir"]+"/n_comparison.png", transparent=False, dpi=300)
+    plt.savefig(param["fig_dir"] + "/n_comparison.png", transparent=False, dpi=300)
 
     fig = plt.figure(figsize=(3 * 3, 1 * 3 + 0.5))
     i = 0
@@ -93,14 +94,14 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
         # ax.set_ylim(0.5, 3)
         # ax.set_yticks([0.5, 1.0, 1.5, 2.0, 2.5, 3.0])
         ax.set_ylim(0.6, 1.2)
-        ax.set_yticks([0.6,0.7,0.8,0.9,1.0,1.2])
+        ax.set_yticks([0.6, 0.7, 0.8, 0.9, 1.0, 1.2])
         ax.set_xticks([0.001, 0, 100])
         Gaussian = []
         Lasso = []
         Ridge = []
         PLS = []
         dfps = []
-        for _ in range(4):
+        for _ in range(10):
             save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
             dfp = pd.read_csv(save_path + "/result.csv")
 
@@ -160,7 +161,7 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
         # print("Gaussian", np.std(Gaussian, axis=0))
 
     fig.tight_layout()
-    plt.savefig(param["fig_dir"]+"/rmse.png", transparent=False, dpi=300)
+    plt.savefig(param["fig_dir"] + "/rmse.png", transparent=False, dpi=300)
     print("rmse.png_complete")
     if False:
         fig = plt.figure(figsize=(3 * 3, 1 * 3))
@@ -222,7 +223,7 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
             ax.set_ylabel("ΔΔ${G_{predict}}$ [kcal/mol]", fontsize=10)
             print("dfp", len(dfp))
         fig.tight_layout()
-        plt.savefig(param["fig_dir"]+"/test_predict.png", transparent=False, dpi=300)
+        plt.savefig(param["fig_dir"] + "/test_predict.png", transparent=False, dpi=300)
 
     fig = plt.figure(figsize=(3 * 4, 3 * 1 + 1))
     ax = []
@@ -248,10 +249,10 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
     # Ridges = []
     # Lassos = []
     # PLSs = []
-    Gaussian = [[] for _ in range(4)]
-    Ridge = [[] for _ in range(4)]
-    Lasso = [[] for _ in range(4)]
-    PLS = [[] for _ in range(4)]
+    Gaussian = [[] for _ in range(10)]
+    Ridge = [[] for _ in range(10)]
+    Lasso = [[] for _ in range(10)]
+    PLS = [[] for _ in range(10)]
     exp = []
     for h, (file, data) in enumerate(zip(["../arranged_dataset/cbs.xlsx",
                                           "../arranged_dataset/DIP-chloride.xlsx",
@@ -267,7 +268,7 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
         Ridge_ = []
         Lasso_ = []
         PLS_ = []
-        for _ in range(4):
+        for _ in range(8):
             save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
             dfp = pd.read_excel(save_path + "/result_test.xlsx").sort_values(["smiles"])
             # for i, name in enumerate(["Gaussian_test", "Ridge_test", "Lasso_test", "PLS_test"]):
@@ -283,8 +284,8 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
             Lasso_.append(dfp["Lasso_test"].values.tolist())
             PLS_.append(dfp["PLS_test"].values.tolist())
 
-            #Gaussian_pred=np.where(np.abs(dfp["Gaussian_test"].values) < 3.5, dfp["Gaussian_test"].values, 3.5 * np.sign(dfp["Gaussian_test"].values)).tolist()
-            Gaussian_pred=dfp["Gaussian_test"].values.tolist()
+            # Gaussian_pred=np.where(np.abs(dfp["Gaussian_test"].values) < 3.5, dfp["Gaussian_test"].values, 3.5 * np.sign(dfp["Gaussian_test"].values)).tolist()
+            Gaussian_pred = dfp["Gaussian_test"].values.tolist()
             Gaussian[_].extend(Gaussian_pred)
             Ridge[_].extend(dfp["Ridge_test"].values.tolist())
             Lasso[_].extend(dfp["Lasso_test"].values.tolist())
@@ -306,16 +307,16 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
         #            markeredgecolor="none", alpha=0.05, markersize=4)
 
         ax[0].plot(np.tile(dfp["ΔΔG.expt."].values, np.array(Gaussian_).shape[0]), np.array(Gaussian_).ravel(), "o",
-                   color=["blue", "red", "green", "orange"][h],label=data,
+                   color=["blue", "red", "green", "orange"][h], label=data,
                    alpha=1, markersize=1)
         ax[1].plot(np.tile(dfp["ΔΔG.expt."].values, np.array(Gaussian_).shape[0]), np.array(Ridge_).ravel(), "o",
-                   color=["blue", "red", "green", "orange"][h],label=data,
+                   color=["blue", "red", "green", "orange"][h], label=data,
                    alpha=1, markersize=1)
         ax[2].plot(np.tile(dfp["ΔΔG.expt."].values, np.array(Gaussian_).shape[0]), np.array(Lasso_).ravel(), "o",
-                   color=["blue", "red", "green", "orange"][h],label=data,
+                   color=["blue", "red", "green", "orange"][h], label=data,
                    alpha=1, markersize=1)
         ax[3].plot(np.tile(dfp["ΔΔG.expt."].values, np.array(Gaussian_).shape[0]), np.array(PLS_).ravel(), "o",
-                   color=["blue", "red", "green", "orange"][h],label=data,
+                   color=["blue", "red", "green", "orange"][h], label=data,
                    alpha=1, markersize=1)
 
         # ax[0].plot(dfp["ΔΔG.expt."], np.average(Gaussian_, axis=0), "o", color=["blue", "red", "green", "orange"][h],
@@ -327,8 +328,7 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
         # ax[3].plot(dfp["ΔΔG.expt."], np.average(PLS_, axis=0), "o", color=["blue", "red", "green", "orange"][h],
         #            markeredgecolor="none", label=data, alpha=1, markersize=4)
         print(i)
-        ax[3].legend(loc='upper center', bbox_to_anchor=(0.5 - 2, -0.17), ncol=4, fontsize=10,markerscale=4)
-
+        ax[3].legend(loc='upper center', bbox_to_anchor=(0.5 - 2, -0.17), ncol=4, fontsize=10, markerscale=4)
 
     ga = [r2_score(exp, pred) for pred in Gaussian]
     ri = [r2_score(exp, pred) for pred in Ridge]
@@ -345,13 +345,17 @@ for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt"
 
     props = dict(boxstyle='round', facecolor='gray', alpha=0.2)
     ax[0].text(-4.5, 4.5,
-            "$\mathrm{r^2_{test}}$ = " + "{:.3f} ± {:.3f}".format(np.average(ga),np.std(ga)),verticalalignment='top', bbox=props, fontsize=8)
+               "$\mathrm{r^2_{test}}$ = " + "{:.3f} ± {:.3f}".format(np.average(ga), np.std(ga)),
+               verticalalignment='top', bbox=props, fontsize=8)
     ax[1].text(-4.5, 4.5,
-            "$\mathrm{r^2_{test}}$ = " + "{:.3f} ± {:.3f}".format(np.average(ri),np.std(ri)),verticalalignment='top', bbox=props, fontsize=8)
+               "$\mathrm{r^2_{test}}$ = " + "{:.3f} ± {:.3f}".format(np.average(ri), np.std(ri)),
+               verticalalignment='top', bbox=props, fontsize=8)
     ax[2].text(-4.5, 4.5,
-            "$\mathrm{r^2_{test}}$ = " + "{:.3f} ± {:.3f}".format(np.average(la),np.std(la)),verticalalignment='top', bbox=props, fontsize=8)
+               "$\mathrm{r^2_{test}}$ = " + "{:.3f} ± {:.3f}".format(np.average(la), np.std(la)),
+               verticalalignment='top', bbox=props, fontsize=8)
     ax[3].text(-4.5, 4.5,
-            "$\mathrm{r^2_{test}}$ = " + "{:.3f} ± {:.3f}".format(np.average(pls),np.std(pls)),verticalalignment='top', bbox=props, fontsize=8)
+               "$\mathrm{r^2_{test}}$ = " + "{:.3f} ± {:.3f}".format(np.average(pls), np.std(pls)),
+               verticalalignment='top', bbox=props, fontsize=8)
     fig.tight_layout()
 
-    plt.savefig(param["fig_dir"]+"/test_predict_.png", transparent=False, dpi=300)
+    plt.savefig(param["fig_dir"] + "/test_predict_.png", transparent=False, dpi=300)

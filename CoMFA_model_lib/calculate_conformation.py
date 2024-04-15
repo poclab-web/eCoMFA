@@ -226,8 +226,9 @@ def run_gaussian(filenames):
     """
     Gaussianを使用して指定されたファイルを計算する関数
     """
-    print(filenames)
-    for filename in glob.glob(filenames + "/*.gjf"):
+
+    for filename in glob.glob(filenames + "/gaussianinput?.gjf"):
+        filename=filename.replace("\\","/")
         try:
             cmd = "source ~/.bash_profile ; g16 {}".format(filename)
             print(cmd)
@@ -249,7 +250,9 @@ def run_gaussian(filenames):
 
 
 if __name__ == '__main__':
-    param_file_name = "../parameter/structural optimization/structural optimization.txt"  # "../parameter/parameter_cbs.txt"
+    print("!!")
+    #param_file_name = "./parameter/structural optimization/structural optimization.txt"
+    param_file_name = "../parameter/structural optimization/structural_optimization.json"# "../parameter/parameter_cbs.txt"
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     print(param)
@@ -258,6 +261,7 @@ if __name__ == '__main__':
     for path in glob.glob("../arranged_dataset/newrea/newrea.xlsx"):
         df = pd.read_excel(path)
         dfs.append(df)
+    print(dfs)
 
     df = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
 
@@ -293,7 +297,7 @@ if __name__ == '__main__':
             ConfTransform(mol)
             conf_to_xyz(mol, psi4_aligned_dirs_name)
 
-        if not os.path.isdir(psi4_out_dirs_name_freq):
+        if False and not os.path.isdir(psi4_out_dirs_name_freq):
             gaussianfrequency(psi4_aligned_dirs_name, psi4_out_dirs_name_freq + "_calculating",
                               param["optimize_level"])
             run_gaussian(psi4_out_dirs_name_freq + "_calculating")

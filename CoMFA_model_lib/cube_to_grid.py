@@ -141,24 +141,22 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
 
 def PF(input):
     cube_dir_name, dfp, mol, grid_coordinates = input
-    print(mol)
+    print(cube_dir_name)
     pkl_to_featurevalue(cube_dir_name, dfp, mol, grid_coordinates)
 
 
 if __name__ == '__main__':
-    # time.sleep(60*60*6)
+    # time.sleep(60*60*24*2)
     dfs = []
     for path in glob.glob("../arranged_dataset/*.xlsx"):
-    # for path in glob.glob("../arranged_dataset/newrea/*"):
         df = pd.read_excel(path)
-        print(path)
         print(len(df))
         dfs.append(df)
     dfs = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
     print("len=",len(dfs))
     dfs["mol"] = dfs["smiles"].apply(calculate_conformation.get_mol)
 
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt")):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.2504022.txt"),reverse=True):
         df = copy.deepcopy(dfs)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
@@ -168,6 +166,7 @@ if __name__ == '__main__':
             lambda mol: calculate_conformation.read_xyz(mol, param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")))
         dfp = pd.read_csv(param["grid_coordinates"] + "/coordinates.csv")
         print(dfp)
+        print("len=", len(df))
         inputs = []
         for mol in df["mol"]:
             os.makedirs(param["grid_coordinates"] + "/" + mol.GetProp("InchyKey"), exist_ok=True)
@@ -175,5 +174,5 @@ if __name__ == '__main__':
                 "grid_coordinates"] + "/" + mol.GetProp("InchyKey")
             inputs.append(input)
             # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
-        p = Pool(4)
+        p = Pool(72)
         p.map(PF, inputs)
