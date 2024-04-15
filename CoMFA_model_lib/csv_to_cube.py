@@ -6,7 +6,7 @@ import pandas as pd
 if __name__ == '__main__':
     flag=True
     if flag:
-        filename="../../../result/-4.25 -4.75 -5.75 14 20 24 0.5 20240402/*/comparison0/mo*.csv"
+        filename="../../../result/-4.375 -4.875 -5.875 28 40 48 0.25 20240413/*/0/mo*8.0.csv"
     else:
         filename="../../../grid_coordinates/-4.25 -4.75 -5.75 14 20 24 0.5 20240402/*/data?.pkl"
     for file in glob.glob(filename):
@@ -46,7 +46,7 @@ if __name__ == '__main__':
         print(column_inc_specific_feature)
 
         # df[(df["x"]>0)&(df["y"]>0)][column_inc_specific_feature]=1
-        cubeinchikey = "../cube_aligned/wB97X-D_def2-TZVP20240330/ABEVIHIQUUXDMS-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
+        cubeinchikey = "F:/cube_aligned/wB97X-D_def2-TZVP20240330/ABEVIHIQUUXDMS-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
         with open(cubeinchikey, "r", encoding="UTF-8") as f:
             cube = f.read().splitlines()
         n_atom = int(cube[2].split()[0])

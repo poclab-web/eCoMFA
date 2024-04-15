@@ -36,8 +36,8 @@ def gaussiansinglepoint(input_dir_name, output_dir_name, level="hf/sto-3g"):
         i += 1
 
 def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
-    psi4.set_num_threads(nthread=8)
-    psi4.set_memory("4GB")
+    psi4.set_num_threads(nthread=72)
+    psi4.set_memory("64GB")
     # psi4.set_options({'geom_maxiter': 1000})
 
     psi4.set_options({'cubeprop_filepath': output_dir_name})
@@ -63,26 +63,40 @@ def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
         #                   "cubic_grid_spacing": [0.2, 0.2, 0.2]
         #                   })
         # psi4.cubeprop(wfn)
-        psi4.set_options({'cubeprop_tasks': ['esp', "lol", "elf", 'frontier_orbitals','dual_descriptor'],
+        # tasks=['esp', "lol", "elf", 'frontier_orbitals','dual_descriptor']
+        tasks=["esp"]
+        psi4.set_options({'cubeprop_tasks': tasks,
                           "cubic_grid_spacing": [0.2, 0.2, 0.2],
                           "cubic_grid_overage": [8, 8, 8]
                           })
         psi4.cubeprop(wfn)
-        os.rename(glob.glob(output_dir_name + "/Psi_a_*_LUMO.cube")[0], output_dir_name + "/LUMO02_{}.cube".format(i))
-        os.rename(glob.glob(output_dir_name + "/Psi_a_*_HOMO.cube")[0], output_dir_name + "/HOMO02_{}.cube".format(i))
-        os.rename(glob.glob(output_dir_name + "/ELFa.cube")[0], output_dir_name + "/ELF02_{}.cube".format(i))
-        os.rename(glob.glob(output_dir_name + "/LOLa.cube")[0], output_dir_name + "/LOL02_{}.cube".format(i))
-        os.remove(glob.glob(output_dir_name + "/LOLb.cube")[0])
-        os.remove(glob.glob(output_dir_name + "/ELFb.cube")[0])
-        # os.remove(glob.glob(output_dir_name + "/Psi_a_*_HOMO.cube")[0])
-        os.rename(output_dir_name + "/Dt.cube", output_dir_name + "/Dt02_{}.cube".format(i))
-        os.rename(output_dir_name + "/ESP.cube", output_dir_name + "/ESP02_{}.cube".format(i))
-        # psi4.set_options({'cubeprop_tasks': ['dual_descriptor'],
-        #                   "cubic_grid_spacing": [0.2, 0.2, 0.2]
-        #                   })
-        # psi4.cubeprop(wfn)
-        os.rename(glob.glob(output_dir_name + "/DUAL_*.cube")[0], output_dir_name + "/DUAL02_{}.cube".format(i))
-        # os.rename(output_dir_name + "/geom.xyz",output_dir_name + "/optimized{}.xyz".format(i))
+        try:
+            os.rename(glob.glob(output_dir_name + "/Psi_a_*_LUMO.cube")[0], output_dir_name + "/LUMO02_{}.cube".format(i))
+            os.rename(glob.glob(output_dir_name + "/Psi_a_*_HOMO.cube")[0], output_dir_name + "/HOMO02_{}.cube".format(i))
+        except:
+            print("Could not rename HOMO or LUMO")
+        try:
+            os.rename(glob.glob(output_dir_name + "/ELFa.cube")[0], output_dir_name + "/ELF02_{}.cube".format(i))
+            os.remove(glob.glob(output_dir_name + "/ELFb.cube")[0])
+        except:
+            print("Could not rename ELF")
+        try:
+            os.rename(glob.glob(output_dir_name + "/LOLa.cube")[0], output_dir_name + "/LOL02_{}.cube".format(i))
+            os.remove(glob.glob(output_dir_name + "/LOLb.cube")[0])
+        except:
+            print("Could not rename　LOL")
+        try:
+            os.rename(glob.glob(output_dir_name + "/DUAL_*.cube")[0], output_dir_name + "/DUAL02_{}.cube".format(i))
+        except:
+            print("Could not rename DUAL")
+        try:
+            os.rename(output_dir_name + "/Dt.cube", output_dir_name + "/Dt02_{}.cube".format(i))
+        except:
+            print("Could not rename Dt")
+        try:
+            os.rename(output_dir_name + "/ESP.cube", output_dir_name + "/ESP02_{}.cube".format(i))
+        except:
+            print("Could not rename ESP")
         with open(output_dir_name + "/geom.xyz", "r") as f:
             rl = f.read().split("\n")
             mol_output = rl[0] + "\n" + input_energy + "\n" + "\n".join(rl[2:])
@@ -98,34 +112,71 @@ def cube_to_pkl(dirs_name):
         if os.path.isfile(dirs_name + "/data{}.pkl".format(i)):
             i += 1
             continue
-        with open("{}/Dt02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
-            Dt = f.read().splitlines()
-        with open("{}/ESP02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
-            ESP = f.read().splitlines()
-        with open("{}/LUMO02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
-            LUMO = f.read().splitlines()
-        with open("{}/DUAL02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
-            DUAL = f.read().splitlines()
-        with open("{}/ELF02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
-            ELF = f.read().splitlines()
-        with open("{}/LOL02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
-            LOL = f.read().splitlines()
+        datas=[]
+        columns=[]
+        try:
+            with open("{}/Dt02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+                rl = f.read().splitlines()
+            data = np.concatenate([_.split() for _ in rl[3 + 3 + n_atom:]]).astype(float).reshape(-1)
+            datas.append(data)
+            columns.append("Dt")
+        except:
+            print("couldn't read {}".format("{}/Dt02_{}.cube".format(dirs_name, i)))
+        try:
+            with open("{}/ESP02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+                rl = f.read().splitlines()
+            data = np.concatenate([_.split() for _ in rl[3 + 3 + n_atom:]]).astype(float).reshape(-1)
+            datas.append(data)
+            columns.append("ESP")
+        except:
+            print("couldn't read {}".format("{}/ESP02_{}.cube".format(dirs_name, i)))
+        try:
+            with open("{}/LUMO02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+                rl = f.read().splitlines()
+            data = np.concatenate([_.split() for _ in rl[3 + 3 + n_atom:]]).astype(float).reshape(-1)
+            datas.append(data)
+            columns.append("LUMO")
+        except:
+            print("couldn't read {}".format("{}/LUMO02_{}.cube".format(dirs_name, i)))
+        try:
+            with open("{}/DUAL02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+                rl = f.read().splitlines()
+            data = np.concatenate([_.split() for _ in rl[3 + 3 + n_atom:]]).astype(float).reshape(-1)
 
-        l = np.array([_.split() for _ in Dt[2:6]])
+            datas.append(data)
+            columns.append("DUAL")
+        except:
+            print("couldn't read {}".format("{}/DUAL02_{}.cube".format(dirs_name, i)))
+        try:
+            with open("{}/ELF02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+                rl = f.read().splitlines()
+            data = np.concatenate([_.split() for _ in rl[3 + 3 + n_atom:]]).astype(float).reshape(-1)
+            datas.append(data)
+            columns.append("ELF")
+        except:
+            print("couldn't read {}".format("{}/ELF02_{}.cube".format(dirs_name,i)))
+        try:
+            with open("{}/LOL02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+                rl = f.read().splitlines()
+            data = np.concatenate([_.split() for _ in rl[3 + 3 + n_atom:]]).astype(float).reshape(-1)
+            datas.append(data)
+            columns.append("LOL")
+        except:
+            print("couldn't read {}".format("{}/LOL02_{}.cube".format(dirs_name,i)))
+
+        l = np.array([_.split() for _ in rl[2:6]])
         n_atom = int(l[0, 0])
         x0 = l[0, 1:].astype(float)
         size = l[1:, 0].astype(int)
         axis = l[1:, 1:].astype(float)
-        Dt = np.concatenate([_.split() for _ in Dt[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
-        ESP = np.concatenate([_.split() for _ in ESP[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
-        LUMO = np.concatenate([_.split() for _ in LUMO[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
-        DUAL = np.concatenate([_.split() for _ in DUAL[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
-        ELF = np.concatenate([_.split() for _ in ELF[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
-        LOL = np.concatenate([_.split() for _ in LOL[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
         l = np.array(list(product(range(size[0]), range(size[1]), range(size[2])))) @ axis + x0
         l = l * psi4.constants.bohr2angstroms
-        arr = np.concatenate([l, Dt, ESP, LUMO, DUAL,ELF,LOL], axis=1)
-        df = pd.DataFrame(arr, columns=["x", "y", "z", "Dt", "ESP", "LUMO", "DUAL","ELF","LOL"]).astype("float32")
+        print(dirs_name)
+        df1=pd.DataFrame(l, columns=["x", "y", "z"]).astype("float32")
+        df2=pd.DataFrame(datas,columns=columns).astype("float32")
+        df= pd.concat([df1, df2], axis=1)
+        # arr = np.concatenate(l.tolist()+data, axis=1)
+        # df = pd.DataFrame(arr, columns=["x", "y", "z"]+columns).astype("float32")
         df.to_pickle(dirs_name + "/data{}.pkl".format(i))
         i += 1
     # if i != 0:
@@ -138,8 +189,14 @@ def calc(input):
     if not os.path.isdir(output_dirs_name):
         print(mol.GetProp("InchyKey"))
         psi4calculation(input_dirs_name, output_dirs_name + "calculating", one_point_level)
-        os.rename(output_dirs_name + "calculating", output_dirs_name)
-    cube_to_pkl(output_dirs_name)
+        try:
+            os.rename(output_dirs_name + "calculating", output_dirs_name)
+        except:
+            print("Not exist",output_dirs_name + "calculating")
+    try:
+        cube_to_pkl(output_dirs_name)
+    except:
+        None
 
 if __name__ == '__main__':
     param_file_name = "../parameter/single-point-calculation/wB97X-D_def2-TZVP.txt"  # "../parameter_0221/parameter_cbs_gaussian.txt"  # _MP2

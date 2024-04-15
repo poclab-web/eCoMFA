@@ -3,6 +3,7 @@ import json
 import multiprocessing
 import os
 import re
+import sys
 import time
 import warnings
 
@@ -21,32 +22,38 @@ import calculate_conformation
 warnings.simplefilter('ignore')
 
 
-def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
+def Gaussian_penalized(df, dfp, gaussian_penalize, save_name,n_splits):
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
                                                                                   ascending=[True, True, True])
-    features = ["Dt","ESP"]
+    features = ["Dt"]
     features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
     # print(features_all.shape)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
     # print(std)
     X = np.concatenate(features_all / std, axis=1)
     # print(sys.getsizeof(X))
-    XTX = (X.T @ X).astype("float32")
+    # XTX = (X.T @ X).astype("float32")
     # print(np.tril(XTX))
+
     XTY = (X.T @ df["ΔΔG.expt."].values).astype("float32")
     # print(sys.getsizeof(XTX),sys.getsizeof(np.tril(XTX)))
     # for n in range(1, 11):
+    gaussian_penalize=gaussian_penalize.replace(os.sep,'/')
+    print(sys.getsizeof(df_coord),sys.getsizeof(XTY))
+
 
     for ptpname in sorted(glob.glob(gaussian_penalize + "/ptp*.npy")):
+        ptpname=ptpname.replace(os.sep,'/')
         sigma = re.findall(gaussian_penalize + "/ptp(.*).npy", ptpname)
         n = sigma[0]
-
-        ptp = np.load(ptpname)
+        start = time.time()
+        # ptp = np.load(ptpname)
+        print("before", time.time() - start)
         gaussians = []
         predicts = []
-        for L, n_num in zip(dfp["lambda"], range(1, len(dfp) + 1)):
+        for L in dfp["lambda"]:
             start = time.time()
-            gaussian_coef = scipy.linalg.solve(XTX + L * len(df) * 2 * ptp, XTY, assume_a="pos").T
+            gaussian_coef = scipy.linalg.solve(((X.T @ X).astype("float32") + L * len(df) * 2 * np.load(ptpname)).astype("float32"), XTY, assume_a="pos").T
             # print("before", time.time() - start, gaussian_coef)
             # x = np.sum(gaussian_coef * features, axis=1)
             # a = np.dot(x, df["ΔΔG.expt."].values) / (x ** 2).sum()
@@ -55,10 +62,9 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
             gaussians.append(gaussian_coef)  # * a.tolist()
             n_ = int(gaussian_coef.shape[0] / features_all.shape[0])
             df_coord["Gaussian_Dt"] = gaussian_coef[:n_]
-            df_coord.to_csv(save_name  + "/molecular_field_csv"+"/molecular_filed{}{}.csv".format(n, L))
+            df_coord.to_csv(save_name + "/molecular_filed{}{}.csv".format(n, L))
 
-            kf = KFold(n_splits=2, shuffle=False)
-            # kf = KFold(n_splits=len(df), shuffle=False)
+            kf = KFold(n_splits=int(n_splits), shuffle=False)
             gaussian_predicts = []
             start = time.time()
 
@@ -69,7 +75,7 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
                 # std = np.std(features_training, axis=(1)).reshape(features_all.shape[0], 1, -1)
                 X_ = np.concatenate(features_training / std, axis=1)
                 gaussian_coef_ = scipy.linalg.solve(
-                    (X_.T @ X_ + L * len(train_index) * 2 * ptp).astype("float32"),
+                    (X_.T @ X_ + L * len(train_index) * 2 * np.load(ptpname)).astype("float32"),
                     (X_.T @ df.iloc[train_index]["ΔΔG.expt."]).astype("float32"),
                     assume_a="pos", check_finite=False, overwrite_a=True, overwrite_b=True).T
                 # x = np.sum(gaussian_coef_ * features_training, axis=1)
@@ -111,17 +117,17 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name):
 
     df = df.sort_values(by='Gaussian_error{}'.format(n), key=abs, ascending=[False])
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    PandasTools.SaveXlsxFromFrame(df, save_name  + "/σ_result.xlsx", size=(100, 100))
-    dfp.to_csv(save_name  + "/σ_result.csv")
+    PandasTools.SaveXlsxFromFrame(df, save_name + "/n_comparison.xlsx", size=(100, 100))
+    dfp.to_csv(save_name + "/n_comparison.csv")
     print(save_name)
 
 
-def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
+def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits):
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
                                                                                   ascending=[True, True, True])
-    ptp = np.load(gaussian_penalize + "/ptp{}.npy".format(str(n)))
-
-    features = ["Dt","ESP"]
+    # ptp = np.load(gaussian_penalize + "/ptp{}.npy".format(str(n)))
+    ptp_name=gaussian_penalize + "/ptp{}.npy".format(str(n))
+    features = ["Dt"]
     features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
     features = np.concatenate(features_all / std, axis=1)
@@ -143,7 +149,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
         # start = time.time()
         X = features
         Y = df["ΔΔG.expt."].values
-        gaussian_coef = scipy.linalg.solve(X.T @ X + L * len(df) * 2 * ptp, X.T @ Y, assume_a="pos").T
+        gaussian_coef = scipy.linalg.solve(X.T @ X + L * len(df) * 2 * np.load(ptp_name), X.T @ Y, assume_a="pos").T
         # print("after_", gaussian_coef, time.time() - start)
 
         gaussians.append(gaussian_coef.tolist())
@@ -157,8 +163,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
         df_coord["PLS_Dt"] = pls.coef_[0][:n] * std[0].reshape([1])
         # df_coord["PLS_Dt"] = pls.coef_[0][:n] * np.std(features, axis=0) * std[0].reshape([1])
 
-        kf = KFold(n_splits=2, shuffle=False)
-        # kf = KFold(n_splits=len(df), shuffle=False)
+        kf = KFold(n_splits=int(n_splits), shuffle=False)
         gaussian_predicts = []
         ridge_predicts = []
         lasso_predicts = []
@@ -172,7 +177,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
             # start = time.time()
             X = features_training
             Y = df.iloc[train_index]["ΔΔG.expt."].values
-            gaussian_coef_ = scipy.linalg.solve(X.T @ X + L * len(train_index) * 2 * ptp, X.T @ Y,
+            gaussian_coef_ = scipy.linalg.solve(X.T @ X + L * len(train_index) * 2 * np.load(ptp_name), X.T @ Y,
                                                 assume_a="pos").T
             # print("after__",gaussian_coef_,time.time()-start)
             # print(time.time()-start)
@@ -212,7 +217,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
             df_coord["PLS_Dt{}".format(i)] = pls.coef_[0][:n] * std_[0].reshape([1])
 
         predicts.append([gaussian_predicts, ridge_predicts, lasso_predicts, pls_predicts])
-        df_coord.to_csv(save_name + "/molecular_field_csv" + "/molecular_field{}.csv".format(L))
+        df_coord.to_csv(save_name + "/molecular_filed{}.csv".format(L))
     print(np.array(predicts).shape)
     dfp[["Ridge_model", "Lasso_model", "PLS_model"]] = models
     dfp[["Ridge_regression_predict", "Lasso_regression_predict", "PLS_regression_predict"]] \
@@ -266,8 +271,8 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
     df = df.sort_values(by='Gaussian_error', key=abs, ascending=[False])
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     print(dfp[["Gaussian_test_r2", "ridge_test_r2", "lasso_test_r2", "pls_test_r2"]].max())
-    PandasTools.SaveXlsxFromFrame(df, save_name + "/λ_result.xlsx", size=(100, 100))
-    dfp.to_csv(save_name + "/λ_result.csv", index=False)
+    PandasTools.SaveXlsxFromFrame(df, save_name + "/result_test.xlsx", size=(100, 100))
+    dfp.to_csv(save_name + "/result.csv", index=False)
     print(save_name)
 
 
@@ -282,6 +287,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
 def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
     energies = []
     for conf in mol.GetConformers():
+        # print(conf.GetId())
         line = json.loads(conf.GetProp("freq"))
         energies.append(float(line[0] - line[1] * RT / 1.99e-3))
     energies = np.array(energies)
@@ -304,11 +310,12 @@ def is_normal_frequencies(filename):
                 for v in values:
                     if v < 0:
                         f.close()
-                        # print(filename)
+                        print(filename, " is bad conformer")
                         return False
             f.close()
         return True
     except:
+        print(filename," is bad conformer")
         return False
 
 
@@ -342,25 +349,31 @@ def is_normal_frequencies(filename):
 
 
 def GP(input):
-    df_, dfp, grid_coordinates, save_path = input
-    Gaussian_penalized(df_, dfp, grid_coordinates, save_path)
+    df_, dfp, grid_coordinates, save_path,n_splits = input
+    Gaussian_penalized(df_, dfp, grid_coordinates, save_path,n_splits)
 
 
 def RC(input):
-    df_, dfp, grid_coordinates, save_path, n = input
-    regression_comparison(df_, dfp, grid_coordinates, save_path, n)
-
+    df_, dfp, grid_coordinates, save_path, n,n_splits = input
+    regression_comparison(df_, dfp, grid_coordinates, save_path, n,n_splits)
+def run(input):
+    df_, dfp, grid_coordinates, save_path, n, n_splits,flag = input
+    if flag:
+        Gaussian_penalized(df_, dfp, grid_coordinates, save_path, n_splits)
+    else:
+        regression_comparison(df_, dfp, grid_coordinates, save_path, n,n_splits)
 
 if __name__ == '__main__':
-    # time.sleep(60*10)
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500408.txt")):
+    #time.sleep(60*60*24*2.5)
+    inputs=[]
+    inputs_=[]
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.*.txt"),reverse=False):
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
-        os.makedirs(param["out_dir_name"],exist_ok=True)
         start = time.perf_counter()  # 計測開始
-        # for file in glob.glob("../arranged_dataset/newrea/*"):
         for file in glob.glob("../arranged_dataset/*.xlsx"):
+        # for file in glob.glob("../arranged_dataset/*.xlsx"):
 
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             print(len(df))
@@ -371,7 +384,7 @@ if __name__ == '__main__':
             # df = df[[os.path.isdir(features_dir_name + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
             print(len(df))
             df = df[
-                [os.path.isdir("{}/{}".format(param["grid_coordinates"], mol.GetProp("InchyKey"))) for mol in
+                [len(glob.glob("{}/{}/*".format(param["grid_coordinates"], mol.GetProp("InchyKey"))))>0 for mol in
                  df["mol"]]]
             print(len(df))
 
@@ -382,14 +395,14 @@ if __name__ == '__main__':
             #      df["mol"]]]
             freq = []
             for mol in df["mol"]:
-                freq_ = all([is_normal_frequencies(path) for path in
+                freq_ = any([is_normal_frequencies(path) for path in
                              sorted(
                                  glob.glob(
                                      param["freq_dir"] + "/" + mol.GetProp("InchyKey") + "/gaussianinput?.log"))])
 
                 # print(mol.GetProp("InchyKey"), freq_)
                 freq.append(freq_)
-            # df=df[freq]
+            df=df[freq]
             df["mol"].apply(
                 lambda mol: calculate_conformation.read_xyz(mol,
                                                             param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")))
@@ -406,15 +419,23 @@ if __name__ == '__main__':
 
             for mol in df["mol"]:
                 dirs_name_freq = param["freq_dir"] + "/" + mol.GetProp("InchyKey") + "/gaussianinput?.log"
-                # print(dirs_name_freq)
+                print(dirs_name_freq)
+                del_list=[]
                 for path, conf in zip(
                         sorted(glob.glob(dirs_name_freq)),
                         mol.GetConformers()):
                     # print(path)
-                    data = cclib.io.ccread(path)
-                    ent = data.enthalpy * 627.5095  # hartree
-                    entr = data.entropy * 627.5095  # hartree
-                    conf.SetProp("freq", json.dumps([ent, entr]))
+                    if is_normal_frequencies(path):
+                        data = cclib.io.ccread(path)
+                        ent = data.enthalpy * 627.5095  # hartree
+                        entr = data.entropy * 627.5095  # hartree
+                        conf.SetProp("freq", json.dumps([ent, entr]))
+                        # print(conf.GetProp("freq"))
+                    else:
+                        del_list.append(conf.GetId())
+                for _ in del_list:
+                    mol.RemoveConformer(_)
+
 
             print("dflen", len(df))
             dfp = pd.read_csv(param["grid_coordinates"] + "/penalty_param.csv")
@@ -425,7 +446,7 @@ if __name__ == '__main__':
             ESPR1 = []
             ESPR2 = []
             for mol, RT in df[["mol", "RT"]].values:
-                # print(mol.GetProp("InchyKey"))
+                print(mol.GetProp("InchyKey"))
                 energy_to_Boltzmann_distribution(mol, RT)
                 Dt = []
                 ESP = []
@@ -488,38 +509,40 @@ if __name__ == '__main__':
             df["ESPR2"] = ESPR2
 
             print("feature_calculated")
-            inputs = []
-            for _ in range(3):
-                df_ = df.sample(frac=1, random_state=_)
-                save_path = param["out_dir_name"] + "/" + file_name + "/σ_comparison"+"/validation" + str(_)
-                field_csv_path = save_path +"/molecular_field_csv"
-                # save_path = p
-                os.makedirs(save_path, exist_ok=True)
-                os.makedirs(field_csv_path, exist_ok=True)
-                input = df_, dfp, param["grid_coordinates"], save_path
-                inputs.append(input)
-                # GP(input)
-                # Gaussian_penalized(df_, dfp, param["grid_coordinates"], save_path)
-            num_processes = multiprocessing.cpu_count()
-            print(num_processes)
-            p = multiprocessing.Pool(processes=4)
-            p.map(GP, inputs)
-            # from joblib import Parallel, delayed
-            #
-            # Parallel(n_jobs=-1)(delayed(GP)(input) for input in inputs)
-            # n = select_σ_n(file_name)
+            # inputs = []
+            # for _ in range(10):
+            #     df_ = df.sample(frac=1, random_state=_)
+            #     save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
+            #     os.makedirs(save_path, exist_ok=True)
+            #     input = df_, dfp, param["grid_coordinates"], save_path,param["n_splits"]
+            #     inputs.append(input)
+            # num_processes = multiprocessing.cpu_count()
+            # print(num_processes)
+            # p = multiprocessing.Pool(processes=20)
+            # p.map(GP, inputs)
             n = param["sigma"]
-            inputs = []
-            for _ in range(3):
+            # inputs = []
+            # for _ in range(10):
+            #     df_ = df.sample(frac=1, random_state=_)
+            #     save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
+            #     os.makedirs(save_path, exist_ok=True)
+            #     input = df_, dfp, param["grid_coordinates"], save_path, n,param["n_splits"]
+            #     inputs.append(input)
+            # p.map(RC, inputs)
+            for _ in range(10):
                 df_ = df.sample(frac=1, random_state=_)
-                save_path = param["out_dir_name"] + "/" + file_name + "/λ_comparison"+"/validation" + str(_)
-                field_csv_path = save_path +"/molecular_field_csv"
+                save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
                 os.makedirs(save_path, exist_ok=True)
-                os.makedirs(field_csv_path, exist_ok=True)
-                input = df_, dfp, param["grid_coordinates"], save_path, n
+                input = df_, dfp, param["grid_coordinates"], save_path, n, param["n_splits"],True
                 inputs.append(input)
-                # regression_comparison(df_, dfp, param["grid_coordinates"], save_path, n)
-            # p = multiprocessing.Pool(5)
-            p.map(RC, inputs)
-        end = time.perf_counter()  # 計測終了
-        print('Finish{:.2f}'.format(end - start))
+                input = df_, dfp, param["grid_coordinates"], save_path, n, param["n_splits"], False
+                inputs_.append(input)
+            # p.map(run,inputs)
+        # end = time.perf_counter()  # 計測終了
+        # print('Finish{:.2f}'.format(end - start))
+    p = multiprocessing.Pool(processes=30)
+    p.map(run, inputs)
+    p = multiprocessing.Pool(processes=15)
+    p.map(run, inputs_)
+    end = time.perf_counter()  # 計測終了
+    print('Finish{:.2f}'.format(end - start))
