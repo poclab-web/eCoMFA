@@ -523,3 +523,6 @@ if __name__ == '__main__':
             p.map(RC, inputs)
         end = time.perf_counter()  # 計測終了
         print('Finish{:.2f}'.format(end - start))
+
+
+
