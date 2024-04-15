@@ -62,7 +62,7 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name,n_splits):
             gaussians.append(gaussian_coef)  # * a.tolist()
             n_ = int(gaussian_coef.shape[0] / features_all.shape[0])
             df_coord["Gaussian_Dt"] = gaussian_coef[:n_]
-            df_coord.to_csv(save_name + "/molecular_filed{}{}.csv".format(n, L))
+            df_coord.to_csv(save_name  + "/molecular_field_csv"+"/molecular_filed{}{}.csv".format(n, L))
 
             kf = KFold(n_splits=int(n_splits), shuffle=False)
             gaussian_predicts = []
@@ -117,8 +117,8 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name,n_splits):
 
     df = df.sort_values(by='Gaussian_error{}'.format(n), key=abs, ascending=[False])
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    PandasTools.SaveXlsxFromFrame(df, save_name + "/n_comparison.xlsx", size=(100, 100))
-    dfp.to_csv(save_name + "/n_comparison.csv")
+    PandasTools.SaveXlsxFromFrame(df, save_name  + "/σ_result.xlsx", size=(100, 100))
+    dfp.to_csv(save_name  + "/σ_result.csv")
     print(save_name)
 
 
@@ -217,7 +217,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits):
             df_coord["PLS_Dt{}".format(i)] = pls.coef_[0][:n] * std_[0].reshape([1])
 
         predicts.append([gaussian_predicts, ridge_predicts, lasso_predicts, pls_predicts])
-        df_coord.to_csv(save_name + "/molecular_filed{}.csv".format(L))
+        df_coord.to_csv(save_name + "/molecular_field_csv" + "/molecular_field{}.csv".format(L))
     print(np.array(predicts).shape)
     dfp[["Ridge_model", "Lasso_model", "PLS_model"]] = models
     dfp[["Ridge_regression_predict", "Lasso_regression_predict", "PLS_regression_predict"]] \
@@ -271,8 +271,8 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits):
     df = df.sort_values(by='Gaussian_error', key=abs, ascending=[False])
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     print(dfp[["Gaussian_test_r2", "ridge_test_r2", "lasso_test_r2", "pls_test_r2"]].max())
-    PandasTools.SaveXlsxFromFrame(df, save_name + "/result_test.xlsx", size=(100, 100))
-    dfp.to_csv(save_name + "/result.csv", index=False)
+    PandasTools.SaveXlsxFromFrame(df, save_name + "/λ_result.xlsx", size=(100, 100))
+    dfp.to_csv(save_name + "/λ_result.csv", index=False)
     print(save_name)
 
 
