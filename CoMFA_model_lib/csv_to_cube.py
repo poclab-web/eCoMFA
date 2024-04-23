@@ -1,12 +1,14 @@
 import copy
 import glob
+import os
 
 import pandas as pd
 
 if __name__ == '__main__':
     flag=True
     if flag:
-        filename="../../../result/-4.375 -4.875 -5.875 28 40 48 0.25 20240413/*/0/mo*8.0.csv"
+        #filename="../../../result/-4.375 -4.875 -5.875 28 40 48 0.25 20240413/*/0/mo*8.0.csv"
+        filename = "../../../windows_molecularfield/*/molecular_filed8.0.csv"
     else:
         filename="../../../grid_coordinates/-4.25 -4.75 -5.75 14 20 24 0.5 20240402/*/data?.pkl"
     for file in glob.glob(filename):
@@ -46,7 +48,9 @@ if __name__ == '__main__':
         print(column_inc_specific_feature)
 
         # df[(df["x"]>0)&(df["y"]>0)][column_inc_specific_feature]=1
-        cubeinchikey = "F:/cube_aligned/wB97X-D_def2-TZVP20240330/ABEVIHIQUUXDMS-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
+        cubeinchikey = "F:/cube_aligned/wB97X-D_def2-TZVP20240330/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N,BSMGLVDZZMBWQB-UHFFFAOYSA-N,SYBYTAAJFKOIEJ-UHFFFAOYSA-N
+        cubeinchikey = "../cube_aligned/wB97X-D_def2-TZVP20240330/NTPLXRHDUXRPNE-UHFFFAOYSA-N/Dt02_0.cube"  # RIFKADJTWUGDOV-UHFFFAOYSA-N,KWOLFJPFCHCOCG-UHFFFAOYSA-N,
+        # DWPLEOPKBWNPQV-UHFFFAOYSA-N,BAYUSCHCCGXLAY-UHFFFAOYSA-N,NTPLXRHDUXRPNE-UHFFFAOYSA-N
         with open(cubeinchikey, "r", encoding="UTF-8") as f:
             cube = f.read().splitlines()
         n_atom = int(cube[2].split()[0])
@@ -78,6 +82,10 @@ if __name__ == '__main__':
         print(count_x, count_y, count_z, len(df))
         for column in column_inc_specific_feature:
             to_cube_file_name = file[:-4] + column + ".cube"  # os.path.splitext(os.path.basename(file))[0]
+            to_cube_file_dir = file[:-4] + column +"/kwolf/"+"projection"   # os.path.splitext(os.path.basename(file))[0]
+            to_cube_file_dir = file[:-4] + column +"/para/"
+            os.makedirs(to_cube_file_dir,exist_ok=True)
+            to_cube_file_name = file[:-4] + column +"/para/"+"projection" ".cube"
             print(to_cube_file_name)
             with open(to_cube_file_name, "w") as f:
                 print(0, file=f)
