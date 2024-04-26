@@ -28,8 +28,8 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
     ])]
     print(len(df))
     df = df[df["mol"].map(lambda mol:
-                          not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl]"))
-                          and not mol.HasSubstructMatch(Chem.MolFromSmarts("[I]"))
+                            not mol.HasSubstructMatch(Chem.MolFromSmarts("[I]"))
+                          and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl]"))
                           and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][OH1]"))
                           and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[OH1]"))
                           )]
@@ -51,7 +51,10 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
 if __name__ == '__main__':
     to_dir_path = "../arranged_dataset"
     os.makedirs(to_dir_path, exist_ok=True)
-    make_dataset("../sampledata/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx",False)
-    make_dataset("../sampledata/DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx",True)
-    make_dataset("../sampledata/RuSS_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx",True)
-    make_dataset("../sampledata/add_new/cbs_sample_addnew.xlsx", to_dir_path +"/" +"cbs_new.xlsx",False)
+
+    # make_dataset("../sampledata/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx",False)
+    # make_dataset("../sampledata/DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx",True)
+    make_dataset("../sampledata/sample_0425/RuSS_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx",True)
+    make_dataset("../sampledata/sample_0425/(+)DIP-chloride_sample.xlsx", to_dir_path +"/" +"DIP-chloride.xlsx",False)
+    make_dataset("../sampledata/sample_0425/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx",
+                 False)
