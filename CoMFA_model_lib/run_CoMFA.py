@@ -22,10 +22,10 @@ import calculate_conformation
 warnings.simplefilter('ignore')
 
 
-def Gaussian_penalized(df, dfp, gaussian_penalize, save_name,n_splits):
+def Gaussian_penalized(df, dfp, gaussian_penalize, save_name,n_splits,features):
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
                                                                                   ascending=[True, True, True])
-    features = ["Dt"]
+    # features = ["Dt"]
     features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
     # print(features_all.shape)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
@@ -40,11 +40,13 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name,n_splits):
     # for n in range(1, 11):
     gaussian_penalize=gaussian_penalize.replace(os.sep,'/')
     print(sys.getsizeof(df_coord),sys.getsizeof(XTY))
-
-
-    for ptpname in sorted(glob.glob(gaussian_penalize + "/ptp*.npy")):
+    if len(features)==1:
+        ptpname_="/ptp"
+    else:
+        ptpname_="/2ptp"
+    for ptpname in sorted(glob.glob(gaussian_penalize + ptpname_+"*.npy")):
         ptpname=ptpname.replace(os.sep,'/')
-        sigma = re.findall(gaussian_penalize + "/ptp(.*).npy", ptpname)
+        sigma = re.findall(gaussian_penalize + ptpname_+"(.*).npy", ptpname)
         n = sigma[0]
         start = time.time()
         # ptp = np.load(ptpname)
@@ -127,12 +129,14 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name,n_splits):
     print(save_name)
 
 
-def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits):
+def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits,features):
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
                                                                                   ascending=[True, True, True])
-    # ptp = np.load(gaussian_penalize + "/ptp{}.npy".format(str(n)))
-    ptp_name=gaussian_penalize + "/ptp{}.npy".format(str(n))
-    features = ["Dt"]
+    # features = ["Dt"]
+    if len(features)==1:
+        ptp_name=gaussian_penalize + "/ptp{}.npy".format(str(n))
+    else:
+        ptp_name=gaussian_penalize+"/2ptp{}.npy".format(str(n))
     features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
     std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
     features = np.concatenate(features_all / std, axis=1)
@@ -310,6 +314,9 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 
 def is_normal_frequencies(filename):
     try:
+        data = cclib.io.ccread(filename)
+        ent = data.enthalpy * 627.5095  # hartree
+        entr = data.entropy * 627.5095  # hartree
         with open(filename, 'r') as f:
             lines = f.readlines()
             frequencies_lines = [line for line in lines if 'Frequencies' in line]
@@ -358,20 +365,20 @@ def is_normal_frequencies(filename):
 #         color=cm.hsv(j / 10), alpha=1)
 
 
-def GP(input):
-    df_, dfp, grid_coordinates, save_path,n_splits = input
-    Gaussian_penalized(df_, dfp, grid_coordinates, save_path,n_splits)
+# def GP(input):
+#     df_, dfp, grid_coordinates, save_path,n_splits = input
+#     Gaussian_penalized(df_, dfp, grid_coordinates, save_path,n_splits)
 
 
-def RC(input):
-    df_, dfp, grid_coordinates, save_path, n,n_splits = input
-    regression_comparison(df_, dfp, grid_coordinates, save_path, n,n_splits)
+# def RC(input):
+#     df_, dfp, grid_coordinates, save_path, n,n_splits = input
+#     regression_comparison(df_, dfp, grid_coordinates, save_path, n,n_splits)
 def run(input):
-    df_, dfp, grid_coordinates, save_path, n, n_splits,flag = input
+    df_, dfp, grid_coordinates, save_path, n, n_splits,flag,features = input
     if flag:
-        Gaussian_penalized(df_, dfp, grid_coordinates, save_path, n_splits)
+        Gaussian_penalized(df_, dfp, grid_coordinates, save_path, n_splits,features)
     else:
-        regression_comparison(df_, dfp, grid_coordinates, save_path, n,n_splits)
+        regression_comparison(df_, dfp, grid_coordinates, save_path, n,n_splits,features)
 
 if __name__ == '__main__':
     #time.sleep(60*60*24*2.5)
@@ -443,11 +450,15 @@ if __name__ == '__main__':
                         mol.GetConformers()):
                     # print(path)
                     if is_normal_frequencies(path):
-                        data = cclib.io.ccread(path)
-                        ent = data.enthalpy * 627.5095  # hartree
-                        entr = data.entropy * 627.5095  # hartree
-                        conf.SetProp("freq", json.dumps([ent, entr]))
-                        # print(conf.GetProp("freq"))
+                        try:
+                            data = cclib.io.ccread(path)
+                            ent = data.enthalpy * 627.5095  # hartree
+                            entr = data.entropy * 627.5095  # hartree
+                            conf.SetProp("freq", json.dumps([ent, entr]))
+                            # print(conf.GetProp("freq"))
+                        except:
+                            print("read error,",path)
+                            # del_list.append(conf.GetId())
                     else:
                         del_list.append(conf.GetId())
                 for _ in del_list:
@@ -571,12 +582,17 @@ if __name__ == '__main__':
             #     input = df_, dfp, param["grid_coordinates"], save_path, n,param["n_splits"]
             #     inputs.append(input)
             # p.map(RC, inputs)
+<<<<<<< HEAD
             for _ in range(10):
 >>>>>>> cb7fd67 (from windows)
+=======
+            for _ in range(5):
+>>>>>>> b2b0e28 (from windows)
                 df_ = df.sample(frac=1, random_state=_)
                 save_path = param["out_dir_name"] + "/" + file_name + "/λ_comparison"+"/validation" + str(_)
                 field_csv_path = save_path +"/molecular_field_csv"
                 os.makedirs(save_path, exist_ok=True)
+<<<<<<< HEAD
 <<<<<<< HEAD
                 os.makedirs(field_csv_path, exist_ok=True)
                 input = df_, dfp, param["grid_coordinates"], save_path, n
@@ -586,13 +602,18 @@ if __name__ == '__main__':
                 inputs.append(input)
 <<<<<<< HEAD
                 input = df_, dfp, param["grid_coordinates"], save_path, n, param["n_splits"], False
+=======
+                input = df_, dfp, param["grid_coordinates"], save_path, n, param["n_splits"],True,param["features"]
+                inputs.append(input)
+                input = df_, dfp, param["grid_coordinates"], save_path, n, param["n_splits"], False,param["features"]
+>>>>>>> b2b0e28 (from windows)
                 inputs_.append(input)
             # p.map(run,inputs)
         # end = time.perf_counter()  # 計測終了
         # print('Finish{:.2f}'.format(end - start))
-    p = multiprocessing.Pool(processes=30)
-    p.map(run, inputs)
-    p = multiprocessing.Pool(processes=30)
+    # p = multiprocessing.Pool(processes=30)
+    # p.map(run, inputs)
+    p = multiprocessing.Pool(processes=15)
     p.map(run, inputs_)
     end = time.perf_counter()  # 計測終了
     print('Finish{:.2f}'.format(end - start))

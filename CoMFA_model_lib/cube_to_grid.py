@@ -14,21 +14,24 @@ import calculate_conformation
 warnings.simplefilter('ignore')
 
 
-def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量を計算　ボルツマン分布の加重はしないでデータセットの区別もなし。
-    drop_dupl_x = dfp.drop_duplicates(subset="x").sort_values('x')["x"]
-    drop_dupl_y = dfp.drop_duplicates(subset="y").sort_values('y')["y"]
-    drop_dupl_z = dfp.drop_duplicates(subset="z").sort_values('z')["z"]
+def pkl_to_featurevalue(dir_name, dfp, mol, conf, out_name):  # グリッド特徴量を計算　ボルツマン分布の加重はしないでデータセットの区別もなし。
+    conf=mol.GetConformer(conf)
 
-    d_x = (drop_dupl_x.iloc[1] - drop_dupl_x.iloc[0]) / 2
-    d_y = (drop_dupl_y.iloc[1] - drop_dupl_y.iloc[0]) / 2
-    d_z = (drop_dupl_z.iloc[1] - drop_dupl_z.iloc[0]) / 2
+    # for conf in mol.GetConformers():
+    if True:
+        drop_dupl_x = dfp.drop_duplicates(subset="x").sort_values('x')["x"]
+        drop_dupl_y = dfp.drop_duplicates(subset="y").sort_values('y')["y"]
+        drop_dupl_z = dfp.drop_duplicates(subset="z").sort_values('z')["z"]
 
-    for conf in mol.GetConformers():
+        d_x = (drop_dupl_x.iloc[1] - drop_dupl_x.iloc[0]) / 2
+        d_y = (drop_dupl_y.iloc[1] - drop_dupl_y.iloc[0]) / 2
+        d_z = (drop_dupl_z.iloc[1] - drop_dupl_z.iloc[0]) / 2
+
         # 入力：幅
         # dfpをdata.pklの最大・最小から決定
         outfilename = "{}/data{}.pkl".format(out_name, conf.GetId())
-        # if os.path.isfile(outfilename):
-        #     continue
+        if os.path.isfile(outfilename):
+            return None
         filename = "{}/data{}.pkl".format(dir_name, conf.GetId())
         print(filename)
         data = pd.read_pickle(filename)
@@ -140,9 +143,9 @@ def pkl_to_featurevalue(dir_name, dfp, mol, out_name):  # グリッド特徴量�
 
 
 def PF(input):
-    cube_dir_name, dfp, mol, grid_coordinates = input
+    cube_dir_name, dfp, mol, conf, grid_coordinates = input
     print(cube_dir_name)
-    pkl_to_featurevalue(cube_dir_name, dfp, mol, grid_coordinates)
+    pkl_to_featurevalue(cube_dir_name, dfp, mol, conf, grid_coordinates)
 
 
 if __name__ == '__main__':
@@ -156,7 +159,7 @@ if __name__ == '__main__':
     print("len=",len(dfs))
     dfs["mol"] = dfs["smiles"].apply(calculate_conformation.get_mol)
 
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.*04022.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500413.txt"),reverse=True):
         df = copy.deepcopy(dfs)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
@@ -170,9 +173,11 @@ if __name__ == '__main__':
         inputs = []
         for mol in df["mol"]:
             os.makedirs(param["grid_coordinates"] + "/" + mol.GetProp("InchyKey"), exist_ok=True)
-            input = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey"), dfp, mol, param[
-                "grid_coordinates"] + "/" + mol.GetProp("InchyKey")
-            inputs.append(input)
+            for conf in mol.GetConformers():
+                conf =conf.GetId()
+                input = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey"), dfp, mol, conf, param[
+                    "grid_coordinates"] + "/" + mol.GetProp("InchyKey")
+                inputs.append(input)
             # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
-        p = Pool(72)
+        p = Pool(60)
         p.map(PF, inputs)
