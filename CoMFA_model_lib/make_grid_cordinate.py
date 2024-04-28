@@ -66,19 +66,20 @@ def make_penalty(l, sigma, interval, out_dir_name):
     # penalty=np.identity(penalty.shape[0])
     # filename = out_dir_name + "/penalty{}.npy".format(n)  # + "/" + param["grid_coordinates_dir"]
     # np.save(filename, penalty)
-    # penalty_L = []
-    # for _ in range(2):
-    #     penalty_L_ = []
-    #     for __ in range(2):
-    #         if _ == __:
-    #             penalty_L_.append(penalty)
-    #         else:
-    #             penalty_L_.append(np.zeros(penalty.shape))
-    #     penalty_L.append(penalty_L_)
-    # penalty=np.block(penalty_L)
+    filename = out_dir_name + "/ptp{:.2f}.npy".format(sigma)
+    penalty_L = []
+    for _ in range(2):
+        penalty_L_ = []
+        for __ in range(2):
+            if _ == __:
+                penalty_L_.append(penalty)
+            else:
+                penalty_L_.append(np.zeros(penalty.shape))
+        penalty_L.append(penalty_L_)
+    penalty=np.block(penalty_L)
     ptp=penalty.T@penalty
 
-    filename = out_dir_name + "/ptp{:.2f}.npy".format(sigma)
+    filename = out_dir_name + "/2ptp{:.2f}.npy".format(sigma)
     print(filename)
     np.save(filename, ptp.astype("float32"))
     print(filename)
@@ -117,12 +118,6 @@ if __name__ == '__main__':
     # interval = 0.4
     # make_grid_coordinate(orient, size, interval)
 
-    # [-2.0 -1.5 -1.5] [4 4 4] 1.0
-    orient = [-2.0, -1.5, -1.5]
-    size = [3 + 1, 2* 2,  2 * 2]
-    interval = 1.0
-    make_grid_coordinate(orient, size, interval)
-
     # # [-5.8 -3.0 -5.8] [20 16 30] 0.4
     # orient = [-5.8, -3.0, -5.8]
     # size = [15 + 5, 8 * 2, 15 * 2]
@@ -151,20 +146,6 @@ if __name__ == '__main__':
     interval = 0.25
     make_grid_coordinate(orient, size, interval)
     raise ValueError
-
-
-
-    orient = [-4.375, -2.875, -4.875]
-    size = [28, 12 * 2, 20 * 2]
-    interval = 0.25
-    make_grid_coordinate(orient, size, interval)
-
-    # [-5.875 -3.875 -5.875] [32 32 48] 0.25
-
-    orient = [-5.875, -3.875, -5.875]
-    size = [24 + 8, 16 * 2, 24 * 2]
-    interval = 0.25
-    make_grid_coordinate(orient, size, interval)
     #
     # # [-5.8 -2.6 -5.8] [20 14 30] 0.4
     # orient = [-5.8, -2.6, -5.8]
