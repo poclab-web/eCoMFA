@@ -367,7 +367,8 @@ if __name__ == '__main__':
     #time.sleep(60*60*24*2.5)
     inputs=[]
     inputs_=[]
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.*.txt"),reverse=False):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500413.txt"),reverse=True):
+        print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
@@ -405,7 +406,7 @@ if __name__ == '__main__':
             df=df[freq]
             df["mol"].apply(
                 lambda mol: calculate_conformation.read_xyz(mol,
-                                                            param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")))
+                                                            param["opt_structure"] + "/" + mol.GetProp("InchyKey")))
             grid = []
             for mol in df["mol"]:
                 freq_ = all([os.path.isfile(
@@ -542,7 +543,7 @@ if __name__ == '__main__':
         # print('Finish{:.2f}'.format(end - start))
     p = multiprocessing.Pool(processes=30)
     p.map(run, inputs)
-    p = multiprocessing.Pool(processes=15)
+    p = multiprocessing.Pool(processes=30)
     p.map(run, inputs_)
     end = time.perf_counter()  # 計測終了
     print('Finish{:.2f}'.format(end - start))

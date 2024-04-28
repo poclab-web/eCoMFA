@@ -12,7 +12,7 @@ from scipy import stats
 from sklearn.metrics import r2_score
 
 # time.sleep(60*60*6)
-for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.2*0413.txt"),
+for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500413.txt"),
                          reverse=True):  # -4.5~2.5 -3~3 -5~5
     print(param_name)
     with open(param_name, "r") as f:
@@ -44,10 +44,10 @@ for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.2*04
         ax.set_xticks([1, 100, 10000])
         Gaussian = [[] for i in range(10)]
         dfps = []
-        for _ in range(10):
-            save_path = param["out_dir_name"] + "/" + file_name + "/comparison" + str(_)
+        for _ in range(8):
+            save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
             # print(save_path)
-            dfp = pd.read_csv(save_path + "/n_comparison.csv")
+            dfp = pd.read_csv(save_path + "/σ_result.csv")
             for j, name in zip(range(10), sorted([name for name in dfp.columns if "Gaussian_test_RMSE" in name])):
                 # dfp["Gaussian_test_r2"] = dfp["Gaussian_test_RMSE{}".format(j)]
                 dfp["Gaussian_test_r2"] = dfp[name]
@@ -58,6 +58,7 @@ for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.2*04
                 Gaussian[j].append(dfp[name].values.tolist())
         dfs = pd.concat(dfps)
         for j, name in zip(range(10), sorted([name for name in dfp.columns if "Gaussian_test_RMSE" in name])):
+            #print(name)
             sigma = re.findall("Gaussian_test_RMSE(.*)", name)[0]
             ax.plot(dfp["lambda"], np.average(Gaussian[j], axis=0), "-",
                     label="σ = {:.2f} Å".format(float(sigma)),
@@ -72,7 +73,7 @@ for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.2*04
     fig.tight_layout()
 
     # fig.colorbar(ax)
-    plt.savefig(param["fig_dir"] + "/n_comparison.png", transparent=False, dpi=300)
+    plt.savefig(param["fig_dir"] + "/σ_result.png", transparent=False, dpi=300)
 
     fig = plt.figure(figsize=(3 * 3, 1 * 3 + 0.5))
     i = 0
@@ -103,7 +104,7 @@ for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.2*04
         dfps = []
         for _ in range(10):
             save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
-            dfp = pd.read_csv(save_path + "/result.csv")
+            dfp = pd.read_csv(save_path + "/λ_result.csv")
 
             dfp["test_r2"] = dfp["Gaussian_test_RMSE"]
             dfp["method"] = "Gaussian"
@@ -161,7 +162,7 @@ for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.2*04
         # print("Gaussian", np.std(Gaussian, axis=0))
 
     fig.tight_layout()
-    plt.savefig(param["fig_dir"] + "/rmse.png", transparent=False, dpi=300)
+    plt.savefig(param["fig_dir"] + "/λ_result.png", transparent=False, dpi=300)
     print("rmse.png_complete")
     if False:
         fig = plt.figure(figsize=(3 * 3, 1 * 3))
@@ -268,9 +269,9 @@ for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.2*04
         Ridge_ = []
         Lasso_ = []
         PLS_ = []
-        for _ in range(8):
+        for _ in range(10):
             save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
-            dfp = pd.read_excel(save_path + "/result_test.xlsx").sort_values(["smiles"])
+            dfp = pd.read_excel(save_path + "/λ_result.xlsx").sort_values(["smiles"])
             # for i, name in enumerate(["Gaussian_test", "Ridge_test", "Lasso_test", "PLS_test"]):
             #     None
             #     # ax[i].plot(dfp["ΔΔG.expt."], dfp[name], "o", color=["blue", "red", "green", "orange"][h],
@@ -358,4 +359,4 @@ for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.2*04
                verticalalignment='top', bbox=props, fontsize=8)
     fig.tight_layout()
 
-    plt.savefig(param["fig_dir"] + "/test_predict_.png", transparent=False, dpi=300)
+    plt.savefig(param["fig_dir"] + "/validation.png", transparent=False, dpi=300)
