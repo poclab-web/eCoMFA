@@ -159,7 +159,7 @@ if __name__ == '__main__':
     print("len=",len(dfs))
     dfs["mol"] = dfs["smiles"].apply(calculate_conformation.get_mol)
 
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500413.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),reverse=True):
         df = copy.deepcopy(dfs)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
@@ -179,5 +179,6 @@ if __name__ == '__main__':
                     "grid_coordinates"] + "/" + mol.GetProp("InchyKey")
                 inputs.append(input)
             # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
-        p = Pool(60)
+        p = Pool(65)
         p.map(PF, inputs)
+    print("END")
