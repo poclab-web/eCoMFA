@@ -1,0 +1,11 @@
+{
+"cube_dir_name": "F:/wB97X-D_def2-TZVP20240416",
+"grid_coordinates":"../../../grid_coordinates/-4.25 -4.75 -5.75 14 20 24 0.5 20240412",
+"out_dir_name":"../../../result/-4.25 -4.75 -5.75 14 20 24 0.5 20240413",
+"freq_dir":"F:/b3lyp_6-31gd_freq20240427",
+"opt_structure":"F:/b3lyp_6-31gd20240427",
+"fig_dir":"C:/Users/poclabws/PycharmProjects/CoMFA_model/figs/-4.25 -4.75 -5.75 14 20 24 0.5 20240413",
+"sigma":"1.00",
+"n_splits":"2",
+"features":["Dt"]
+}

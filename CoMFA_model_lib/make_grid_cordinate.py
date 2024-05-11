@@ -6,7 +6,7 @@ import pandas as pd
 
 
 def make_grid_coordinate(orient, size, interval):
-    out_dir_name = "../../../grid_coordinates" + "/{} {} {} 20240412".format(" ".join(map(str, orient)),
+    out_dir_name = "../../../grid_coordinates" + "/{} {} {} 20240510".format(" ".join(map(str, orient)),
                                                                         " ".join(map(str, size)), interval)
     l = []
     for x in product(range(size[0]), range(size[1]), range(size[2])):
@@ -31,13 +31,14 @@ def make_grid_coordinate(orient, size, interval):
     # print(dfp_yz)
 
     # list = np.logspace(0, 13, num=14, base=2).astype(int)  # 2**np.arange(10)#[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
-    list = np.logspace(-7, 7, num=15, base=2)  # 2**np.arange(10)#[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+    list = np.logspace(0, 10, num=11, base=2)  # 2**np.arange(10)#[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
     df = pd.DataFrame(list, columns=["lambda"])
-    df["n_components"]=np.arange(1,16)
+    df["n_components"]=np.arange(1,12)
     df.to_csv(out_dir_name + "/penalty_param.csv")
-    for n in range(1,11):
-        sigma = interval * n
+    for n in range(5):
+        sigma = interval *2** n
         make_penalty(l, sigma, interval, out_dir_name)
+    print("END")
 
 def make_penalty(l, sigma, interval, out_dir_name):
     l = np.array(l)
@@ -67,6 +68,9 @@ def make_penalty(l, sigma, interval, out_dir_name):
     # filename = out_dir_name + "/penalty{}.npy".format(n)  # + "/" + param["grid_coordinates_dir"]
     # np.save(filename, penalty)
     filename = out_dir_name + "/ptp{:.2f}.npy".format(sigma)
+    ptp=penalty.T@penalty
+
+    np.save(filename,ptp.astype("float32"))
     penalty_L = []
     for _ in range(2):
         penalty_L_ = []
@@ -124,18 +128,18 @@ if __name__ == '__main__':
     # interval = 0.4
     # make_grid_coordinate(orient, size, interval)
 
-    orient = [-4.250, -2.750, -4.750]
-    size = [14, 12 , 20 ]
-    interval = 0.50
-    make_grid_coordinate(orient, size, interval)
-    orient = [-4.250, -3.750, -4.750]
-    size = [14, 16 , 20 ]
-    interval = 0.50
-    make_grid_coordinate(orient, size, interval)
-    orient = [-4.250, -4.750, -4.750]
-    size = [14, 20, 20]
-    interval = 0.50
-    make_grid_coordinate(orient, size, interval)
+    # orient = [-4.250, -2.750, -4.750]
+    # size = [14, 12 , 20 ]
+    # interval = 0.50
+    # make_grid_coordinate(orient, size, interval)
+    # orient = [-4.250, -3.750, -4.750]
+    # size = [14, 16 , 20 ]
+    # interval = 0.50
+    # make_grid_coordinate(orient, size, interval)
+    # orient = [-4.250, -4.750, -4.750]
+    # size = [14, 20, 20]
+    # interval = 0.50
+    # make_grid_coordinate(orient, size, interval)
     orient = [-4.250, -4.750, -5.750]
     size = [14, 20, 24]
     interval = 0.50
@@ -145,7 +149,7 @@ if __name__ == '__main__':
     size = [28, 20 * 2, 24 * 2]
     interval = 0.25
     make_grid_coordinate(orient, size, interval)
-    raise ValueError
+    # raise ValueError
     #
     # # [-5.8 -2.6 -5.8] [20 14 30] 0.4
     # orient = [-5.8, -2.6, -5.8]
