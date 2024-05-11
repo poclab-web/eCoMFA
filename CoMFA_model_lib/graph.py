@@ -13,7 +13,7 @@ from sklearn.metrics import r2_score
 
 # time.sleep(60*60*6)
 rang=10
-for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),
+for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.250510.txt"),
                          reverse=True):  # -4.5~2.5 -3~3 -5~5
     print(param_name)
     with open(param_name, "r") as f:
