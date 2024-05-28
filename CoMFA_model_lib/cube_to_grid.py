@@ -30,10 +30,9 @@ def pkl_to_featurevalue(dir_name, dfp, mol, conf, out_name):  # グリッド特�
         # 入力：幅
         # dfpをdata.pklの最大・最小から決定
         outfilename = "{}/data{}.pkl".format(out_name, conf.GetId())
-        if os.path.isfile(outfilename):
-            return None
+        # if os.path.isfile(outfilename):
+        #     return None
         filename = "{}/data{}.pkl".format(dir_name, conf.GetId())
-        print(filename)
         data = pd.read_pickle(filename)
         data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
         # data["ESP"]=data["ESP"].values*np.exp(-data["Dt"].values/np.sqrt(np.average(data["Dt"].values ** 2)))
@@ -103,7 +102,6 @@ def pkl_to_featurevalue(dir_name, dfp, mol, conf, out_name):  # グリッド特�
         #                 Dt_ = np.average(data_z["Dt"].values, weights=np.where(d < sigma * 3, gauss_func(d), 0))
         #                 # Dt_ = np.sum(data_z["Dt"].values *np.where(d<3,exp(-d**2),0))
         #                 Dt.append(Dt_)
-        print(time.time() - start)
 
         # else:
         #     data["x"] = np.round((data["x"].values - min(drop_dupl_x)) / (d_x * 2)).astype(int)
@@ -135,7 +133,7 @@ def pkl_to_featurevalue(dir_name, dfp, mol, conf, out_name):  # グリッド特�
         #                 # Dt_ = np.sum(data_xy[data_xy["z{}".format(z)]]["Dt"].values) * (0.2 * 0.52917721067) ** 3
         #                 Dt_ = np.average(data_xy[data_xy["z{}".format(z)]]["Dt"].values)
         #                 Dt.append(Dt_)
-        print(time.time() - start)
+        print(filename,time.time() - start)
 
         dfp["Dt"] = np.nan_to_num(Dt)
         dfp["ESP"] = np.nan_to_num(ESP)
@@ -144,7 +142,6 @@ def pkl_to_featurevalue(dir_name, dfp, mol, conf, out_name):  # グリッド特�
 
 def PF(input):
     cube_dir_name, dfp, mol, conf, grid_coordinates = input
-    print(cube_dir_name)
     pkl_to_featurevalue(cube_dir_name, dfp, mol, conf, grid_coordinates)
 
 
@@ -159,7 +156,7 @@ if __name__ == '__main__':
     print("len=",len(dfs))
     dfs["mol"] = dfs["smiles"].apply(calculate_conformation.get_mol)
 
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/*/cube_to_grid0.500510.txt"),reverse=True):
         df = copy.deepcopy(dfs)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
@@ -179,6 +176,6 @@ if __name__ == '__main__':
                     "grid_coordinates"] + "/" + mol.GetProp("InchyKey")
                 inputs.append(input)
             # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
-        p = Pool(65)
+        p = Pool(60)
         p.map(PF, inputs)
     print("END")
