@@ -19,35 +19,37 @@ import calculate_conformation
 warnings.simplefilter('ignore')
 
 
-def Gaussian_penalized(df, dfp, gaussian_penalize, save_name,n_splits,features):
-    df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
-                                                                                  ascending=[True, True, True])
-    features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
-    std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
-    X = np.concatenate(features_all / std, axis=1).astype("float32")
-    XTY = (X.T @ df["ΔΔG.expt."].values).astype("float32")
-    gaussian_penalize=gaussian_penalize.replace(os.sep,'/')
-    os.makedirs(save_name + "/molecular_field_csv", exist_ok=True)
-    if len(features)==1:
-        ptpname_="/ptp"
-    else:
-        ptpname_="/2ptp"
-    # ptpname_="/{}ptp".format(len(features))
-    for ptpname in sorted(glob.glob(gaussian_penalize + ptpname_+"*.npy")):
-        ptpname=ptpname.replace(os.sep,'/')
-        sigma = re.findall(gaussian_penalize + ptpname_+"(.*).npy", ptpname)
-        n = sigma[0]
-        start = time.time()
-        # print("before", time.time() - start)
-        gaussians = []
-        predicts = []
-        for L in dfp["lambda"]:
-            gaussian_coef = scipy.linalg.solve(((X.T @ X).astype("float32") + L * len(df)  * np.load(ptpname)).astype("float32"), XTY, assume_a="pos").T
-            gaussians.append(gaussian_coef)  # * a.tolist()
-            n_ = int(gaussian_coef.shape[0] / features_all.shape[0])
-            df_coord["Gaussian_Dt"] = gaussian_coef[:n_]
-            df_coord.to_csv(save_name  + "/molecular_field_csv"+"/molecular_filed{}{}.csv".format(n, L))
+# def Gaussian_penalized(df, dfp, gaussian_penalize, save_name,n_splits,features):
+#     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
+#                                                                                   ascending=[True, True, True])
+#     features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
+#     # std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
+#     std = np.average(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
+#     X = np.concatenate(features_all / std, axis=1).astype("float32")
+#     XTY = (X.T @ df["ΔΔG.expt."].values).astype("float32")
+#     gaussian_penalize=gaussian_penalize.replace(os.sep,'/')
+#     os.makedirs(save_name + "/molecular_field_csv", exist_ok=True)
+#     if len(features)==1:
+#         ptpname_="/ptp"
+#     else:
+#         ptpname_="/2ptp"
+#     # ptpname_="/{}ptp".format(len(features))
+#     for ptpname in sorted(glob.glob(gaussian_penalize + ptpname_+"*.npy")):
+#         ptpname=ptpname.replace(os.sep,'/')
+#         sigma = re.findall(gaussian_penalize + ptpname_+"(.*).npy", ptpname)
+#         n = sigma[0]
+#         start = time.time()
+#         # print("before", time.time() - start)
+#         gaussians = []
+#         predicts = []
+#         for L in dfp["lambda"]:
+#             gaussian_coef = scipy.linalg.solve(((X.T @ X).astype("float32") + L * len(df)  * np.load(ptpname)).astype("float32"), XTY, assume_a="pos").T
+#             gaussians.append(gaussian_coef)  # * a.tolist()
+#             n_ = int(gaussian_coef.shape[0] / features_all.shape[0])
+#             df_coord["Gaussian_Dt"] = gaussian_coef[:n_]
+#             df_coord.to_csv(save_name  + "/molecular_field_csv"+"/molecular_filed{}{}.csv".format(n, L))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
             kf = KFold(n_splits=2, shuffle=False)
             # kf = KFold(n_splits=len(df), shuffle=False)
@@ -80,58 +82,105 @@ def Gaussian_penalized(df, dfp, gaussian_penalize, save_name,n_splits,features):
             dfp[[
                 "Gaussian_regression_predict{}".format(n)]].applymap(
                 lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+=======
+#             kf = KFold(n_splits=int(n_splits), shuffle=False)
+#             gaussian_predicts = []
+#             start = time.time()
+#             for (train_index, test_index) in kf.split(df):
+#                 features_training = features_all[:, train_index]
+#                 std = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
+#                 X_ = np.concatenate(features_training / std, axis=1)
+#                 gaussian_coef_ = scipy.linalg.solve(
+#                     (X_.T @ X_ + L * len(train_index)  * np.load(ptpname)).astype("float32"),
+#                     (X_.T @ df.iloc[train_index]["ΔΔG.expt."]).astype("float32"),
+#                     assume_a="pos", check_finite=False, overwrite_a=True, overwrite_b=True).T
+#                 features_test = features_all[:, test_index]
+#                 features_test = np.concatenate(features_test / std, axis=1)
+#                 predict = np.sum(gaussian_coef_ * features_test, axis=1).tolist()
+#                 gaussian_predicts.extend(predict)
+#             predicts.append([gaussian_predicts])
+#         gaussians = np.array(gaussians)
+#         gaussians = gaussians.reshape(gaussians.shape[0], 1, -1)
+#         dfp["Gaussian_regression_predict{}".format(n)] = np.sum(gaussians * X.reshape(1, X.shape[0], -1),
+#                                                                 axis=2).tolist()
+#         dfp[["Gaussian_regression_r2{}".format(n)]] = dfp[
+#             ["Gaussian_regression_predict{}".format(n)]].applymap(
+#             lambda predict: r2_score(df["ΔΔG.expt."], predict))
+#         dfp[["Gaussian_regression_RMSE{}".format(n)]] = \
+#             dfp[[
+#                 "Gaussian_regression_predict{}".format(n)]].applymap(
+#                 lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+>>>>>>> bd2c239 (from win)
 
-        dfp[["Gaussian_test_predict{}".format(n)]] = predicts
-        dfp[["Gaussian_test_r2{}".format(n)]] = dfp[
-            ["Gaussian_test_predict{}".format(n)]].applymap(
-            lambda predict: r2_score(df["ΔΔG.expt."], predict))
-        dfp[["Gaussian_test_r{}".format(n)]] = dfp[
-            ["Gaussian_test_predict{}".format(n)]].applymap(
-            lambda predict: np.corrcoef(df["ΔΔG.expt."], predict)[1, 0])
-        dfp[["Gaussian_test_RMSE{}".format(n)]] = dfp[
-            ["Gaussian_test_predict{}".format(n)]].applymap(
-            lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
-        df["Gaussian_predict{}".format(n)] = \
-            dfp[dfp["Gaussian_test_r{}".format(n)] == dfp["Gaussian_test_r{}".format(n)].max()].iloc[0][
-                "Gaussian_test_predict{}".format(n)]
-        df["Gaussian_error{}".format(n)] = df["Gaussian_predict{}".format(n)] - df["ΔΔG.expt."]
-        print(dfp[["Gaussian_test_RMSE{}".format(n)]].min())
+#         dfp[["Gaussian_test_predict{}".format(n)]] = predicts
+#         dfp[["Gaussian_test_r2{}".format(n)]] = dfp[
+#             ["Gaussian_test_predict{}".format(n)]].applymap(
+#             lambda predict: r2_score(df["ΔΔG.expt."], predict))
+#         dfp[["Gaussian_test_r{}".format(n)]] = dfp[
+#             ["Gaussian_test_predict{}".format(n)]].applymap(
+#             lambda predict: np.corrcoef(df["ΔΔG.expt."], predict)[1, 0])
+#         dfp[["Gaussian_test_RMSE{}".format(n)]] = dfp[
+#             ["Gaussian_test_predict{}".format(n)]].applymap(
+#             lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
+#         df["Gaussian_predict{}".format(n)] = \
+#             dfp[dfp["Gaussian_test_r{}".format(n)] == dfp["Gaussian_test_r{}".format(n)].max()].iloc[0][
+#                 "Gaussian_test_predict{}".format(n)]
+#         df["Gaussian_error{}".format(n)] = df["Gaussian_predict{}".format(n)] - df["ΔΔG.expt."]
+#         print(dfp[["Gaussian_test_RMSE{}".format(n)]].min())
 
-    df = df.sort_values(by='Gaussian_error{}'.format(n), key=abs, ascending=[False])
-    PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    PandasTools.SaveXlsxFromFrame(df, save_name  + "/σ_result.xlsx", size=(100, 100))
-    dfp.to_csv(save_name  + "/σ_result.csv")
-    print(save_name)
+#     df = df.sort_values(by='Gaussian_error{}'.format(n), key=abs, ascending=[False])
+#     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
+#     PandasTools.SaveXlsxFromFrame(df, save_name  + "/σ_result.xlsx", size=(100, 100))
+#     dfp.to_csv(save_name  + "/σ_result.csv")
+#     print(save_name)
 
 
 def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits,features):
     os.makedirs(save_name + "/molecular_field_csv",exist_ok=True)
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
                                                                                   ascending=[True, True, True])
-    if len(features)==1:
-        ptp_name=gaussian_penalize + "/ptp{}.npy".format(str(n))
-    else:
-        ptp_name=gaussian_penalize+"/2ptp{}.npy".format(str(n))
+    # if len(features)==1:
+    #     ptp_name=gaussian_penalize + "/{}ptp{}.npy".format(len(features),n)
+    # else:
+    #     ptp_name=gaussian_penalize+"/2ptp{}.npy".format(str(n))
+    ptp_name=gaussian_penalize + "/{}ptp{}.npy".format(len(features),n)
     features_all = np.array(df[features].values.tolist()).reshape(len(df), -1, len(features)).transpose(2, 0, 1)
-    std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
-    features = np.concatenate(features_all / std, axis=1)
+    # std = np.std(features_all, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
+    std = np.sqrt(np.average(features_all**2, axis=(1, 2))).reshape(features_all.shape[0], 1, 1)
+    # std = np.sqrt(np.sum(features_all**2/features_all.shape[1], axis=(1, 2))).reshape(features_all.shape[0], 1, 1)
+    X = np.concatenate(features_all / std, axis=1)
 
-    models = []
-    gaussians = []
+    # models = []
+    # gaussians = []
     predicts = []
+    coefs_=[]
     for L, n_num in zip(dfp["lambda"], dfp["n_components"]):
-        ridge = linear_model.Ridge(alpha=L * len(df), fit_intercept=False).fit(features, df["ΔΔG.expt."])
-        lasso = linear_model.Lasso(alpha=L/2/100, fit_intercept=False).fit(features, df["ΔΔG.expt."])
-        pls = PLSRegression(n_components=n_num).fit(features, df["ΔΔG.expt."])
-        models.append([ridge, lasso, pls])
-        X = features
-        start=time.time()
+        ridge = linear_model.Ridge(alpha=L * len(df), fit_intercept=False).fit(X, df["ΔΔG.expt."])
+        lasso = linear_model.Lasso(alpha=L/2/100, fit_intercept=False).fit(X, df["ΔΔG.expt."])
+        pls = PLSRegression(n_components=n_num).fit(X, df["ΔΔG.expt."])
+        #coefにして、いれる
+        # models.append([ridge, lasso, pls])
+        # X = features
+        # start=time.time()
         gaussian_coef = scipy.linalg.solve((X.T @ X + L * len(df) * np.load(ptp_name)).astype("float32"),
                                            (X.T @ df["ΔΔG.expt."].values).astype("float32"), assume_a="pos").T
-        print("scipy time",time.time()-start)
-        # gaussian_coef=torch.linalg.solve(torch.from_numpy(X.T @ X + L * len(df) * 2 * np.load(ptp_name)), torch.from_numpy(X.T @ Y))
-        gaussians.append(gaussian_coef.tolist())
+        l=[gaussian_coef,ridge.coef_,lasso.coef_,pls.coef_[0]]
+        columns=["Gaussian","Ridge","Lasso","PLS"]
+        for ptpname in sorted(glob.glob(gaussian_penalize + "/{}ptp*.npy".format(len(features)))):
+            gaussian_coef_all = scipy.linalg.solve((X.T @ X + L * len(df) * np.load(ptpname)).astype("float32"),
+                                           (X.T @ df["ΔΔG.expt."].values).astype("float32"), assume_a="pos").T
+            # print(ptpname)
+            # print(gaussian_penalize +"/"+str(len(features))+"ptp"+ "(.*).npy")
+            sigma = re.findall(gaussian_penalize +"/"+str(len(features))+"ptp"+ "(.*).npy", ptpname.replace(os.sep,'/'))
+            n = sigma[0]
+            columns.append("Gaussian"+n)
+            l.append(gaussian_coef_all)
+
+        coefs_.append(l)
+        # print("scipy time",time.time()-start)
+        # gaussians.append(gaussian_coef.tolist())
         n = int(gaussian_coef.shape[0] / features_all.shape[0])
+<<<<<<< HEAD
         # print(gaussian_coef[:n].shape)
         df_coord[["Gaussian_Dt","Ridge_Dt","Lasso_Dt","PLS_Dt"]]=np.stack((gaussian_coef,ridge.coef_,lasso.coef_,pls.coef_[0]),axis=1)[:n]* std[0].reshape([1])#,lasso.coef_[:n].tolist(),pls.coef_[0][:n].tolist()]
         # df_coord["Gaussian_Dt"] = gaussian_coef[:n] * std[0].reshape([1])
@@ -158,15 +207,27 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits,feat
         lasso_predicts = []
         pls_predicts = []
 
+=======
+        df_coord[[_+"_Dt" for _ in columns]]=np.stack((l),axis=1)[:n]* std[0].reshape([1])#,lasso.coef_[:n].tolist(),pls.coef_[0][:n].tolist()]
+        kf = KFold(n_splits=int(n_splits), shuffle=False)
+        # gaussian_predicts = []
+        # ridge_predicts = []
+        # lasso_predicts = []
+        # pls_predicts = []
+        predicts_=[]
+>>>>>>> bd2c239 (from win)
         for i, (train_index, test_index) in enumerate(kf.split(df)):
             features_training = features_all[:, train_index]
-            std_ = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
+            # std_ = np.sqrt(np.sum(features_training**2/features_training.shape[1], axis=(1, 2))).reshape(features_all.shape[0], 1, 1)
+
+            std_ = np.sqrt(np.average(features_training**2, axis=(1, 2))).reshape(features_all.shape[0], 1, 1)
+            # std_ = np.std(features_training, axis=(1, 2)).reshape(features_all.shape[0], 1, 1)
             features_training = features_training / std_
             features_training = np.concatenate(features_training, axis=1)
             # start = time.time()
-            X = features_training
+            X_ = features_training
             Y = df.iloc[train_index]["ΔΔG.expt."].values
-            gaussian_coef_ = scipy.linalg.solve((X.T @ X + L * len(train_index)  * np.load(ptp_name)).astype("float32"), (X.T @ Y).astype("float32"),
+            gaussian_coef_ = scipy.linalg.solve((X_.T @ X_ + L * len(train_index)  * np.load(ptp_name)).astype("float32"), (X_.T @ Y).astype("float32"),
                                                 assume_a="pos").T
             # print("after__",gaussian_coef_,time.time()-start)
             # print(time.time()-start)
@@ -176,90 +237,103 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits,feat
                     "ΔΔG.expt."])
             lasso = linear_model.Lasso(alpha=L/2/100, fit_intercept=False).fit(features_training,
                                                                          df.iloc[train_index]["ΔΔG.expt."])
-            # features_training_norm = features_training / np.std(features_training, axis=0)
-            # pls = PLSRegression(n_components=n_num).fit(features_training_norm,
-            #                                             df.iloc[train_index]["ΔΔG.expt."])
             pls = PLSRegression(n_components=n_num).fit(features_training,
                                                         df.iloc[train_index]["ΔΔG.expt."])
             features_test = features_all[:, test_index]  # np.array(features_all)[test_index].transpose(2, 0, 1)
             features_test = np.concatenate(features_test / std_, axis=1)
-            predict = np.sum(gaussian_coef_ * features_test, axis=1).tolist()  # model.predict(features_test)
-            gaussian_predicts.extend(predict)
+            gaussian_predict = np.sum(gaussian_coef_ * features_test, axis=1).tolist()  # model.predict(features_test)
+            # gaussian_predicts.extend(gaussian_predict)
             # predicts[0].extend(predict)
             ridge_predict = ridge.predict(features_test)
             # predicts[1].extend(ridge_predict)
-            ridge_predicts.extend(ridge_predict)
+            # ridge_predicts.extend(ridge_predict)
             lasso_predict = lasso.predict(features_test)
             # predicts[2].extend(lasso_predict)
-            lasso_predicts.extend(lasso_predict)
+            # lasso_predicts.extend(lasso_predict)
             # features_test_norm = features_test / np.std(features_training, axis=0)
             # pls_predict = pls.predict(features_test_norm)
-            pls_predict = pls.predict(features_test)
+            pls_predict = pls.predict(features_test)[:,0]
             # predicts[3].extend([_[0] for _ in pls_predict])
-            pls_predicts.extend([_[0] for _ in pls_predict])
-            n = int(gaussian_coef_.shape[0] / features_all.shape[0])
-            # df_coord["Gaussian_Dt{}".format(i)] = gaussian_coef_[:n] * std_[0].reshape([1])
-            # df_coord["Ridge_Dt{}".format(i)] = ridge.coef_[:n] * std_[0].reshape([1])
-            # df_coord["Lasso_Dt{}".format(i)] = lasso.coef_[:n] * std_[0].reshape([1])
-            # # df_coord["PLS_Dt{}".format(i)] = pls.coef_[0][:n] * np.std(features, axis=0) * std_[0].reshape([1])
-            # df_coord["PLS_Dt{}".format(i)] = pls.coef_[0][:n] * std_[0].reshape([1])
-            df_coord[["Gaussian_Dt{}".format(i),"Ridge_Dt{}".format(i),"Lasso_Dt{}".format(i),"PLS_Dt{}".format(i)]]=np.stack((gaussian_coef_,ridge.coef_,lasso.coef_,pls.coef_[0]),axis=1)[:n] * std_[0].reshape([1])
+            # pls_predicts.extend(pls_predict)#[_[0] for _ in pls_predict])
+            l=[gaussian_predict,ridge_predict,lasso_predict,pls_predict]
+            for ptpname in sorted(glob.glob(gaussian_penalize + "/{}ptp*.npy".format(len(features)))):
+                gaussian_coef_ = scipy.linalg.solve((X_.T @ X_ + L * len(train_index)  * np.load(ptpname)).astype("float32"), (X_.T @ Y).astype("float32"),
+                                                assume_a="pos").T
+                # print(ptpname)
+                # print(gaussian_penalize +"/"+str(len(features))+"ptp"+ "(.*).npy")
+                sigma = re.findall(gaussian_penalize +"/"+str(len(features))+"ptp"+ "(.*).npy", ptpname.replace(os.sep,'/'))
+                n = sigma[0]
+                # columns.append("Gaussian"+n)
+                gaussian_predict = np.sum(gaussian_coef_ * features_test, axis=1).tolist()
+                l.append(gaussian_predict)
+            predicts_.append(l)
+            # print(ridge_predict.shape,pls_predict.shape)
+            # n = int(gaussian_coef_.shape[0] / features_all.shape[0])
+            # df_coord[["Gaussian_Dt{}".format(i),"Ridge_Dt{}".format(i),"Lasso_Dt{}".format(i),"PLS_Dt{}".format(i)]]=np.stack((gaussian_coef_,ridge.coef_,lasso.coef_,pls.coef_[0]),axis=1)[:n] * std_[0].reshape([1])
 
-        predicts.append([gaussian_predicts, ridge_predicts, lasso_predicts, pls_predicts])
+        # predicts.append([gaussian_predicts, ridge_predicts, lasso_predicts, pls_predicts])
+        predicts.append(np.concatenate(predicts_,axis=1).tolist())
         df_coord.to_csv(save_name + "/molecular_field_csv" + "/molecular_field{}.csv".format(L))
-    print(np.array(predicts).shape)
-    dfp[["Ridge_model", "Lasso_model", "PLS_model"]] = models
-    dfp[["Ridge_regression_predict", "Lasso_regression_predict", "PLS_regression_predict"]] \
-        = dfp[["Ridge_model", "Lasso_model", "PLS_model"]].applymap(lambda model: model.predict(features))
-    gaussians = np.array(gaussians)
-    gaussians = gaussians.reshape(gaussians.shape[0], 1, -1)
-    features = features.reshape(1, features.shape[0], -1)
-    dfp["Gaussian_regression_predict"] = np.sum(gaussians * features, axis=2).tolist()
-    dfp[["Gaussian_regression_r2", "Ridge_regression_r2", "Lasso_regression_r2", "PLS_regression_r2"]] = dfp[
-        ["Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict",
-         "PLS_regression_predict"]].applymap(
+    
+    dfp[[_+"_coef" for _ in columns]]=coefs_
+    dfp[[_+"_regression_predict" for _ in columns]]=dfp[[_+"_coef" for _ in columns]].applymap(lambda coef: np.sum(coef.reshape([1,-1])*X,axis=1))
+    # dfp[["Ridge_model", "Lasso_model", "PLS_model"]] = models
+    # dfp[["Ridge_regression_predict", "Lasso_regression_predict", "PLS_regression_predict"]] \
+    #     = dfp[["Ridge_model", "Lasso_model", "PLS_model"]].applymap(lambda model: model.predict(features))
+    # gaussians = np.array(gaussians)
+    # gaussians = gaussians.reshape(gaussians.shape[0], 1, -1)
+    # features = features.reshape(1, features.shape[0], -1)
+    # dfp["Gaussian_regression_predict"] = np.sum(gaussians * features, axis=2).tolist()
+
+    dfp[[_+"_regression_r2" for _ in columns]] = dfp[[_+"_regression_predict" for _ in columns]].applymap(
         lambda predict: r2_score(df["ΔΔG.expt."], predict))
-    dfp[["Gaussian_regression_RMSE", "Ridge_regression_RMSE", "Lasso_regression_RMSE", "PLS_regression_RMSE"]] = dfp[[
-        "Gaussian_regression_predict", "Ridge_regression_predict", "Lasso_regression_predict",
-        "PLS_regression_predict"]].applymap(
+    dfp[[_+"_regression_RMSE" for _ in columns]] = dfp[[_+"_regression_predict" for _ in columns]].applymap(
         lambda predict: np.sqrt(mean_squared_error(df["ΔΔG.expt."], predict)))
 
-    dfp[["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]] = predicts
-    dfp[["Gaussian_test_r2", "ridge_test_r2", "lasso_test_r2", "pls_test_r2"]] = dfp[
-        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]].applymap(
+    # dfp[["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]] = predicts
+    # dfp[["Gaussian_test_r2", "ridge_test_r2", "lasso_test_r2", "pls_test_r2"]] = dfp[
+    #     ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]].applymap(
+    #     lambda predict: r2_score(df["ΔΔG.expt."], predict))
+    # dfp[["Gaussian_test_r", "ridge_test_r", "lasso_test_r", "pls_test_r"]] = dfp[
+    #     ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]].applymap(
+    #     lambda predict: np.corrcoef(df["ΔΔG.expt."], predict)[1, 0])
+    # dfp[["Gaussian_test_RMSE", "ridge_test_RMSE", "lasso_test_RMSE", "pls_test_RMSE"]] = dfp[
+    #     ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]].applymap(
+    #     lambda predict: mean_squared_error(df["ΔΔG.expt."], predict,squared=False))
+    dfp[[_+"_validation_predict" for _ in columns]] = predicts
+    dfp[[_+"_validation_r2" for _ in columns]] = dfp[[_+"_validation_predict" for _ in columns]].applymap(
         lambda predict: r2_score(df["ΔΔG.expt."], predict))
-    dfp[["Gaussian_test_r", "ridge_test_r", "lasso_test_r", "pls_test_r"]] = dfp[
-        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]].applymap(
+    dfp[[_+"_validation_r" for _ in columns]] = dfp[[_+"_validation_predict" for _ in columns]].applymap(
         lambda predict: np.corrcoef(df["ΔΔG.expt."], predict)[1, 0])
-    dfp[["Gaussian_test_RMSE", "ridge_test_RMSE", "lasso_test_RMSE", "pls_test_RMSE"]] = dfp[
-        ["Gaussian_test_predict", "ridge_test_predict", "lasso_test_predict", "pls_test_predict"]].applymap(
+    dfp[[_+"_validation_RMSE" for _ in columns]] = dfp[[_+"_validation_predict" for _ in columns]].applymap(
         lambda predict: mean_squared_error(df["ΔΔG.expt."], predict,squared=False))
-
+    
     features_R1 = np.array(df["DtR1"].tolist()).reshape(len(df), -1, 1).transpose(2, 0, 1)
     features_R1 = np.concatenate(features_R1 / std, axis=1)
-    dfp["Gaussian_regression_predictR1"] = np.sum(gaussians * features_R1, axis=2).tolist()
-    dfp[["Ridge_regression_predictR1", "Lasso_regression_predictR1", "PLS_regression_predictR1"]] \
-        = dfp[["Ridge_model", "Lasso_model", "PLS_model"]].applymap(lambda model: model.predict(features_R1))
-
+    # dfp["Gaussian_regression_predictR1"] = np.sum(gaussians * features_R1, axis=2).tolist()
+    # dfp[["Ridge_regression_predictR1", "Lasso_regression_predictR1", "PLS_regression_predictR1"]] \
+    #     = dfp[["Ridge_model", "Lasso_model", "PLS_model"]].applymap(lambda model: model.predict(features_R1))
+    dfp[[_+"_regression_predictR1" for _ in columns]]=dfp[[_+"_coef" for _ in columns]].applymap(lambda coef: np.sum(coef.reshape([1,-1])*features_R1,axis=1))
     features_R2 = np.array(df["DtR2"].tolist()).reshape(len(df), -1, 1).transpose(2, 0, 1)
     features_R2 = np.concatenate(features_R2 / std, axis=1)
-    dfp["Gaussian_regression_predictR2"] = np.sum(gaussians * features_R2, axis=2).tolist()
-    dfp[["Ridge_regression_predictR2", "Lasso_regression_predictR2", "PLS_regression_predictR2"]] \
-        = dfp[["Ridge_model", "Lasso_model", "PLS_model"]].applymap(lambda model: model.predict(features_R2))
-
-    df[["Gaussian_test", "Gaussian_regression", "Gaussian_R1", "Gaussian_R2"]] = \
-        dfp.loc[dfp["Gaussian_test_r"].idxmax()][
-            ["Gaussian_test_predict", "Gaussian_regression_predict", "Gaussian_regression_predictR1",
-             "Gaussian_regression_predictR2"]]
-    df["Ridge_test"] = dfp.loc[dfp["ridge_test_r"].idxmax()]["ridge_test_predict"]
-    df["Lasso_test"] = dfp.loc[dfp["lasso_test_r"].idxmax()]["lasso_test_predict"]
-    df["PLS_test"] = dfp.loc[dfp["pls_test_r"].idxmax()]["pls_test_predict"]
-
-    df["Gaussian_error"] = df["Gaussian_test"] - df["ΔΔG.expt."]
+    # dfp["Gaussian_regression_predictR2"] = np.sum(gaussians * features_R2, axis=2).tolist()
+    # dfp[["Ridge_regression_predictR2", "Lasso_regression_predictR2", "PLS_regression_predictR2"]] \
+    #     = dfp[["Ridge_model", "Lasso_model", "PLS_model"]].applymap(lambda model: model.predict(features_R2))
+    dfp[[_+"_regression_predictR2" for _ in columns]]=dfp[[_+"_coef" for _ in columns]].applymap(lambda coef: np.sum(coef.reshape([1,-1])*features_R2,axis=1))
+    # df[["Gaussian_validation", "Gaussian_regression", "Gaussian_R1", "Gaussian_R2"]] = \
+    #     dfp.loc[dfp["Gaussian_validation_r"].idxmax()][
+    #         ["Gaussian_validation_predict", "Gaussian_regression_predict", "Gaussian_regression_predictR1",
+    #          "Gaussian_regression_predictR2"]]
+    # df["Ridge_validation"] = dfp.loc[dfp["Ridge_validation_r"].idxmax()]["Ridge_validation_predict"]
+    # df["Lasso_validation"] = dfp.loc[dfp["Lasso_validation_r"].idxmax()]["Lasso_validation_predict"]
+    # df["PLS_validation"] = dfp.loc[dfp["PLS_validation_r"].idxmax()]["PLS_validation_predict"]
+    for _ in columns:
+        df[[_+"regression",_+"_validation",_+"_R1",_+"_R2"]]=dfp.loc[dfp[_+"_validation_RMSE"].idxmin()][[_+"_regression_predict",_+"_validation_predict",_+"_regression_predictR1",_+"_regression_predictR2"]]
+    df["Gaussian_error"] = df["Gaussian_validation"] - df["ΔΔG.expt."]
     # df[["Gaussian_error","Ridge_error","Lasso_error"]] = df[["Gaussian_test","Ridge_test","Lasso_test",]].applymap(lambda test:test - df["ΔΔG.expt."].values)
     df = df.sort_values(by='Gaussian_error', key=abs, ascending=[False])
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    print(dfp[["Gaussian_test_r2", "ridge_test_r2", "lasso_test_r2", "pls_test_r2"]].max())
+    print(dfp[["Gaussian_validation_r2", "Ridge_validation_r2", "Lasso_validation_r2", "PLS_validation_r2"]].max())
     PandasTools.SaveXlsxFromFrame(df, save_name + "/λ_result.xlsx", size=(100, 100))
     dfp.to_csv(save_name + "/λ_result.csv", index=False)
     print(save_name)
@@ -377,13 +451,14 @@ if __name__ == '__main__':
     #time.sleep(60*60*24*2.5)
     inputs=[]
     inputs_=[]
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.250510.txt"),reverse=True):
         print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
         os.makedirs(param["out_dir_name"],exist_ok=True)
         start = time.perf_counter()  # 計測開始
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         # for file in glob.glob("../arranged_dataset/newrea/*"):
@@ -396,6 +471,9 @@ if __name__ == '__main__':
 =======
         for file in glob.glob("../arranged_dataset/c*.xlsx"):
 >>>>>>> 847d536 (crean up run comfa)
+=======
+        for file in glob.glob("../arranged_dataset/*.xlsx"):
+>>>>>>> bd2c239 (from win)
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             file_name = os.path.splitext(os.path.basename(file))[0]
             features_dir_name = param["grid_coordinates"] + file_name
@@ -486,6 +564,10 @@ if __name__ == '__main__':
                 Dt = np.array(Dt)
                 ESP = np.array(ESP)
                 w = np.exp(-Dt / np.sqrt(np.average(Dt ** 2, axis=0)).reshape(1, -1))
+                w = np.exp(-Dt / np.max(Dt, axis=0).reshape(1, -1))
+                # w = np.exp(-Dt/np.sqrt(np.average(Dt**2)))
+                # w = np.exp(-Dt)
+                print(np.max(w),np.min(w),np.average(w))
                 data["Dt"] = np.nan_to_num(
                     np.average(Dt, weights=np.array(we).reshape(-1, 1) * np.ones(shape=Dt.shape), axis=0))
                 w = np.exp(ESP / np.sqrt(np.average(ESP ** 2, axis=0)).reshape(1, -1))
@@ -546,6 +628,7 @@ if __name__ == '__main__':
             print("feature_calculated")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             inputs = []
             for _ in range(3):
                 df_ = df.sample(frac=1, random_state=_)
@@ -598,6 +681,9 @@ if __name__ == '__main__':
 >>>>>>> b2b0e28 (from windows)
 =======
             n = param["sigma"]
+=======
+            n = "1.00"#param["sigma"]
+>>>>>>> bd2c239 (from win)
 
             for _ in range(10):
 >>>>>>> 847d536 (crean up run comfa)
@@ -626,7 +712,7 @@ if __name__ == '__main__':
         # print('Finish{:.2f}'.format(end - start))
     p = multiprocessing.Pool(processes=30)
     # p.map(run, inputs)
-    p = multiprocessing.Pool(processes=30)
+    p = multiprocessing.Pool(processes=15)
     p.map(run, inputs_)
     end = time.perf_counter()  # 計測終了
     print('Finish{:.2f}'.format(end - start))
