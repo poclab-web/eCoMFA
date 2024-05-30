@@ -13,7 +13,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 # time.sleep(60*60*6)
 rang=10
-for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),
+for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.250510.txt"),
                          reverse=True):  # -4.5~2.5 -3~3 -5~5
     print(param_name)
     with open(param_name, "r") as f:
@@ -83,7 +83,7 @@ for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.5005
             ax.set_title(label)
             # ax.set_ylim(0.5, 3)
             # ax.set_yticks([0.5, 1.0, 1.5, 2.0, 2.5, 3.0])
-            ax.set_ylim(0.5, 1.0)
+            ax.set_ylim(0, 1.0)
             ax.set_yticks([0.5,  0.6,0.7,0.8,0.9,1.0])
             ax.set_xticks([0.001, 1, 100])
             # Gaussian = []
@@ -101,16 +101,16 @@ for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.5005
                 # dfps.append(dfp.copy())
                 for columns in dfp.columns:
                     if re.match("Gaussian..*_validation_RMSE", columns):#"Gaussian" in columns and "_validation_RMSE" in columns:
-                        dfp["validation_r2"] = dfp[columns]
+                        dfp[["regression_r2","validation_r2"]] = dfp[[columns[:-16]+"_regression_RMSE",columns]]
                         dfp["method"] = "1"+columns[:-16]+""
                         dfp["Gaussian"]=True
                         dfps.append(dfp.copy())
-                dfp["validation_r2"] = dfp["Lasso_validation_RMSE"]
+                dfp[["regression_r2","validation_r2"]] = dfp[["Lasso_regression_RMSE","Lasso_validation_RMSE"]]
                 dfp["method"] = "3Lasso"
                 dfp["Gaussian"]=False
                 dfps.append(dfp.copy())
 
-                dfp["validation_r2"] = dfp["Ridge_validation_RMSE"]
+                dfp[["regression_r2","validation_r2"]] = dfp[["Ridge_regression_RMSE","Ridge_validation_RMSE"]]
                 dfp["method"] = "2Ridge"
                 dfp["Gaussian"]=False
                 dfps.append(dfp.copy())
@@ -137,8 +137,10 @@ for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.5005
             
             # sns.lineplot(x="lambda", y="validation_r2", data=dfs[(dfs["method"]==column)&dfs["Gaussian"]].sort_values(["method"]), hue="method",errorbar=None,
             #              legend=None, palette="jet_r", ax=ax)
-            sns.lineplot(x="lambda", y="validation_r2", data=dfs.sort_values(["method"],ascending=False), hue="method",errorbar="ci",style="method",
+            sns.lineplot(x="lambda", y="validation_r2", data=dfs.sort_values(["method"],ascending=False), hue="method",errorbar=None,style="method",
                          legend="full" if i==3 else None, palette="jet_r", ax=ax,alpha=1)
+            sns.lineplot(x="lambda", y="regression_r2", data=dfs.sort_values(["method"],ascending=False), hue="method",errorbar=None,style="method",
+                         legend= None, palette="jet_r", ax=ax,alpha=1)
             
             # ax.fill_between(dfs[dfs["method"]=="3Lasso"]["lambda"], dfs[dfs["method"]=="3Lasso"]["validation_r2"]+0.1, dfs[dfs["method"]=="3Lasso"]["validation_r2"]-0.1, alpha=0.1)
             # sns.lineplot(x="lambda", y="validation_r2", data=dfs[~dfs["Gaussian"]].sort_values(["method"]), hue="method", palette="winter",errorbar="ci",

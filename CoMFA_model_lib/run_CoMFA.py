@@ -128,12 +128,12 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits,feat
         # X = features
         # start=time.time()
         gaussian_coef = scipy.linalg.solve((X.T @ X + L * len(df) * np.load(ptp_name)).astype("float32"),
-                                           (X.T @ df["ΔΔG.expt."].values).astype("float32"), assume_a="pos").T
+                                           (X.T @ df["ΔΔG.expt."].values).astype("float32"), assume_a="gen").T
         l=[gaussian_coef,ridge.coef_,lasso.coef_,pls.coef_[0]]
         columns=["Gaussian","Ridge","Lasso","PLS"]
         for ptpname in sorted(glob.glob(gaussian_penalize + "/{}ptp*.npy".format(len(features)))):
             gaussian_coef_all = scipy.linalg.solve((X.T @ X + L * len(df) * np.load(ptpname)).astype("float32"),
-                                           (X.T @ df["ΔΔG.expt."].values).astype("float32"), assume_a="pos").T
+                                           (X.T @ df["ΔΔG.expt."].values).astype("float32"), assume_a="gen").T
             # print(ptpname)
             # print(gaussian_penalize +"/"+str(len(features))+"ptp"+ "(.*).npy")
             sigma = re.findall(gaussian_penalize +"/"+str(len(features))+"ptp"+ "(.*).npy", ptpname.replace(os.sep,'/'))
@@ -164,7 +164,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits,feat
             X_ = features_training
             Y = df.iloc[train_index]["ΔΔG.expt."].values
             gaussian_coef_ = scipy.linalg.solve((X_.T @ X_ + L * len(train_index)  * np.load(ptp_name)).astype("float32"), (X_.T @ Y).astype("float32"),
-                                                assume_a="pos").T
+                                                assume_a="gen").T
             # print("after__",gaussian_coef_,time.time()-start)
             # print(time.time()-start)
             ridge = linear_model.Ridge(alpha=L * len(train_index) , fit_intercept=False).fit(
@@ -194,7 +194,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits,feat
             l=[gaussian_predict,ridge_predict,lasso_predict,pls_predict]
             for ptpname in sorted(glob.glob(gaussian_penalize + "/{}ptp*.npy".format(len(features)))):
                 gaussian_coef_ = scipy.linalg.solve((X_.T @ X_ + L * len(train_index)  * np.load(ptpname)).astype("float32"), (X_.T @ Y).astype("float32"),
-                                                assume_a="pos").T
+                                                assume_a="gen").T
                 # print(ptpname)
                 # print(gaussian_penalize +"/"+str(len(features))+"ptp"+ "(.*).npy")
                 sigma = re.findall(gaussian_penalize +"/"+str(len(features))+"ptp"+ "(.*).npy", ptpname.replace(os.sep,'/'))
@@ -393,7 +393,7 @@ if __name__ == '__main__':
             param = json.loads(f.read())
         print(param)
         start = time.perf_counter()  # 計測開始
-        for file in glob.glob("../arranged_dataset/*.xlsx"):
+        for file in glob.glob("../arranged_dataset/RuSS.xlsx"):
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             file_name = os.path.splitext(os.path.basename(file))[0]
             features_dir_name = param["grid_coordinates"] + file_name
