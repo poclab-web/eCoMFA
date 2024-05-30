@@ -42,6 +42,7 @@ def make_grid_coordinate(orient, size, interval):
 
 def make_penalty(l, sigma, interval, out_dir_name):
     l = np.array(l)
+    
     xyz = l[(l[:, 1] > 0) & (l[:, 2] > 0)]
 
     d = np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
@@ -62,13 +63,14 @@ def make_penalty(l, sigma, interval, out_dir_name):
 
     penalty = penalty_ + penalty_y - penalty_z - penalty_yz
     # penalty = penalty  / np.max(np.sum(penalty_, axis=0))
-    penalty = penalty - np.identity(penalty.shape[0])  #* np.sum(penalty, axis=1)
+    penalty = -penalty + np.identity(penalty.shape[0])  #* np.sum(penalty, axis=1)
+    # penalty=np.concatenate([penalty, np.identity(penalty.shape[0])], 0)
     # print(np.sum(penalty,axis=1))
     # penalty=np.identity(penalty.shape[0])
     # filename = out_dir_name + "/penalty{}.npy".format(n)  # + "/" + param["grid_coordinates_dir"]
     # np.save(filename, penalty)
     filename = out_dir_name + "/1ptp{:.2f}.npy".format(sigma)
-    ptp=penalty.T@penalty
+    ptp=penalty#.T@penalty
 
     np.save(filename,ptp.astype("float32"))
     penalty_L = []
@@ -144,12 +146,12 @@ if __name__ == '__main__':
     size = [14, 20, 24]
     interval = 0.50
     make_grid_coordinate(orient, size, interval)
-
-    orient = [-4.750, -4.750, -9.750]
-    size = [20, 20, 40]
-    interval = 0.50
-    make_grid_coordinate(orient, size, interval)
     if False:
+        orient = [-4.750, -4.750, -9.750]
+        size = [20, 20, 40]
+        interval = 0.50
+        make_grid_coordinate(orient, size, interval)
+    if True:
         orient = [-4.375, -4.875, -5.875]
         size = [28, 20 * 2, 24 * 2]
         interval = 0.25

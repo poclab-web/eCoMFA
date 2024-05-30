@@ -41,7 +41,7 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
     elif flag=="dip":
         df = df[df["mol"].map(lambda mol:
                               not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl,OH1]"))
-                              and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[#7,#8]"))
+                              and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[#7]"))
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*C(=O)[OH1]"))
                               )]
     elif flag=="ru":
@@ -67,5 +67,5 @@ if __name__ == '__main__':
     to_dir_path = "../arranged_dataset"
     os.makedirs(to_dir_path, exist_ok=True)
     make_dataset("../sampledata/sample_0425/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx","cbs")
-    make_dataset("../sampledata/sample_0425/(+)DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx","dip")
+    make_dataset("../sampledata/sample_0425/(+)DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride_oxi_yes.xlsx","dip")
     make_dataset("../sampledata/sample_0425/RuSS_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx","ru")
