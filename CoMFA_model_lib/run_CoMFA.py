@@ -135,6 +135,7 @@ warnings.simplefilter('ignore')
 #     print(save_name)
 
 
+#regressionだけにする。
 def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits,features):
     os.makedirs(save_name + "/molecular_field_csv",exist_ok=True)
     df_coord = pd.read_csv(gaussian_penalize + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
@@ -338,6 +339,8 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n,n_splits,feat
     dfp.to_csv(save_name + "/λ_result.csv", index=False)
     print(save_name)
 
+#CV
+
 
 # def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
 #     energies = np.array([float(conf.GetProp("energy")) for conf in mol.GetConformers()])
@@ -451,13 +454,14 @@ if __name__ == '__main__':
     #time.sleep(60*60*24*2.5)
     inputs=[]
     inputs_=[]
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.250510.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/20240531/cube_to_grid0.250510.txt"),reverse=True):
         print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
         os.makedirs(param["out_dir_name"],exist_ok=True)
         start = time.perf_counter()  # 計測開始
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -478,6 +482,9 @@ if __name__ == '__main__':
 =======
         for file in glob.glob("../arranged_dataset/RuSS.xlsx"):
 >>>>>>> 8b8e38e (from win)
+=======
+        for file in glob.glob("../arranged_dataset/*.xlsx"):
+>>>>>>> bed7344 (from win)
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             file_name = os.path.splitext(os.path.basename(file))[0]
             features_dir_name = param["grid_coordinates"] + file_name
