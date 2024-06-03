@@ -4,8 +4,8 @@
 "out_dir_name":"../../../result/-4.375 -4.875 -5.875 28 40 48 0.25 20240529_spl2",
 "freq_dir":"F:/b3lyp_6-31gd_freq20240427",
 "opt_structure":"F:/b3lyp_6-31gd20240427",
-"fig_dir":"C:/Users/poclabws/PycharmProjects/CoMFA_model/figs/-4.375 -4.875 -5.875 28 40 48 0.25 20240529_spl2",
-"sigma":"1.00",
 "n_splits":"2",
-"features":["Dt"]
+"n_repeats":"10",
+"sigmas":["0.25","0.50","1.00","2.00"],
+"processes":"20"
 }
