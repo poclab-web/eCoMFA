@@ -44,14 +44,14 @@ def draw_RMSE(dir):
         ax2.set_xticks([0.01,0.1,1])
         ax.set_xlabel("λ (Gaussian, Ridge)", fontsize=10)
         ax2.set_xlabel("λ (Lasso)", fontsize=10)
-        ax.set_ylabel("ΔΔG")
+        ax.set_ylabel("RMSE [kcal/mol]")
         sns.lineplot(x="alpha", y="RMSE_validation", data=df[df["dataset"]==_],hue="method",errorbar=None,style="method",
                     legend="full" if _==2 else None, color="blue", ax=ax,alpha=1)
-        sns.lineplot(x="alpha", y="RMSE_validation", data=lasso[lasso["dataset"]==_],hue="method",errorbar=None,style="method",
+        sns.lineplot(x="alpha", y="RMSE_validation", data=lasso[lasso["dataset"]==_],errorbar=None,style="method",
                     legend="full" if _==2 else None, color="black", ax=ax2,alpha=1)
         sns.lineplot(x="alpha", y="RMSE_regression", data=df[df["dataset"]==_],hue="method",errorbar=None,style="method",
                     legend=None, color="blue", ax=ax,alpha=0.5)
-        sns.lineplot(x="alpha", y="RMSE_regression", data=lasso[lasso["dataset"]==_],hue="method",errorbar=None,style="method",
+        sns.lineplot(x="alpha", y="RMSE_regression", data=lasso[lasso["dataset"]==_],#hue="method",errorbar=None,style="method",
                     legend=None, color="black", ax=ax2,alpha=0.5)
     lines_labels=[ax.get_legend_handles_labels() for ax in [ax2,ax]]
     lines, labels=[sum(lol,[]) for lol in zip(*lines_labels)]
@@ -85,18 +85,26 @@ def draw_yyplot(dir):
         df=pd.concat(dfs)
         r2s=[]
         RMSEs=[]
+        r2s_PCA=[]
+        RMSEs_PCA=[]
         for column in df.columns:
-            if "validation" in column and "validation_PCA" not in column:
+            if "validation_PCA" in column:
+                r2s_PCA.append(r2_score(df["ΔΔG.expt."], df[column]))
+                RMSEs_PCA.append(mean_squared_error(df["ΔΔG.expt."], df[column],squared=False))
+                ax.scatter(df["ΔΔG.expt."], df[column], s=10, c="green", edgecolor="none",  alpha=0.5)
+            elif "validation" in column:
                 r2s.append(r2_score(df["ΔΔG.expt."], df[column]))
                 RMSEs.append(mean_squared_error(df["ΔΔG.expt."], df[column],squared=False))
                 ax.scatter(df["ΔΔG.expt."], df[column], s=10, c="red", edgecolor="none",  alpha=0.2)
         r2=r2_score(df["ΔΔG.expt."], df["regression"])
-        RMSE=mean_squared_error(df["ΔΔG.expt."], df[column],squared=False)
-        ax.scatter(df["ΔΔG.expt."], df["regression"], s=10, c="blue", edgecolor="none",  alpha=0.6)
+        RMSE=mean_squared_error(df["ΔΔG.expt."], df["regression"],squared=False)
+        ax.scatter(df["ΔΔG.expt."], df["regression"], s=10, c="blue", edgecolor="none",  alpha=0.5)
+        ax.scatter([],[],c="green",label="validation \nRMSE = {:.3f}".format(np.average(RMSEs_PCA))
+                   +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(np.average(r2s_PCA)),  alpha=0.5)
         ax.scatter([],[],c="red",label="validation \nRMSE = {:.3f}".format(np.average(RMSEs))
-                   +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(np.average(r2s)))
+                   +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(np.average(r2s)),  alpha=0.5)
         ax.scatter([],[],c="blue",label="regression \nRMSE = {:.3f}".format(np.average(RMSE))
-                   +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(r2))
+                   +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(r2),  alpha=0.5)
         ax.legend(loc='lower right', fontsize=6, ncols=1)
     fig.tight_layout()
     plt.savefig(dir+  "/yy-plot.png", transparent=False, dpi=300)

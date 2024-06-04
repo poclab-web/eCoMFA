@@ -46,7 +46,6 @@ def Gaussian(input):
     X,X1,X2,y,alpha,Q,Q_dir,n_splits,n_repeats,df,df_coord,save_name=input
     gaussian=scipy.linalg.solve((X.T @ X + alpha * len(y) * np.load(Q_dir)).astype("float32"),
                                            (X.T @ y).astype("float32"), assume_a="gen")
-    # print(X.shape,gaussian.shape)
     df["regression"]=X@gaussian
     df["R1_contribution"]=X1@gaussian
     df["R2_contribution"]=X2@gaussian
@@ -68,10 +67,12 @@ def Gaussian(input):
         r2=r2_score(y,predict)
         result.append([RMSE,r2])
         df["validation{}".format(repeat)]=predict
-    
+
+    split = np.empty(y.shape[0], dtype=np.uint8)
     predict=[]
     sort_index=[]
-    for train_index, test_index in split_data_pca(X, n_splits=n_splits):
+    for _,(train_index, test_index) in enumerate(split_data_pca(X,n_splits)):
+        split[test_index]=_
         X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
         predict_cv=X_test@scipy.linalg.solve((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
                                         (X_train.T @ y[train_index]).astype("float32"), assume_a="gen")
@@ -80,8 +81,8 @@ def Gaussian(input):
     predict=unshuffle_array(np.array(predict),sort_index)
     RMSE_PCA=mean_squared_error(y,predict,squared=False)
     r2_PCA=r2_score(y,predict)
+    df["split_PCA"]=split
     df["validation_PCA"]=predict
-
 
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
@@ -125,8 +126,8 @@ def Ridge(input):
     predict=unshuffle_array(np.array(predict),sort_index)
     RMSE_PCA=mean_squared_error(y,predict,squared=False)
     r2_PCA=r2_score(y,predict)
-    df["validation_PCA"]=predict
     df["split_PCA"]=split
+    df["validation_PCA"]=predict
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
     RMSE=mean_squared_error(y,ridge.predict(X),squared=False)
@@ -604,7 +605,7 @@ if __name__ == '__main__':
     lasso_input=[]
     gaussian_input=[]
     pls_input=[]
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.250510.txt"),reverse=True):
         print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
