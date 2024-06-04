@@ -1,10 +1,10 @@
 {
 "cube_dir_name": "F:/wB97X-D_def2-TZVP20240416",
 "grid_coordinates":"../../../grid_coordinates/-4.375 -4.875 -5.875 28 40 48 0.25 20240510",
-"out_dir_name":"../../../result/-4.375 -4.875 -5.875 28 40 48 0.25 20240529_spl5",
+"out_dir_name":"../../../result/-4.375 -4.875 -5.875 28 40 48 0.25 20240529_spl2",
 "freq_dir":"F:/b3lyp_6-31gd_freq20240427",
 "opt_structure":"F:/b3lyp_6-31gd20240427",
-"n_splits":"5",
+"n_splits":"2",
 "n_repeats":"10",
 "sigmas":["0.25","0.50","1.00","2.00"],
 "processes":"20"
