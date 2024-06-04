@@ -157,11 +157,27 @@ def PLS(input):
         r2=r2_score(y,predict)
         result.append([RMSE,r2])
         df["validation{}".format(repeat)]=predict
+    
+    split = np.empty(y.shape[0], dtype=np.uint8)
+    predict=[]
+    sort_index=[]
+    for _,(train_index, test_index) in enumerate(split_data_pca(X,n_splits)):
+        split[test_index]=_
+        X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
+        predict_cv = PLSRegression(n_components=alpha).fit(X_train, y[train_index]).predict(X_test)
+        predict.extend(predict_cv.tolist())
+        sort_index.extend(test_index.tolist())
+    predict=unshuffle_array(np.array(predict),sort_index)
+    RMSE_PCA=mean_squared_error(y,predict,squared=False)
+    r2_PCA=r2_score(y,predict)
+    df["split_PCA"]=split
+    df["validation_PCA"]=predict
+
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
     RMSE=mean_squared_error(y,pls.predict(X),squared=False)
     r2=r2_score(y,pls.predict(X))
-    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()
+    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]
 
 def Lasso(input):
     X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name=input
@@ -186,11 +202,26 @@ def Lasso(input):
         r2=r2_score(y,predict)
         result.append([RMSE,r2])
         df["validation{}".format(repeat)]=predict
+    
+    split = np.empty(y.shape[0], dtype=np.uint8)
+    predict=[]
+    sort_index=[]
+    for _,(train_index, test_index) in enumerate(split_data_pca(X,n_splits)):
+        split[test_index]=_
+        X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
+        predict_cv = linear_model.Lasso(alpha=alpha/2, fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
+        predict.extend(predict_cv.tolist())
+        sort_index.extend(test_index.tolist())
+    predict=unshuffle_array(np.array(predict),sort_index)
+    RMSE_PCA=mean_squared_error(y,predict,squared=False)
+    r2_PCA=r2_score(y,predict)
+    df["split_PCA"]=split
+    df["validation_PCA"]=predict
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
     RMSE=mean_squared_error(y,lasso.predict(X),squared=False)
     r2=r2_score(y,lasso.predict(X))
-    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()
+    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]
 
 # #regressionだけにする。
 # def regression_comparison_(df, dfp, gaussian_penalize, save_name, n_splits,features):
@@ -605,7 +636,7 @@ if __name__ == '__main__':
     lasso_input=[]
     gaussian_input=[]
     pls_input=[]
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.250510.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),reverse=True):
         print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
@@ -673,8 +704,8 @@ if __name__ == '__main__':
     decimals = {"RMSE_regression": 5,"r2_regression":5,"RMSE_validation":5, "r2_validation":5}
     pd.DataFrame(p.map(Gaussian,gaussian_input), columns=["savefilename","alpha","sigma","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation", "RMSE_PCA_validation","r2_PCA_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/Gaussian.csv")
     pd.DataFrame(p.map(Ridge,ridge_input), columns=columns+["RMSE_PCA_validation","r2_PCA_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/Ridge.csv")
-    pd.DataFrame(p.map(Lasso,lasso_input), columns=columns).round(decimals).to_csv(param["out_dir_name"] + "/Lasso.csv")
-    pd.DataFrame(p.map(PLS,pls_input), columns=columns).round(decimals).to_csv(param["out_dir_name"] + "/PLS.csv")
+    pd.DataFrame(p.map(Lasso,lasso_input), columns=columns+["RMSE_PCA_validation","r2_PCA_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/Lasso.csv")
+    pd.DataFrame(p.map(PLS,pls_input), columns=columns+["RMSE_PCA_validation","r2_PCA_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/PLS.csv")
     # p.map(run, inputs_)
     end = time.perf_counter()  # 計測終了
     print('Finish{:.2f}'.format(end - start))
