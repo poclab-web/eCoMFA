@@ -11,6 +11,7 @@ import scipy.linalg
 from rdkit.Chem import PandasTools
 from sklearn import linear_model
 from sklearn.cross_decomposition import PLSRegression
+from sklearn.decomposition import PCA
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.model_selection import KFold
 
@@ -22,6 +23,24 @@ def unshuffle_array(shuffled_array, shuffled_indices):
     original_array = np.empty_like(shuffled_array)
     original_array[shuffled_indices] = shuffled_array
     return original_array
+
+def split_data_pca(X, n_splits=5):
+    # PCAを使用してデータを主成分に投影
+    pca = PCA(n_components=1)
+    X_pca = pca.fit_transform(X).flatten()
+    
+    # 主成分に基づいてデータを分割
+    percentiles = np.percentile(X_pca, np.linspace(0, 100, n_splits + 1))
+    indices=[]
+    for _ in range(n_splits):
+        if _==n_splits-1:
+            test=np.where((X_pca >= percentiles[_]) & (X_pca <= percentiles[_+1]))[0]
+            train=np.where((X_pca < percentiles[_]) | (X_pca > percentiles[_+1]))[0]
+        else:
+            test=np.where((X_pca >= percentiles[_]) & (X_pca < percentiles[_+1]))[0]
+            train=np.where((X_pca < percentiles[_]) | (X_pca >= percentiles[_+1]))[0]
+        indices.append([train,test])
+    return indices
 
 def Gaussian(input):
     X,X1,X2,y,alpha,Q,Q_dir,n_splits,n_repeats,df,df_coord,save_name=input
@@ -39,12 +58,9 @@ def Gaussian(input):
         predict=[]
         sort_index=[]
         for train_index, test_index in kf.split(X):
-            X_train, X_test = X[train_index], X[test_index]
-            X_train, X_test = X_train/np.sqrt(np.average(X_train**2)), X_test/np.sqrt(np.average(X_train**2))
-            y_train, y_test = y[train_index], y[test_index]
-            gaussian_cv=scipy.linalg.solve((X_train.T @ X_train + alpha * len(y_train) * np.load(Q_dir)).astype("float32"),
-                                           (X_train.T @ y_train).astype("float32"), assume_a="gen").T
-            predict_cv=X_test@gaussian_cv
+            X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
+            predict_cv=X_test@scipy.linalg.solve((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
+                                           (X_train.T @ y[train_index]).astype("float32"), assume_a="gen")
             predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
         predict=unshuffle_array(np.array(predict),sort_index)
@@ -52,11 +68,26 @@ def Gaussian(input):
         r2=r2_score(y,predict)
         result.append([RMSE,r2])
         df["validation{}".format(repeat)]=predict
+    
+    predict=[]
+    sort_index=[]
+    for train_index, test_index in split_data_pca(X, n_splits=n_splits):
+        X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
+        predict_cv=X_test@scipy.linalg.solve((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
+                                        (X_train.T @ y[train_index]).astype("float32"), assume_a="gen")
+        predict.extend(predict_cv.tolist())
+        sort_index.extend(test_index.tolist())
+    predict=unshuffle_array(np.array(predict),sort_index)
+    RMSE_PCA=mean_squared_error(y,predict,squared=False)
+    r2_PCA=r2_score(y,predict)
+    df["validation_PCA"]=predict
+
+
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
     RMSE=mean_squared_error(y,X@gaussian,squared=False)
     r2=r2_score(y,X@gaussian)
-    return [save_name,alpha,Q,RMSE,r2]+np.average(result,axis=0).tolist()
+    return [save_name,alpha,Q,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]
 
 def Ridge(input):
     X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name=input
@@ -72,23 +103,35 @@ def Ridge(input):
         predict=[]
         sort_index=[]
         for train_index, test_index in kf.split(X):
-            X_train, X_test = X[train_index], X[test_index]
-            X_train, X_test = X_train/np.sqrt(np.average(X_train**2)), X_test/np.sqrt(np.average(X_train**2))
-            y_train, y_test = y[train_index], y[test_index]
-            ridge_cv = linear_model.Ridge(alpha=alpha * len(y_train), fit_intercept=False).fit(X_train, y_train)
-            predict_cv=ridge_cv.predict(X_test).tolist()
-            predict.extend(predict_cv)
+            X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
+            predict_cv = linear_model.Ridge(alpha=alpha * len(train_index), fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
+            predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
         predict=unshuffle_array(np.array(predict),sort_index)
         RMSE=mean_squared_error(y,predict,squared=False)
         r2=r2_score(y,predict)
         result.append([RMSE,r2])
         df["validation{}".format(repeat)]=predict
+    
+    split = np.empty(y.shape[0], dtype=np.uint8)
+    predict=[]
+    sort_index=[]
+    for _,(train_index, test_index) in enumerate(split_data_pca(X,n_splits)):
+        split[test_index]=_
+        X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
+        predict_cv = linear_model.Ridge(alpha=alpha * len(train_index), fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
+        predict.extend(predict_cv.tolist())
+        sort_index.extend(test_index.tolist())
+    predict=unshuffle_array(np.array(predict),sort_index)
+    RMSE_PCA=mean_squared_error(y,predict,squared=False)
+    r2_PCA=r2_score(y,predict)
+    df["validation_PCA"]=predict
+    df["split_PCA"]=split
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
     RMSE=mean_squared_error(y,ridge.predict(X),squared=False)
     r2=r2_score(y,ridge.predict(X))
-    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()
+    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]
 
 def PLS(input):
     X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name=input
@@ -104,12 +147,9 @@ def PLS(input):
         predict=[]
         sort_index=[]
         for train_index, test_index in kf.split(X):
-            X_train, X_test = X[train_index], X[test_index]
-            X_train, X_test = X_train/np.sqrt(np.average(X_train**2)), X_test/np.sqrt(np.average(X_train**2))
-            y_train, y_test = y[train_index], y[test_index]
-            pls_cv = PLSRegression(n_components=alpha).fit(X_train, y_train)
-            predict_cv=pls_cv.predict(X_test).tolist()
-            predict.extend(predict_cv)
+            X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
+            predict_cv = PLSRegression(n_components=alpha).fit(X_train, y[train_index]).predict(X_test)
+            predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
         predict=unshuffle_array(np.array(predict),sort_index)
         RMSE=mean_squared_error(y,predict,squared=False)
@@ -136,12 +176,9 @@ def Lasso(input):
         predict=[]
         sort_index=[]
         for train_index, test_index in kf.split(X):
-            X_train, X_test = X[train_index], X[test_index]
-            X_train, X_test = X_train/np.sqrt(np.average(X_train**2)), X_test/np.sqrt(np.average(X_train**2))
-            y_train, y_test = y[train_index], y[test_index]
-            lasso_cv = linear_model.Lasso(alpha=alpha/2, fit_intercept=False).fit(X_train, y_train)
-            predict_cv=lasso_cv.predict(X_test).tolist()
-            predict.extend(predict_cv)
+            X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
+            predict_cv = linear_model.Lasso(alpha=alpha/2, fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
+            predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
         predict=unshuffle_array(np.array(predict),sort_index)
         RMSE=mean_squared_error(y,predict,squared=False)
@@ -806,7 +843,7 @@ def get_grid_feat(mol,RT,dir):
     print(mol.GetProp("InchyKey"))
     energy_to_Boltzmann_distribution(mol, RT)
     Dt = []
-    ESP = []
+    # ESP = []
     we = []
     for conf in mol.GetConformers():
         data = pd.read_pickle(
@@ -814,34 +851,30 @@ def get_grid_feat(mol,RT,dir):
         Bd = float(conf.GetProp("Boltzmann_distribution"))
         we.append(Bd)
         Dt.append(data["Dt"].values.tolist())
-        ESP.append(data["ESP"].values.tolist())
-    Dt = np.array(Dt)
-    ESP = np.array(ESP)
+        # ESP.append(data["ESP"].values.tolist())
+    # Dt = np.array(Dt)
+    # ESP = np.array(ESP)
     # w = np.exp(-Dt / np.sqrt(np.average(Dt ** 2, axis=0)).reshape(1, -1))
     # w = np.exp(-Dt / np.max(Dt, axis=0).reshape(1, -1))
     # w = np.exp(-Dt/np.sqrt(np.average(Dt**2)))
     # w = np.exp(-Dt)
     # print(np.max(w),np.min(w),np.average(w))
-    data["Dt"] = np.nan_to_num(
-        np.average(Dt, weights=np.array(we).reshape(-1, 1) * np.ones(shape=Dt.shape), axis=0))
+    data["Dt"] = np.nan_to_num(np.average(Dt, weights=we, axis=0))
     # w = np.exp(ESP / np.sqrt(np.average(ESP ** 2, axis=0)).reshape(1, -1))
-    data["ESP"] = np.nan_to_num(
-        np.average(ESP, weights=np.array(we).reshape(-1, 1) * np.ones(shape=ESP.shape), axis=0))
+    # data["ESP"] = np.nan_to_num(
+    #     np.average(ESP, weights=np.array(we).reshape(-1, 1) * np.ones(shape=ESP.shape), axis=0))
     data_y = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
 
-    data_y[["Dt","ESP"]] = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[[
-        "Dt","ESP"]].values + \
-            data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[[
-        "Dt","ESP"]].values
+    data_y["Dt"] = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values + \
+        data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])["Dt"].values
     data_yz = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
 
-    data_yz[["Dt","ESP"]] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[["Dt","ESP"]].values - \
-                    data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])[["Dt","ESP"]].values
+    # data_yz["Dt"] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values - \
+    #                 data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])["Dt"].values
 
-    data_yz[["DtR1","ESPR1"]] = \
-        data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[["Dt","ESP"]].values
-    data_yz[["DtR2","ESPR2"]] = \
-        data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])[["Dt","ESP"]].values
+    data_yz["DtR1"] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values
+    data_yz["DtR2"] = data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])["Dt"].values
+    data_yz["Dt"]=data_yz["DtR1"].values-data_yz["DtR2"].values
     dfp_yz = data_yz.copy()
     return dfp_yz[["Dt","DtR1","DtR2"]].values.T.tolist()
 
@@ -861,7 +894,7 @@ if __name__ == '__main__':
     lasso_input=[]
     gaussian_input=[]
     pls_input=[]
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.250510.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),reverse=True):
         print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
@@ -897,9 +930,9 @@ if __name__ == '__main__':
             features_dir_name = param["grid_coordinates"] + file_name
             
             df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
-            df = df[
-                [len(glob.glob("{}/{}/*".format(param["grid_coordinates"], mol.GetProp("InchyKey"))))>0 for mol in
-                 df["mol"]]]
+            # df = df[
+            #     [len(glob.glob("{}/{}/*".format(param["grid_coordinates"], mol.GetProp("InchyKey"))))>0 for mol in
+            #      df["mol"]]]
 
             df["mol"].apply(
                 lambda mol: calculate_conformation.read_xyz(mol,
@@ -1041,8 +1074,8 @@ if __name__ == '__main__':
     p = multiprocessing.Pool(processes=int(param["processes"]))
     columns=["savefilename","alpha","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation"]
     decimals = {"RMSE_regression": 5,"r2_regression":5,"RMSE_validation":5, "r2_validation":5}
-    pd.DataFrame(p.map(Gaussian,gaussian_input), columns=["savefilename","alpha","sigma","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/Gaussian.csv")
-    pd.DataFrame(p.map(Ridge,ridge_input), columns=columns).round(decimals).to_csv(param["out_dir_name"] + "/Ridge.csv")
+    pd.DataFrame(p.map(Gaussian,gaussian_input), columns=["savefilename","alpha","sigma","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation", "RMSE_PCA_validation","r2_PCA_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/Gaussian.csv")
+    pd.DataFrame(p.map(Ridge,ridge_input), columns=columns+["RMSE_PCA_validation","r2_PCA_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/Ridge.csv")
     pd.DataFrame(p.map(Lasso,lasso_input), columns=columns).round(decimals).to_csv(param["out_dir_name"] + "/Lasso.csv")
     pd.DataFrame(p.map(PLS,pls_input), columns=columns).round(decimals).to_csv(param["out_dir_name"] + "/PLS.csv")
     # p.map(run, inputs_)

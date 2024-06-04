@@ -21,9 +21,9 @@ def draw_RMSE(dir):
 
     gaussian = pd.read_csv(dir+ "/Gaussian.csv")
     gaussian["dataset"]=gaussian.index*3//len(gaussian)
-    for sigma in [4.00,2.00,1.00,0.50]:
+    for sigma in gaussian["sigma"].drop_duplicates().sort_values(ascending=False):
         _=gaussian[gaussian["sigma"]==sigma]
-        _["method"]="Gaussian σ = {}".format(sigma)
+        _["method"]="Gaussian σ = {} Å".format(sigma)
         dfs.append(_)
 
     df=pd.concat(dfs)
@@ -42,11 +42,17 @@ def draw_RMSE(dir):
         ax.set_yticks([0.0,0.5,1.0])
         ax.set_xticks([1, 10,100])
         ax2.set_xticks([0.01,0.1,1])
+        ax.set_xlabel("λ (Gaussian, Ridge)", fontsize=10)
+        ax2.set_xlabel("λ (Lasso)", fontsize=10)
+        ax.set_ylabel("ΔΔG")
         sns.lineplot(x="alpha", y="RMSE_validation", data=df[df["dataset"]==_],hue="method",errorbar=None,style="method",
                     legend="full" if _==2 else None, color="blue", ax=ax,alpha=1)
         sns.lineplot(x="alpha", y="RMSE_validation", data=lasso[lasso["dataset"]==_],hue="method",errorbar=None,style="method",
                     legend="full" if _==2 else None, color="black", ax=ax2,alpha=1)
-        
+        sns.lineplot(x="alpha", y="RMSE_regression", data=df[df["dataset"]==_],hue="method",errorbar=None,style="method",
+                    legend=None, color="blue", ax=ax,alpha=0.5)
+        sns.lineplot(x="alpha", y="RMSE_regression", data=lasso[lasso["dataset"]==_],hue="method",errorbar=None,style="method",
+                    legend=None, color="black", ax=ax2,alpha=0.5)
     lines_labels=[ax.get_legend_handles_labels() for ax in [ax2,ax]]
     lines, labels=[sum(lol,[]) for lol in zip(*lines_labels)]
     ax.legend(lines,labels,bbox_to_anchor=(1, 1), loc='upper left', fontsize=6, ncols=1)
@@ -80,7 +86,7 @@ def draw_yyplot(dir):
         r2s=[]
         RMSEs=[]
         for column in df.columns:
-            if "validation" in column:
+            if "validation" in column and "validation_PCA" not in column:
                 r2s.append(r2_score(df["ΔΔG.expt."], df[column]))
                 RMSEs.append(mean_squared_error(df["ΔΔG.expt."], df[column],squared=False))
                 ax.scatter(df["ΔΔG.expt."], df[column], s=10, c="red", edgecolor="none",  alpha=0.2)
@@ -96,10 +102,10 @@ def draw_yyplot(dir):
     plt.savefig(dir+  "/yy-plot.png", transparent=False, dpi=300)
 
 # time.sleep(60*60*6)
-for param_name in glob.glob("../parameter/cube_to_grid/20240531/cube_to_grid0.500510.txt"):
+for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.250510.txt"):
     with open(param_name, "r") as f:
         param = json.loads(f.read())
-    os.makedirs(param["fig_dir"], exist_ok=True)
+    os.makedirs(param["out_dir_name"], exist_ok=True)
     draw_RMSE(param["out_dir_name"])
     draw_yyplot(param["out_dir_name"])
 
