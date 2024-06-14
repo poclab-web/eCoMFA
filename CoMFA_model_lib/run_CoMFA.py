@@ -62,7 +62,7 @@ def Gaussian(input):
                                            (X_train.T @ y[train_index]).astype("float32"), assume_a="gen")
             predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
-        predict=unshuffle_array(np.array(predict),sort_index)
+        predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
         RMSE=mean_squared_error(y,predict,squared=False)
         r2=r2_score(y,predict)
         result.append([RMSE,r2])
@@ -78,7 +78,7 @@ def Gaussian(input):
                                         (X_train.T @ y[train_index]).astype("float32"), assume_a="gen")
         predict.extend(predict_cv.tolist())
         sort_index.extend(test_index.tolist())
-    predict=unshuffle_array(np.array(predict),sort_index)
+    predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
     RMSE_PCA=mean_squared_error(y,predict,squared=False)
     r2_PCA=r2_score(y,predict)
     df["split_PCA"]=split
@@ -108,7 +108,7 @@ def Ridge(input):
             predict_cv = linear_model.Ridge(alpha=alpha * len(train_index), fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
             predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
-        predict=unshuffle_array(np.array(predict),sort_index)
+        predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
         RMSE=mean_squared_error(y,predict,squared=False)
         r2=r2_score(y,predict)
         result.append([RMSE,r2])
@@ -123,7 +123,7 @@ def Ridge(input):
         predict_cv = linear_model.Ridge(alpha=alpha * len(train_index), fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
         predict.extend(predict_cv.tolist())
         sort_index.extend(test_index.tolist())
-    predict=unshuffle_array(np.array(predict),sort_index)
+    predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
     RMSE_PCA=mean_squared_error(y,predict,squared=False)
     r2_PCA=r2_score(y,predict)
     df["split_PCA"]=split
@@ -152,7 +152,7 @@ def PLS(input):
             predict_cv = PLSRegression(n_components=alpha).fit(X_train, y[train_index]).predict(X_test)
             predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
-        predict=unshuffle_array(np.array(predict),sort_index)
+        predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
         RMSE=mean_squared_error(y,predict,squared=False)
         r2=r2_score(y,predict)
         result.append([RMSE,r2])
@@ -167,7 +167,7 @@ def PLS(input):
         predict_cv = PLSRegression(n_components=alpha).fit(X_train, y[train_index]).predict(X_test)
         predict.extend(predict_cv.tolist())
         sort_index.extend(test_index.tolist())
-    predict=unshuffle_array(np.array(predict),sort_index)
+    predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
     RMSE_PCA=mean_squared_error(y,predict,squared=False)
     r2_PCA=r2_score(y,predict)
     df["split_PCA"]=split
@@ -197,7 +197,7 @@ def Lasso(input):
             predict_cv = linear_model.Lasso(alpha=alpha/2, fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
             predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
-        predict=unshuffle_array(np.array(predict),sort_index)
+        predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
         RMSE=mean_squared_error(y,predict,squared=False)
         r2=r2_score(y,predict)
         result.append([RMSE,r2])
@@ -212,7 +212,8 @@ def Lasso(input):
         predict_cv = linear_model.Lasso(alpha=alpha/2, fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
         predict.extend(predict_cv.tolist())
         sort_index.extend(test_index.tolist())
-    predict=unshuffle_array(np.array(predict),sort_index)
+    predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
+
     RMSE_PCA=mean_squared_error(y,predict,squared=False)
     r2_PCA=r2_score(y,predict)
     df["split_PCA"]=split
@@ -223,6 +224,7 @@ def Lasso(input):
     r2=r2_score(y,lasso.predict(X))
     return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]
 
+<<<<<<< HEAD
 # #regressionだけにする。
 # def regression_comparison_(df, dfp, gaussian_penalize, save_name, n_splits,features):
 #     os.makedirs(save_name + "/molecular_field_csv",exist_ok=True)
@@ -808,6 +810,8 @@ if False:
     #     PandasTools.SaveXlsxFromFrame(df, save_name + "/λ_result.xlsx", size=(100, 100))
     #     dfp.to_csv(save_name + "/λ_result.csv", index=False)
     #     print(save_name)
+=======
+>>>>>>> 36b620d (crean up)
 def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
     energies = []
     for conf in mol.GetConformers():
@@ -821,7 +825,6 @@ def energy_to_Boltzmann_distribution(mol, RT=1.99e-3 * 273):
     for conf, rate in zip(mol.GetConformers(), rates):
         conf.SetProp("Boltzmann_distribution", str(rate))
 
-# from cclib.io import ccread
 
 def is_normal_frequencies(filename):
     try:
@@ -872,7 +875,6 @@ def get_free_energy(mol,dir):
         mol.RemoveConformer(_)
 
 def get_grid_feat(mol,RT,dir):
-    print(mol.GetProp("InchyKey"))
     energy_to_Boltzmann_distribution(mol, RT)
     Dt = []
     # ESP = []
@@ -910,14 +912,6 @@ def get_grid_feat(mol,RT,dir):
     dfp_yz = data_yz.copy()
     return dfp_yz[["Dt","DtR1","DtR2"]].values.T.tolist()
 
-def run(input):
-    df_, dfp, grid_coordinates, save_path,  n_splits,features = input
-    regression_comparison__(df_, dfp, grid_coordinates, save_path, n_splits,features)
-
-# def evaluate(input):
-#     X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name=input
-#     df=pd.read_excel(save_name)
-#     RMSE=mean_squared_error(y,
 
 if __name__ == '__main__':
     #time.sleep(60*60*24*2.5)
@@ -926,7 +920,7 @@ if __name__ == '__main__':
     lasso_input=[]
     gaussian_input=[]
     pls_input=[]
-    for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/run/cube_to_grid0.250510.txt"),reverse=True):
         print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
@@ -960,19 +954,18 @@ if __name__ == '__main__':
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             file_name = os.path.splitext(os.path.basename(file))[0]
             features_dir_name = param["grid_coordinates"] + file_name
-            
+            print(len(df),features_dir_name)
             df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
-            # df = df[
-            #     [len(glob.glob("{}/{}/*".format(param["grid_coordinates"], mol.GetProp("InchyKey"))))>0 for mol in
-            #      df["mol"]]]
-
+            df = df[
+                [len(glob.glob("{}/{}/*".format(param["grid_coordinates"], mol.GetProp("InchyKey"))))>0 for mol in
+                 df["mol"]]]
+            print(len(df),features_dir_name)
             df["mol"].apply(
                 lambda mol: calculate_conformation.read_xyz(mol,
                                                             param["opt_structure"] + "/" + mol.GetProp("InchyKey")))
             df["mol"].apply(lambda mol : get_free_energy(mol,param["freq_dir"]))
             df=df[[mol.GetNumConformers()>0 for mol in df["mol"]]]
             print(len(df),features_dir_name)
-            dfp = pd.read_csv(param["grid_coordinates"] + "/penalty_param.csv")
             df[["Dt","DtR1","DtR2"]]=df[["mol", "RT"]].apply(lambda _: get_grid_feat(_[0], _[1],param["grid_coordinates"]), axis=1, result_type='expand')
             print("feature_calculated")
 <<<<<<< HEAD
@@ -1066,13 +1059,6 @@ if __name__ == '__main__':
     p.map(run, inputs_)
 =======
 
-            # for _ in range(10):
-            #     df_ = df.sample(frac=1, random_state=_)
-            #     save_path = param["out_dir_name"] + "/" + file_name + "/" + str(_)
-            #     os.makedirs(save_path, exist_ok=True)
-            #     input = df_, dfp, param["grid_coordinates"], save_path,  param["n_splits"], param["features"]
-            #     inputs_.append(input)
-            
             X=np.array(df["Dt"].values.tolist())/np.sqrt(np.average(np.array(df["Dt"].values.tolist())**2))
             X1=np.array(df["DtR1"].values.tolist())/np.sqrt(np.average(np.array(df["Dt"].values.tolist())**2))
             X2=np.array(df["DtR2"].values.tolist())/np.sqrt(np.average(np.array(df["Dt"].values.tolist())**2))
@@ -1086,22 +1072,25 @@ if __name__ == '__main__':
             # 5分割交差検証を10回実施
             n_splits = int(param["n_splits"])
             n_repeats = int(param["n_repeats"])
+            dir=param["out_dir_name"] + "/{}".format(file_name)
+            os.makedirs(dir,exist_ok=True)
+
             for alpha in alphas:
-                save_name=param["out_dir_name"] + "/{}/Ridge_alpha_{}".format(file_name,alpha)
+                save_name=dir + "/Ridge_alpha_{}".format(alpha)
                 ridge_input.append([X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name])
             Qs=param["sigmas"]
             for alpha in alphas:
                 for Q in Qs:
-                    save_name=param["out_dir_name"] + "/{}/Gaussian_alpha_{}_sigma_{}".format(file_name,alpha,Q)
+                    save_name=dir + "/Gaussian_alpha_{}_sigma_{}".format(alpha,Q)
                     Q_dir=param["grid_coordinates"]+ "/1ptp{}.npy".format(Q)
                     gaussian_input.append([X,X1,X2,y,alpha,Q,Q_dir,n_splits,n_repeats,df,df_coord,save_name])
             alphas = np.logspace(-5,5,11,base=2)
             for alpha in alphas:
-                save_name=param["out_dir_name"] + "/{}/Lasso_alpha_{}".format(file_name,alpha)
+                save_name=dir + "/Lasso_alpha_{}".format(alpha)
                 lasso_input.append([X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name])
             alphas = np.arange(1,12)
             for alpha in alphas:
-                save_name=param["out_dir_name"] + "/{}/PLS_alpha_{}".format(file_name,alpha)
+                save_name=dir + "/PLS_alpha_{}".format(alpha)
                 pls_input.append([X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name])
     p = multiprocessing.Pool(processes=int(param["processes"]))
     columns=["savefilename","alpha","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation"]
