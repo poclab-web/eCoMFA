@@ -2,30 +2,35 @@ import glob
 import json
 import os
 import re
-
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import cm
 from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.lines as mlines
 
 def draw_RMSE(dir):
-    fig = plt.figure(figsize=(9,3.5*2))
+    fig = plt.figure(figsize=(9,9))
     dfs=[]
-    lasso = pd.read_csv(dir+  "/Lasso.csv")
+    pls = pd.read_csv(dir+  "/PLS.csv",index_col = 'Unnamed: 0').sort_index()
+    pls["method"]="PLS"
+    pls["dataset"]=pls.index*3//len(pls)
+    dfs.append(pls)
+    lasso = pd.read_csv(dir+  "/Lasso.csv",index_col = 'Unnamed: 0').sort_index()
     lasso["method"]="Lasso"
     lasso["dataset"]=lasso.index*3//len(lasso)
     dfs.append(lasso)
-    ridge = pd.read_csv(dir+  "/Ridge.csv")
+    ridge = pd.read_csv(dir+  "/Ridge.csv",index_col = 'Unnamed: 0').sort_index()
     ridge["method"]="Ridge"
     ridge["dataset"]=ridge.index*3//len(ridge)
     dfs.append(ridge)
-    gaussian = pd.read_csv(dir+ "/Gaussian.csv")
+    gaussian = pd.read_csv(dir+ "/Gaussian.csv",index_col = 'Unnamed: 0').sort_index()
     gaussian["dataset"]=gaussian.index*3//len(gaussian)
-    for sigma in gaussian["sigma"].drop_duplicates().sort_values(ascending=False):
+    for sigma in gaussian["sigma"].drop_duplicates().sort_values(ascending=True)[1:2]:
         _=gaussian[gaussian["sigma"]==sigma]
-        _["method"]="Gaussian σ = {} Å".format(sigma)
+        _["method"]="Gaussian"# σ = {} Å".format(sigma)
         dfs.append(_)
 
     df=pd.concat(dfs,ignore_index=True)
@@ -44,43 +49,115 @@ def draw_RMSE(dir):
     df["validation"]="regression"
     dfs.append(df)
     df=pd.concat(dfs,ignore_index=True)
-
+    # 色とスタイルの定義
+    palette = {"PCA validation": "red","Rondom validation": 'blue', "regression": 'black'}
+    linestyles = {"PLS":":",'Lasso': '-.', 'Ridge': '--', 'Gaussian': '-'}
     for _, label in zip(range(3), ["($S$)-Me-CBS", "(-)-DIP-Chloride", "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]"]):
-        ax = fig.add_subplot(2, 3, _ + 1)
-        plt.xscale("log")
-        ax2 = ax.twiny()
-        plt.xscale("log")
-        ax.set_title(label)
-        ax.set_ylim(0.2, 1.2)
-        ax.set_yticks([0.0,0.5,1.0])
-        ax.set_xticks([1, 10,100,1000], minor=True)
-        ax2.set_xticks([0.1,1,10], minor=True)
-        ax.set_xlabel("λ (Gaussian, Ridge)", fontsize=10)
-        ax2.set_xlabel("λ (Lasso)", fontsize=10)
-        ax.set_ylabel("RMSE [kcal/mol]")
-        # sns.lineplot(x="alpha", y="RMSE_PCA_validation", data=df[df["dataset"]==_],hue="method",errorbar=None,style="method",
-        #             legend="full" if _==2 else None, color="blue", ax=ax,alpha=1)
-        # sns.lineplot(x="alpha", y="RMSE_validation", data=df[df["dataset"]==_],hue="method",errorbar=None,style="method",
-        #             legend="full" if _==2 else None, color="blue", ax=ax,alpha=0.5)
-        # sns.lineplot(x="alpha", y="RMSE_validation", data=lasso[lasso["dataset"]==_],errorbar=None,style="method",
-        #             legend="full" if _==2 else None, color="black", ax=ax2,alpha=0.5)
-        # sns.lineplot(x="alpha", y="RMSE_regression", data=df[df["dataset"]==_],hue="method",errorbar=None,style="method",
-        #             legend=None, color="blue", ax=ax,alpha=0.3)
-        # sns.lineplot(x="alpha", y="RMSE_regression", data=lasso[lasso["dataset"]==_],#hue="method",errorbar=None,style="method",
-        #             legend=None, color="black", ax=ax2,alpha=0.3)
-        # sns.lineplot(x="alpha", y="RMSE", data=df[(df["dataset"]==_)&(df["method"]=="Lasso")],style="method",errorbar=None,hue="validation",
-        #             legend=None, color="validation", ax=ax2,alpha=1)
-        # sns.lineplot(x="alpha", y="RMSE", data=df[(df["dataset"]==_)&(df["method"]!="Lasso")],style="method",errorbar=None,hue="validation",
-        #             legend=None, color="validation", ax=ax,alpha=1)
-        sns.lineplot(x="alpha", y="RMSE", data=df[(df["dataset"]==_)],hue="method",errorbar=None,style="validation",
-                    legend="full" if _==2 else None, color="validation", ax=ax,palette=sns.color_palette("coolwarm"))
-    lines_labels=[ax.get_legend_handles_labels() for ax in [ax2,ax]]
-    lines, labels=[sum(lol,[]) for lol in zip(*lines_labels)]
-    ax.legend(lines,labels,bbox_to_anchor=(1, 1), loc='upper left', fontsize=6, ncols=1)
-    # ax2.get_legend().remove()
-    
+        # ax = fig.add_subplot(2, 3, _ + 4)
+        
+        # ax.set_ylim(0, 4)
+        # ax.set_yticks([1,2,3,4])
+        # ax.set_xticks([1, 5,10], minor=True)
+        # ax.set_xlabel("n_principal", fontsize=10)
+        # ax.set_ylabel("RMSE [kcal/mol]")
+        # sns.lineplot(x="alpha", y="RMSE", data=df[(df["dataset"]==_)&(df["method"]=="PLS")],hue="method",errorbar=None,style="validation",
+        #             legend="full" if _==2 else None, color="validation", ax=ax,palette=sns.color_palette("coolwarm"))
+        # if _==2:
+        #     ax.legend(bbox_to_anchor=(1, 1), loc='upper left', fontsize=6, ncols=1)
+
+        # sns.lineplot(x="alpha", y="RMSE", data=df[(df["dataset"]==_)&(df["method"]!="PLS")&(df["validation"]=="PCA validation")],hue="method",errorbar=None,#style="validation",
+        #             legend="full" if _==0 else None,  ax=ax,palette=sns.color_palette("Greens"))
+        # if _==0:
+        #     ax.legend(title='Legend for Group 1',bbox_to_anchor=(3.4, 1), loc='upper left', fontsize='x-small', ncols=1)
+        # sns.lineplot(x="alpha", y="RMSE", data=df[(df["dataset"]==_)&(df["method"]!="PLS")&(df["validation"]=="Rondom validation")],hue="method",errorbar=None,#style="validation",
+        #             legend="full" if _==1 else None,  ax=ax,palette=sns.color_palette("Reds"))
+        # if _==1:
+        #     ax.legend(title='Legend for Group 1',bbox_to_anchor=(2.2, 0.65), loc='upper left', fontsize='x-small', ncols=1)
+        # sns.lineplot(x="alpha", y="RMSE", data=df[(df["dataset"]==_)&(df["method"]!="PLS")&(df["validation"]=="regression")],hue="method",errorbar=None,#style="validation",
+        #             legend="full" if _==2 else None,  ax=ax,palette=sns.color_palette("Blues"))
+        # if _==2:
+        #     ax.legend(title='Legend for Group 1',bbox_to_anchor=(1, 0.3), loc='upper left', fontsize='x-small', ncols=1)
+
+        # 各タイプごとに線を描く
+        data=df[(df["dataset"]==_)]#&(df["method"]!="PLS")]
+        
+        for __,(type1_value, color) in enumerate(palette.items()):
+            ax1 = fig.add_subplot(3, 3, _ + 3*__+1)
+            # plt.xscale("log")
+            # plt.yscale("log")
+            if __==0:
+                ax1.set_title(label)
+                ax1.set_ylim(0.5, 2.5)
+            elif __==1:
+                ax1.set_ylim(0.5, 2)
+            elif __==2:
+                ax1.set_ylim(0.01, 2)
+            ax1.set_xscale('log', base=2)
+            ax1.set_yscale('log', base=10)
+            ax1.set_xticks([2**-5,2**0, 2**5, 2**10])
+            ax1.yaxis.set_major_locator(plt.MultipleLocator(0.5))
+            ax1.yaxis.set_major_formatter(plt.ScalarFormatter())
+            ax1.yaxis.set_minor_locator(plt.MultipleLocator(0.1))
+            ax1.yaxis.set_minor_formatter(plt.NullFormatter())
+
+            # ax1.xaxis.set_major_locator(plt.LogLocator(base=2, subs=[2]))
+            ax1.xaxis.set_minor_locator(plt.LogLocator(base=2, subs='auto', numticks=100))
+            ax1.xaxis.set_minor_formatter(plt.NullFormatter())
+            ax2 = ax1.twiny()
+
+
+            ax2.set_xlim([11.5,0.5])
+            ax2.set_xticks([1, 6, 11])
+            ax2.set_xticklabels(['1', '6', '11'])
+            ax2.set_xlabel("n_components", fontsize=10)
+            ax2.xaxis.set_minor_locator(plt.MultipleLocator(1))
+            ax2.xaxis.set_minor_formatter(plt.NullFormatter())
+            ax1.set_xlabel("λ", fontsize=10)
+            ax1.set_ylabel("RMSE [kcal/mol]")
+            for type2_value, linestyle in linestyles.items():
+                if type2_value=="PLS":
+                    ax=ax2
+                else:
+                    ax=ax1
+                if type2_value=="Gaussian":
+                    linewidth=2
+                else:
+                    linewidth=2
+                subset = data[(data['validation'] == type1_value) & (data['method'] == type2_value)]
+                
+                sns.lineplot(x="alpha", y="RMSE", data=subset, label=f'validation={type1_value}, method={type2_value}',
+                            legend="full" if _==2 else None,color=color, linestyle=linestyle,  ax=ax, alpha=0.6, linewidth=linewidth)#+ 0.1 * type1_value
+        
+            # sns.lineplot(x="alpha", y="RMSE", data=df[(df["dataset"]==_)&(df["method"]!="PLS")],hue="method",errorbar=None,style="validation",
+            #             legend="full" if _==2 else None,  ax=ax,palette=sns.color_palette("Blues"))
+            # 凡例の作成
+            # type1の凡例
+            # handles_type1 = [mlines.Line2D([], [], color=color, label=f'type1={type1}') for type1, color in palette.items()]
+            # type2の凡例
+            handles_type2 = [mlines.Line2D([], [], color=color, linestyle=linestyle, label=f'{type2}') for type2, linestyle in linestyles.items()]
+            if _==2:
+                ax2.get_legend().remove()
+                if __==0:
+                    title="PCA validation"
+                elif __==1:
+                    title="random validation"
+                else:
+                    title="regression"
+                ax1.legend(handles= handles_type2, loc='upper left', bbox_to_anchor=(1, 1), title=title)
+        # if _==2:
+        #     ax.legend(title='Legend for Group 1',bbox_to_anchor=(1, 0.3), loc='upper left', fontsize='x-small', ncols=1)
+    # # 凡例の作成
+
+    # # type1の凡例
+    # handles_type1 = [mlines.Line2D([], [], color=color, label=f'type1={type1}') for type1, color in palette.items()]
+    # # type2の凡例
+    # handles_type2 = [mlines.Line2D([], [], color='black', linestyle=linestyle, label=f'type2={type2}') for type2, linestyle in linestyles.items()]
+
+    # plt.legend(handles=handles_type1 + handles_type2, loc='upper left', bbox_to_anchor=(1, 1), title='Legend')
+
     fig.tight_layout()
     plt.savefig(dir+  "/RMSE.png", transparent=False, dpi=300)
+    # plt.show()
 
 def draw_yyplot(dir):
     fig = plt.figure(figsize=(3 * 4, 3 * 1))
@@ -94,56 +171,54 @@ def draw_yyplot(dir):
         ax.set_title(name)
         ax.set_xlabel("ΔΔ${G_{expt}}$ [kcal/mol]", fontsize=10)
         ax.set_ylabel("ΔΔ${G_{predict}}$ [kcal/mol]", fontsize=10)
-        df=pd.read_csv(dir+  "/{}.csv".format(name))
+        df=pd.read_csv(dir+  "/{}.csv".format(name),index_col = 'Unnamed: 0').sort_index()
         df["dataset"]=df.index*3//len(df)
-        try:
-            dfs=[]
-            for __ in range(3):
-                df_=df[df["dataset"]==__]
-                df_['RMSE_PCA_validation']
-                df_ = pd.read_excel(df_["savefilename"][df_["RMSE_PCA_validation"]==df_["RMSE_PCA_validation"].min()].iloc[0]+"_prediction.xlsx").sort_values(["smiles"])
-                dfs.append(df_)
-            df_=pd.concat(dfs)
-            r2s_PCA=[]
-            RMSEs_PCA=[]
-            for column in df_.columns:
-                if "validation_PCA" in column:
-                    r2s_PCA.append(r2_score(df_["ΔΔG.expt."], df_[column]))
-                    RMSEs_PCA.append(mean_squared_error(df_["ΔΔG.expt."], df_[column],squared=False))
-                    ax.scatter(df_["ΔΔG.expt."], df_[column], s=10, c="green", edgecolor="none",  alpha=0.5)
-            ax.scatter([],[],c="green",label="validation \nRMSE = {:.3f}".format(np.average(RMSEs_PCA))
-                    +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(np.average(r2s_PCA)),  alpha=0.5)
-        except:
-            print(name)
-        
+
+
         dfs=[]
         for __ in range(3):
             df_=df[df["dataset"]==__]
             df_ = pd.read_excel(df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_prediction.xlsx").sort_values(["smiles"])
             dfs.append(df_)
-        df=pd.concat(dfs)
+        df_=pd.concat(dfs)
         r2s=[]
         RMSEs=[]
-        for column in df.columns:
+        for column in df_.columns:
             if "validation_PCA" not in column and "validation" in column:
-                r2s.append(r2_score(df["ΔΔG.expt."], df[column]))
-                RMSEs.append(mean_squared_error(df["ΔΔG.expt."], df[column],squared=False))
-                ax.scatter(df["ΔΔG.expt."], df[column], s=10, c="red", edgecolor="none",  alpha=0.2)
-        r2=r2_score(df["ΔΔG.expt."], df["regression"])
-        RMSE=mean_squared_error(df["ΔΔG.expt."], df["regression"],squared=False)
-        ax.scatter(df["ΔΔG.expt."], df["regression"], s=10, c="blue", edgecolor="none",  alpha=0.5)
-
-        ax.scatter([],[],c="red",label="validation \nRMSE = {:.3f}".format(np.average(RMSEs))
-                   +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(np.average(r2s)),  alpha=0.5)
-        ax.scatter([],[],c="blue",label="regression \nRMSE = {:.3f}".format(np.average(RMSE))
-                   +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(r2),  alpha=0.5)
+                r2s.append(r2_score(df_["ΔΔG.expt."], df_[column]))
+                RMSEs.append(mean_squared_error(df_["ΔΔG.expt."], df_[column],squared=False))
+                ax.scatter(df_["ΔΔG.expt."], df_[column], s=10, c="dodgerblue", edgecolor="none",  alpha=0.2)
+        ax.scatter(df_["ΔΔG.expt."], df_["regression"], s=10, c="black", edgecolor="none",  alpha=0.8)
         
-        ax.legend(loc='lower right', fontsize=6, ncols=1)
+        r2=r2_score(df_["ΔΔG.expt."], df_["regression"])
+        RMSE=mean_squared_error(df_["ΔΔG.expt."], df_["regression"],squared=False)
+        dfs=[]
+        for __ in range(3):
+            df_=df[df["dataset"]==__]
+            df_ = pd.read_excel(df_["savefilename"][df_["RMSE_PCA_validation"]==df_["RMSE_PCA_validation"].min()].iloc[0]+"_prediction.xlsx").sort_values(["smiles"])
+            dfs.append(df_)
+        df_=pd.concat(dfs)
+        r2s_PCA=[]
+        RMSEs_PCA=[]
+        for column in df_.columns:
+            if "validation_PCA" in column:
+                r2s_PCA.append(r2_score(df_["ΔΔG.expt."], df_[column]))
+                RMSEs_PCA.append(mean_squared_error(df_["ΔΔG.expt."], df_[column],squared=False))
+                ax.scatter(df_["ΔΔG.expt."], df_[column], s=10, c="tomato", edgecolor="none",  alpha=0.8)
+        ax.scatter([],[],c="tomato",label="PCA split \nRMSE = {:.3f}".format(np.average(RMSEs_PCA))
+                +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(np.average(r2s_PCA)),  alpha=0.8)
+        ax.scatter([],[],c="dodgerblue",label="random split \nRMSE = {:.3f}".format(np.average(RMSEs))
+                   +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(np.average(r2s)),  alpha=0.8)
+        ax.scatter([],[],c="black",label="regression \nRMSE = {:.3f}".format(np.average(RMSE))
+                   +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(r2),  alpha=0.8)
+        
+        ax.legend(loc='lower right', fontsize=5, ncols=1)
     fig.tight_layout()
     plt.savefig(dir+  "/yy-plot.png", transparent=False, dpi=300)
+    # plt.show()
 
 # time.sleep(60*60*6)
-for param_name in glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"):
+for param_name in glob.glob("../parameter/run/cube_to_grid0.250510.txt"):
     with open(param_name, "r") as f:
         param = json.loads(f.read())
     os.makedirs(param["out_dir_name"], exist_ok=True)
