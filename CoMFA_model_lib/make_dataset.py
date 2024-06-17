@@ -30,12 +30,12 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
                               )]
     elif flag=="dip":
         df = df[df["mol"].map(lambda mol:
-                              not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl,#7,OH1]"))
+                              not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl,#7,OH1]"))#
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[#7,OH1]"))
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]**[#7,OH1]"))
                             #   and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*C(=O)[OH1]"))
                               )]
-    elif flag=="ru":
+    elif False:#flag=="ru":
         df = df[df["mol"].map(lambda mol:
                               not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][#7]"))
                             #   not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][#7,#8]"))
@@ -43,19 +43,20 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
                               )]
     df["RT"] = 1.99 * 10 ** -3 * df["temperature"].values
     df["ΔΔG.expt."] = df["RT"].values * np.log(100 / df["er."].values - 1)
-    if False:
+    if True:
         PandasTools.AddMoleculeColumnToFrame(df, "smiles")
         # print(df[df.duplicated(subset='inchikey')][["inchikey","smiles"]])
         df = df[["smiles", "ROMol", "inchikey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
             subset="inchikey")
         PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100))
-    df["aliphatic_aliphatic"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("CC(=O)C")))
-    df["aliphatic_aromatic"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("CC(=O)c")))
-    df["aromatic_aromatic"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("cC(=O)c")))
-    df["ring"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("[#6][C;R](=O)[#6]")))
+    else:
+        df["aliphatic_aliphatic"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("CC(=O)C")))
+        df["aliphatic_aromatic"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("CC(=O)c")))
+        df["aromatic_aromatic"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("cC(=O)c")))
+        df["ring"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("[#6][C;R](=O)[#6]")))
 
-    print("finish",out_file_name, len(df))
-    print(len(df[df["aliphatic_aliphatic"]&~df["ring"]]),len(df[df["aliphatic_aromatic"]&~df["ring"]]),len(df[df["aromatic_aromatic"]&~df["ring"]]),len(df[df["ring"]]))
+        print("finish",out_file_name, len(df))
+        print(len(df[df["aliphatic_aliphatic"]&~df["ring"]]),len(df[df["aliphatic_aromatic"]&~df["ring"]]),len(df[df["aromatic_aromatic"]&~df["ring"]]),len(df[df["ring"]]))
 
 
 if __name__ == '__main__':

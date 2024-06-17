@@ -34,9 +34,9 @@ def pkl_to_featurevalue(dir_name, dfp, mol, conf, out_name):  # グリッド特�
         #     return None
         filename = "{}/data{}.pkl".format(dir_name, conf.GetId())
         data = pd.read_pickle(filename)
-        data["Dt"] = data["Dt"].where(data["Dt"] < 100, 100)
+        data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
         # data["ESP"]=data["ESP"].values*np.exp(-data["Dt"].values/np.sqrt(np.average(data["Dt"].values ** 2)))
-        data["ESP"] = data["ESP"].where(data["ESP"] < 0, 0)
+        data["ESP"] = data["ESP"].where(data["Dt"] < 0.001, 0)
 
         # print(data)
         start = time.time()
@@ -166,7 +166,8 @@ def generate_grid_points(range,step):
     df = pd.DataFrame(points, columns=['x', 'y', 'z'])
     return df
 
-def make_penalty(l, sigma, interval, out_dir_name):
+def make_penalty(input):
+    l, sigma, interval, out_dir_name=input
     l = np.array(l)
     
     xyz = l[(l[:, 1] > 0) & (l[:, 2] > 0)]
@@ -201,21 +202,21 @@ def make_penalty(l, sigma, interval, out_dir_name):
     np.save(filename,ptp.astype("float32"))
     print(filename)
 
-    # penalty_L = []
-    # for _ in range(2):
-    #     penalty_L_ = []
-    #     for __ in range(2):
-    #         if _ == __:
-    #             penalty_L_.append(penalty)
-    #         else:
-    #             penalty_L_.append(np.zeros(penalty.shape))
-    #     penalty_L.append(penalty_L_)
-    # penalty=np.block(penalty_L)
-    # ptp=penalty.T@penalty
+    penalty_L = []
+    for _ in range(2):
+        penalty_L_ = []
+        for __ in range(2):
+            if _ == __:
+                penalty_L_.append(penalty)
+            else:
+                penalty_L_.append(np.zeros(penalty.shape))
+        penalty_L.append(penalty_L_)
+    penalty=np.block(penalty_L)
+    ptp=penalty.T@penalty
 
-    # filename = out_dir_name + "/2ptp{:.2f}.npy".format(sigma)
-    # np.save(filename, ptp.astype("float32"))
-    # print(filename)
+    filename = out_dir_name + "/2ptp{:.2f}.npy".format(sigma)
+    np.save(filename, ptp.astype("float32"))
+    print(filename)
 
 def read_pickle(dir):
     df=pd.read_pickle(dir)
@@ -257,7 +258,7 @@ if __name__ == '__main__':
     # time.sleep(60*60*24*2)
     interval = 0.25
     dfs = []
-    for path in glob.glob("../arranged_dataset/*.xlsx"):
+    for path in glob.glob("../all_dataset/*.xlsx"):
         df = pd.read_excel(path)
         print(len(df))
         dfs.append(df)
@@ -283,8 +284,10 @@ if __name__ == '__main__':
     # arr = np.array(l)[max_indices, range(np.array(l).shape[1])]
     
     arr=np.average(l,axis=0)
-    rounded_arr = np.sign(arr) * np.ceil(np.abs(arr) /interval) * interval
-    ans = rounded_arr - interval/2 * np.sign(rounded_arr)
+    
+    ans=(np.round(arr / interval-0.5)+0.5) * interval
+    # rounded_arr = np.sign(arr) * np.ceil(np.abs(arr) /interval) * interval
+    # ans = rounded_arr - interval/2 * np.sign(rounded_arr)
     print(ans)
     dfp=generate_grid_points(ans,interval).sort_values(['x', 'y', "z"], ascending=[True, True, True])
     # out_dir_name="../../../penalty_20240606"
@@ -293,9 +296,13 @@ if __name__ == '__main__':
     
     
     #if False:#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    inputs=[]
     for n in range(5):
         sigma = interval *2** n
-        make_penalty(dfp[["x","y","z"]].values, sigma, interval, out_dir_name)
+        input=dfp[["x","y","z"]].values, sigma, interval, out_dir_name
+        inputs.append(input)
+    p = Pool(1)
+    p.map(make_penalty, inputs)
     # raise ValueError
     # for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),reverse=True):
     # df = copy.deepcopy(dfs)
@@ -316,6 +323,6 @@ if __name__ == '__main__':
             inputs.append(input)
         # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
     print(len(inputs))
-    p = Pool(60)
+    p = Pool(50)
     p.map(PF, inputs)
     print("END")
