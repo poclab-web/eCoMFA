@@ -215,7 +215,7 @@ def draw_yyplot(dir):
         ax.legend(loc='lower right', fontsize=5, ncols=1)
     fig.tight_layout()
     plt.savefig(dir+  "/yy-plot.png", transparent=False, dpi=300)
-    # plt.show()
+    plt.show()
 
 # time.sleep(60*60*6)
 for param_name in glob.glob("../parameter/run/cube_to_grid0.250510.txt"):

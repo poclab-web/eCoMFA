@@ -45,11 +45,11 @@ def split_data_pca(X, n_splits=5):
 def Gaussian(input):
     X,X1,X2,y,alpha,Q,Q_dir,n_splits,n_repeats,df,df_coord,save_name=input
     gaussian=scipy.linalg.solve((X.T @ X + alpha * len(y) * np.load(Q_dir)).astype("float32"),
-                                           (X.T @ y).astype("float32"), assume_a="gen")
+                                           (X.T @ y).astype("float32"), assume_a="pos")
     df["regression"]=X@gaussian
     df["R1_contribution"]=X1@gaussian
     df["R2_contribution"]=X2@gaussian
-    df_coord["coef"]=gaussian
+    df_coord["coef"]=gaussian[:len(df_coord)]
     df_coord.to_csv( save_name + "_coef.csv", index=False)
     result=[]
     for repeat in range(n_repeats):
@@ -59,7 +59,7 @@ def Gaussian(input):
         for train_index, test_index in kf.split(X):
             X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
             predict_cv=X_test@scipy.linalg.solve((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
-                                           (X_train.T @ y[train_index]).astype("float32"), assume_a="gen")
+                                           (X_train.T @ y[train_index]).astype("float32"), assume_a="pos")
             predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
         predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
@@ -75,7 +75,7 @@ def Gaussian(input):
         split[test_index]=_
         X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
         predict_cv=X_test@scipy.linalg.solve((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
-                                        (X_train.T @ y[train_index]).astype("float32"), assume_a="gen")
+                                        (X_train.T @ y[train_index]).astype("float32"), assume_a="pos")
         predict.extend(predict_cv.tolist())
         sort_index.extend(test_index.tolist())
     predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
@@ -88,7 +88,10 @@ def Gaussian(input):
     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
     RMSE=mean_squared_error(y,X@gaussian,squared=False)
     r2=r2_score(y,X@gaussian)
-    return [save_name,alpha,Q,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]
+    integ=np.sum(df_coord["coef"].values)
+    moment=np.sum(df_coord["coef"].values.reshape(-1,1)*df_coord[["x","y","z"]].values,axis=0)/integ
+    
+    return [save_name,alpha,Q,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]+[integ]+moment.tolist()
 
 def Ridge(input):
     X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name=input
@@ -96,7 +99,7 @@ def Ridge(input):
     df["regression"]=ridge.predict(X)
     df["R1_contribution"]=ridge.predict(X1)
     df["R2_contribution"]=ridge.predict(X2)
-    df_coord["coef"]=ridge.coef_
+    df_coord["coef"]=ridge.coef_[:len(df_coord)]
     df_coord.to_csv( save_name + "_coef.csv", index=False)
     result=[]
     for repeat in range(n_repeats):
@@ -140,7 +143,7 @@ def PLS(input):
     df["regression"]=pls.predict(X)
     df["R1_contribution"]=pls.predict(X1)
     df["R2_contribution"]=pls.predict(X2)
-    df_coord["coef"]=pls.coef_[0]
+    df_coord["coef"]=pls.coef_[0][:len(df_coord)]
     df_coord.to_csv( save_name + "_coef.csv", index=False)
     result=[]
     for repeat in range(n_repeats):
@@ -185,7 +188,7 @@ def Lasso(input):
     df["regression"]=lasso.predict(X)
     df["R1_contribution"]=lasso.predict(X1)
     df["R2_contribution"]=lasso.predict(X2)
-    df_coord["coef"]=lasso.coef_
+    df_coord["coef"]=lasso.coef_[:len(df_coord)]
     df_coord.to_csv( save_name + "_coef.csv", index=False)
     result=[]
     for repeat in range(n_repeats):
@@ -288,7 +291,7 @@ def get_free_energy(mol,dir):
 
 def get_grid_feat(mol,RT,dir):
     energy_to_Boltzmann_distribution(mol, RT)
-    Dt = []
+    feat = []
     # ESP = []
     we = []
     for conf in mol.GetConformers():
@@ -296,7 +299,7 @@ def get_grid_feat(mol,RT,dir):
             "{}/{}/data{}.pkl".format(dir, mol.GetProp("InchyKey"), conf.GetId()))
         Bd = float(conf.GetProp("Boltzmann_distribution"))
         we.append(Bd)
-        Dt.append(data["Dt"].values.tolist())
+        feat.append(data[["Dt","ESP"]].values.tolist())
         # ESP.append(data["ESP"].values.tolist())
     # Dt = np.array(Dt)
     # ESP = np.array(ESP)
@@ -305,28 +308,28 @@ def get_grid_feat(mol,RT,dir):
     # w = np.exp(-Dt/np.sqrt(np.average(Dt**2)))
     # w = np.exp(-Dt)
     # print(np.max(w),np.min(w),np.average(w))
-    data["Dt"] = np.nan_to_num(np.average(Dt, weights=we, axis=0))
+    data[["Dt","ESP"]] = np.nan_to_num(np.average(feat, weights=we, axis=0))
     # w = np.exp(ESP / np.sqrt(np.average(ESP ** 2, axis=0)).reshape(1, -1))
     # data["ESP"] = np.nan_to_num(
     #     np.average(ESP, weights=np.array(we).reshape(-1, 1) * np.ones(shape=ESP.shape), axis=0))
     data_y = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
 
-    data_y["Dt"] = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values + \
-        data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])["Dt"].values
+    data_y[["Dt","ESP"]] = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[["Dt","ESP"]].values + \
+        data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[["Dt","ESP"]].values
     data_yz = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
 
     # data_yz["Dt"] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values - \
     #                 data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])["Dt"].values
 
-    data_yz["DtR1"] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values
-    data_yz["DtR2"] = data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])["Dt"].values
-    data_yz["Dt"]=data_yz["DtR1"].values-data_yz["DtR2"].values
+    data_yz[["DtR1","ESPR1"]] = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[["Dt","ESP"]].values
+    data_yz[["DtR2","ESPR2"]] = data_y[data_y["z"] < 0].sort_values(['x', 'y', "z"], ascending=[True, True, False])[["Dt","ESP"]].values
+    data_yz[["Dt","ESP"]]=data_yz[["DtR1","ESPR1"]].values-data_yz[["DtR2","ESPR2"]].values
     dfp_yz = data_yz.copy()
-    return dfp_yz[["Dt","DtR1","DtR2"]].values.T.tolist()
+    return dfp_yz[["Dt","DtR1","DtR2","ESP","ESPR1","ESPR2"]].values.T.tolist()
 
 
 if __name__ == '__main__':
-    #time.sleep(60*60*24*2.5)
+    # time.sleep(60*60*24*1)
     # inputs_=[]
     ridge_input=[]
     lasso_input=[]
@@ -354,13 +357,19 @@ if __name__ == '__main__':
             df["mol"].apply(lambda mol : get_free_energy(mol,param["freq_dir"]))
             df=df[[mol.GetNumConformers()>0 for mol in df["mol"]]]
             print(len(df),features_dir_name)
-            df[["Dt","DtR1","DtR2"]]=df[["mol", "RT"]].apply(lambda _: get_grid_feat(_[0], _[1],param["grid_coordinates"]), axis=1, result_type='expand')
+            df[["Dt","DtR1","DtR2","ESP","ESPR1","ESPR2"]]=df[["mol", "RT"]].apply(lambda _: get_grid_feat(_[0], _[1],param["grid_coordinates"]), axis=1, result_type='expand')
             print("feature_calculated")
 
             X=np.array(df["Dt"].values.tolist())/np.sqrt(np.average(np.array(df["Dt"].values.tolist())**2))
             X1=np.array(df["DtR1"].values.tolist())/np.sqrt(np.average(np.array(df["Dt"].values.tolist())**2))
             X2=np.array(df["DtR2"].values.tolist())/np.sqrt(np.average(np.array(df["Dt"].values.tolist())**2))
 
+            X_esp=np.array(df["ESP"].values.tolist())/np.sqrt(np.average(np.array(df["Dt"].values.tolist())**2))
+            X1_esp=np.array(df["ESPR1"].values.tolist())/np.sqrt(np.average(np.array(df["ESP"].values.tolist())**2))
+            X2_esp=np.array(df["ESPR2"].values.tolist())/np.sqrt(np.average(np.array(df["ESP"].values.tolist())**2))
+            X=np.concatenate([X,X_esp],1)
+            X1=np.concatenate([X1,X1_esp],1)
+            X2=np.concatenate([X2,X2_esp],1)
             # X = np.concatenate(features_all / std, axis=1)
             y=df["ΔΔG.expt."].values
             # 正則化パラメータの候補
@@ -380,7 +389,7 @@ if __name__ == '__main__':
             for alpha in alphas:
                 for Q in Qs:
                     save_name=dir + "/Gaussian_alpha_{}_sigma_{}".format(alpha,Q)
-                    Q_dir=param["grid_coordinates"]+ "/1ptp{}.npy".format(Q)
+                    Q_dir=param["grid_coordinates"]+ "/2ptp{}.npy".format(Q)
                     gaussian_input.append([X,X1,X2,y,alpha,Q,Q_dir,n_splits,n_repeats,df,df_coord,save_name])
             alphas = np.logspace(-5,5,11,base=2)
             for alpha in alphas:
@@ -393,10 +402,9 @@ if __name__ == '__main__':
     p = multiprocessing.Pool(processes=int(param["processes"]))
     columns=["savefilename","alpha","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation"]
     decimals = {"RMSE_regression": 5,"r2_regression":5,"RMSE_validation":5, "r2_validation":5}
-    pd.DataFrame(p.map(Gaussian,gaussian_input), columns=["savefilename","alpha","sigma","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation", "RMSE_PCA_validation","r2_PCA_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/Gaussian.csv")
     pd.DataFrame(p.map(Ridge,ridge_input), columns=columns+["RMSE_PCA_validation","r2_PCA_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/Ridge.csv")
     pd.DataFrame(p.map(Lasso,lasso_input), columns=columns+["RMSE_PCA_validation","r2_PCA_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/Lasso.csv")
     pd.DataFrame(p.map(PLS,pls_input), columns=columns+["RMSE_PCA_validation","r2_PCA_validation"]).round(decimals).to_csv(param["out_dir_name"] + "/PLS.csv")
-    # p.map(run, inputs_)
+    pd.DataFrame(p.map(Gaussian,gaussian_input), columns=["savefilename","alpha","sigma","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation", "RMSE_PCA_validation","r2_PCA_validation"]+["integral","x_moment","y_moment","z_moment"]).round(decimals).to_csv(param["out_dir_name"] + "/Gaussian.csv")
     end = time.perf_counter()  # 計測終了
     print('Finish{:.2f}'.format(end - start))
