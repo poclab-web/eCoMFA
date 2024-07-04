@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1dc05206-be36-42a9-a1dc-9cdec5a92731" name="Changes" comment="from windows">
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/check.py" beforeDir="false" afterPath="$PROJECT_DIR$/CoMFA_model_lib/check.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/CoMFA_model_lib/graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/make_grid_cordinate.py" beforeDir="false" afterPath="$PROJECT_DIR$/CoMFA_model_lib/make_grid_cordinate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.10816.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.10840.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.11392.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.11412.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.11736.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.11768.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.11816.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.12504.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.13212.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.13444.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.13812.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.14064.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.14392.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.14456.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.14468.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.14508.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.14828.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.15272.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.15356.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.1556.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.16224.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.17436.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.18200.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.18388.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.18460.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.18572.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.18852.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.18896.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.19420.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.19520.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.19596.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.19752.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.19860.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.20324.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.20424.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.20552.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.20560.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.2080.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.21416.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.21664.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.21772.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.22156.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.22256.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.22400.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.23076.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.23304.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.23672.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.23708.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.23884.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.23928.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.23960.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24148.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24256.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24324.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24412.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24476.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24532.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24572.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24608.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24648.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24712.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.24920.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.25020.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.25208.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.25280.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.25460.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.25628.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.25788.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.25792.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.25820.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.25876.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.26108.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.26144.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.26172.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.26288.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.26584.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.26752.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.27856.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.28288.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.28452.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.29468.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.29704.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.29756.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.29980.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.30300.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.30324.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.336.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.3604.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.3908.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.4544.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.4992.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.5004.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.5216.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.5440.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.6216.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.6508.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.6952.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.7044.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.7660.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.7792.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.8220.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.8476.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.9084.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.9516.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/psi.9656.clean" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/run_CoMFA.py" beforeDir="false" afterPath="$PROJECT_DIR$/CoMFA_model_lib/run_CoMFA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoMFA_model_lib/timer.dat" beforeDir="false" afterPath="$PROJECT_DIR$/CoMFA_model_lib/timer.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/figs/-4.25 -4.75 -5.75 14 20 24 0.5 20240510/validation.png" beforeDir="false" afterPath="$PROJECT_DIR$/figs/-4.25 -4.75 -5.75 14 20 24 0.5 20240510/validation.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/figs/-4.25 -4.75 -5.75 14 20 24 0.5 20240510/λ_result.png" beforeDir="false" afterPath="$PROJECT_DIR$/figs/-4.25 -4.75 -5.75 14 20 24 0.5 20240510/λ_result.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/figs/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/validation.png" beforeDir="false" afterPath="$PROJECT_DIR$/figs/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/validation.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/figs/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/λ_result.png" beforeDir="false" afterPath="$PROJECT_DIR$/figs/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/λ_result.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/timer.dat" beforeDir="false" afterPath="$PROJECT_DIR$/timer.dat" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="0af924e88a8bb65ef7ae2e77426d52d6ea3422a0" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;saka-d&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="92901aa1-4ba7-4339-8bd6-a9879e5dabe0" />
+        <option name="url" value="https://github.com/poclab-web/CoMFA_model.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2eZUDCAcdDB5bEenSXqrAtD6W9O" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.calculate_conformation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.calculate_cubefile.executor&quot;: &quot;Run&quot;,
+    &quot;Python.csv_to_cube.executor&quot;: &quot;Run&quot;,
+    &quot;Python.cube_to_grid.executor&quot;: &quot;Run&quot;,
+    &quot;Python.graph.executor&quot;: &quot;Run&quot;,
+    &quot;Python.make_dataset.executor&quot;: &quot;Run&quot;,
+    &quot;Python.make_duplicatedlist.executor&quot;: &quot;Run&quot;,
+    &quot;Python.make_grid_cordinate.executor&quot;: &quot;Run&quot;,
+    &quot;Python.run_CoMFA.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;sakaguchi__20240301&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/poclabws/PycharmProjects/CoMFA_model/parameter/cube_to_grid&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\poclabws\PycharmProjects\CoMFA_model\parameter\cube_to_grid" />
+      <recent name="C:\Users\poclabws\PycharmProjects\CoMFA_model\parameter\structural optimization" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\poclabws\PycharmProjects\CoMFA_model\parameter\cube_to_grid\old" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.graph">
+    <configuration name="cube_to_grid" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CoMFA_model" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CoMFA_model_lib" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CoMFA_model_lib/cube_to_grid.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="graph" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CoMFA_model" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CoMFA_model_lib" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CoMFA_model_lib/graph.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="make_dataset" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CoMFA_model" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CoMFA_model_lib" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CoMFA_model_lib/make_dataset.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="make_duplicatedlist" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CoMFA_model" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CoMFA_model_lib" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CoMFA_model_lib/make_duplicatedlist.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="run_CoMFA" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CoMFA_model" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CoMFA_model_lib" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CoMFA_model_lib/run_CoMFA.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.graph" />
+        <item itemvalue="Python.run_CoMFA" />
+        <item itemvalue="Python.make_dataset" />
+        <item itemvalue="Python.cube_to_grid" />
+        <item itemvalue="Python.make_duplicatedlist" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-09665e90c3a7-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.15026.15" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1dc05206-be36-42a9-a1dc-9cdec5a92731" name="Changes" comment="" />
+      <created>1712111473575</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1712111473575</updated>
+      <workItem from="1712111478445" duration="1210000" />
+      <workItem from="1712113867643" duration="7531000" />
+      <workItem from="1712135000876" duration="464000" />
+      <workItem from="1712228093546" duration="1675000" />
+      <workItem from="1712836177259" duration="9229000" />
+      <workItem from="1712983011720" duration="47403000" />
+      <workItem from="1713238257664" duration="133039000" />
+      <workItem from="1716207371745" duration="675000" />
+    </task>
+    <task id="LOCAL-00001" summary="from windows">
+      <option name="closed" value="true" />
+      <created>1713158892527</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1713158892527</updated>
+    </task>
+    <task id="LOCAL-00002" summary="from windows">
+      <option name="closed" value="true" />
+      <created>1714198507262</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1714198507262</updated>
+    </task>
+    <task id="LOCAL-00003" summary="from windows">
+      <option name="closed" value="true" />
+      <created>1714284070658</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1714284070658</updated>
+    </task>
+    <task id="LOCAL-00004" summary="from windows">
+      <option name="closed" value="true" />
+      <created>1714307758765</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1714307758765</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/sakaguchi_20240301" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="sakaguchi_20240301" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="from windows" />
+    <option name="LAST_COMMIT_MESSAGE" value="from windows" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/CoMFA_model$make_grid_cordinate.coverage" NAME="make_grid_cordinate のカバレッジ結果" MODIFIED="1713351459771" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CoMFA_model_lib" />
+    <SUITE FILE_PATH="coverage/CoMFA_model$make_duplicatedlist.coverage" NAME="make_duplicatedlist のカバレッジ結果" MODIFIED="1714730487153" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CoMFA_model_lib" />
+    <SUITE FILE_PATH="coverage/CoMFA_model$make_dataset.coverage" NAME="make_dataset のカバレッジ結果" MODIFIED="1714818481516" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CoMFA_model_lib" />
+    <SUITE FILE_PATH="coverage/CoMFA_model$calculate_conformation.coverage" NAME="calculate_conformation Coverage Results" MODIFIED="1712128522831" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CoMFA_model_lib" />
+    <SUITE FILE_PATH="coverage/CoMFA_model$cube_to_grid.coverage" NAME="cube_to_grid のカバレッジ結果" MODIFIED="1714734347765" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CoMFA_model_lib" />
+    <SUITE FILE_PATH="coverage/CoMFA_model$csv_to_cube.coverage" NAME="csv_to_cube Coverage Results" MODIFIED="1713176142672" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CoMFA_model_lib" />
+    <SUITE FILE_PATH="coverage/CoMFA_model$graph.coverage" NAME="graph のカバレッジ結果" MODIFIED="1714956781759" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CoMFA_model_lib" />
+    <SUITE FILE_PATH="coverage/CoMFA_model$calculate_cubefile.coverage" NAME="calculate_cubefile Coverage Results" MODIFIED="1712839856297" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CoMFA_model_lib" />
+    <SUITE FILE_PATH="coverage/CoMFA_model$run_CoMFA.coverage" NAME="run_CoMFA のカバレッジ結果" MODIFIED="1714956742858" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CoMFA_model_lib" />
+  </component>
+</project>
