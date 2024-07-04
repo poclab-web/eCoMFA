@@ -28,7 +28,7 @@ def draw_RMSE(dir):
     dfs.append(ridge)
     gaussian = pd.read_csv(dir+ "/Gaussian.csv",index_col = 'Unnamed: 0').sort_index()
     gaussian["dataset"]=gaussian.index*3//len(gaussian)
-    for sigma in gaussian["sigma"].drop_duplicates().sort_values(ascending=True)[1:2]:
+    for sigma in gaussian["sigma"].drop_duplicates().sort_values(ascending=True):
         _=gaussian[gaussian["sigma"]==sigma]
         _["method"]="Gaussian"# σ = {} Å".format(sigma)
         dfs.append(_)

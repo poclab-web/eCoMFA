@@ -5,7 +5,7 @@ import time
 import warnings
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
-
+from scipy.linalg import eigh
 import numpy as np
 import pandas as pd
 
@@ -14,135 +14,56 @@ import calculate_conformation
 warnings.simplefilter('ignore')
 
 
-def pkl_to_featurevalue(dir_name, dfp, mol, conf, out_name):  # グリッド特徴量を計算　ボルツマン分布の加重はしないでデータセットの区別もなし。
-    conf=mol.GetConformer(conf)
+def pkl_to_featurevalue(input):  # グリッド特徴量を計算　ボルツマン分布の加重はしないでデータセットの区別もなし。
+    filename, dfp, outfilename=input
+    drop_dupl_x = dfp.drop_duplicates(subset="x").sort_values('x')["x"].values
+    drop_dupl_y = dfp.drop_duplicates(subset="y").sort_values('y')["y"].values
+    drop_dupl_z = dfp.drop_duplicates(subset="z").sort_values('z')["z"].values
 
-    # for conf in mol.GetConformers():
-    if True:
-        drop_dupl_x = dfp.drop_duplicates(subset="x").sort_values('x')["x"]
-        drop_dupl_y = dfp.drop_duplicates(subset="y").sort_values('y')["y"]
-        drop_dupl_z = dfp.drop_duplicates(subset="z").sort_values('z')["z"]
+    d_x = (drop_dupl_x[1] - drop_dupl_x[0]) / 2
+    d_y = (drop_dupl_y[1] - drop_dupl_y[0]) / 2
+    d_z = (drop_dupl_z[1] - drop_dupl_z[0]) / 2
 
-        d_x = (drop_dupl_x.iloc[1] - drop_dupl_x.iloc[0]) / 2
-        d_y = (drop_dupl_y.iloc[1] - drop_dupl_y.iloc[0]) / 2
-        d_z = (drop_dupl_z.iloc[1] - drop_dupl_z.iloc[0]) / 2
+    data = pd.read_pickle(filename)[["x","y","z","Dt","ESP"]].astype(np.float32)
+    data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
+    data["ESP"] = data["ESP"].where(data["Dt"] < 0.001, 0)
 
-        # 入力：幅
-        # dfpをdata.pklの最大・最小から決定
-        outfilename = "{}/data{}.pkl".format(out_name, conf.GetId())
-        # if os.path.isfile(outfilename):
-        #     return None
-        filename = "{}/data{}.pkl".format(dir_name, conf.GetId())
-        data = pd.read_pickle(filename)
-        data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
-        # data["ESP"]=data["ESP"].values*np.exp(-data["Dt"].values/np.sqrt(np.average(data["Dt"].values ** 2)))
-        data["ESP"] = data["ESP"].where(data["Dt"] < 0.001, 0)
+    start = time.time()
 
-        # print(data)
-        start = time.time()
+    D = 0.1 * 0.52917720859
+    
+    Dt_list = []
+    ESP_list = []
 
-        if True:
-            D = 0.1 * 0.52917720859
-            Dt = []
-            ESP=[]
-            for x in drop_dupl_x:
-                data = data[x - d_x < data["x"] + D]
-                data_x = data[x + d_x > data["x"] - D]
-                for y in drop_dupl_y:
-                    data_x = data_x[y - d_y < data_x["y"] + D]
-                    data_y = data_x[y + d_y > data_x["y"] - D]
-                    for z in drop_dupl_z:
-                        data_y = data_y[z - d_z < data_y["z"] + D]
-                        data_z = data_y[z + d_z > data_y["z"] - D]
-                        Dt_ = np.sum(data_z["Dt"].values *
-                                     (np.where(data_z["x"].values - (x - d_x) < D, data_z["x"].values - (x - d_x),
-                                               D) + np.where(x + d_x - data_z["x"].values < D,
-                                                             x + d_x - data_z["x"].values, D)) *
-                                     (np.where(data_z["y"].values - (y - d_y) < D, data_z["y"].values - (y - d_y),
-                                               D) + np.where(y + d_y - data_z["y"].values < D,
-                                                             y + d_y - data_z["y"].values, D)) *
-                                     (np.where(data_z["z"].values - (z - d_z) < D, data_z["z"].values - (z - d_z),
-                                               D) + np.where(z + d_z - data_z["z"].values < D,
-                                                             z + d_z - data_z["z"].values, D)))
-                        ESP_ = np.sum(data_z["ESP"].values *
-                                     (np.where(data_z["x"].values - (x - d_x) < D, data_z["x"].values - (x - d_x),
-                                               D) + np.where(x + d_x - data_z["x"].values < D,
-                                                             x + d_x - data_z["x"].values, D)) *
-                                     (np.where(data_z["y"].values - (y - d_y) < D, data_z["y"].values - (y - d_y),
-                                               D) + np.where(y + d_y - data_z["y"].values < D,
-                                                             y + d_y - data_z["y"].values, D)) *
-                                     (np.where(data_z["z"].values - (z - d_z) < D, data_z["z"].values - (z - d_z),
-                                               D) + np.where(z + d_z - data_z["z"].values < D,
-                                                             z + d_z - data_z["z"].values, D)))
-                        # Dt_=np.average(data_z["Dt"].values)
-                        Dt.append(Dt_)
-                        ESP.append(ESP_)
-        # else:
-        #     leng = 1
-        #     sigma = leng
-        #
-        #     def gauss_func(d):
-        #
-        #         ans = 1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
-        #               * np.exp(-d ** 2 / (2 * sigma ** 2))
-        #         return ans
-        #
-        #     D = 3 * sigma
-        #     Dt = []
-        #     for x in drop_dupl_x:
-        #         data = data[x < data["x"] + D]
-        #         data_x = data[x > data["x"] - D]
-        #         for y in drop_dupl_y:
-        #             data_x = data_x[y < data_x["y"] + D]
-        #             data_y = data_x[y > data_x["y"] - D]
-        #             for z in drop_dupl_z:
-        #                 data_y = data_y[z < data_y["z"] + D]
-        #                 data_z = data_y[z > data_y["z"] - D]
-        #                 d = np.linalg.norm(data_z[["x", "y", "z"]].values - np.array([x, y, z]), axis=1)
-        #                 Dt_ = np.average(data_z["Dt"].values, weights=np.where(d < sigma * 3, gauss_func(d), 0))
-        #                 # Dt_ = np.sum(data_z["Dt"].values *np.where(d<3,exp(-d**2),0))
-        #                 Dt.append(Dt_)
+    for x in drop_dupl_x:
+        mask_x = (x - d_x < data["x"] + D) & (x + d_x > data["x"] - D)
+        data_x = data[mask_x]
+        for y in drop_dupl_y:
+            mask_y = (y - d_y < data_x["y"] + D) & (y + d_y > data_x["y"] - D)
+            data_y = data_x[mask_y]
+            for z in drop_dupl_z:
+                mask_z = (z - d_z < data_y["z"] + D) & (z + d_z > data_y["z"] - D)
+                data_z = data_y[mask_z]
 
-        # else:
-        #     data["x"] = np.round((data["x"].values - min(drop_dupl_x)) / (d_x * 2)).astype(int)
-        #     data["y"] = np.round((data["y"].values - min(drop_dupl_y)) / (d_y * 2)).astype(int)
-        #     data["z"] = np.round((data["z"].values - min(drop_dupl_z)) / (d_z * 2)).astype(int)
-        #     # data=data[min(drop_dupl_x)-d_x<data["x"]]
-        #     # data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
-        #     # #data[["x","y","z"]]=data[["x","y","z"]]
-        #     # cond_x=[]
-        #     # cond_y=[]
-        #     # for x in drop_dupl_x:
-        #     #     cond_x_=x-d_x<data["x"] and x+d_x>data["x"]
-        #     #     cond_y_=
-        #     start = time.time()
-        #     Dt = []
-        #     for x in range(len(drop_dupl_x)):
-        #         data["x{}".format(x)] = data["x"] == x
-        #     for y in range(len(drop_dupl_y)):
-        #         data["y{}".format(y)] = data["y"] == y
-        #     for z in range(len(drop_dupl_z)):
-        #         data["z{}".format(z)] = data["z"] == z
-        #     for x in range(len(drop_dupl_x)):
-        #         # data_x=data[data["x"]==x]
-        #         data_x = data[data["x{}".format(x)]]
-        #         for y in range(len(drop_dupl_y)):
-        #             # data_xy = data_x[data_x["y"] == y]
-        #             data_xy = data_x[data_x["y{}".format(y)]]
-        #             for z in range(len(drop_dupl_z)):
-        #                 # Dt_ = np.sum(data_xy[data_xy["z{}".format(z)]]["Dt"].values) * (0.2 * 0.52917721067) ** 3
-        #                 Dt_ = np.average(data_xy[data_xy["z{}".format(z)]]["Dt"].values)
-        #                 Dt.append(Dt_)
-        print(outfilename,time.time() - start)
+                if not data_z.empty:
+                    x_diffs = np.minimum(np.abs(data_z["x"].values - (x - d_x)), D) + np.minimum(np.abs(x + d_x - data_z["x"].values), D)
+                    y_diffs = np.minimum(np.abs(data_z["y"].values - (y - d_y)), D) + np.minimum(np.abs(y + d_y - data_z["y"].values), D)
+                    z_diffs = np.minimum(np.abs(data_z["z"].values - (z - d_z)), D) + np.minimum(np.abs(z + d_z - data_z["z"].values), D)
 
-        dfp["Dt"] = np.nan_to_num(Dt)
-        dfp["ESP"] = np.nan_to_num(ESP)
-        dfp.to_pickle(outfilename)
+                    Dt_ = np.sum(data_z["Dt"].values * x_diffs * y_diffs * z_diffs)
+                    ESP_ = np.sum(data_z["ESP"].values * x_diffs * y_diffs * z_diffs)
+                else:
+                    Dt_ = 0
+                    ESP_ = 0
 
+                Dt_list.append(Dt_)
+                ESP_list.append(ESP_)
 
-def PF(input):
-    cube_dir_name, dfp, mol, conf, grid_coordinates = input
-    pkl_to_featurevalue(cube_dir_name, dfp, mol, conf, grid_coordinates)
+    dfp["Dt"] = np.nan_to_num(Dt_list)
+    dfp["ESP"] = np.nan_to_num(ESP_list)
+    dfp.to_pickle(outfilename)
+    print(outfilename, time.time() - start)
+
 
 def generate_grid_points(range,step):
     x_min,x_max,y_max,z_max=range
@@ -165,61 +86,78 @@ def generate_grid_points(range,step):
     # DataFrameに変換
     df = pd.DataFrame(points, columns=['x', 'y', 'z'])
     return df
-
+def gauss_func(d,interval,sigma):
+    leng = interval
+    ans=1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
+            * np.exp(-d ** 2 / (2 * sigma ** 2))
+    return ans
 def make_penalty(input):
     l, sigma, interval, out_dir_name=input
+    
     l = np.array(l)
     
     xyz = l[(l[:, 1] > 0) & (l[:, 2] > 0)]
 
+    # # Calculate distances using broadcasting
+    # diff = xyz[:, np.newaxis, :] - xyz[np.newaxis, :, :]
+    # d = np.linalg.norm(diff, axis=-1)
+
+    # # Calculate distances with transformations
+    # d_y = np.linalg.norm(diff * np.array([1, -1, 1]), axis=-1)
+    # d_z = np.linalg.norm(diff * np.array([1, 1, -1]), axis=-1)
+    # d_yz = np.linalg.norm(diff * np.array([1, -1, -1]), axis=-1)
     d = np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
     d_y = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, 1]), axis=1) for _ in xyz])
     d_z = np.array([np.linalg.norm(xyz - _ * np.array([1, 1, -1]), axis=1) for _ in xyz])
     d_yz = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, -1]), axis=1) for _ in xyz])
-
-    def gauss_func(d):
-        leng = interval
-        ans = 1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
-              * np.exp(-d ** 2 / (2 * sigma ** 2))
-        return ans
-
-    penalty_ = np.where(d < sigma * 3, gauss_func(d), 0)
-    penalty_y = np.where(d_y < sigma * 3, gauss_func(d_y), 0)
-    penalty_z = np.where(d_z < sigma * 3, gauss_func(d_z), 0)
-    penalty_yz = np.where(d_yz < sigma * 3, gauss_func(d_yz), 0)
-
+        
+    penalty_ = np.where(d < sigma * 3, gauss_func(d,interval,sigma), 0)
+    penalty_y = np.where(d_y < sigma * 3, gauss_func(d_y,interval,sigma), 0)
+    penalty_z = np.where(d_z < sigma * 3, gauss_func(d_z,interval,sigma), 0)
+    penalty_yz = np.where(d_yz < sigma * 3, gauss_func(d_yz,interval,sigma), 0)
     penalty = penalty_ + penalty_y - penalty_z - penalty_yz
-    # penalty = penalty  / np.max(np.sum(penalty_, axis=0))
-    # penalty = np.identity(penalty.shape[0])-penalty
-    penalty = np.identity(penalty.shape[0])-2*penalty+penalty.T@penalty
-    # penalty=np.concatenate([penalty, np.identity(penalty.shape[0])], 0)
-    # print(np.sum(penalty,axis=1))
-    # penalty=np.identity(penalty.shape[0])
-    # filename = out_dir_name + "/penalty{}.npy".format(n)  # + "/" + param["grid_coordinates_dir"]
-    # np.save(filename, penalty)
-    filename = out_dir_name + "/1ptp{:.2f}.npy".format(sigma)
-    ptp=penalty#.T@penalty
-    np.save(filename,ptp.astype("float32"))
-    print(filename)
+    print(sigma,np.std(penalty.astype("float32")))
+    # Compute PTP matrices and save them
+    def save_ptp(penalty, sigma, out_dir_name, suffix):
+        ptp = np.identity(penalty.shape[0]) - 2 * penalty + penalty.T @ penalty
+        ptp=ptp.astype("float32")
+        # ptp=np.eye(ptp.shape[0])
+        filename = f"{out_dir_name}/{suffix}ptp{sigma:.2f}.npy"
+        np.save(filename, ptp)
+        eigenvalues,P=eigh(ptp, overwrite_a=True,check_finite=False)
+        print((P/np.sqrt(eigenvalues)).dtype)
+        np.save(f"{out_dir_name}/{suffix}eig{sigma:.2f}.npy",P/np.sqrt(eigenvalues))
 
-    penalty_L = []
-    for _ in range(2):
-        penalty_L_ = []
-        for __ in range(2):
-            if _ == __:
-                penalty_L_.append(penalty)
-            else:
-                penalty_L_.append(np.zeros(penalty.shape))
-        penalty_L.append(penalty_L_)
-    penalty=np.block(penalty_L)
-    ptp=penalty.T@penalty
+    save_ptp(penalty, sigma, out_dir_name, "1")
 
-    filename = out_dir_name + "/2ptp{:.2f}.npy".format(sigma)
-    np.save(filename, ptp.astype("float32"))
-    print(filename)
+    # Create penalty_2 and compute its PTP matrix
+    # penalty_2 = np.block([[penalty, np.zeros_like(penalty)], [np.zeros_like(penalty), np.zeros_like(penalty)]])
+    # save_ptp(penalty_2, sigma, out_dir_name, "2")
+    # penalty = np.identity(penalty.shape[0])-2*penalty+penalty.T@penalty
+    # filename = out_dir_name + "/1ptp{:.2f}.npy".format(sigma)
+    # ptp=np.identity(penalty.shape[0])-2*penalty+penalty.T@penalty#.T@penalty
+    # np.save(filename,ptp.astype("float32"))
+    # print(filename)
+
+    # # penalty_L = []
+    # # for _ in range(2):
+    # #     penalty_L_ = []
+    # #     for __ in range(2):
+    # #         if _ == __:
+    # #             penalty_L_.append(penalty)
+    # #         else:
+    # #             penalty_L_.append(np.zeros_like(penalty))
+    # #     penalty_L.append(penalty_L_)
+    # penalty_2=np.block([[penalty,np.zeros_like(penalty)],[np.zeros_like(penalty),penalty]])
+    
+    # ptp=np.identity(penalty_2.shape[0])-2*penalty_2+penalty_2.T@penalty_2
+
+    # filename = out_dir_name + "/2ptp{:.2f}.npy".format(sigma)
+    # np.save(filename, ptp.astype("float32"))
+    # print(filename)
 
 def read_pickle(dir):
-    df=pd.read_pickle(dir)
+    df=pd.read_pickle(dir)[["Dt", "x", "y", "z"]]
     df=df[df["Dt"]>10e-3]
     ans=df[["x"]].min().to_list()+df[["x"]].max().to_list()+df[["y","z"]].abs().max().to_list()
     return ans
@@ -254,19 +192,18 @@ def histgram(cube_dir,name,out_dir_name):
     plt.show()
 
 if __name__ == '__main__':
-
+    start = time.perf_counter()  # 計測開始
     # time.sleep(60*60*24*2)
     interval = 0.25
-    dfs = []
-    for path in glob.glob("../all_dataset/*.xlsx"):
-        df = pd.read_excel(path)
-        print(len(df))
-        dfs.append(df)
-    df = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
+    # dfs = []
+    # for path in glob.glob("../all_dataset/*.xlsx"):
+    #     df = pd.read_excel(path)
+    #     print(len(df))
+    #     dfs.append(df)
+    df = pd.concat([pd.read_excel(path) for path in glob.glob("../all_dataset/*.xlsx")]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
     df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
     #cubeのディレクトリを指定。
-    dir="F:/wB97X-D_def2-TZVP20240416"
-    #読み込んでヒストグラムを出力。（メモリに注意）
+    dir="C:/Users/poclabws/calculation/wB97X-D_def2-TZVP20240416"#"F:/wB97X-D_def2-TZVP20240416"
     df = df[[os.path.isdir(dir + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
     df["mol"].apply(
         lambda mol: calculate_conformation.read_xyz(mol, dir + "/" + mol.GetProp("InchyKey")))
@@ -274,28 +211,19 @@ if __name__ == '__main__':
     # histgram(dir,"Dt","C:/Users/poclabws/result/histgram.png")
     print("histgram")
     l=[]
-    for mol in df["mol"]:#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    for mol in df["mol"]:
         for conf in mol.GetConformers():
             l.append(dir+ "/" + mol.GetProp("InchyKey")+ "/data{}.pkl".format(conf.GetId()))
-    p = multiprocessing.Pool(processes=50)
+    p = multiprocessing.Pool(processes=10)
     l=p.map(read_pickle,l)
 
-    # max_indices = np.argmax(np.abs(l), axis=0)
-    # arr = np.array(l)[max_indices, range(np.array(l).shape[1])]
-    
     arr=np.average(l,axis=0)
     
     ans=(np.round(arr / interval-0.5)+0.5) * interval
-    # rounded_arr = np.sign(arr) * np.ceil(np.abs(arr) /interval) * interval
-    # ans = rounded_arr - interval/2 * np.sign(rounded_arr)
     print(ans)
     dfp=generate_grid_points(ans,interval).sort_values(['x', 'y', "z"], ascending=[True, True, True])
-    # out_dir_name="../../../penalty_20240606"
     out_dir_name="../../../grid_coordinates/20240606_"+str(interval).replace('.', '_')
     os.makedirs(out_dir_name,exist_ok=True)
-    
-    
-    #if False:#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     inputs=[]
     for n in range(5):
         sigma = interval *2** n
@@ -315,14 +243,16 @@ if __name__ == '__main__':
     dfp_yz.to_csv((out_dir_name + "/coordinates_yz.csv"))
     print("len=", len(df))
     inputs = []
-    for mol in df["mol"]:#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    for mol in df["mol"]:
         os.makedirs(out_dir_name + "/" + mol.GetProp("InchyKey"), exist_ok=True)
         for conf in mol.GetConformers():
-            conf =conf.GetId()
-            input = dir + "/" + mol.GetProp("InchyKey"), dfp, mol, conf, out_dir_name + "/" + mol.GetProp("InchyKey")
+            confid =conf.GetId()
+            input = dir + "/" + mol.GetProp("InchyKey")+"/data{}.pkl".format(confid), dfp, out_dir_name + "/" + mol.GetProp("InchyKey")+"/data{}.pkl".format(confid)
             inputs.append(input)
         # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
     print(len(inputs))
     p = Pool(50)
-    p.map(PF, inputs)
+    p.map(pkl_to_featurevalue, inputs)
     print("END")
+    end = time.perf_counter()  # 計測終了
+    print('Finish{:.2f}'.format(end - start))
