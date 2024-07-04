@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 
-def coef_cube(file,mol_file,prop,to_cube_file_name):
+def coef_cube(file,mol_file,prop,column,to_cube_file_name):
     print(file)
     df = pd.read_csv(file)
     df_y = copy.deepcopy(df)
@@ -14,7 +14,7 @@ def coef_cube(file,mol_file,prop,to_cube_file_name):
     df_yz = copy.deepcopy(df)
     df_yz[["y"]] = -df_yz[["y"]]
     df_yz["z"] = -df_yz["z"]
-    column="coef"
+    
     df_z[column] = -df_z[column]
     df_yz[column] = -df_yz[column]
 
@@ -67,9 +67,9 @@ def coef_cube(file,mol_file,prop,to_cube_file_name):
 
 
 if __name__ == '__main__':
-    dir="../../../result/20240606_0_25_spl5"
+    dir="../../../result/20240621_0_25_spl5"
     filename=dir+"/*/*_coef.csv"
-    mol_file = "F:/cube_aligned/wB97X-D_def2-TZVP20240330/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
+    mol_file = "C:/Users/poclabws/calculation/wB97X-D_def2-TZVP20240416/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#"F:/cube_aligned/wB97X-D_def2-TZVP20240330/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
     prop="Property: ALIE"
     # for file in glob.glob(filename):
     #     out_file = file[:-4]  + ".cube"
@@ -84,5 +84,6 @@ if __name__ == '__main__':
             df_=df[(df["dataset"]==_)]
             file=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_coef.csv"
             for prop in ["Property: ALIE","Property: Default"]:
-                out_file=dir+"/cube/dataset{}/{}{}.cube".format(_,file.replace(".","").replace('/', '_').replace("csv",""),prop.replace(": ",""))
-                coef_cube(file,mol_file,prop,out_file)
+                for column in ["coef_steric","coef_electric"]:
+                    out_file=dir+"/cube/dataset{}/{}{}{}.cube".format(_,file.replace(".","").replace('/', '_').replace("csv",""),prop.replace(": ",""),column)
+                    coef_cube(file,mol_file,prop,column,out_file)
