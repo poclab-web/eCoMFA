@@ -256,9 +256,10 @@ def histgram(cube_dir,name,out_dir_name):
 if __name__ == '__main__':
 
     # time.sleep(60*60*24*2)
-    interval = 0.25
+    interval = 0.5
     dfs = []
-    for path in glob.glob("../all_dataset/*.xlsx"):
+    # for path in glob.glob("../all_dataset/review/*.xlsx"):
+    for path in glob.glob("../all_dataset/review/*.xlsx"):
         df = pd.read_excel(path)
         print(len(df))
         dfs.append(df)
@@ -266,6 +267,7 @@ if __name__ == '__main__':
     df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
     #cubeのディレクトリを指定。
     dir="F:/wB97X-D_def2-TZVP20240416"
+    dir="/Users/mac_poclab/cube/wB97X-D_def2-TZVP20240416_CBS"
     #読み込んでヒストグラムを出力。（メモリに注意）
     df = df[[os.path.isdir(dir + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
     df["mol"].apply(
