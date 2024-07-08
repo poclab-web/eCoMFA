@@ -1,0 +1,11 @@
+{
+"cube_dir_name": "/Users/mac_poclab/cube/wB97X-D_def2-TZVP20240416_CBS",
+"grid_coordinates":"../../../grid_coordinates/20240705_0_25",
+"out_dir_name":"../../../result/20240705_0_25_spl5",
+"freq_dir":"/Users/mac_poclab/cube/psi4_optimization_aligned_CBS/b3lyp_6-31gd_freq",
+"opt_structure":"/Users/mac_poclab/cube/psi4_optimization_aligned_CBS/b3lyp_6-31gd",
+"n_splits":"5",
+"n_repeats":"10",
+"sigmas":["0.50","1.00","2.00"],
+"processes":"24"
+}
