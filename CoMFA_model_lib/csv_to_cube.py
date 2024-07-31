@@ -20,11 +20,15 @@ def coef_cube(file,mol_file,prop,column,to_cube_file_name):
 
     df = pd.concat([df, df_y, df_z, df_yz])
     df = df.sort_values(by=["x", "y", "z"], ascending=[True, True, True])
-
+    
     with open(mol_file, "r", encoding="UTF-8") as f:
         cube = f.read().splitlines()
+    # try:
     n_atom = int(cube[2].split()[0])
     xyz = cube[6:6 + n_atom]
+    # except:
+    #     n_atom = int(cube[0].split()[0])
+    #     xyz = cube[2:2 + n_atom]
 
     drop_dupl_x = df.drop_duplicates(subset="x").sort_values('x')["x"]
     drop_dupl_y = df.drop_duplicates(subset="y").sort_values('y')["y"]
@@ -67,9 +71,12 @@ def coef_cube(file,mol_file,prop,column,to_cube_file_name):
 
 
 if __name__ == '__main__':
-    dir="../../../result/20240621_0_25_spl5"
+    dir="../../../result/20240704_0_5_spl5"
     filename=dir+"/*/*_coef.csv"
-    mol_file = "C:/Users/poclabws/calculation/wB97X-D_def2-TZVP20240416/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#"F:/cube_aligned/wB97X-D_def2-TZVP20240330/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
+    # mol_file = "D:/calculation/wB97X-D_def2-TZVP20240416/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#"F:/cube_aligned/wB97X-D_def2-TZVP20240330/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
+    mol_files=["C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/TS1R_B3LYP_6-31Gd_PCM_TS_new.xyz",
+               "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/dip_acetophenone_UFF_B3LYP_631Gd_PCM_IRC_new.xyz",
+               "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS_new.xyz"]
     prop="Property: ALIE"
     # for file in glob.glob(filename):
     #     out_file = file[:-4]  + ".cube"
@@ -79,7 +86,7 @@ if __name__ == '__main__':
         filename=dir+"/{}.csv".format(name)
         df=pd.read_csv(filename,index_col = 'Unnamed: 0').sort_index()
         df["dataset"]=df.index*3//len(df)
-        for _ in range(3):
+        for _,mol_file in enumerate(mol_files):
             os.makedirs(dir+"/cube/dataset{}".format(_),exist_ok=True)
             df_=df[(df["dataset"]==_)]
             file=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_coef.csv"
