@@ -30,7 +30,7 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
                               )]
     elif flag=="dip":
         df = df[df["mol"].map(lambda mol:
-                              not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl,#7,OH1]"))#
+                              not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,#7,OH1]"))#F,Cl,
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[#7,OH1]"))
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]**[#7,OH1]"))
                               )]
