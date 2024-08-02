@@ -70,16 +70,56 @@ def transform_coordinates(atoms, coordinates, N_O, N_X, N_XZ):
     new_coords = np.dot(new_coords, transform_matrix)
     
     return new_coords/0.52917720859
+def transform_coordinates4(atoms, coordinates, N_O, N_X, N_XZ1, N_XZ2):
+    origin = coordinates[N_O]
+    x_atom = coordinates[N_X]
+    xz1_atom = coordinates[N_XZ1]
+    xz2_atom = coordinates[N_XZ2]
 
+    # Translate to origin
+    new_coords = coordinates - origin
+
+    # Create new x-axis
+    x_axis = (x_atom - origin) / np.linalg.norm(x_atom - origin)
+    
+    # Determine y_axis using xz1_atom and xz2_atom
+    midpoint = (xz1_atom + xz2_atom) / 2
+    temp_y = (midpoint - origin) - np.dot((midpoint - origin), x_axis) * x_axis
+    temp_y /= np.linalg.norm(temp_y)
+    
+    # Calculate the z component difference and ensure xz1_atom has a greater z component
+    if np.dot((xz1_atom - origin), temp_y) < np.dot((xz2_atom - origin), temp_y):
+        xz1_atom, xz2_atom = xz2_atom, xz1_atom
+
+    # Recalculate y_axis
+    z_axis = (xz1_atom - xz2_atom)
+    z_axis -= np.dot(z_axis, x_axis) * x_axis
+    z_axis /= np.linalg.norm(z_axis)
+    
+    # Create new z-axis
+    y_axis = np.cross(x_axis, z_axis)
+
+    # Transformation matrix
+    transform_matrix = np.vstack([x_axis, y_axis, z_axis]).T
+
+    # Apply transformation
+    new_coords = np.dot(new_coords, transform_matrix)
+    
+    return new_coords / 0.52917720859
 # Example usage
 input_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/TS1R_B3LYP_6-31Gd_PCM_TS.xyz"
 output_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/TS1R_B3LYP_6-31Gd_PCM_TS_new.xyz"
 N_O = 43-1
 N_X = 42-1
 N_XZ = 59-1
+N_XZ2=44-1
 
 atoms, coordinates, comment = read_xyz(input_filename)
 new_coordinates = transform_coordinates(atoms, coordinates, N_O, N_X, N_XZ)
+write_xyz(output_filename, atoms, new_coordinates, comment)
+
+output_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/TS1R_B3LYP_6-31Gd_PCM_TS_new_4.xyz"
+new_coordinates = transform_coordinates4(atoms, coordinates, N_O, N_X, N_XZ,N_XZ2)
 write_xyz(output_filename, atoms, new_coordinates, comment)
 
 # Example usage
@@ -88,11 +128,15 @@ output_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/dip_ac
 N_O = 29-1
 N_X = 31-1
 N_XZ = 30-1
+N_XZ2=27-1
 
 atoms, coordinates, comment = read_xyz(input_filename)
 new_coordinates = transform_coordinates(atoms, coordinates, N_O, N_X, N_XZ)
 write_xyz(output_filename, atoms, new_coordinates, comment)
 
+output_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/dip_acetophenone_UFF_B3LYP_631Gd_PCM_IRC_new_4.xyz"
+new_coordinates = transform_coordinates4(atoms, coordinates, N_O, N_X, N_XZ,N_XZ2)
+write_xyz(output_filename, atoms, new_coordinates, comment)
 
 # Example usage
 input_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS.xyz"
@@ -100,7 +144,12 @@ output_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_ace
 N_O = 2-1
 N_X = 3-1
 N_XZ = 1-1
+N_XZ2=4-1
 
 atoms, coordinates, comment = read_xyz(input_filename)
 new_coordinates = transform_coordinates(atoms, coordinates, N_O, N_X, N_XZ)
+write_xyz(output_filename, atoms, new_coordinates, comment)
+
+output_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS_new_4.xyz"
+new_coordinates = transform_coordinates4(atoms, coordinates, N_O, N_X, N_XZ,N_XZ2)
 write_xyz(output_filename, atoms, new_coordinates, comment)
