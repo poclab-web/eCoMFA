@@ -25,10 +25,20 @@ def pkl_to_featurevalue(input):  # グリッド特徴量を計算　ボルツマ
     d_z = (drop_dupl_z[1] - drop_dupl_z[0]) / 2
 
     data = pd.read_pickle(filename)[["x","y","z","Dt","ESP","LUMO","LOL"]].astype(np.float32)
-    data["ESP"] = data["ESP"].where(data["Dt"] < 0.001, 0)
-    data[["DUAL"]] = data[["LUMO"]].applymap(np.abs).where(data["Dt"] < 0.001, 0)
-    data[["Dt"]]=data[["Dt"]].applymap(np.sqrt)
-    # data["Dt"] = data["Dt"].where(data["Dt"] < 10, 10)
+    # data["ESP"] = data["ESP"].where(data["Dt"] < 1e-3, 0)#.where(data["ESP"]>-data["ESP"].min(),-data["ESP"].min())
+    # data['ESP'] = np.clip(data['ESP'], -min_abs_value, min_abs_value)
+    # data[["DUAL"]] = data[["LUMO"]].applymap(np.abs).where(data["Dt"] < 1e-3, 0)
+    a = 1e-3
+
+    data["DUAL"]=data["LUMO"].where(data["Dt"]<a,0)**2
+    # data[["Dt"]]=data[["Dt"]].applymap(np.sqrt)
+    data["Dt"] = data["Dt"].where(data["Dt"] < a,  0)
+    # aの定義
+
+    # "Dt"カラムの変換
+    # data['Dt'] = np.maximum(a - np.abs(data['Dt'] - a), 0)
+    data["ESP"]=data["ESP"]*data["Dt"]
+    # data['Dt'] = np.where(data['Dt'] > 1e-6, 1, 0)
     # data["DUAL"]=data["Dt"]*data["LOL"]
     # data["Dt"]=data["Dt"]*(1-data["LOL"])
 
@@ -215,7 +225,7 @@ def make_penalty(input):
 
 def read_pickle(dir):
     df=pd.read_pickle(dir)[["Dt", "x", "y", "z"]].astype(np.float32)
-    df=df[df["Dt"]>10e-3]
+    df=df[df["Dt"]>10e-6]
     ans=df[["x"]].min().to_list()+df[["x"]].max().to_list()+df[["y","z"]].abs().max().to_list()
     return ans
 
@@ -281,17 +291,18 @@ if __name__ == '__main__':
         ans=(np.round(arr / interval-0.5)+0.5) * interval
     else:
         ans=[-4.75,  3.25,  4.25,  6.75]
+        ans=[-6.25,  4.25,  5.75,  8.25]
     print(ans)
     dfp=generate_grid_points(ans,interval).sort_values(['x', 'y', "z"], ascending=[True, True, True])
     out_dir_name="../../../grid_coordinates/20240606_"+str(interval).replace('.', '_')
     os.makedirs(out_dir_name,exist_ok=True)
     inputs=[]
-    for n in range(-1,2):
+    for n in range(-1,5):
         sigma = interval *2** n
         input=dfp[["x","y","z"]].values, sigma, interval, out_dir_name
         inputs.append(input)
-    p = Pool(1)
-    p.map(make_penalty, inputs)
+    p = Pool(2)
+    # p.map(make_penalty, inputs)
 
     dfp_yz = dfp[(dfp["y"] > 0) & (dfp["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, True, True])
     dfp_yz.to_csv((out_dir_name + "/coordinates_yz.csv"))
@@ -306,7 +317,7 @@ if __name__ == '__main__':
         # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
     print(len(inputs))
     p = Pool(60)
-    # p.map(pkl_to_featurevalue, inputs)
+    p.map(pkl_to_featurevalue, inputs)
     print("END")
     end = time.perf_counter()  # 計測終了
     print('Finish{:.2f}'.format(end - start))
