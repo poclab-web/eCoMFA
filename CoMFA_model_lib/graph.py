@@ -26,12 +26,12 @@ def draw_RMSE(dir):
     ridge["method"]="Ridge"
     ridge["dataset"]=ridge.index*3//len(ridge)
     dfs.append(ridge)
-    gaussian = pd.read_csv(dir+ "/Gaussian.csv",index_col = 'Unnamed: 0').sort_index()
-    gaussian["dataset"]=gaussian.index*3//len(gaussian)
-    for sigma in gaussian["sigma"].drop_duplicates().sort_values(ascending=True):
-        _=gaussian[gaussian["sigma"]==sigma]
-        _["method"]="Gaussian"# σ = {} Å".format(sigma)
-        dfs.append(_)
+    # gaussian = pd.read_csv(dir+ "/Gaussian.csv",index_col = 'Unnamed: 0').sort_index()
+    # gaussian["dataset"]=gaussian.index*3//len(gaussian)
+    # for sigma in gaussian["sigma"].drop_duplicates().sort_values(ascending=True):
+    #     _=gaussian[gaussian["sigma"]==sigma]
+    #     _["method"]="Gaussian"# σ = {} Å".format(sigma)
+    #     dfs.append(_)
 
     df=pd.concat(dfs,ignore_index=True)
 
@@ -161,7 +161,7 @@ def draw_RMSE(dir):
 
 def draw_yyplot(dir):
     fig = plt.figure(figsize=(3 * 4, 3 * 1))
-    for _, name in zip(range(4), ["Gaussian", "Ridge", "Lasso", "PLS"]):
+    for _, name in zip(range(4), [ "Ridge", "Lasso", "PLS"]):
         ax = fig.add_subplot(1, 4, _ + 1)
         ax.set_ylim(-4, 4)
         ax.set_yticks([-4, 0, 4])
@@ -211,14 +211,18 @@ def draw_yyplot(dir):
                    +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(np.average(r2s)),  alpha=0.8)
         ax.scatter([],[],c="black",label="regression \nRMSE = {:.3f}".format(np.average(RMSE))
                    +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(r2),  alpha=0.8)
-        
+        # 'df' は pandas データフレームであることを想定しています
+        num_rows = len(df_)  # データフレームの行数を取得
+        ax.text(0.05, 0.95, f'N={num_rows}', transform=ax.transAxes, 
+                fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor="none", facecolor="white"))
+
         ax.legend(loc='lower right', fontsize=5, ncols=1)
     fig.tight_layout()
     plt.savefig(dir+  "/yy-plot.png", transparent=False, dpi=300)
-    plt.show()
+    # plt.show()
 
 # time.sleep(60*60*6)
-for param_name in glob.glob("../parameter/run/cube_to_grid0.500510.txt"):
+for param_name in glob.glob("../parameter/run/cube_to_grid0.50.txt"):
     with open(param_name, "r") as f:
         param = json.loads(f.read())
     os.makedirs(param["out_dir_name"], exist_ok=True)

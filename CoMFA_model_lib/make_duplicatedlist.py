@@ -2,14 +2,21 @@ import pandas as pd
 from rdkit.Chem import PandasTools
 import os
 file1="../arranged_dataset/cbs.xlsx"
-file1="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/cbs/0/λ_result.xlsx"
-file1="C:/Users/poclabws/result/20240704_0_5_spl5/cbs/Gaussian_alpha_0.5_sigma_0.5_prediction.xlsx"
-file2="../arranged_dataset/DIP-chloride.xlsx"
-file2="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/DIP-chloride/0/λ_result.xlsx"
-file2="C:/Users/poclabws/result/20240704_0_5_spl5/DIP-chloride/Gaussian_alpha_0.5_sigma_0.5_prediction.xlsx"
-file3="../arranged_dataset/Russ.xlsx"
-file3="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/RuSS/0/λ_result.xlsx"
-file3="C:/Users/poclabws/result/20240704_0_5_spl5/RuSS/Gaussian_alpha_0.5_sigma_0.5_prediction.xlsx"
+# file1="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/cbs/0/λ_result.xlsx"
+# file1="C:/Users/poclabws/result/20240704_0_5_spl5/cbs/Gaussian_alpha_0.5_sigma_0.5_prediction.xlsx"
+df=pd.read_csv("C:/Users/poclabws/result/20240704_0_5_spl5/Ridge.csv")
+df["dataset"]=df.index*3//len(df)
+file1=df[df["dataset"]==0].sort_values(by="RMSE_validation")["savefilename"].iloc[0]+"_prediction.xlsx"
+# file2="../arranged_dataset/DIP-chloride.xlsx"
+# file2="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/DIP-chloride/0/λ_result.xlsx"
+# file2="C:/Users/poclabws/result/20240704_0_5_spl5/DIP-chloride/Gaussian_alpha_0.5_sigma_0.5_prediction.xlsx"
+file2=df[df["dataset"]==1].sort_values(by="RMSE_validation")["savefilename"].iloc[0]+"_prediction.xlsx"
+
+# file3="../arranged_dataset/Russ.xlsx"
+# file3="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/RuSS/0/λ_result.xlsx"
+# file3="C:/Users/poclabws/result/20240704_0_5_spl5/RuSS/Gaussian_alpha_0.5_sigma_0.5_prediction.xlsx"
+# file3=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_prediction.xlsx"
+file3=df[df["dataset"]==2].sort_values(by="RMSE_validation")["savefilename"].iloc[0]+"_prediction.xlsx"
 df1 = pd.read_excel(file1).dropna(subset=['smiles']).drop_duplicates(subset="inchikey")[["inchikey","smiles","validation_PCA",'ΔΔG.expt.']]
 df2=pd.read_excel(file2).dropna(subset=['smiles']).drop_duplicates(subset="inchikey")[["inchikey","smiles","validation_PCA",'ΔΔG.expt.']]
 df3 =pd.read_excel(file3).dropna(subset=['smiles']).drop_duplicates(subset="inchikey")[["inchikey","smiles","validation_PCA",'ΔΔG.expt.']]

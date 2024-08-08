@@ -16,7 +16,15 @@ from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.model_selection import KFold
 import time
 import calculate_conformation
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
 
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.kernel_ridge import KernelRidge
+import numpy as np
+from sklearn.cluster import KMeans
 warnings.simplefilter('ignore')
 
 # シャッフル前の順序に戻す関数
@@ -42,44 +50,36 @@ def split_data_pca(X, n_splits=5):
             train=np.where((X_pca < percentiles[_]) | (X_pca >= percentiles[_+1]))[0]
         indices.append([train,test])
     return indices
-import numpy as np
-from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans
 
-import numpy as np
-from sklearn.cluster import KMeans
 
-import numpy as np
-from sklearn.cluster import KMeans
-
-def split_data_kmeans(X, n_splits=5, n_clusters=5):
-    # Apply KMeans to cluster the data into different groups
-    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
-    clusters = kmeans.fit_predict(X)
+# def split_data_kmeans(X, n_splits=5, n_clusters=5):
+#     # Apply KMeans to cluster the data into different groups
+#     kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+#     clusters = kmeans.fit_predict(X)
     
-    # Initialize an empty list to hold the indices for each split
-    indices = [[] for _ in range(n_splits)]
+#     # Initialize an empty list to hold the indices for each split
+#     indices = [[] for _ in range(n_splits)]
     
-    # Distribute data points from each cluster into different splits
-    for cluster in range(n_clusters):
-        cluster_indices = np.where(clusters == cluster)[0]
-        np.random.shuffle(cluster_indices)  # Shuffle to ensure randomness
+#     # Distribute data points from each cluster into different splits
+#     for cluster in range(n_clusters):
+#         cluster_indices = np.where(clusters == cluster)[0]
+#         np.random.shuffle(cluster_indices)  # Shuffle to ensure randomness
         
-        # Split the cluster indices into n_splits parts
-        split_size = len(cluster_indices) // n_splits
-        for i in range(n_splits):
-            start = i * split_size
-            end = (i + 1) * split_size if i != n_splits - 1 else len(cluster_indices)
-            indices[i].extend(cluster_indices[start:end])
+#         # Split the cluster indices into n_splits parts
+#         split_size = len(cluster_indices) // n_splits
+#         for i in range(n_splits):
+#             start = i * split_size
+#             end = (i + 1) * split_size if i != n_splits - 1 else len(cluster_indices)
+#             indices[i].extend(cluster_indices[start:end])
     
-    # Convert the list of indices to arrays and create train/test splits
-    result_indices = []
-    for i in range(n_splits):
-        test_indices = np.array(indices[i])
-        train_indices = np.array([idx for j in range(n_splits) if j != i for idx in indices[j]])
-        train_indices = np.array([idx for j in range(n_splits) if (j+1)%n_splits == i for idx in indices[j]])[0:5]
-        result_indices.append([train_indices, test_indices])
-    return result_indices
+#     # Convert the list of indices to arrays and create train/test splits
+#     result_indices = []
+#     for i in range(n_splits):
+#         test_indices = np.array(indices[i])
+#         train_indices = np.array([idx for j in range(n_splits) if j != i for idx in indices[j]])
+#         train_indices = np.array([idx for j in range(n_splits) if (j+1)%n_splits == i for idx in indices[j]])[0:5]
+#         result_indices.append([train_indices, test_indices])
+#     return result_indices
 
 # Example usage
 # X = your_data_matrix
@@ -115,107 +115,111 @@ def generalized_ridge_regression_transformed(X, y, P,L):
     beta_hat= np.block([P[0]@beta_hat[:beta_hat.shape[0]//3], P[1]@beta_hat[beta_hat.shape[0]//3:beta_hat.shape[0]//3*2], P[2]@beta_hat[beta_hat.shape[0]//3*2:beta_hat.shape[0]//3*3]])
     return beta_hat
 
-def Gaussian(input):
-    X,X1,X2,y,alpha,Q,Q_dir,n_splits,n_repeats,df,df_coord,save_name=input
-    # start=time.time()
-    # gaussian=scipy.linalg.solve(X.T @ X + alpha * len(y) * np.load(Q_dir),
-    #                                        X.T @ y, assume_a="pos")
-    # time2=time.time()-start
-    # start=time.time()
-    # gaussian_, info=scipy.sparse.linalg.cg((X.T @ X + alpha * len(y) * np.load(Q_dir)).astype("float32"),
-    #                                        (X.T @ y).astype("float32"),x0=gaussian,atol=1e-03)
-    # c, lower = scipy.linalg.cho_factor(X.T @ X + alpha * len(y) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False)
-    # print(Q_dir,np.std(np.load(Q_dir)))
-    # gaussian = scipy.linalg.cho_solve(scipy.linalg.cho_factor(X.T @ X + alpha * len(y) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False),
-    #                                    X.T @ y, overwrite_b=True, check_finite=False)
-    # gaussian=np.load(Q_dir)@linear_model.Ridge(alpha=alpha * len(y),fit_intercept=False,solver='cholesky').fit(X@np.load(Q_dir),y).coef_
-    # P=np.load(Q_dir+"/eigenvectors.npy")
-    # P=P/np.sqrt(np.load(Q_dir+"/eigenvalues.npy")+Q)
-    # P=[np.load(f"{Q_dir}/1eig{Q:.2f}.npy"),np.eye(X.shape[1]//3),np.eye(X.shape[1]//3)]
-    P=[np.load(f"{Q_dir}/1eig{Q:.2f}.npy"),np.load(f"{Q_dir}/1eig{Q:.2f}.npy"),np.load(f"{Q_dir}/1eig{Q:.2f}.npy")]
-    # from scipy.linalg import eigh
-    # P=[]
-    # for i in range(3):
-    #     _=X.shape[1]//3
-    #     eigenvalues,eigenvectors=eigh(X[:,_*i:_*(i+1)].T@X[:,_*i:_*(i+1)]+ np.eye(_) * 1e-1, overwrite_a=True,check_finite=False)
-    #     P_=eigenvectors*np.sqrt(eigenvalues)
-    #     P.append(P_)
+# def Gaussian(input):
+#     X,X1,X2,y,alpha,Q,Q_dir,n_splits,n_repeats,df,df_coord,save_name=input
+#     # start=time.time()
+#     # gaussian=scipy.linalg.solve(X.T @ X + alpha * len(y) * np.load(Q_dir),
+#     #                                        X.T @ y, assume_a="pos")
+#     # time2=time.time()-start
+#     # start=time.time()
+#     # gaussian_, info=scipy.sparse.linalg.cg((X.T @ X + alpha * len(y) * np.load(Q_dir)).astype("float32"),
+#     #                                        (X.T @ y).astype("float32"),x0=gaussian,atol=1e-03)
+#     # c, lower = scipy.linalg.cho_factor(X.T @ X + alpha * len(y) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False)
+#     # print(Q_dir,np.std(np.load(Q_dir)))
+#     # gaussian = scipy.linalg.cho_solve(scipy.linalg.cho_factor(X.T @ X + alpha * len(y) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False),
+#     #                                    X.T @ y, overwrite_b=True, check_finite=False)
+#     # gaussian=np.load(Q_dir)@linear_model.Ridge(alpha=alpha * len(y),fit_intercept=False,solver='cholesky').fit(X@np.load(Q_dir),y).coef_
+#     # P=np.load(Q_dir+"/eigenvectors.npy")
+#     # P=P/np.sqrt(np.load(Q_dir+"/eigenvalues.npy")+Q)
+#     # P=[np.load(f"{Q_dir}/1eig{Q:.2f}.npy"),np.eye(X.shape[1]//3),np.eye(X.shape[1]//3)]
+#     P=[np.load(f"{Q_dir}/1eig{Q:.2f}.npy"),np.load(f"{Q_dir}/1eig{Q:.2f}.npy"),np.load(f"{Q_dir}/1eig{Q:.2f}.npy")]
+#     # from scipy.linalg import eigh
+#     # P=[]
+#     # for i in range(3):
+#     #     _=X.shape[1]//3
+#     #     eigenvalues,eigenvectors=eigh(X[:,_*i:_*(i+1)].T@X[:,_*i:_*(i+1)]+ np.eye(_) * 1e-1, overwrite_a=True,check_finite=False)
+#     #     P_=eigenvectors*np.sqrt(eigenvalues)
+#     #     P.append(P_)
 
-    # P=np.identity(P.shape[0])
-    # print(np.isnan(P).any())
-    # print(P)
-    gaussian=generalized_ridge_regression_transformed(X, y, P,alpha * len(y))
-    # print(gaussian.shape)
-    # gaussian=regularizing_ridge(X,y,alpha,Q_dir)
-    # time1=time.time()-start
-    # print("norm",time1,time2)
-    df["regression"]=X@gaussian
-    df["R1_contribution_steric"]=X1[:,:len(df_coord)]@gaussian[:len(df_coord)]
-    df["R2_contribution_steric"]=X2[:,:len(df_coord)]@gaussian[:len(df_coord)]
-    df["R1_contribution_electric"]=X1[:,len(df_coord):2*len(df_coord)]@gaussian[len(df_coord):2*len(df_coord)]
-    df["R2_contribution_electric"]=X2[:,len(df_coord):2*len(df_coord)]@gaussian[len(df_coord):2*len(df_coord)]
-    df_coord["coef_steric"]=gaussian[:len(df_coord)]
-    df_coord["coef_electric"]=gaussian[len(df_coord):2*len(df_coord)]
-    df_coord.to_csv( save_name + "_coef.csv", index=False)
-    result=[]
-    for repeat in range(n_repeats):
-        kf = KFold(n_splits=n_splits, shuffle=True, random_state=repeat)
-        predict=[]
-        sort_index=[]
-        for train_index, test_index in kf.split(X):
-            # X_train, X_test = X[train_index], X[test_index]
-            # X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
-            # c, lower = scipy.linalg.cho_factor(X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False)
-            # predict_cv=X[test_index]@scipy.linalg.cho_solve(scipy.linalg.cho_factor(X[train_index].T @ X[train_index] + alpha * len(train_index) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False),
-            #                                           X[train_index].T @ y[train_index], overwrite_b=True, check_finite=False)
-            # predict_cv=X[test_index]@np.load(Q_dir)@linear_model.Ridge(alpha=alpha * len(train_index),fit_intercept=False,solver='cholesky').fit(X[train_index]@np.load(Q_dir),y[train_index]).coef_
-            predict_cv=X[test_index]@generalized_ridge_regression_transformed(X[train_index], y[train_index], P,alpha * len(train_index))
-            # predict_cv=X_test@scipy.linalg.solve((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
-            #                                (X_train.T @ y[train_index]).astype("float32"), assume_a="pos")
-            # gaussian__, info=scipy.sparse.linalg.cg((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
-            #                                 (X_train.T @ y[train_index]).astype("float32"),x0=gaussian,atol=1e-03)
-            predict.extend(predict_cv.tolist())
-            sort_index.extend(test_index.tolist())
-        predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
-        RMSE=mean_squared_error(y,predict,squared=False)
-        r2=r2_score(y,predict)
-        result.append([RMSE,r2])
-        df["validation{}".format(repeat)]=predict
-
-    split = np.empty(y.shape[0], dtype=np.uint8)
-    predict=[]
-    sort_index=[]
-    for _,(train_index, test_index) in enumerate(split_data_kmeans(X,n_splits,n_splits)):
-        split[test_index]=_
-        # X_train, X_test = X[train_index], X[test_index]
-        # X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
-        # predict_cv=X_test@scipy.linalg.solve((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
-        #                                 (X_train.T @ y[train_index]).astype("float32"), assume_a="pos")
-        # c, lower = scipy.linalg.cho_factor(X[train_index].T @ X[train_index] + alpha * len(train_index) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False)
-        # predict_cv=X[test_index]@scipy.linalg.cho_solve(scipy.linalg.cho_factor(X[train_index].T @ X[train_index] + alpha * len(train_index) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False),
-        #                                                  X[train_index].T @ y[train_index], overwrite_b=True, check_finite=False)
-        # predict_cv=X[test_index]@np.load(Q_dir)@linear_model.Ridge(alpha=alpha * len(train_index),fit_intercept=False,solver='cholesky').fit(X[train_index]@np.load(Q_dir),y[train_index]).coef_
-        predict_cv=X[test_index]@generalized_ridge_regression_transformed(X[train_index], y[train_index], P,alpha * len(train_index))
-        print("len train",len(train_index))
-        predict.extend(predict_cv.tolist())
-        sort_index.extend(test_index.tolist())
-    predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
-    RMSE_PCA=mean_squared_error(y,predict,squared=False)
+#     # P=np.identity(P.shape[0])
+#     # print(np.isnan(P).any())
+#     # print(P)
+#     gaussian=generalized_ridge_regression_transformed(X, y, P,alpha * len(y))
+#     # print(gaussian.shape)
+#     # gaussian=regularizing_ridge(X,y,alpha,Q_dir)
+#     # time1=time.time()-start
+#     # print("norm",time1,time2)
+#     df["regression"]=X@gaussian
+#     df["R1_contribution_steric"]=X1[:,:len(df_coord)]@gaussian[:len(df_coord)]
+#     df["R2_contribution_steric"]=X2[:,:len(df_coord)]@gaussian[:len(df_coord)]
+#     df["R1_contribution_electric"]=X1[:,len(df_coord):2*len(df_coord)]@gaussian[len(df_coord):2*len(df_coord)]
+#     df["R2_contribution_electric"]=X2[:,len(df_coord):2*len(df_coord)]@gaussian[len(df_coord):2*len(df_coord)]
+#     df["R1_contribution_LUMO"]=X1[:,2*len(df_coord):3*len(df_coord)]@gaussian[2*len(df_coord):3*len(df_coord)]
+#     df["R2_contribution_LUMO"]=X2[:,2*len(df_coord):3*len(df_coord)]@gaussian[2*len(df_coord):3*len(df_coord)]
+#     df_coord["coef_steric"]=gaussian[:len(df_coord)]
+#     df_coord["coef_electric"]=gaussian[len(df_coord):2*len(df_coord)]
+#     df_coord["coef_LUMO"]=gaussian[len(df_coord):2*len(df_coord)]
     
-    df["split_PCA"]=split
-    df["validation_PCA"]=predict
-    df.drop(columns=['Dt', 'DtR1',"DtR2",'ESP', 'ESPR1',"ESPR2",'DUAL', 'DUALR1',"DUALR2"], inplace=True)
-    df["error"]=df["ΔΔG.expt."]-df["validation0"]
-    df = df.reindex(df['error'].abs().sort_values(ascending=False).index)
+#     df_coord.to_csv( save_name + "_coef.csv", index=False)
+#     result=[]
+#     for repeat in range(n_repeats):
+#         kf = KFold(n_splits=n_splits, shuffle=True, random_state=repeat)
+#         predict=[]
+#         sort_index=[]
+#         for train_index, test_index in kf.split(X):
+#             # X_train, X_test = X[train_index], X[test_index]
+#             # X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
+#             # c, lower = scipy.linalg.cho_factor(X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False)
+#             # predict_cv=X[test_index]@scipy.linalg.cho_solve(scipy.linalg.cho_factor(X[train_index].T @ X[train_index] + alpha * len(train_index) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False),
+#             #                                           X[train_index].T @ y[train_index], overwrite_b=True, check_finite=False)
+#             # predict_cv=X[test_index]@np.load(Q_dir)@linear_model.Ridge(alpha=alpha * len(train_index),fit_intercept=False,solver='cholesky').fit(X[train_index]@np.load(Q_dir),y[train_index]).coef_
+#             predict_cv=X[test_index]@generalized_ridge_regression_transformed(X[train_index], y[train_index], P,alpha * len(train_index))
+#             # predict_cv=X_test@scipy.linalg.solve((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
+#             #                                (X_train.T @ y[train_index]).astype("float32"), assume_a="pos")
+#             # gaussian__, info=scipy.sparse.linalg.cg((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
+#             #                                 (X_train.T @ y[train_index]).astype("float32"),x0=gaussian,atol=1e-03)
+#             predict.extend(predict_cv.tolist())
+#             sort_index.extend(test_index.tolist())
+#         predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
+#         RMSE=mean_squared_error(y,predict,squared=False)
+#         r2=r2_score(y,predict)
+#         result.append([RMSE,r2])
+#         df["validation{}".format(repeat)]=predict
 
-    PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-    PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
-    r2_PCA=r2_score(y,predict)
-    RMSE=mean_squared_error(y,X@gaussian,squared=False)
-    r2=r2_score(y,df["regression"].values)
-    integ=np.sum(df_coord["coef_steric"].values)
-    moment=np.sum(df_coord["coef_steric"].values.reshape(-1,1)*df_coord[["x","y","z"]].values,axis=0)/integ
-    return [save_name,alpha,Q,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]+[integ]+moment.tolist()
+#     split = np.empty(y.shape[0], dtype=np.uint8)
+#     predict=[]
+#     sort_index=[]
+#     for _,(train_index, test_index) in enumerate(split_data_kmeans(X,n_splits,n_splits)):
+#         split[test_index]=_
+#         # X_train, X_test = X[train_index], X[test_index]
+#         # X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
+#         # predict_cv=X_test@scipy.linalg.solve((X_train.T @ X_train + alpha * len(train_index) * np.load(Q_dir)).astype("float32"),
+#         #                                 (X_train.T @ y[train_index]).astype("float32"), assume_a="pos")
+#         # c, lower = scipy.linalg.cho_factor(X[train_index].T @ X[train_index] + alpha * len(train_index) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False)
+#         # predict_cv=X[test_index]@scipy.linalg.cho_solve(scipy.linalg.cho_factor(X[train_index].T @ X[train_index] + alpha * len(train_index) * np.load(Q_dir), lower=True, overwrite_a=True, check_finite=False),
+#         #                                                  X[train_index].T @ y[train_index], overwrite_b=True, check_finite=False)
+#         # predict_cv=X[test_index]@np.load(Q_dir)@linear_model.Ridge(alpha=alpha * len(train_index),fit_intercept=False,solver='cholesky').fit(X[train_index]@np.load(Q_dir),y[train_index]).coef_
+#         predict_cv=X[test_index]@generalized_ridge_regression_transformed(X[train_index], y[train_index], P,alpha * len(train_index))
+#         print("len train",len(train_index))
+#         predict.extend(predict_cv.tolist())
+#         sort_index.extend(test_index.tolist())
+#     predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
+#     RMSE_PCA=mean_squared_error(y,predict,squared=False)
+    
+#     df["split_PCA"]=split
+#     df["validation_PCA"]=predict
+#     df.drop(columns=['Dt', 'DtR1',"DtR2",'ESP', 'ESPR1',"ESPR2",'DUAL', 'DUALR1',"DUALR2"], inplace=True)
+#     df["error"]=df["ΔΔG.expt."]-df["validation0"]
+#     df = df.reindex(df['error'].abs().sort_values(ascending=False).index)
+
+#     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
+#     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
+#     r2_PCA=r2_score(y,predict)
+#     RMSE=mean_squared_error(y,X@gaussian,squared=False)
+#     r2=r2_score(y,df["regression"].values)
+#     integ=np.sum(df_coord[["coef_steric","coef_electric","coef_LUMO"]].values,axis=0).tolist()
+#     moment=np.sum(df_coord["coef_steric"].values.reshape(-1,1)*df_coord[["x","y","z"]].values,axis=0)/integ
+#     return [save_name,alpha,Q,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]+integ+moment.tolist()
 
 # def Gaussian_(input):
 #     X,X1,X2,y,alpha,Q,Q_dir,n_splits,n_repeats,df,df_coord,save_name=input
@@ -285,16 +289,23 @@ def Gaussian(input):
 
 def Ridge(input):
     X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name=input
-    ridge = linear_model.Ridge(alpha=alpha * len(y), fit_intercept=False).fit(X, y)
+    ridge = linear_model.Ridge(alpha=alpha, fit_intercept=False).fit(X, y)
     df["regression"]=ridge.predict(X)
     # df["R1_contribution"]=ridge.predict(X1)
     # df["R2_contribution"]=ridge.predict(X2)
-    df["R1_contribution_steric"]=X1[:,:len(df_coord)]@ridge.coef_[:len(df_coord)]
-    df["R2_contribution_steric"]=X2[:,:len(df_coord)]@ridge.coef_[:len(df_coord)]
-    df["R1_contribution_electric"]=X1[:,len(df_coord):2*len(df_coord)]@ridge.coef_[len(df_coord):2*len(df_coord)]
-    df["R2_contribution_electric"]=X2[:,len(df_coord):2*len(df_coord)]@ridge.coef_[len(df_coord):2*len(df_coord)]
+    # df["R1_contribution_steric"]=X1[:,:len(df_coord)]@ridge.coef_[:len(df_coord)]
+    # df["R2_contribution_steric"]=X2[:,:len(df_coord)]@ridge.coef_[:len(df_coord)]
+    # df["R1_contribution_electric"]=X1[:,len(df_coord):2*len(df_coord)]@ridge.coef_[len(df_coord):2*len(df_coord)]
+    # df["R2_contribution_electric"]=X2[:,len(df_coord):2*len(df_coord)]@ridge.coef_[len(df_coord):2*len(df_coord)]
+    # df["R1_contribution_LUMO"]=X1[:,2*len(df_coord):3*len(df_coord)]@ridge.coef_[2*len(df_coord):3*len(df_coord)]
+    # df["R2_contribution_LUMO"]=X2[:,2*len(df_coord):3*len(df_coord)]@ridge.coef_[2*len(df_coord):3*len(df_coord)]
+    df["steric_cont"]=X[:,:len(df_coord)]@ridge.coef_[:len(df_coord)]
+    df["electrostatic_cont"]=X[:,len(df_coord):2*len(df_coord)]@ridge.coef_[len(df_coord):2*len(df_coord)]
     df_coord["coef_steric"]=ridge.coef_[:len(df_coord)]
     df_coord["coef_electric"]=ridge.coef_[len(df_coord):2*len(df_coord)]
+    # df_coord["coef_LUMO"]=ridge.coef_[2*len(df_coord):3*len(df_coord)]
+    df_coord[["coef_steric","coef_electric"]]=df_coord[["coef_steric","coef_electric"]].values*df_coord[["Dt_std","ESP_std"]].values
+
     df_coord.to_csv( save_name + "_coef.csv", index=False)
     result=[]
     for repeat in range(n_repeats):
@@ -304,7 +315,7 @@ def Ridge(input):
         for train_index, test_index in kf.split(X):
             # X_train, X_test = X[train_index], X[test_index]
             # X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
-            predict_cv = linear_model.Ridge(alpha=alpha * len(train_index), fit_intercept=False).fit(X[train_index], y[train_index]).predict(X[test_index])
+            predict_cv = linear_model.Ridge(alpha=alpha, fit_intercept=False).fit(X[train_index], y[train_index]).predict(X[test_index])
             predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
         predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
@@ -316,11 +327,11 @@ def Ridge(input):
     split = np.empty(y.shape[0], dtype=np.uint8)
     predict=[]
     sort_index=[]
-    for _,(train_index, test_index) in enumerate(split_data_kmeans(X,n_splits,n_splits)):
+    for _,(train_index, test_index) in enumerate(split_data_pca(X,n_splits)):
         split[test_index]=_
         X_train, X_test = X[train_index], X[test_index]
         # X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
-        predict_cv = linear_model.Ridge(alpha=alpha * len(train_index), fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
+        predict_cv = linear_model.Ridge(alpha=alpha, fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
         predict.extend(predict_cv.tolist())
         sort_index.extend(test_index.tolist())
     predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
@@ -335,7 +346,8 @@ def Ridge(input):
     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
     RMSE=mean_squared_error(y,ridge.predict(X),squared=False)
     r2=r2_score(y,ridge.predict(X))
-    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]
+    integ=np.sum(np.abs(df_coord[["coef_steric","coef_electric"]].values),axis=0).tolist()
+    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]+integ
 
 def PLS(input):
     X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name=input
@@ -343,13 +355,19 @@ def PLS(input):
     df["regression"]=pls.predict(X)
     # df["R1_contribution"]=pls.predict(X1)
     # df["R2_contribution"]=pls.predict(X2)
-    df["R1_contribution_steric"]=X1[:,:len(df_coord)]@pls.coef_[0][:len(df_coord)]
-    df["R2_contribution_steric"]=X2[:,:len(df_coord)]@pls.coef_[0][:len(df_coord)]
-    df["R1_contribution_electric"]=X1[:,len(df_coord):2*len(df_coord)]@pls.coef_[0][len(df_coord):2*len(df_coord)]
-    df["R2_contribution_electric"]=X2[:,len(df_coord):2*len(df_coord)]@pls.coef_[0][len(df_coord):2*len(df_coord)]
+    # df["R1_contribution_steric"]=X1[:,:len(df_coord)]@pls.coef_[0][:len(df_coord)]
+    # df["R2_contribution_steric"]=X2[:,:len(df_coord)]@pls.coef_[0][:len(df_coord)]
+    # df["R1_contribution_electric"]=X1[:,len(df_coord):2*len(df_coord)]@pls.coef_[0][len(df_coord):2*len(df_coord)]
+    # df["R2_contribution_electric"]=X2[:,len(df_coord):2*len(df_coord)]@pls.coef_[0][len(df_coord):2*len(df_coord)]
+    # df["R1_contribution_LUMO"]=X1[:,2*len(df_coord):3*len(df_coord)]@pls.coef_[0][2*len(df_coord):3*len(df_coord)]
+    # df["R2_contribution_LUMO"]=X2[:,2*len(df_coord):3*len(df_coord)]@pls.coef_[0][2*len(df_coord):3*len(df_coord)]
+    df["steric_cont"]=X[:,:len(df_coord)]@pls.coef_[0][:len(df_coord)]
+    df["electrostatic_cont"]=X[:,len(df_coord):2*len(df_coord)]@pls.coef_[0][len(df_coord):2*len(df_coord)]
     # df_coord["coef"]=pls.coef_[0][:len(df_coord)]
     df_coord["coef_steric"]=pls.coef_[0][:len(df_coord)]
     df_coord["coef_electric"]=pls.coef_[0][len(df_coord):2*len(df_coord)]
+    # df_coord["coef_LUMO"]=pls.coef_[0][2*len(df_coord):3*len(df_coord)]
+    
     df_coord.to_csv( save_name + "_coef.csv", index=False)
     result=[]
     for repeat in range(n_repeats):
@@ -389,22 +407,30 @@ def PLS(input):
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
     RMSE=mean_squared_error(y,pls.predict(X),squared=False)
+    integ=np.sum(df_coord[["coef_steric","coef_electric"]].values,axis=0).tolist()
     r2=r2_score(y,pls.predict(X))
-    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]
+    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]+integ
 
 def Lasso(input):
     X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name=input
-    lasso = linear_model.LassoLars(alpha=alpha /2, fit_intercept=False).fit(X, y)
+    lasso = linear_model.Lasso(alpha=alpha , fit_intercept=False).fit(X, y)
     df["regression"]=lasso.predict(X)
     # df["R1_contribution"]=lasso.predict(X1)
     # df["R2_contribution"]=lasso.predict(X2)
-    df["R1_contribution_steric"]=X1[:,:len(df_coord)]@lasso.coef_[:len(df_coord)]
-    df["R2_contribution_steric"]=X2[:,:len(df_coord)]@lasso.coef_[:len(df_coord)]
-    df["R1_contribution_electric"]=X1[:,len(df_coord):2*len(df_coord)]@lasso.coef_[len(df_coord):2*len(df_coord)]
-    df["R2_contribution_electric"]=X2[:,len(df_coord):2*len(df_coord)]@lasso.coef_[len(df_coord):2*len(df_coord)]
+    # df["R1_contribution_steric"]=X1[:,:len(df_coord)]@lasso.coef_[:len(df_coord)]
+    # df["R2_contribution_steric"]=X2[:,:len(df_coord)]@lasso.coef_[:len(df_coord)]
+    # df["R1_contribution_electric"]=X1[:,len(df_coord):2*len(df_coord)]@lasso.coef_[len(df_coord):2*len(df_coord)]
+    # df["R2_contribution_electric"]=X2[:,len(df_coord):2*len(df_coord)]@lasso.coef_[len(df_coord):2*len(df_coord)]
+    # df["R1_contribution_LUMO"]=X1[:,2*len(df_coord):3*len(df_coord)]@lasso.coef_[2*len(df_coord):3*len(df_coord)]
+    # df["R2_contribution_LUMO"]=X2[:,2*len(df_coord):3*len(df_coord)]@lasso.coef_[2*len(df_coord):3*len(df_coord)]
+    df["steric_cont"]=X[:,:len(df_coord)]@lasso.coef_[:len(df_coord)]
+    df["electrostatic_cont"]=X[:,len(df_coord):2*len(df_coord)]@lasso.coef_[len(df_coord):2*len(df_coord)]
+    # df_coord["coef_LUMO"]=lasso.coef_[2*len(df_coord):3*len(df_coord)]
     # df_coord["coef"]=lasso.coef_[:len(df_coord)]
     df_coord["coef_steric"]=lasso.coef_[:len(df_coord)]
     df_coord["coef_electric"]=lasso.coef_[len(df_coord):2*len(df_coord)]
+    df_coord[["coef_steric","coef_electric"]]=df_coord[["coef_steric","coef_electric"]].values*df_coord[["Dt_std","ESP_std"]].values
+
     df_coord.to_csv( save_name + "_coef.csv", index=False)
     result=[]
     for repeat in range(n_repeats):
@@ -414,7 +440,7 @@ def Lasso(input):
         for train_index, test_index in kf.split(X):
             X_train, X_test = X[train_index], X[test_index]
             # X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
-            predict_cv = linear_model.LassoLars(alpha=alpha/2, fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
+            predict_cv = linear_model.Lasso(alpha=alpha, fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
             predict.extend(predict_cv.tolist())
             sort_index.extend(test_index.tolist())
         predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
@@ -430,7 +456,7 @@ def Lasso(input):
         split[test_index]=_
         X_train, X_test = X[train_index], X[test_index]
         # X_train, X_test = X[train_index]/np.sqrt(np.average(X[train_index]**2)), X[test_index]/np.sqrt(np.average(X[train_index]**2))
-        predict_cv = linear_model.LassoLars(alpha=alpha/2, fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
+        predict_cv = linear_model.Lasso(alpha=alpha, fit_intercept=False).fit(X_train, y[train_index]).predict(X_test)
         predict.extend(predict_cv.tolist())
         sort_index.extend(test_index.tolist())
     predict=unshuffle_array(np.clip(predict, np.min(y), np.max(y)),sort_index)
@@ -445,8 +471,11 @@ def Lasso(input):
     PandasTools.AddMoleculeColumnToFrame(df, "smiles")
     PandasTools.SaveXlsxFromFrame(df, save_name + "_prediction.xlsx", size=(100, 100))
     RMSE=mean_squared_error(y,lasso.predict(X),squared=False)
+    # integ=np.sum(df_coord[["coef_steric","coef_electric","coef_LUMO"]].values,axis=0).tolist()
+    integ=np.sum(np.abs(df_coord[["coef_steric","coef_electric"]].values),axis=0).tolist()
+
     r2=r2_score(y,lasso.predict(X))
-    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]
+    return [save_name,alpha,RMSE,r2]+np.average(result,axis=0).tolist()+[RMSE_PCA,r2_PCA]+integ
 
 <<<<<<< HEAD
 # #regressionだけにする。
@@ -1119,6 +1148,7 @@ def get_grid_feat(mol,RT,dir):
     # w = np.exp(-Dt)
     # print(np.max(w),np.min(w),np.average(w))
     data[features] = np.nan_to_num(np.average(feat, weights=we, axis=0))
+    
     # w = np.exp(ESP / np.sqrt(np.average(ESP ** 2, axis=0)).reshape(1, -1))
     # data["ESP"] = np.nan_to_num(
     #     np.average(ESP, weights=np.array(we).reshape(-1, 1) * np.ones(shape=ESP.shape), axis=0))
@@ -1127,8 +1157,8 @@ def get_grid_feat(mol,RT,dir):
     data_y[features] = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[features].values + \
         data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[features].values
     
-    data_y["Dt"]=np.minimum(data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values,
-                            data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])["Dt"].values)
+    # data_y["Dt"]=np.minimum(data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])["Dt"].values,
+    #                         data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])["Dt"].values)
 
     data_yz = data_y[data_y["z"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])
 
@@ -1198,7 +1228,7 @@ if __name__ == '__main__':
     lasso_input=[]
     gaussian_input=[]
     pls_input=[]
-    for param_name in sorted(glob.glob("../parameter/run/cube_to_grid0.500510.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/run/cube_to_grid0.50.txt"),reverse=True):
         print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
@@ -1351,7 +1381,13 @@ if __name__ == '__main__':
             X_dual=np.array(df["DUAL"].values.tolist())/np.sqrt(np.average(np.array(df["DUAL"].values.tolist())**2))
             X1_dual=np.array(df["DUALR1"].values.tolist())/np.sqrt(np.average(np.array(df["DUAL"].values.tolist())**2))
             X2_dual=np.array(df["DUALR2"].values.tolist())/np.sqrt(np.average(np.array(df["DUAL"].values.tolist())**2))
-            X=np.concatenate([X,X_esp,X_dual],1).astype("float32")
+            print(X.shape)
+            df_coord = pd.read_csv(param["grid_coordinates"] + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
+                                                                                  ascending=[True, True, True])
+            df_coord["Dt_std"]=np.sqrt(np.average(X**2,axis=0))
+            df_coord["ESP_std"]=np.sqrt(np.average(X_esp**2,axis=0))
+            df_coord["DUAL_std"]=np.sqrt(np.average(X_dual**2,axis=0))
+            X=np.concatenate([X,X_esp,X_dual*0],1).astype("float32")
             X1=np.concatenate([X1,X1_esp,X1_dual],1).astype("float32")
             X2=np.concatenate([X2,X2_esp,X2_dual],1).astype("float32")
             # X = np.concatenate(features_all / std, axis=1)
@@ -1359,10 +1395,8 @@ if __name__ == '__main__':
             print(X.dtype)
             y=df["ΔΔG.expt."].values.astype("float32")
             # 正則化パラメータの候補
-            alphas = np.logspace(-5,15,21,base=2)
-            alphas = np.logspace(-5,20,10,base=2)
-            df_coord = pd.read_csv(param["grid_coordinates"] + "/coordinates_yz.csv").sort_values(['x', 'y', "z"],
-                                                                                  ascending=[True, True, True])
+            alphas = np.logspace(0,15,16,base=2)
+
             # 5分割交差検証を10回実施
             n_splits = int(param["n_splits"])
             n_repeats = int(param["n_repeats"])
@@ -1372,22 +1406,23 @@ if __name__ == '__main__':
             for alpha in alphas:
                 save_name=dir + "/Ridge_alpha_{}".format(alpha)
                 ridge_input.append([X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name])
-            Qs=np.array(param["sigmas"], dtype=np.float32)
-            for alpha in alphas*1e-2:
-                for Q in Qs:
-                    save_name=dir + "/Gaussian_alpha_{}_sigma_{}".format(alpha,Q)
-                    Q_dir=param["grid_coordinates"]#+ "/1eig{}.npy".format(Q)
-                    gaussian_input.append([X,X1,X2,y,alpha,Q,Q_dir,n_splits,n_repeats,df,df_coord,save_name])
+            # Qs=np.array(param["sigmas"], dtype=np.float32)
+            # for alpha in alphas*1e-2:
+            #     for Q in Qs:
+            #         save_name=dir + "/Gaussian_alpha_{}_sigma_{}".format(alpha,Q)
+            #         Q_dir=param["grid_coordinates"]#+ "/1eig{}.npy".format(Q)
+            #         gaussian_input.append([X,X1,X2,y,alpha,Q,Q_dir,n_splits,n_repeats,df,df_coord,save_name])
             alphas = np.logspace(-10,5,11,base=2)
             for alpha in alphas:
                 save_name=dir + "/Lasso_alpha_{}".format(alpha)
                 lasso_input.append([X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name])
-            alphas = np.arange(1,5)
+            alphas = np.arange(1,10)
             for alpha in alphas:
                 save_name=dir + "/PLS_alpha_{}".format(alpha)
                 pls_input.append([X,X1,X2,y,alpha,n_splits,n_repeats,df,df_coord,save_name])
             
     p = multiprocessing.Pool(processes=int(param["processes"]))
+<<<<<<< HEAD
     columns=["savefilename","alpha","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation"]
     decimals = {"RMSE_regression": 5,"r2_regression":5,"RMSE_validation":5, "r2_validation":5}
     pd.DataFrame(p.map(Gaussian,gaussian_input), columns=["savefilename","alpha","sigma","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation", "RMSE_PCA_validation","r2_PCA_validation"]+["integral","x_moment","y_moment","z_moment"]).round(decimals).to_csv(param["out_dir_name"] + "/Gaussian.csv")
@@ -1403,6 +1438,14 @@ if __name__ == '__main__':
 >>>>>>> 3a83914 (code creanup)
 =======
 >>>>>>> e529ae1 (from win)
+=======
+    columns=["savefilename","alpha","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation","RMSE_PCA_validation","r2_PCA_validation","integral_steric","integral_electric"]
+    # decimals = {"RMSE_regression": 5,"r2_regression":5,"RMSE_validation":5, "r2_validation":5}
+    pd.DataFrame(p.map(Ridge,ridge_input), columns=columns).apply(lambda x: x.round(4) if np.issubdtype(x.dtype, np.floating) else x).to_csv(param["out_dir_name"] + "/Ridge.csv")
+    pd.DataFrame(p.map(Lasso,lasso_input), columns=columns).apply(lambda x: x.round(4) if np.issubdtype(x.dtype, np.floating) else x).to_csv(param["out_dir_name"] + "/Lasso.csv")
+    pd.DataFrame(p.map(PLS,pls_input), columns=columns).apply(lambda x: x.round(4) if np.issubdtype(x.dtype, np.floating) else x).to_csv(param["out_dir_name"] + "/PLS.csv")
+    # pd.DataFrame(p.map(Gaussian,gaussian_input), columns=["savefilename","alpha","sigma","RMSE_regression", "r2_regression","RMSE_validation", "r2_validation", "RMSE_PCA_validation","r2_PCA_validation"]+["integral_steric","integral_electric","integral_LUMO","x_moment","y_moment","z_moment"]).apply(lambda x: x.round(4) if np.issubdtype(x.dtype, np.floating) else x).to_csv(param["out_dir_name"] + "/Gaussian.csv")
+>>>>>>> ecb8078 (20240808commit)
     end = time.perf_counter()  # 計測終了
     print('Finish{:.2f}'.format(end - start))
 =======

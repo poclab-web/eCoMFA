@@ -18,7 +18,7 @@ def coef_cube(file,mol_file,prop,column,to_cube_file_name):
     df_z[column] = -df_z[column]
     df_yz[column] = -df_yz[column]
 
-    df = pd.concat([df, df_y, df_z, df_yz])
+    df = pd.concat([df,df_y,  df_z,df_yz])
     df = df.sort_values(by=["x", "y", "z"], ascending=[True, True, True])
     
     with open(mol_file, "r", encoding="UTF-8") as f:
@@ -76,13 +76,13 @@ if __name__ == '__main__':
     # mol_file = "D:/calculation/wB97X-D_def2-TZVP20240416/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#"F:/cube_aligned/wB97X-D_def2-TZVP20240330/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
     mol_files=["C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/TS1R_B3LYP_6-31Gd_PCM_TS_new_4.xyz",
                "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/dip_acetophenone_UFF_B3LYP_631Gd_PCM_IRC_new_4.xyz",
-               "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS_new_4.xyz"]
+               "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS_TS_TS_new_4.xyz"]
     prop="Property: ALIE"
     # for file in glob.glob(filename):
     #     out_file = file[:-4]  + ".cube"
     #     coef_cube(file,mol_file,prop,out_file)
     
-    for name in ["Gaussian","Ridge","PLS","Lasso"]:
+    for name in ["Ridge","PLS","Lasso"]:
         filename=dir+"/{}.csv".format(name)
         df=pd.read_csv(filename,index_col = 'Unnamed: 0').sort_index()
         df["dataset"]=df.index*3//len(df)
@@ -90,7 +90,7 @@ if __name__ == '__main__':
             os.makedirs(dir+"/cube/dataset{}".format(_),exist_ok=True)
             df_=df[(df["dataset"]==_)]
             file=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_coef.csv"
-            for prop in ["Property: ALIE","Property: Default"]:
-                for column in ["coef_steric","coef_electric"]:
+            for prop in ["Property: ALIE"]:#,"Property: Default"
+                for column in ["coef_steric","coef_electric","coef_LUMO"]:
                     out_file=dir+"/cube/dataset{}/{}{}{}.cube".format(_,file.replace(".","").replace('/', '_').replace("csv",""),prop.replace(": ",""),column)
                     coef_cube(file,mol_file,prop,column,out_file)

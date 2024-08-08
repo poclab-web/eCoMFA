@@ -88,8 +88,8 @@ def transform_coordinates4(atoms, coordinates, N_O, N_X, N_XZ1, N_XZ2):
     temp_y /= np.linalg.norm(temp_y)
     
     # Calculate the z component difference and ensure xz1_atom has a greater z component
-    if np.dot((xz1_atom - origin), temp_y) < np.dot((xz2_atom - origin), temp_y):
-        xz1_atom, xz2_atom = xz2_atom, xz1_atom
+    # if np.dot((xz1_atom - origin), temp_y) < np.dot((xz2_atom - origin), temp_y):
+    #     xz1_atom, xz2_atom = xz2_atom, xz1_atom
 
     # Recalculate y_axis
     z_axis = (xz1_atom - xz2_atom)
@@ -139,8 +139,8 @@ new_coordinates = transform_coordinates4(atoms, coordinates, N_O, N_X, N_XZ,N_XZ
 write_xyz(output_filename, atoms, new_coordinates, comment)
 
 # Example usage
-input_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS.xyz"
-output_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS_new.xyz"
+input_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS_TS_TS.xyz"
+output_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS_TS_TS_new.xyz"
 N_O = 2-1
 N_X = 3-1
 N_XZ = 1-1
@@ -150,6 +150,6 @@ atoms, coordinates, comment = read_xyz(input_filename)
 new_coordinates = transform_coordinates(atoms, coordinates, N_O, N_X, N_XZ)
 write_xyz(output_filename, atoms, new_coordinates, comment)
 
-output_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS_new_4.xyz"
+output_filename = "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS_TS_TS_new_4.xyz"
 new_coordinates = transform_coordinates4(atoms, coordinates, N_O, N_X, N_XZ,N_XZ2)
 write_xyz(output_filename, atoms, new_coordinates, comment)
