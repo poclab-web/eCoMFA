@@ -24,31 +24,30 @@ def pkl_to_featurevalue(input):  # グリッド特徴量を計算　ボルツマ
     d_y = (drop_dupl_y[1] - drop_dupl_y[0]) / 2
     d_z = (drop_dupl_z[1] - drop_dupl_z[0]) / 2
 
-    data = pd.read_pickle(filename)[["x","y","z","Dt","ESP","LUMO","LOL"]].astype(np.float32)
+    data = pd.read_pickle(filename)[["x","y","z","Dt","ESP"]].astype(np.float32)
     # data["ESP"] = data["ESP"].where(data["Dt"] < 1e-3, 0)#.where(data["ESP"]>-data["ESP"].min(),-data["ESP"].min())
     # data['ESP'] = np.clip(data['ESP'], -min_abs_value, min_abs_value)
     # data[["DUAL"]] = data[["LUMO"]].applymap(np.abs).where(data["Dt"] < 1e-3, 0)
-    a = 1e-3
+    threshold = 1e-3
 
-    data["DUAL"]=data["LUMO"].where(data["Dt"]<a,0)**2
+    # data["DUAL"]=data["LUMO"].where(data["Dt"]<a,0)**2
     # data[["Dt"]]=data[["Dt"]].applymap(np.sqrt)
-    data["Dt"] = data["Dt"].where(data["Dt"] < a,  0)
-    # aの定義
-
+    data["Dt"] = data["Dt"].where(data["Dt"] < threshold, 0)
+    data["ESP"]=data["ESP"].where(data["Dt"]<threshold,0)
+    # data["Dt"]=np.minimum(data['Dt'], threshold)
     # "Dt"カラムの変換
-    # data['Dt'] = np.maximum(a - np.abs(data['Dt'] - a), 0)
-    data["ESP"]=data["ESP"]*data["Dt"]
+    # data['Dt'] = np.maximum(a - np.abs(data['Dt'] - a), 0)                                                                                                    
+    # data["ESP"]=data["ESP"]*data["Dt"]#.where(data["ESP"] < 0,  0)
     # data['Dt'] = np.where(data['Dt'] > 1e-6, 1, 0)
     # data["DUAL"]=data["Dt"]*data["LOL"]
     # data["Dt"]=data["Dt"]*(1-data["LOL"])
 
     start = time.time()
-
     D = np.float32(0.1 * 0.52917720859)
     
     Dt_list = []
     ESP_list = []
-    DUAL_list= []
+    # DUAL_list= []
     for x in drop_dupl_x:
         mask_x = (x - d_x < data["x"] + D) & (x + d_x > data["x"] - D)
         data_x = data[mask_x]
@@ -66,19 +65,19 @@ def pkl_to_featurevalue(input):  # グリッド特徴量を計算　ボルツマ
 
                     Dt_ = np.sum(data_z["Dt"].values * x_diffs * y_diffs * z_diffs)
                     ESP_ = np.sum(data_z["ESP"].values * x_diffs * y_diffs * z_diffs)
-                    DUAL_ = np.sum(data_z["DUAL"].values * x_diffs * y_diffs * z_diffs)
+                    # DUAL_ = np.sum(data_z["DUAL"].values * x_diffs * y_diffs * z_diffs)
                 else:
                     Dt_ = 0
                     ESP_ = 0
-                    DUAL_=0
+                    # DUAL_=0
 
                 Dt_list.append(Dt_)
                 ESP_list.append(ESP_)
-                DUAL_list.append(DUAL_)
+                # DUAL_list.append(DUAL_)
 
     dfp["Dt"] = np.nan_to_num(Dt_list)
     dfp["ESP"] = np.nan_to_num(ESP_list)
-    dfp["DUAL"]=np.nan_to_num(DUAL_list)
+    # dfp["DUAL"]=np.nan_to_num(DUAL_list)
     dfp.to_pickle(outfilename)
     print(outfilename, time.time() - start)
 
@@ -105,123 +104,123 @@ def generate_grid_points(range,step):
     df = pd.DataFrame(points, columns=['x', 'y', 'z']).astype(np.float32)
     return df
 
-def gauss_func(d,interval,sigma):
-    # leng = interval
-    # ans=1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
-    #         * np.exp(-d ** 2 / (2 * sigma ** 2))
-    ans=np.exp(-d**2/(2 * sigma ** 2))
-    # ans=0.5**(d/sigma)
-    # ans=np.where(d==0,1,0)
-    return ans
+# def gauss_func(d,interval,sigma):
+#     # leng = interval
+#     # ans=1 / (2 * np.pi * np.sqrt(2 * np.pi) * sigma ** 3) * leng ** 3 \
+#     #         * np.exp(-d ** 2 / (2 * sigma ** 2))
+#     ans=np.exp(-d**2/(2 * sigma ** 2))
+#     # ans=0.5**(d/sigma)
+#     # ans=np.where(d==0,1,0)
+#     return ans
 
-def make_penalty(input):
-    l, sigma, interval, out_dir_name=input
+# def make_penalty(input):
+#     l, sigma, interval, out_dir_name=input
     
-    # l = np.array(l)
+#     # l = np.array(l)
     
-    xyz = l[(l[:, 1] > 0) & (l[:, 2] > 0)]
-    # print(xyz)
-    # # Calculate distances using broadcasting
-    # diff = xyz[:, np.newaxis, :] - xyz[np.newaxis, :, :]
-    # d = np.linalg.norm(diff, axis=-1)
+#     xyz = l[(l[:, 1] > 0) & (l[:, 2] > 0)]
+#     # print(xyz)
+#     # # Calculate distances using broadcasting
+#     # diff = xyz[:, np.newaxis, :] - xyz[np.newaxis, :, :]
+#     # d = np.linalg.norm(diff, axis=-1)
 
-    # # Calculate distances with transformations
-    # d_y = np.linalg.norm(diff * np.array([1, -1, 1]), axis=-1)
-    # d_z = np.linalg.norm(diff * np.array([1, 1, -1]), axis=-1)
-    # d_yz = np.linalg.norm(diff * np.array([1, -1, -1]), axis=-1)
-    arr = np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
-    arr_y = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, 1]), axis=1) for _ in xyz])
-    arr_z = np.array([np.linalg.norm(xyz - _ * np.array([1, 1, -1]), axis=1) for _ in xyz])
-    arr_yz = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, -1]), axis=1) for _ in xyz])
-    cutoff=10
-    arr = np.where(arr < sigma * cutoff, gauss_func(arr,interval,sigma), 0)
-    arr_y=np.where(arr_y < sigma * cutoff, gauss_func(arr_y,interval,sigma), 0)
-    arr_z=np.where(arr_z < sigma * cutoff, gauss_func(arr_z,interval,sigma), 0)
-    arr_yz=np.where(arr_yz < sigma * cutoff, gauss_func(arr_yz,interval,sigma), 0)
-    # arr=arr+arr_y-arr_z-arr_yz
-    # arr=np.identity(xyz.shape[0])/(np.linalg.norm(xyz-np.average(xyz,axis=0)*np.array([1,0,1]),axis=1)+1)
-    d=np.linalg.norm(xyz-np.average(xyz,axis=0)*np.array([1,0,1]),axis=1)
-    print(d.shape)
-    arr=np.exp(-d**2/(2*(sigma*5)**2))
-    print(np.max(arr),np.min(arr),arr.shape)
-    d_=np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
-    arr=np.outer(arr,arr)*np.exp(-d_**2/(2*(sigma*5)**2))#+np.identity(arr.shape[0])
-    # np.fill_diagonal(arr, np.diagonal(arr) * 2)
-    print(arr.shape)
-    print(np.max(arr),np.min(arr),arr.shape)
+#     # # Calculate distances with transformations
+#     # d_y = np.linalg.norm(diff * np.array([1, -1, 1]), axis=-1)
+#     # d_z = np.linalg.norm(diff * np.array([1, 1, -1]), axis=-1)
+#     # d_yz = np.linalg.norm(diff * np.array([1, -1, -1]), axis=-1)
+#     arr = np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
+#     arr_y = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, 1]), axis=1) for _ in xyz])
+#     arr_z = np.array([np.linalg.norm(xyz - _ * np.array([1, 1, -1]), axis=1) for _ in xyz])
+#     arr_yz = np.array([np.linalg.norm(xyz - _ * np.array([1, -1, -1]), axis=1) for _ in xyz])
+#     cutoff=10
+#     arr = np.where(arr < sigma * cutoff, gauss_func(arr,interval,sigma), 0)
+#     arr_y=np.where(arr_y < sigma * cutoff, gauss_func(arr_y,interval,sigma), 0)
+#     arr_z=np.where(arr_z < sigma * cutoff, gauss_func(arr_z,interval,sigma), 0)
+#     arr_yz=np.where(arr_yz < sigma * cutoff, gauss_func(arr_yz,interval,sigma), 0)
+#     # arr=arr+arr_y-arr_z-arr_yz
+#     # arr=np.identity(xyz.shape[0])/(np.linalg.norm(xyz-np.average(xyz,axis=0)*np.array([1,0,1]),axis=1)+1)
+#     d=np.linalg.norm(xyz-np.average(xyz,axis=0)*np.array([1,0,1]),axis=1)
+#     print(d.shape)
+#     arr=np.exp(-d**2/(2*(sigma*5)**2))
+#     print(np.max(arr),np.min(arr),arr.shape)
+#     d_=np.array([np.linalg.norm(xyz - _, axis=1) for _ in xyz])
+#     arr=np.outer(arr,arr)*np.exp(-d_**2/(2*(sigma*5)**2))#+np.identity(arr.shape[0])
+#     # np.fill_diagonal(arr, np.diagonal(arr) * 2)
+#     print(arr.shape)
+#     print(np.max(arr),np.min(arr),arr.shape)
     
-    # arr=np.array([np.exp(-d**2-_**2) for _ in d])
-    # arr=arr+ np.eye(arr.shape[0]) * 1e-10#arr_y.T@arr_y-arr_z.T@arr_z-arr_yz.T@arr_yz+
-    # arr=np.where((arr > 0.99*interval) & (arr < 1.01*interval),1,0)+np.where((arr_y > 0.99*interval) & (arr_y < 1.01*interval),1,0)-np.where((arr_z > 0.99*interval) & (arr_z < 1.01*interval),1,0)-np.where((arr_yz > 0.99*interval) & (arr_yz < 1.01*interval),1,0)
-    # arr = arr + arr_y - arr_z - arr_yz
-    print(np.sum(arr)/arr.shape[0])
+#     # arr=np.array([np.exp(-d**2-_**2) for _ in d])
+#     # arr=arr+ np.eye(arr.shape[0]) * 1e-10#arr_y.T@arr_y-arr_z.T@arr_z-arr_yz.T@arr_yz+
+#     # arr=np.where((arr > 0.99*interval) & (arr < 1.01*interval),1,0)+np.where((arr_y > 0.99*interval) & (arr_y < 1.01*interval),1,0)-np.where((arr_z > 0.99*interval) & (arr_z < 1.01*interval),1,0)-np.where((arr_yz > 0.99*interval) & (arr_yz < 1.01*interval),1,0)
+#     # arr = arr + arr_y - arr_z - arr_yz
+#     print(np.sum(arr)/arr.shape[0])
 
-    # ヒートマップを描画
-    plt.figure(figsize=(10, 8))
-    import seaborn as sns
-    sns.heatmap(arr[:100,:100], annot=False, cmap='viridis')
-    plt.title('Heatmap of Matrix')
-    plt.savefig(f"{out_dir_name}/matrix.png")
-    # Compute PTP matrices and save them
-    def save_ptp(penalty, sigma, out_dir_name, suffix):
-        # ptp = (6**2)*(1+sigma)*np.identity(penalty.shape[0]) - 2 * 6*penalty + penalty.T @ penalty
-        # ptp = 36*np.identity(penalty.shape[0]) - 2 * 6*penalty + penalty.T @ penalty
-        # penalty=penalty.astype(np.float32)
-        # ptp=np.linalg.inv(penalty)#.astype(np.float32)
-        # filename = f"{out_dir_name}/{suffix}ptp{sigma:.2f}.npy"
-        # np.save(filename, ptp)
-        # penalty = (penalty + penalty.T) / 2
-        # penalty=penalty.T@penalty
-        eigenvalues,eigenvectors=eigh(penalty, overwrite_a=True,check_finite=False)
+#     # ヒートマップを描画
+#     plt.figure(figsize=(10, 8))
+#     import seaborn as sns
+#     sns.heatmap(arr[:100,:100], annot=False, cmap='viridis')
+#     plt.title('Heatmap of Matrix')
+#     plt.savefig(f"{out_dir_name}/matrix.png")
+#     # Compute PTP matrices and save them
+#     def save_ptp(penalty, sigma, out_dir_name, suffix):
+#         # ptp = (6**2)*(1+sigma)*np.identity(penalty.shape[0]) - 2 * 6*penalty + penalty.T @ penalty
+#         # ptp = 36*np.identity(penalty.shape[0]) - 2 * 6*penalty + penalty.T @ penalty
+#         # penalty=penalty.astype(np.float32)
+#         # ptp=np.linalg.inv(penalty)#.astype(np.float32)
+#         # filename = f"{out_dir_name}/{suffix}ptp{sigma:.2f}.npy"
+#         # np.save(filename, ptp)
+#         # penalty = (penalty + penalty.T) / 2
+#         # penalty=penalty.T@penalty
+#         eigenvalues,eigenvectors=eigh(penalty, overwrite_a=True,check_finite=False)
 
-        # 固有値を非負に調整
-        print(np.sum(eigenvalues<0),np.shape(eigenvalues))
-        # eigenvalues[eigenvalues < 0] = 0
-        eigenvalues=np.abs(eigenvalues)
-        # 非負固有値を持つ対角行列の構築
-        D = np.diag(eigenvalues)
+#         # 固有値を非負に調整
+#         print(np.sum(eigenvalues<0),np.shape(eigenvalues))
+#         # eigenvalues[eigenvalues < 0] = 0
+#         eigenvalues=np.abs(eigenvalues)
+#         # 非負固有値を持つ対角行列の構築
+#         D = np.diag(eigenvalues)
 
-        # 調整後の行列の再構築
-        eigenvectors = eigenvectors @ D @ eigenvectors.T
+#         # 調整後の行列の再構築
+#         eigenvectors = eigenvectors @ D @ eigenvectors.T
 
-        if np.isnan(eigenvalues).any() or np.isnan(eigenvectors).any():
-            raise ValueError("The matrix contains Inf values.")
-        print(np.min(eigenvalues))
-        # print((P/np.sqrt(eigenvalues)).dtype)
-        P=eigenvectors*np.sqrt(eigenvalues)
+#         if np.isnan(eigenvalues).any() or np.isnan(eigenvectors).any():
+#             raise ValueError("The matrix contains Inf values.")
+#         print(np.min(eigenvalues))
+#         # print((P/np.sqrt(eigenvalues)).dtype)
+#         P=eigenvectors*np.sqrt(eigenvalues)
 
-        print(np.isnan(P).any())
-        np.save(f"{out_dir_name}/{suffix}eig{sigma:.2f}.npy",P)
-        np.save(f"{out_dir_name}/eigenvalues.npy",eigenvalues)
-        np.save(f"{out_dir_name}/eigenvectors.npy",1/eigenvectors)
+#         print(np.isnan(P).any())
+#         np.save(f"{out_dir_name}/{suffix}eig{sigma:.2f}.npy",P)
+#         np.save(f"{out_dir_name}/eigenvalues.npy",eigenvalues)
+#         np.save(f"{out_dir_name}/eigenvectors.npy",1/eigenvectors)
 
-    save_ptp(arr, sigma, out_dir_name, "1")
+#     save_ptp(arr, sigma, out_dir_name, "1")
 
-    # Create penalty_2 and compute its PTP matrix
-    # penalty_2 = np.block([[penalty, np.zeros_like(penalty)], [np.zeros_like(penalty), np.zeros_like(penalty)]])
-    # save_ptp(penalty_2, sigma, out_dir_name, "2")
-    # penalty = np.identity(penalty.shape[0])-2*penalty+penalty.T@penalty
-    # filename = out_dir_name + "/1ptp{:.2f}.npy".format(sigma)
-    # ptp=np.identity(penalty.shape[0])-2*penalty+penalty.T@penalty#.T@penalty
-    # np.save(filename,ptp.astype("float32"))
-    # print(filename)
+#     # Create penalty_2 and compute its PTP matrix
+#     # penalty_2 = np.block([[penalty, np.zeros_like(penalty)], [np.zeros_like(penalty), np.zeros_like(penalty)]])
+#     # save_ptp(penalty_2, sigma, out_dir_name, "2")
+#     # penalty = np.identity(penalty.shape[0])-2*penalty+penalty.T@penalty
+#     # filename = out_dir_name + "/1ptp{:.2f}.npy".format(sigma)
+#     # ptp=np.identity(penalty.shape[0])-2*penalty+penalty.T@penalty#.T@penalty
+#     # np.save(filename,ptp.astype("float32"))
+#     # print(filename)
 
-    # # penalty_L = []
-    # # for _ in range(2):
-    # #     penalty_L_ = []
-    # #     for __ in range(2):
-    # #         if _ == __:
-    # #             penalty_L_.append(penalty)
-    # #         else:
-    # #             penalty_L_.append(np.zeros_like(penalty))
-    # #     penalty_L.append(penalty_L_)
-    # penalty_2=np.block([[penalty,np.zeros_like(penalty)],[np.zeros_like(penalty),penalty]])
+#     # # penalty_L = []
+#     # # for _ in range(2):
+#     # #     penalty_L_ = []
+#     # #     for __ in range(2):
+#     # #         if _ == __:
+#     # #             penalty_L_.append(penalty)
+#     # #         else:
+#     # #             penalty_L_.append(np.zeros_like(penalty))
+#     # #     penalty_L.append(penalty_L_)
+#     # penalty_2=np.block([[penalty,np.zeros_like(penalty)],[np.zeros_like(penalty),penalty]])
     
-    # ptp=np.identity(penalty_2.shape[0])-2*penalty_2+penalty_2.T@penalty_2
+#     # ptp=np.identity(penalty_2.shape[0])-2*penalty_2+penalty_2.T@penalty_2
 
-    # filename = out_dir_name + "/2ptp{:.2f}.npy".format(sigma)
-    # np.save(filename, ptp.astype("float32"))
-    # print(filename)
+#     # filename = out_dir_name + "/2ptp{:.2f}.npy".format(sigma)
+#     # np.save(filename, ptp.astype("float32"))
+#     # print(filename)
 
 def read_pickle(dir):
     df=pd.read_pickle(dir)[["Dt", "x", "y", "z"]].astype(np.float32)
@@ -261,7 +260,7 @@ def histgram(cube_dir,name,out_dir_name):
 if __name__ == '__main__':
     start = time.perf_counter()  # 計測開始
     # time.sleep(60*60*24*2)
-    interval = 0.50
+    interval = 0.5
     # dfs = []
     # for path in glob.glob("../all_dataset/*.xlsx"):
     #     df = pd.read_excel(path)
@@ -277,7 +276,7 @@ if __name__ == '__main__':
     
     # histgram(dir,"Dt","C:/Users/poclabws/result/histgram.png")
     print("histgram")
-    if False:
+    if True:
         l=[]
         for mol in df["mol"]:
             for conf in mol.GetConformers():
@@ -292,6 +291,8 @@ if __name__ == '__main__':
     else:
         ans=[-4.75,  3.25,  4.25,  6.75]
         ans=[-6.25,  4.25,  5.75,  8.25]
+        ans=[-6.5,  4.5,  5.5,  8.5]
+        ans=[-6.75,  4.25,  5.75,  8.25]
     print(ans)
     dfp=generate_grid_points(ans,interval).sort_values(['x', 'y', "z"], ascending=[True, True, True])
     out_dir_name="../../../grid_coordinates/20240606_"+str(interval).replace('.', '_')
@@ -309,6 +310,8 @@ if __name__ == '__main__':
     print("len=", len(df))
     inputs = []
     for mol in df["mol"]:
+        # if mol.GetProp("InchyKey")!="XEUGKOFTNAYMMX-UHFFFAOYSA-N":
+        #     continue
         os.makedirs(out_dir_name + "/" + mol.GetProp("InchyKey"), exist_ok=True)
         for conf in mol.GetConformers():
             confid =conf.GetId()
