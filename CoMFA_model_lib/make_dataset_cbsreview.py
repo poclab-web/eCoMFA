@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import PandasTools
-import xlsxwriter
+
 
 
 def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]:
@@ -35,7 +35,7 @@ def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]**[#7,OH1]"))
                             #   and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*C(=O)[OH1]"))
                               )]
-    elif False:#flag=="ru":
+    elif flag=="ru":
         df = df[df["mol"].map(lambda mol:
                               not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][#7]"))
                             #   not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][#7,#8]"))
@@ -44,18 +44,18 @@ def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]
     df["temperature"] =df["temperature"]+273.15
     df["RT"] = 1.99 * 10 ** -3 * df["temperature"].values
     df["ΔΔG.expt."] = df["RT"].values * np.log(100 / df["er."].values - 1)
-    if True:
-        PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-        # print(df[df.duplicated(subset='InChIKey')][["InChIKey","smiles"]])
-        df = df[["smiles", "ROMol", "InChIKey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
-            subset="InChIKey")
-        df = df[["smiles", "ROMol", "InChIKey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
-            subset="ROMol")
-        print(df[df.duplicated(subset='InChIKey')][["InChIKey","smiles"]])
-        df.to_csv("../test.csv")
 
-        PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100))
-    else:
+    PandasTools.AddMoleculeColumnToFrame(df, "smiles")
+    # print(df[df.duplicated(subset='InChIKey')][["InChIKey","smiles"]])
+    df = df[["smiles", "ROMol", "InChIKey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
+        subset="InChIKey")
+    df = df[["smiles", "ROMol", "InChIKey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
+        subset="ROMol")
+    print(df[df.duplicated(subset='InChIKey')][["InChIKey","smiles"]])
+    df.to_csv("../test.csv")
+
+    PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100))
+    if uchiwake : #内訳を見たいとき
         df["aliphatic_aliphatic"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("CC(=O)C")))
         df["aliphatic_aromatic"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("CC(=O)c")))
         df["aromatic_aromatic"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("cC(=O)c")))
@@ -66,6 +66,7 @@ def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]
 
 
 if __name__ == '__main__':
+    uchiwake = False
     to_dir_path = "../arranged_dataset/review"
     os.makedirs(to_dir_path, exist_ok=True)
     # make_dataset("../sampledata/sample_0425/alpineborane.xlsx", to_dir_path + "/" + "alpine_review.xlsx","alpineborane", False)
