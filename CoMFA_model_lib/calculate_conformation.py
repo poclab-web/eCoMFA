@@ -13,8 +13,30 @@ from rdkit.Chem.Descriptors import ExactMolWt
 from rdkit.Geometry import Point3D
 
 
+# def GetCommonStructure(mol, common_structure):
+#
+#     com = mol.GetSubstructMatches(Chem.MolFromSmarts(common_structure))[0]
+#     for atom in mol.GetAtoms():
+#         if atom.GetIdx() == com[0]:
+#             atom.SetProp("alignment", "0")
+#         elif atom.GetIdx() == com[1]:
+#             atom.SetProp("alignment", "1")
+#         elif atom.GetIdx() in com[2:]:
+#             atom.SetProp("alignment", "2")
+#         else:
+#             atom.SetProp("alignment", "-1")
+#     l = [atom.GetIdx() for atom in mol.GetAtoms() if atom.GetProp("alignment") == "2"]
+#     l.sort()
+#     mol.GetAtomWithIdx(l[1]).SetProp("alignment", "3")
+
+
 def GetCommonStructure(mol, common_structure):
-    com = mol.GetSubstructMatches(Chem.MolFromSmarts(common_structure))[0]
+    matches = mol.GetSubstructMatches(Chem.MolFromSmarts(common_structure))
+    if not matches:
+        print("False")
+        return False
+
+    com = matches[0]
     for atom in mol.GetAtoms():
         if atom.GetIdx() == com[0]:
             atom.SetProp("alignment", "0")
@@ -24,18 +46,42 @@ def GetCommonStructure(mol, common_structure):
             atom.SetProp("alignment", "2")
         else:
             atom.SetProp("alignment", "-1")
+
     l = [atom.GetIdx() for atom in mol.GetAtoms() if atom.GetProp("alignment") == "2"]
     l.sort()
-    mol.GetAtomWithIdx(l[1]).SetProp("alignment", "3")
+    if len(l) > 1:
+        mol.GetAtomWithIdx(l[1]).SetProp("alignment", "3")
+
+    return True
+
+# def get_mol(smiles):
+#     mol = Chem.MolFromSmiles(smiles)
+#     mol = Chem.AddHs(mol)
+#     GetCommonStructure(mol, "[#6](=[#8])([c,C])([c,C])")
+#     mol.SetProp("InChIKey", Chem.MolToInchiKey(mol))
+#     return mol
 
 
 def get_mol(smiles):
     mol = Chem.MolFromSmiles(smiles)
     mol = Chem.AddHs(mol)
-    GetCommonStructure(mol, "[#6](=[#8])([c,C])([c,C])")
-    mol.SetProp("InchyKey", Chem.MolToInchiKey(mol))
-    return mol
+    carbon_13 = Chem.MolFromSmarts("[13C]")
 
+    # 各部分構造を順次チェック
+    found = GetCommonStructure(mol, "[#6](=[#8])([c,C])([c,C])")
+    if not found:
+        found = GetCommonStructure(mol, "[#6](=[#8])([p,P])([c,C])")
+    if not found:
+        found = GetCommonStructure(mol, "[#6](=[#8])([c,C])([p,P])")
+    if mol.HasSubstructMatch(carbon_13):
+        found = GetCommonStructure(mol, "[C;!13C](=[#8])([N])([c,C])")
+
+    if found:
+        mol.SetProp("InChIKey", Chem.MolToInchiKey(mol))
+    else:
+        print("No matching substructure found.")
+
+    return mol
 
 # def CalcConfsEnergies(mol):
 #     AllChem.EmbedMultipleConfs(mol, numConfs=param["numConfs"], randomSeed=1, pruneRmsThresh=0.01,
@@ -157,8 +203,8 @@ def conf_to_xyz(mol, out_dir_name):
 
 
 def psi4optimization(input_dir_name, output_dir_name, level="hf/sto-3g"):
-    psi4.set_num_threads(nthread=8)
-    psi4.set_memory("8GB")
+    psi4.set_num_threads(nthread=10)
+    psi4.set_memory("10GB")
     psi4.set_options({'geom_maxiter': 10000})
     i = 0
     while os.path.isfile("{}/optimized{}.xyz".format(input_dir_name, i)):
@@ -211,13 +257,11 @@ def gaussianfrequency(input_dir_name, output_dir_name, level="hf/sto-3g"):
             print("%mem=12GB", file=f)
             print('%chk= {}.chk'.format(i), file=f)  # smiles
             print(calc_condition, file=f)
-
             print('', file=f)
             print('good luck!', file=f)
             print('', file=f)
             # print(head,file=f)
             print(charge_and_mult, file=f)
-
             print(ans, file=f)
         i += 1
 
@@ -254,7 +298,11 @@ if __name__ == '__main__':
         param = json.loads(f.read())
     print(param)
     dfs = []
-    for path in glob.glob("../arranged_dataset/*.xlsx"):
+    # for path in glob.glob("../arranged_dataset/review/cbs_review.xlsx"):
+    for path in glob.glob("../arranged_dataset/review/cbs_h_review.xlsx"):
+    # for path in glob.glob("../arranged_dataset/cbs_review.xlsx"):
+
+
         df = pd.read_excel(path)
         dfs.append(df)
 
@@ -265,16 +313,20 @@ if __name__ == '__main__':
     df["molwt"] = df["smiles"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
     df = df.sort_values("molwt")  # [:2]
     print(df)
+    df= df[~df['smiles'].str.contains('Si')]
     for smiles in df["smiles"]:
         print(smiles)
+
+        if smiles in ["c1ccccc1C(C)(C)C(=O)C#CCCCCCCCC","C(=O)(C#C[Si](C)(C)C)C","C(=O)(c1cc(Br)ccc1)C","O=C(c2[n+](C)cccc2)c1ccccc1","O=C(/C=C/[Sn](C)(C)C)CCCC(=O)OC","C(=O)(/C=C([Sn](CCCC)(CCCC)CCCC)/C)C","C(=O)(/C([Sn](CCCC)(CCCC)CCCC)=C/C)C","C(=O)(/C([Sn](CCCC)(CCCC)CCCC)=C/CCCCCC)C"]:#,"O=[13C]1N(Cc3ccccc3)C(=O)C2CC21","O=[13C]1N(CCC#N)C(=O)C2CCCCC21"]:
+            continue
         mol = get_mol(smiles)
-        # if True or smiles != "C1CCCCC1C#CC(=O)C(C)(C)C":
-        MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")
+
+        MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InChIKey")
         psi4_out_dirs_name = param["psi4_out_dir_name"] + "/" + mol.GetProp(
-            "InchyKey")  # "/"+param["optimize_level"] +
+            "InChIKey")  # "/"+param["optimize_level"] +
         psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp(
-            "InchyKey")  # "/" +param["optimize_level"]+
-        psi4_out_dirs_name_freq = param["psi4_aligned_dir_name"] + "_freq" + "/" + mol.GetProp("InchyKey")
+            "InChIKey")  # "/" +param["optimize_level"]+
+        psi4_out_dirs_name_freq = param["psi4_aligned_dir_name"] + "_freq" + "/" + mol.GetProp("InChIKey")
 
         if not os.path.isdir(MMFF_out_dirs_name):
             CalcConfsEnergies(mol, "MMFF")

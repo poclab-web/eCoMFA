@@ -200,7 +200,7 @@ def regression_comparison(df, dfp, gaussian_penalize, save_name, n):
             # pls_predict = pls.predict(features_test_norm)
             pls_predict = pls.predict(features_test)
             # predicts[3].extend([_[0] for _ in pls_predict])
-            pls_predicts.extend([_[0] for _ in pls_predict])
+            pls_predicts.extend([_ for _ in pls_predict])
             n = int(gaussian_coef_.shape[0] / features_all.shape[0])
 
             df_coord["Gaussian_Dt{}".format(i)] = gaussian_coef_[:n] * std_[0].reshape([1])
@@ -350,7 +350,7 @@ def RC(input):
 
 
 if __name__ == '__main__':
-    # time.sleep(60*10)
+    time.sleep(60*60*3)
     for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.5004022.txt")):
         with open(param_name, "r") as f:
             param = json.loads(f.read())

@@ -36,8 +36,8 @@ def gaussiansinglepoint(input_dir_name, output_dir_name, level="hf/sto-3g"):
         i += 1
 
 def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
-    psi4.set_num_threads(nthread=8)
-    psi4.set_memory("4GB")
+    psi4.set_num_threads(nthread=10)
+    psi4.set_memory("8GB")
     # psi4.set_options({'geom_maxiter': 1000})
 
     psi4.set_options({'cubeprop_filepath': output_dir_name})
@@ -136,9 +136,12 @@ def calc(input):
     print(smiles)
     mol = calculate_conformation.get_mol(smiles)
     if not os.path.isdir(output_dirs_name):
-        print(mol.GetProp("InchyKey"))
+        print(mol.GetProp("InChIKey"))
         psi4calculation(input_dirs_name, output_dirs_name + "calculating", one_point_level)
-        os.rename(output_dirs_name + "calculating", output_dirs_name)
+        try:
+            os.rename(output_dirs_name + "calculating", output_dirs_name)
+        except:
+            print("not exist",output_dirs_name + "calculating")
     cube_to_pkl(output_dirs_name)
 
 if __name__ == '__main__':
@@ -148,8 +151,11 @@ if __name__ == '__main__':
         param = json.loads(f.read())
     print(param)
     dfs = []
-    for path in glob.glob("../arranged_dataset/*.xlsx"):
+    #for path in glob.glob("../arranged_dataset/*.xlsx"):
+    # for path in glob.glob("../arranged_dataset/review/*.xlsx"):
+    for path in glob.glob("../arranged_dataset/review/cbs_h_review.xlsx"):
         df = pd.read_excel(path)
+
         dfs.append(df)
     df = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
     # df1 = pd.read_excel(data_file_path)
@@ -179,11 +185,19 @@ if __name__ == '__main__':
         #         cube_to_pkl(output_dirs_name)
         inputs=[]
         for smiles in df["smiles"]:
-            mol = calculate_conformation.get_mol(smiles)
-            input_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp("InchyKey")
-            output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")
-            input=smiles,input_dirs_name,output_dirs_name,param["one_point_level"]
-            inputs.append(input)
+
+            try:
+                mol = calculate_conformation.get_mol(smiles)
+                input_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp("InChIKey")
+                param["cube_dir_name"] ="/Users/macmini_m1_2022/Desktop"
+                output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InChIKey")
+                input=smiles,input_dirs_name,output_dirs_name,param["one_point_level"]
+                inputs.append(input)
+            except:
+                print(smiles)
+                continue
+        print(len(inputs))
+
         p = multiprocessing.Pool(processes=1)
         p.map(calc, inputs)
         time.sleep(10)
