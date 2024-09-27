@@ -36,7 +36,7 @@ def gaussiansinglepoint(input_dir_name, output_dir_name, level="hf/sto-3g"):
         i += 1
 
 def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
-    psi4.set_num_threads(nthread=72)
+    psi4.set_num_threads(nthread=50)
     psi4.set_memory("64GB")
     # psi4.set_options({'geom_maxiter': 1000})
 
@@ -114,13 +114,13 @@ def cube_to_pkl(dirs_name):
             continue
         datas=[]
         columns=[]
-        try:
+        if True:
             with open("{}/Dt02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
                 rl = f.read().splitlines()
             data = np.concatenate([_.split() for _ in rl[3 + 3 + n_atom:]]).astype(float).reshape(-1)
             datas.append(data)
             columns.append("Dt")
-        except:
+        else:
             print("couldn't read {}".format("{}/Dt02_{}.cube".format(dirs_name, i)))
         try:
             with open("{}/ESP02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
@@ -181,7 +181,44 @@ def cube_to_pkl(dirs_name):
         i += 1
     # if i != 0:
     #     os.rename(dirs_name + "calculating", dirs_name)
+def cube_to_pkl(dirs_name):
+    i = 0
+    while os.path.isfile("{}/optimized{}.xyz".format(dirs_name, i)):  # + "calculating"
+        if os.path.isfile(dirs_name + "/data{}.pkl".format(i)):
+            i += 1
+            continue
+        with open("{}/Dt02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+            Dt = f.read().splitlines()
+        with open("{}/ESP02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+            ESP = f.read().splitlines()
+        # with open("{}/LUMO02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+        #     LUMO = f.read().splitlines()
+        # with open("{}/DUAL02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+        #     DUAL = f.read().splitlines()
+        # with open("{}/ELF02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+        #     ELF = f.read().splitlines()
+        # with open("{}/LOL02_{}.cube".format(dirs_name, i), 'r', encoding='UTF-8') as f:  # + "calculating"
+        #     LOL = f.read().splitlines()
 
+        l = np.array([_.split() for _ in Dt[2:6]])
+        n_atom = int(l[0, 0])
+        x0 = l[0, 1:].astype(float)
+        size = l[1:, 0].astype(int)
+        axis = l[1:, 1:].astype(float)
+        Dt = np.concatenate([_.split() for _ in Dt[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        ESP = np.concatenate([_.split() for _ in ESP[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        # LUMO = np.concatenate([_.split() for _ in LUMO[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        # DUAL = np.concatenate([_.split() for _ in DUAL[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        # ELF = np.concatenate([_.split() for _ in ELF[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        # LOL = np.concatenate([_.split() for _ in LOL[3 + 3 + n_atom:]]).astype(float).reshape(-1, 1)
+        l = np.array(list(product(range(size[0]), range(size[1]), range(size[2])))) @ axis + x0
+        l = l * psi4.constants.bohr2angstroms
+        arr = np.concatenate([l, Dt, ESP], axis=1)
+        df = pd.DataFrame(arr, columns=["x", "y", "z", "Dt", "ESP"]).astype("float32")
+        df.to_pickle(dirs_name + "/data{}.pkl".format(i))
+        i += 1
+    # if i != 0:
+    #     os.rename(dirs_name + "calculating", dirs_name)
 def calc(input):
     smiles,input_dirs_name,output_dirs_name,one_point_level=input
     print(smiles)
@@ -204,13 +241,14 @@ if __name__ == '__main__':
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     print(param)
-    dfs = []
-    # for path in glob.glob("../arranged_dataset/*.xlsx"):
-    for path in glob.glob("../arranged_dataset/newrea/newrea.xlsx"):
+    # dfs = []
+    # # for path in glob.glob("../arranged_dataset/*.xlsx"):
+    # for path in glob.glob("../arranged_dataset/newrea/newrea.xlsx"):
 
-        df = pd.read_excel(path)
-        dfs.append(df)
-    df = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
+    #     df = pd.read_excel(path)
+    #     dfs.append(df)
+    df = pd.concat([pd.read_excel(path) for path in glob.glob("../all_dataset/*.xlsx")]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
+    # df = pd.concat(dfs).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
     # df1 = pd.read_excel(data_file_path)
     # df2 = pd.read_excel("../arranged_dataset/DIP-chloride.xlsx")
     # df3 = pd.read_excel("../arranged_dataset/Russ.xlsx")

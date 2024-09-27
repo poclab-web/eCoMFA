@@ -2,17 +2,27 @@ import pandas as pd
 from rdkit.Chem import PandasTools
 import os
 file1="../arranged_dataset/cbs.xlsx"
-file1="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/cbs/0/λ_result.xlsx"
-file2="../arranged_dataset/DIP-chloride.xlsx"
-file2="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/DIP-chloride/0/λ_result.xlsx"
-file3="../arranged_dataset/Russ.xlsx"
-file3="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/RuSS/0/λ_result.xlsx"
-df1 = pd.read_excel(file1).dropna(subset=['smiles']).drop_duplicates(subset="inchikey")[["inchikey","smiles","Gaussian_error",'ΔΔG.expt.',"Gaussian_validation"]]
-df2=pd.read_excel(file2).dropna(subset=['smiles']).drop_duplicates(subset="inchikey")[["inchikey","smiles","Gaussian_error",'ΔΔG.expt.',"Gaussian_validation"]]
-df3 =pd.read_excel(file3).dropna(subset=['smiles']).drop_duplicates(subset="inchikey")[["inchikey","smiles","Gaussian_error",'ΔΔG.expt.',"Gaussian_validation"]]
-df1=df1.rename(columns={"Gaussian_error":"Gaussian_error_CBS",'ΔΔG.expt.': 'ΔΔG.expt.CBS',"Gaussian_validation":"Gaussian_validation_CBS"})
-df2=df2.rename(columns={"Gaussian_error":"Gaussian_error_DIP",'ΔΔG.expt.': 'ΔΔG.expt.DIP',"Gaussian_validation":"Gaussian_validation_DIP"})
-df3=df3.rename(columns={"Gaussian_error":"Gaussian_error_Ru",'ΔΔG.expt.': 'ΔΔG.expt.Ru',"Gaussian_validation":"Gaussian_validation_Ru"})
+# file1="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/cbs/0/λ_result.xlsx"
+# file1="C:/Users/poclabws/result/20240704_0_5_spl5/cbs/Gaussian_alpha_0.5_sigma_0.5_prediction.xlsx"
+df=pd.read_csv("C:/Users/poclabws/result/20240704_0_5_spl5/Ridge.csv")
+df["dataset"]=df.index*3//len(df)
+file1=df[df["dataset"]==0].sort_values(by="RMSE_validation")["savefilename"].iloc[0]+"_prediction.xlsx"
+# file2="../arranged_dataset/DIP-chloride.xlsx"
+# file2="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/DIP-chloride/0/λ_result.xlsx"
+# file2="C:/Users/poclabws/result/20240704_0_5_spl5/DIP-chloride/Gaussian_alpha_0.5_sigma_0.5_prediction.xlsx"
+file2=df[df["dataset"]==1].sort_values(by="RMSE_validation")["savefilename"].iloc[0]+"_prediction.xlsx"
+
+# file3="../arranged_dataset/Russ.xlsx"
+# file3="C:/Users/poclabws/result/-4.375 -4.875 -5.875 28 40 48 0.25 20240510_spl2/RuSS/0/λ_result.xlsx"
+# file3="C:/Users/poclabws/result/20240704_0_5_spl5/RuSS/Gaussian_alpha_0.5_sigma_0.5_prediction.xlsx"
+# file3=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_prediction.xlsx"
+file3=df[df["dataset"]==2].sort_values(by="RMSE_validation")["savefilename"].iloc[0]+"_prediction.xlsx"
+df1 = pd.read_excel(file1).dropna(subset=['smiles']).drop_duplicates(subset="inchikey")[["inchikey","smiles","validation_PCA",'ΔΔG.expt.']]
+df2=pd.read_excel(file2).dropna(subset=['smiles']).drop_duplicates(subset="inchikey")[["inchikey","smiles","validation_PCA",'ΔΔG.expt.']]
+df3 =pd.read_excel(file3).dropna(subset=['smiles']).drop_duplicates(subset="inchikey")[["inchikey","smiles","validation_PCA",'ΔΔG.expt.']]
+# df1=df1.rename(columns={"Gaussian_error":"Gaussian_error_CBS",'ΔΔG.expt.': 'ΔΔG.expt.CBS',"Gaussian_validation":"Gaussian_validation_CBS"})
+# df2=df2.rename(columns={"Gaussian_error":"Gaussian_error_DIP",'ΔΔG.expt.': 'ΔΔG.expt.DIP',"Gaussian_validation":"Gaussian_validation_DIP"})
+# df3=df3.rename(columns={"Gaussian_error":"Gaussian_error_Ru",'ΔΔG.expt.': 'ΔΔG.expt.Ru',"Gaussian_validation":"Gaussian_validation_Ru"})
 
 df12 = pd.merge(df1,df2, on=["inchikey"])
 df12["smiles"]=df12["smiles_x"].where(df12["smiles_x"]==df12["smiles_x"],df12["smiles_y"])
@@ -27,7 +37,7 @@ df31=pd.merge(df3,df1, on=["inchikey"])
 df31["smiles"]=df31["smiles_x"].where(df31["smiles_x"]==df31["smiles_x"],df31["smiles_y"])
 df31=df31.drop(["smiles_x","smiles_y"],axis=1)
 
-df123=pd.merge(df12,df23,on=["inchikey","Gaussian_error_DIP",'ΔΔG.expt.DIP','Gaussian_validation_DIP'])
+df123=pd.merge(df12,df23,on=["inchikey"])#,"Gaussian_error_DIP",'ΔΔG.expt.DIP','Gaussian_validation_DIP'
 df123["smiles"]=df123["smiles_x"].where(df123["smiles_x"]==df123["smiles_x"],df123["smiles_y"])
 df123=df123.drop(["smiles_x","smiles_y"],axis=1)
 

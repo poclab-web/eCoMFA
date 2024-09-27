@@ -30,10 +30,9 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
                               )]
     elif flag=="dip":
         df = df[df["mol"].map(lambda mol:
-                              not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl,#7,OH1]"))#
+                              not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,#7,OH1]"))#F,Cl,
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[#7,OH1]"))
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]**[#7,OH1]"))
-                            #   and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*C(=O)[OH1]"))
                               )]
     elif False:#flag=="ru":
         df = df[df["mol"].map(lambda mol:
@@ -46,7 +45,7 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
     if True:
         PandasTools.AddMoleculeColumnToFrame(df, "smiles")
         # print(df[df.duplicated(subset='inchikey')][["inchikey","smiles"]])
-        df = df[["smiles", "ROMol", "inchikey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
+        df = df[["smiles", "ROMol", "inchikey", "er.", "RT", "ΔΔG.expt.","Reference url"]].drop_duplicates(
             subset="inchikey")
         PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100))
     else:
@@ -63,5 +62,10 @@ if __name__ == '__main__':
     to_dir_path = "../arranged_dataset"
     os.makedirs(to_dir_path, exist_ok=True)
     make_dataset("../sampledata/sample_0425/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx","cbs")
-    make_dataset("../sampledata/sample_0425/(+)DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx","dip")
+    make_dataset("../sampledata/fluoro_add/(+)DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx","dip")
     make_dataset("../sampledata/sample_0425/RuSS_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx","ru")
+    to_dir_path = "../all_dataset"
+    os.makedirs(to_dir_path, exist_ok=True)
+    make_dataset("../sampledata/sample_0425/cbs_sample.xlsx", to_dir_path + "/" + "cbs.xlsx","cbs_all")
+    make_dataset("../sampledata/fluoro_add/(+)DIP-chloride_sample.xlsx", to_dir_path + "/" + "DIP-chloride.xlsx","dip_all")
+    make_dataset("../sampledata/sample_0425/RuSS_sample.xlsx", to_dir_path + "/" + "RuSS.xlsx","ru_all")
