@@ -84,7 +84,7 @@ if __name__ == '__main__':
         for _ in range(3):
             os.makedirs(dir+"/cube/dataset{}".format(_),exist_ok=True)
             df_=df[(df["dataset"]==_)]
-            file=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_coef.csv"
+            file=df_p["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_coef.csv"
             for prop in ["Property: ALIE","Property: Default"]:
                 out_file=dir+"/cube/dataset{}/{}{}.cube".format(_,file.replace(".","").replace('/', '_').replace("csv",""),prop.replace(": ",""))
                 coef_cube(file,mol_file,prop,out_file)
