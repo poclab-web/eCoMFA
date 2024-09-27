@@ -218,7 +218,7 @@ def draw_yyplot(dir):
     plt.show()
 
 # time.sleep(60*60*6)
-for param_name in glob.glob("../parameter/run/cube_to_grid0.250510.txt"):
+for param_name in glob.glob("../parameter/run/cube_to_grid0.500705_review.txt"):
     with open(param_name, "r") as f:
         param = json.loads(f.read())
     os.makedirs(param["out_dir_name"], exist_ok=True)

@@ -335,17 +335,19 @@ if __name__ == '__main__':
     lasso_input=[]
     gaussian_input=[]
     pls_input=[]
-    for param_name in sorted(glob.glob("../parameter/run/cube_to_grid0.250510.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/run/cube_to_grid0.250705_review.txt"),reverse=True):
         print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
+        
         start = time.perf_counter()  # 計測開始
-        for file in glob.glob("../arranged_dataset/*.xlsx"):
+        for file in glob.glob("../all_dataset/review/*.xlsx"):
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)  # [:50]
             file_name = os.path.splitext(os.path.basename(file))[0]
             features_dir_name = param["grid_coordinates"] + file_name
             print(len(df),features_dir_name)
+            
             df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
             df = df[
                 [len(glob.glob("{}/{}/*".format(param["grid_coordinates"], mol.GetProp("InchyKey"))))>0 for mol in

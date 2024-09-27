@@ -42,6 +42,7 @@ def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]
                             #   not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][#7,#8]"))
                               # and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[#7]"))
                               )]
+    df["temperature"] =df["temperature"]+273.15
     df["RT"] = 1.99 * 10 ** -3 * df["temperature"].values
     df["ΔΔG.expt."] = df["RT"].values * np.log(100 / df["er."].values - 1)
     if True:

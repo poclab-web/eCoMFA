@@ -256,10 +256,10 @@ def histgram(cube_dir,name,out_dir_name):
 if __name__ == '__main__':
 
     # time.sleep(60*60*24*2)
-    interval = 0.5
+    interval = 0.25
     dfs = []
-    # for path in glob.glob("../all_dataset/review/*.xlsx"):
     for path in glob.glob("../all_dataset/review/*.xlsx"):
+    # for path in glob.glob("../arranged_dataset/review/*.xlsx"):
         df = pd.read_excel(path)
         print(len(df))
         dfs.append(df)
@@ -293,7 +293,7 @@ if __name__ == '__main__':
     print(ans)
     dfp=generate_grid_points(ans,interval).sort_values(['x', 'y', "z"], ascending=[True, True, True])
     # out_dir_name="../../../penalty_20240606"
-    out_dir_name="../../../grid_coordinates/20240606_"+str(interval).replace('.', '_')
+    out_dir_name="../../../grid_coordinates/20240705_"+str(interval).replace('.', '_')
     os.makedirs(out_dir_name,exist_ok=True)
     
     
