@@ -67,9 +67,10 @@ def coef_cube(file,mol_file,prop,to_cube_file_name):
 
 
 if __name__ == '__main__':
-    dir="../../../result/20240606_0_25_spl5"
+    dir="../../../result/20240729_0_5_spl5"
+    dir ="/Users/mac_poclab/result/20240729_0_5_spl5_"
     filename=dir+"/*/*_coef.csv"
-    mol_file = "F:/cube_aligned/wB97X-D_def2-TZVP20240330/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
+    mol_file = "/Users/mac_poclab/cube/wB97X-D_def2-TZVP20240416_review/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
     prop="Property: ALIE"
     # for file in glob.glob(filename):
     #     out_file = file[:-4]  + ".cube"
@@ -77,6 +78,7 @@ if __name__ == '__main__':
     
     for name in ["Gaussian","Ridge","PLS","Lasso"]:
         filename=dir+"/{}.csv".format(name)
+        print(filename)
         df=pd.read_csv(filename,index_col = 'Unnamed: 0').sort_index()
         df["dataset"]=df.index*3//len(df)
         for _ in range(3):

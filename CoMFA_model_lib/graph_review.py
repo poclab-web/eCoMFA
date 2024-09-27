@@ -12,22 +12,34 @@ from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.lines as mlines
 
 def draw_RMSE(dir):
-    fig = plt.figure(figsize=(9,9))
+
+    folder_names = []
+    for entry in os.listdir(dir):
+        entry_path = os.path.join(dir, entry)
+        if os.path.isdir(entry_path) and entry != 'cube' and 'review' in entry:
+            folder_names.append(entry)
+    
+    # フォルダ名を先頭の数字でソート
+    folder_names.sort(key=lambda name: int(re.findall(r'^\d+', name)[0]) if re.findall(r'^\d+', name) else float('inf'))
+    folder_count = len(folder_names)
+    figsize_yoko =folder_count*3
+
+    fig = plt.figure(figsize=(figsize_yoko,9))
     dfs=[]
     pls = pd.read_csv(dir+  "/PLS.csv",index_col = 'Unnamed: 0').sort_index()
     pls["method"]="PLS"
-    pls["dataset"]=pls.index*3//len(pls)
+    pls["dataset"]=pls.index*folder_count//len(pls)
     dfs.append(pls)
     lasso = pd.read_csv(dir+  "/Lasso.csv",index_col = 'Unnamed: 0').sort_index()
     lasso["method"]="Lasso"
-    lasso["dataset"]=lasso.index*3//len(lasso)
+    lasso["dataset"]=lasso.index*folder_count//len(lasso)
     dfs.append(lasso)
     ridge = pd.read_csv(dir+  "/Ridge.csv",index_col = 'Unnamed: 0').sort_index()
     ridge["method"]="Ridge"
-    ridge["dataset"]=ridge.index*3//len(ridge)
+    ridge["dataset"]=ridge.index*folder_count//len(ridge)
     dfs.append(ridge)
     gaussian = pd.read_csv(dir+ "/Gaussian.csv",index_col = 'Unnamed: 0').sort_index()
-    gaussian["dataset"]=gaussian.index*3//len(gaussian)
+    gaussian["dataset"]=gaussian.index*folder_count//len(gaussian)
     for sigma in gaussian["sigma"].drop_duplicates().sort_values(ascending=True)[1:2]:
         _=gaussian[gaussian["sigma"]==sigma]
         _["method"]="Gaussian"# σ = {} Å".format(sigma)
@@ -52,7 +64,10 @@ def draw_RMSE(dir):
     # 色とスタイルの定義
     palette = {"PCA validation": "red","Rondom validation": 'blue', "regression": 'black'}
     linestyles = {"PLS":":",'Lasso': '-.', 'Ridge': '--', 'Gaussian': '-'}
-    for _, label in zip(range(3), ["($S$)-Me-CBS", "(-)-DIP-Chloride", "$trans$-[RuC$\mathrm{l_2}$\n{($S$)-XylBINAP}{($S$)-DAIPEN}]"]):
+    print(folder_names)
+    for _, label in zip(range(folder_count), folder_names):
+        print(label)
+    # for _, label in zip(range(folder_count), ["($S$)-SiMe3-CBS", "($S$)-Ph-CBS","($S$)-Me-CBS" ]):
         # ax = fig.add_subplot(2, 3, _ + 4)
         
         # ax.set_ylim(0, 4)
@@ -82,7 +97,8 @@ def draw_RMSE(dir):
         data=df[(df["dataset"]==_)]#&(df["method"]!="PLS")]
         
         for __,(type1_value, color) in enumerate(palette.items()):
-            ax1 = fig.add_subplot(3, 3, _ + 3*__+1)
+            # ax1 = fig.add_subplot(3, 3, _ + 3*__+1)
+            ax1 = fig.add_subplot(3, folder_count, _ + folder_count*__+1)
             # plt.xscale("log")
             # plt.yscale("log")
             if __==0:
@@ -160,7 +176,21 @@ def draw_RMSE(dir):
     # plt.show()
 
 def draw_yyplot(dir):
-    fig = plt.figure(figsize=(3 * 4, 3 * 1))
+
+
+    folder_count = 0
+    for entry in os.listdir(dir):
+        entry_path = os.path.join(dir, entry)
+        if os.path.isdir(entry_path) and entry != 'cube':
+            folder_count += 1
+    print(folder_count)
+    
+
+    
+    
+    
+    fig = plt.figure(figsize=(folder_count * 4, folder_count * 1))
+
     for _, name in zip(range(4), ["Gaussian", "Ridge", "Lasso", "PLS"]):
         ax = fig.add_subplot(1, 4, _ + 1)
         ax.set_ylim(-4, 4)
@@ -176,7 +206,7 @@ def draw_yyplot(dir):
 
 
         dfs=[]
-        for __ in range(3):
+        for __ in range(folder_count):
             df_=df[df["dataset"]==__]
             df_ = pd.read_excel(df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_prediction.xlsx").sort_values(["smiles"])
             dfs.append(df_)
@@ -218,12 +248,15 @@ def draw_yyplot(dir):
     plt.show()
 
 # time.sleep(60*60*6)
-for param_name in glob.glob("../parameter/run/cube_to_grid0.250705_review.txt"):
+for param_name in glob.glob("../parameter/run/cube_to_grid0.500705_review.txt"):
+    print(param_name)
+    
     with open(param_name, "r") as f:
         param = json.loads(f.read())
     os.makedirs(param["out_dir_name"], exist_ok=True)
     draw_RMSE(param["out_dir_name"])
-    draw_yyplot(param["out_dir_name"])
+    
+    # draw_yyplot(param["out_dir_name"])
 
 
 # rang=10

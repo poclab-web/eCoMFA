@@ -15,7 +15,7 @@ def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]
     # print(len(df))
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
     df = df.dropna(subset=['er.', "mol", "smiles"])
-    df["inchikey"] = df["mol"].apply(lambda mol: Chem.inchi.MolToInchiKey(Chem.AddHs(mol)))
+    df["InChIKey"] = df["mol"].apply(lambda mol: Chem.inchi.MolToInchiKey(Chem.AddHs(mol)))
 
     df["er."]=df["er."].apply(lambda x:np.clip(x,0.5,99.5))
     df = df[df["mol"].map(lambda mol:
@@ -47,12 +47,12 @@ def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]
     df["ΔΔG.expt."] = df["RT"].values * np.log(100 / df["er."].values - 1)
     if True:
         PandasTools.AddMoleculeColumnToFrame(df, "smiles")
-        # print(df[df.duplicated(subset='inchikey')][["inchikey","smiles"]])
-        df = df[["smiles", "ROMol", "inchikey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
-            subset="inchikey")
-        df = df[["smiles", "ROMol", "inchikey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
+        # print(df[df.duplicated(subset='InChIKey')][["InChIKey","smiles"]])
+        df = df[["smiles", "ROMol", "InChIKey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
+            subset="InChIKey")
+        df = df[["smiles", "ROMol", "InChIKey", "er.", "RT", "ΔΔG.expt."]].drop_duplicates(
             subset="ROMol")
-        print(df[df.duplicated(subset='inchikey')][["inchikey","smiles"]])
+        print(df[df.duplicated(subset='InChIKey')][["InChIKey","smiles"]])
         df.to_csv("../test.csv")
         
         PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100))

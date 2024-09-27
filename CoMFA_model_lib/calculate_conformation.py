@@ -12,9 +12,31 @@ from rdkit.Chem import AllChem
 from rdkit.Chem.Descriptors import ExactMolWt
 from rdkit.Geometry import Point3D
 
+def get_mol(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    mol = Chem.AddHs(mol)
+
+    # 各部分構造を順次チェック
+    found = GetCommonStructure(mol, "[#6](=[#8])([c,C])([c,C])")
+    if not found:
+        found = GetCommonStructure(mol, "[#6](=[#8])([p,P])([c,C])")
+    if not found:
+        found = GetCommonStructure(mol, "[#6](=[#8])([c,C])([p,P])")
+
+    if found:
+        mol.SetProp("InChIKey", Chem.MolToInchiKey(mol))
+    else:
+        print("No matching substructure found.")
+
+    return mol
 
 def GetCommonStructure(mol, common_structure):
-    com = mol.GetSubstructMatches(Chem.MolFromSmarts(common_structure))[0]
+    matches = mol.GetSubstructMatches(Chem.MolFromSmarts(common_structure))
+    if not matches:
+        print("False")
+        return False
+
+    com = matches[0]
     for atom in mol.GetAtoms():
         if atom.GetIdx() == com[0]:
             atom.SetProp("alignment", "0")
@@ -24,17 +46,38 @@ def GetCommonStructure(mol, common_structure):
             atom.SetProp("alignment", "2")
         else:
             atom.SetProp("alignment", "-1")
+
     l = [atom.GetIdx() for atom in mol.GetAtoms() if atom.GetProp("alignment") == "2"]
     l.sort()
-    mol.GetAtomWithIdx(l[1]).SetProp("alignment", "3")
+    if len(l) > 1:
+        mol.GetAtomWithIdx(l[1]).SetProp("alignment", "3")
+
+    return True
 
 
-def get_mol(smiles):
-    mol = Chem.MolFromSmiles(smiles)
-    mol = Chem.AddHs(mol)
-    GetCommonStructure(mol, "[#6](=[#8])([c,C])([c,C])")
-    mol.SetProp("InchyKey", Chem.MolToInchiKey(mol))
-    return mol
+
+# def GetCommonStructure(mol, common_structure):
+#     com = mol.GetSubstructMatches(Chem.MolFromSmarts(common_structure))[0]
+#     for atom in mol.GetAtoms():
+#         if atom.GetIdx() == com[0]:
+#             atom.SetProp("alignment", "0")
+#         elif atom.GetIdx() == com[1]:
+#             atom.SetProp("alignment", "1")
+#         elif atom.GetIdx() in com[2:]:
+#             atom.SetProp("alignment", "2")
+#         else:
+#             atom.SetProp("alignment", "-1")
+#     l = [atom.GetIdx() for atom in mol.GetAtoms() if atom.GetProp("alignment") == "2"]
+#     l.sort()
+#     mol.GetAtomWithIdx(l[1]).SetProp("alignment", "3")
+
+
+# def get_mol(smiles):
+#     mol = Chem.MolFromSmiles(smiles)
+#     mol = Chem.AddHs(mol)
+#     GetCommonStructure(mol, "[#6](=[#8])([c,C])([c,C])")
+#     mol.SetProp("InChIKey", Chem.MolToInchiKey(mol))
+#     return mol
 
 
 # def CalcConfsEnergies(mol):
@@ -274,12 +317,12 @@ if __name__ == '__main__':
         print(smiles)
         mol = get_mol(smiles)
         # if True or smiles != "C1CCCCC1C#CC(=O)C(C)(C)C":
-        MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey")
+        MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InChIKey")
         psi4_out_dirs_name = param["psi4_out_dir_name"] + "/" + mol.GetProp(
-            "InchyKey")  # "/"+param["optimize_level"] +
+            "InChIKey")  # "/"+param["optimize_level"] +
         psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp(
-            "InchyKey")  # "/" +param["optimize_level"]+
-        psi4_out_dirs_name_freq = param["psi4_aligned_dir_name"] + "_freq" + "/" + mol.GetProp("InchyKey")
+            "InChIKey")  # "/" +param["optimize_level"]+
+        psi4_out_dirs_name_freq = param["psi4_aligned_dir_name"] + "_freq" + "/" + mol.GetProp("InChIKey")
 
         if not os.path.isdir(MMFF_out_dirs_name):
             CalcConfsEnergies(mol, "MMFF")
@@ -305,11 +348,11 @@ if __name__ == '__main__':
 
         if not os.path.isfile(psi4_aligned_dirs_name + "/optimized0.xyz"):
             # try:
-            MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InchyKey") + "UFF"
+            MMFF_out_dirs_name = param["MMFF_out_dir_name"] + "/" + mol.GetProp("InChIKey") + "UFF"
             psi4_out_dirs_name = param["psi4_out_dir_name"] + "/" + mol.GetProp(
-                "InchyKey") + "UFF"  # "/"+param["optimize_level"] +
+                "InChIKey") + "UFF"  # "/"+param["optimize_level"] +
             psi4_aligned_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp(
-                "InchyKey") + "UFF"  # "/" +param["optimize_level"]+
+                "InChIKey") + "UFF"  # "/" +param["optimize_level"]+
             if not os.path.isdir(MMFF_out_dirs_name):
                 CalcConfsEnergies(mol, "UFF")
                 highenergycut(mol, param["cut_MMFF_energy"])

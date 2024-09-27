@@ -231,7 +231,7 @@ def histgram(cube_dir,name,out_dir_name):
     for smiles in df["smiles"]:  # [:100]:
         print(smiles)
         mol = calculate_conformation.get_mol(smiles)
-        input_dirs_name = cube_dir + "/" + mol.GetProp("InchyKey")
+        input_dirs_name = cube_dir + "/" + mol.GetProp("InChIKey")
         i=0
         while os.path.isfile("{}/data{}.pkl".format(input_dirs_name, i)):
             data=pd.read_pickle("{}/data{}.pkl".format(input_dirs_name, i))[name].values
@@ -256,7 +256,7 @@ def histgram(cube_dir,name,out_dir_name):
 if __name__ == '__main__':
 
     # time.sleep(60*60*24*2)
-    interval = 0.25
+    interval = 0.5
     dfs = []
     for path in glob.glob("../all_dataset/review/*.xlsx"):
     # for path in glob.glob("../arranged_dataset/review/*.xlsx"):
@@ -267,18 +267,18 @@ if __name__ == '__main__':
     df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
     #cubeのディレクトリを指定。
     dir="F:/wB97X-D_def2-TZVP20240416"
-    dir="/Users/mac_poclab/cube/wB97X-D_def2-TZVP20240416_CBS"
+    dir="/Users/mac_poclab/cube/wB97X-D_def2-TZVP20240416_review"
     #読み込んでヒストグラムを出力。（メモリに注意）
-    df = df[[os.path.isdir(dir + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+    df = df[[os.path.isdir(dir + "/" + mol.GetProp("InChIKey")) for mol in df["mol"]]]
     df["mol"].apply(
-        lambda mol: calculate_conformation.read_xyz(mol, dir + "/" + mol.GetProp("InchyKey")))
+        lambda mol: calculate_conformation.read_xyz(mol, dir + "/" + mol.GetProp("InChIKey")))
     
     # histgram(dir,"Dt","C:/Users/poclabws/result/histgram.png")
     print("histgram")
     l=[]
     for mol in df["mol"]:#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         for conf in mol.GetConformers():
-            l.append(dir+ "/" + mol.GetProp("InchyKey")+ "/data{}.pkl".format(conf.GetId()))
+            l.append(dir+ "/" + mol.GetProp("InChIKey")+ "/data{}.pkl".format(conf.GetId()))
     p = multiprocessing.Pool(processes=50)
     l=p.map(read_pickle,l)
 
@@ -293,7 +293,7 @@ if __name__ == '__main__':
     print(ans)
     dfp=generate_grid_points(ans,interval).sort_values(['x', 'y', "z"], ascending=[True, True, True])
     # out_dir_name="../../../penalty_20240606"
-    out_dir_name="../../../grid_coordinates/20240705_"+str(interval).replace('.', '_')
+    out_dir_name="../../../grid_coordinates/20240726_"+str(interval).replace('.', '_')
     os.makedirs(out_dir_name,exist_ok=True)
     
     
@@ -309,21 +309,21 @@ if __name__ == '__main__':
     # for param_name in sorted(glob.glob("../parameter/cube_to_grid/cube_to_grid0.500510.txt"),reverse=True):
     # df = copy.deepcopy(dfs)
 
-    # df = df[[os.path.isdir(dir + "/" + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+    # df = df[[os.path.isdir(dir + "/" + mol.GetProp("InChIKey")) for mol in df["mol"]]]
     # df["mol"].apply(
-    #     lambda mol: calculate_conformation.read_xyz(mol, dir + "/" + mol.GetProp("InchyKey")))
+    #     lambda mol: calculate_conformation.read_xyz(mol, dir + "/" + mol.GetProp("InChIKey")))
     # dfp = pd.read_csv(param["grid_coordinates"] + "/coordinates.csv")
     dfp_yz = dfp[(dfp["y"] > 0) & (dfp["z"] > 0)].sort_values(['x', 'y', "z"], ascending=[True, True, True])
     dfp_yz.to_csv((out_dir_name + "/coordinates_yz.csv"))
     print("len=", len(df))
     inputs = []
     for mol in df["mol"]:#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        os.makedirs(out_dir_name + "/" + mol.GetProp("InchyKey"), exist_ok=True)
+        os.makedirs(out_dir_name + "/" + mol.GetProp("InChIKey"), exist_ok=True)
         for conf in mol.GetConformers():
             conf =conf.GetId()
-            input = dir + "/" + mol.GetProp("InchyKey"), dfp, mol, conf, out_dir_name + "/" + mol.GetProp("InchyKey")
+            input = dir + "/" + mol.GetProp("InChIKey"), dfp, mol, conf, out_dir_name + "/" + mol.GetProp("InChIKey")
             inputs.append(input)
-        # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InchyKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InchyKey"))
+        # pkl_to_featurevalue(param["cube_dir_name"]+"/"+mol.GetProp("InChIKey"), dfp, mol, param["grid_coordinates"]+"/"+mol.GetProp("InChIKey"))
     print(len(inputs))
     p = Pool(50)
     p.map(PF, inputs)

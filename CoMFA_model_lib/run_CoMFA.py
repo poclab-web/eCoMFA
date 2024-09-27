@@ -266,11 +266,11 @@ def is_normal_frequencies(filename):
         return False
 
 def get_free_energy(mol,dir):
-    # dirs_name_freq = param["freq_dir"] + "/" + mol.GetProp("InchyKey") + "/gaussianinput?.log"
+    # dirs_name_freq = param["freq_dir"] + "/" + mol.GetProp("InChIKey") + "/gaussianinput?.log"
     del_list=[]
 
     for conf in mol.GetConformers():
-        path=dir + "/" + mol.GetProp("InchyKey") + "/gaussianinput{}.log".format(conf.GetId())
+        path=dir + "/" + mol.GetProp("InChIKey") + "/gaussianinput{}.log".format(conf.GetId())
         if is_normal_frequencies(path):
             try:
                 with open(path, 'r') as f:
@@ -296,7 +296,7 @@ def get_grid_feat(mol,RT,dir):
     we = []
     for conf in mol.GetConformers():
         data = pd.read_pickle(
-            "{}/{}/data{}.pkl".format(dir, mol.GetProp("InchyKey"), conf.GetId()))
+            "{}/{}/data{}.pkl".format(dir, mol.GetProp("InChIKey"), conf.GetId()))
         Bd = float(conf.GetProp("Boltzmann_distribution"))
         we.append(Bd)
         feat.append(data[["Dt","ESP"]].values.tolist())
@@ -335,7 +335,7 @@ if __name__ == '__main__':
     lasso_input=[]
     gaussian_input=[]
     pls_input=[]
-    for param_name in sorted(glob.glob("../parameter/run/cube_to_grid0.250705_review.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/run/cube_to_grid0.500705_review.txt"),reverse=True):
         print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
@@ -350,12 +350,12 @@ if __name__ == '__main__':
             
             df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
             df = df[
-                [len(glob.glob("{}/{}/*".format(param["grid_coordinates"], mol.GetProp("InchyKey"))))>0 for mol in
+                [len(glob.glob("{}/{}/*".format(param["grid_coordinates"], mol.GetProp("InChIKey"))))>0 for mol in
                  df["mol"]]]
             print(len(df),features_dir_name)
             df["mol"].apply(
                 lambda mol: calculate_conformation.read_xyz(mol,
-                                                            param["opt_structure"] + "/" + mol.GetProp("InchyKey")))
+                                                            param["opt_structure"] + "/" + mol.GetProp("InChIKey")))
             df["mol"].apply(lambda mol : get_free_energy(mol,param["freq_dir"]))
             df=df[[mol.GetNumConformers()>0 for mol in df["mol"]]]
             print(len(df),features_dir_name)

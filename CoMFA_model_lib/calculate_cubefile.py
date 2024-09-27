@@ -187,7 +187,7 @@ def calc(input):
     print(smiles)
     mol = calculate_conformation.get_mol(smiles)
     if not os.path.isdir(output_dirs_name):
-        print(mol.GetProp("InchyKey"))
+        print(mol.GetProp("InChIKey"))
         psi4calculation(input_dirs_name, output_dirs_name + "calculating", one_point_level)
         try:
             os.rename(output_dirs_name + "calculating", output_dirs_name)
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     df = df.dropna(subset=['mol'])
     df["molwt"] = df["smiles"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
     df = df.sort_values("molwt")  # [:2]
-    # df = df[[os.path.isdir(features_dir_name + mol.GetProp("InchyKey")) for mol in df["mol"]]]
+    # df = df[[os.path.isdir(features_dir_name + mol.GetProp("InChIKey")) for mol in df["mol"]]]
 
     print(df)
 
@@ -229,18 +229,18 @@ if __name__ == '__main__':
         #     if True:  # smiles=="c1ccccc1OCN(C)CC(=O)c1ccccc1":#"Cl" in smiles:
         #         print(smiles)
         #         mol = calculate_conformation.get_mol(smiles)
-        #         input_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp("InchyKey")
-        #         output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")
+        #         input_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp("InChIKey")
+        #         output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InChIKey")
         #         if not os.path.isdir(output_dirs_name):
-        #             print(mol.GetProp("InchyKey"))
+        #             print(mol.GetProp("InChIKey"))
         #             psi4calculation(input_dirs_name, output_dirs_name + "calculating", param["one_point_level"])
         #             os.rename(output_dirs_name + "calculating", output_dirs_name)
         #         cube_to_pkl(output_dirs_name)
         inputs=[]
         for smiles in df["smiles"]:
             mol = calculate_conformation.get_mol(smiles)
-            input_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp("InchyKey")
-            output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InchyKey")
+            input_dirs_name = param["psi4_aligned_dir_name"] + "/" + mol.GetProp("InChIKey")
+            output_dirs_name = param["cube_dir_name"] + "/" + mol.GetProp("InChIKey")
             input=smiles,input_dirs_name,output_dirs_name,param["one_point_level"]
             inputs.append(input)
         p = multiprocessing.Pool(processes=1)
