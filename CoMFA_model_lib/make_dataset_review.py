@@ -5,14 +5,25 @@ import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import PandasTools
 import xlsxwriter
-
+def convert_smiles_to_romol(smiles):
+    global invalid_smiles
+    invalid_smiles =[]
+    try:
+        return Chem.MolFromSmiles(smiles)
+    except Exception as e:
+        invalid_smiles.append(smiles)
+        return None
+    
 
 def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]:
     df = pd.read_excel(from_file_path,sheet_name=name, engine="openpyxl")
+    invalid_smiles =[]
     # print(from_file_path,len(df))
     df = df.dropna(subset=["smiles"])
     # print("smiles_dupl_drop",len(df))
     # print(len(df))
+    # df['ROMol_check'] = df['smiles'].apply(lambda x: convert_smiles_to_romol(x))
+    # print(invalid_smiles)
     df["mol"] = df["smiles"].apply(Chem.MolFromSmiles)
     df = df.dropna(subset=['er.', "mol", "smiles"])
     df["InChIKey"] = df["mol"].apply(lambda mol: Chem.inchi.MolToInchiKey(Chem.AddHs(mol)))
@@ -69,12 +80,12 @@ def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]
 if __name__ == '__main__':
     to_dir_path = "../arranged_dataset/review"
     os.makedirs(to_dir_path, exist_ok=True)
-    make_dataset("../sampledata/sample_0425/alpineborane.xlsx", to_dir_path + "/" + "alpine_review.xlsx","alpineborane", False)
+    # make_dataset("../sampledata/sample_0425/alpineborane.xlsx", to_dir_path + "/" + "alpine_review.xlsx","alpineborane", False)
     
     make_dataset("../sampledata/sample_0425/cbs_review_0621.xlsx", to_dir_path + "/" + "cbs_me_review.xlsx","cbs_me", False)
     make_dataset("../sampledata/sample_0425/cbs_review_0621.xlsx", to_dir_path + "/" + "cbs_nbu_review.xlsx","cbs_nbu", False)
     make_dataset("../sampledata/sample_0425/cbs_review_0621.xlsx", to_dir_path + "/" + "cbs_h_review.xlsx","cbs_h", False)
-    make_dataset("../sampledata/sample_0425/cbs_review_0621.xlsx", to_dir_path + "/" + "cbs_ph_review.xlsx","cbs_ph", False)
-    make_dataset("../sampledata/sample_0425/cbs_review_0621.xlsx", to_dir_path + "/" + "cbs_sime3_review.xlsx","cbs_sime3", False)
+    # make_dataset("../sampledata/sample_0425/cbs_review_0621.xlsx", to_dir_path + "/" + "cbs_ph_review.xlsx","cbs_ph", False)
+    # make_dataset("../sampledata/sample_0425/cbs_review_0621.xlsx", to_dir_path + "/" + "cbs_sime3_review.xlsx","cbs_sime3", False)
 
 
