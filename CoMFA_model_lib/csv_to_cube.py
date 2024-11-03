@@ -82,7 +82,7 @@ if __name__ == '__main__':
     #     out_file = file[:-4]  + ".cube"
     #     coef_cube(file,mol_file,prop,out_file)
     
-    for name in ["Ridge","PLS","Lasso"]:
+    for name in ["ElasticNet"]:
         filename=dir+"/{}.csv".format(name)
         df=pd.read_csv(filename,index_col = 'Unnamed: 0').sort_index()
         df["dataset"]=df.index*3//len(df)
@@ -91,6 +91,6 @@ if __name__ == '__main__':
             df_=df[(df["dataset"]==_)]
             file=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_coef.csv"
             for prop in ["Property: ALIE"]:#,"Property: Default"
-                for column in ["coef_steric","coef_electric","coef_LUMO"]:
+                for column in ["coef_steric","coef_electric"]:
                     out_file=dir+"/cube/dataset{}/{}{}{}.cube".format(_,file.replace(".","").replace('/', '_').replace("csv",""),prop.replace(": ",""),column)
                     coef_cube(file,mol_file,prop,column,out_file)

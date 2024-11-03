@@ -16,7 +16,7 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
     df = df.dropna(subset=['er.', "mol", "smiles"])
     df["inchikey"] = df["mol"].apply(lambda mol: Chem.inchi.MolToInchiKey(Chem.AddHs(mol)))
 
-    df["er."]=df["er."].apply(lambda x:np.clip(x,0.5,99.5))
+    df["er."]=df["er."].apply(lambda x:np.clip(x,0.25,99.75))
     df = df[df["mol"].map(lambda mol:
                           # not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl,OH1,#7]"))
                           not mol.HasSubstructMatch(Chem.MolFromSmarts("[I]"))
@@ -26,11 +26,11 @@ def make_dataset(from_file_path, out_file_name,flag):  # in ["dr.expt.BH3"]:
                           )]
     if flag=="cbs":
         df = df[df["mol"].map(lambda mol:
-                              not mol.HasSubstructMatch(Chem.MolFromSmarts("[#7]"))
+                              not mol.HasSubstructMatch(Chem.MolFromSmarts("n"))
                               )]
     elif flag=="dip":
         df = df[df["mol"].map(lambda mol:
-                              not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,#7,OH1]"))#F,Cl,
+                              not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][#7,OH1]"))#F,Cl,
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[#7,OH1]"))
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]**[#7,OH1]"))
                               )]

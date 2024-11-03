@@ -778,6 +778,7 @@ def get_grid_feat(mol,RT,dir):
     # w = np.exp(-Dt)
     # print(np.max(w),np.min(w),np.average(w))
     data[features] = np.nan_to_num(np.average(feat, weights=we, axis=0))
+    data.to_pickle( "{}/{}/dataBoltzmann.pkl".format(dir, mol.GetProp("InchyKey")))
     # w = np.exp(ESP / np.sqrt(np.average(ESP ** 2, axis=0)).reshape(1, -1))
     # data["ESP"] = np.nan_to_num(
     #     np.average(ESP, weights=np.array(we).reshape(-1, 1) * np.ones(shape=ESP.shape), axis=0))
@@ -786,7 +787,7 @@ def get_grid_feat(mol,RT,dir):
     ans3=data[(data["y"] > 0)&(data["z"]<0)].sort_values(['x', 'y', "z"], ascending=[True, True, False])[features].values
     ans4=data[(data["y"] < 0)&(data["z"]<0)].sort_values(['x', 'y', "z"], ascending=[True, False, False])[features].values
     ans=ans1+ans2-ans3-ans4
-    
+    # ans.to_pickle( "{}/{}/dataBoltzmannfold.pkl".format(dir, mol.GetProp("InchyKey")))
     # data_y[features] = data[data["y"] > 0].sort_values(['x', 'y', "z"], ascending=[True, True, True])[features].values + \
         # data[data["y"] < 0].sort_values(['x', 'y', "z"], ascending=[True, False, True])[features].values
     
