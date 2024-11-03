@@ -268,6 +268,7 @@ def gaussianfrequency(input_dir_name, output_dir_name, level="hf/sto-3g"):
         i += 1
 
 
+
 def run_gaussian(filenames):
     """
     Gaussianを使用して指定されたファイルを計算する関数
