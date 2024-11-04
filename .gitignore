@@ -20,3 +20,5 @@ parameter/run/cube_to_grid0.250705_review.txt
 parameter/run/cube_to_grid0.500705_review.txt
 sampledata/sample_0425/~$cbs_review_0621.xlsx
 sampledata/sample_0425/cbs_review_0621.xlsx
+CoMFA_model_lib/__pycache__/calculate_conformation_review.cpython-38.pyc
+__pycache__/
