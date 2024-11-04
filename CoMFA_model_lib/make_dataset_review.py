@@ -78,9 +78,9 @@ def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]
 
 
 if __name__ == '__main__':
-    to_dir_path = "../arranged_dataset/review"
+    to_dir_path = "../../../arranged_dataset/review"
     os.makedirs(to_dir_path, exist_ok=True)
-    # make_dataset("../sampledata/sample_0425/alpineborane.xlsx", to_dir_path + "/" + "alpine_review.xlsx","alpineborane", False)
+    make_dataset("../sampledata/sample_0425/alpineborane.xlsx", to_dir_path + "/" + "alpine_review.xlsx","alpineborane", False)
     
     make_dataset("../sampledata/sample_0425/cbs_review_0621.xlsx", to_dir_path + "/" + "cbs_me_review.xlsx","cbs_me", False)
     make_dataset("../sampledata/sample_0425/cbs_review_0621.xlsx", to_dir_path + "/" + "cbs_nbu_review.xlsx","cbs_nbu", False)
