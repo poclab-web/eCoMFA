@@ -271,7 +271,7 @@ if __name__ == '__main__':
     df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
     #cubeのディレクトリを指定。
     # dir="D:/calculation/wB97X-D_def2-TZVP20240416"#"C:/Users/poclabws/calculation/wB97X-D_def2-TZVP20240416"#"F:/wB97X-D_def2-TZVP20240416"
-    dir="/Volumes/HD-PGF-A/wB97X-D_def2-TZVP20240416_review"#"C:/Users/poclabws/calculation/wB97X-D_def2-TZVP20240416"#"F:/wB97X-D_def2-TZVP20240416"
+    dir="D:\calculation\wB97X-D_def2-TZVP20240416"#"C:/Users/poclabws/calculation/wB97X-D_def2-TZVP20240416"#"F:/wB97X-D_def2-TZVP20240416"
     
     df = df[[os.path.isdir(dir + "/" + mol.GetProp("InChIKey")) for mol in df["mol"]]]
     df["mol"].apply(

@@ -271,7 +271,7 @@ if __name__ == '__main__':
     df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
     #cubeのディレクトリを指定。
     # dir="D:/calculation/wB97X-D_def2-TZVP20240416"#"C:/Users/poclabws/calculation/wB97X-D_def2-TZVP20240416"#"F:/wB97X-D_def2-TZVP20240416"
-    dir="/Volumes/HD-PGF-A/wB97X-D_def2-TZVP20240416_review"#"C:/Users/poclabws/calculation/wB97X-D_def2-TZVP20240416"#"F:/wB97X-D_def2-TZVP20240416"
+    dir="D:/calculation/wB97X-D_def2-TZVP20240416"#"C:/Users/poclabws/calculation/wB97X-D_def2-TZVP20240416"#"F:/wB97X-D_def2-TZVP20240416"
 
     df = df[[os.path.isdir(dir + "/" + mol.GetProp("InChIKey")) for mol in df["mol"]]]
     df["mol"].apply(
@@ -298,7 +298,7 @@ if __name__ == '__main__':
         ans=[-6.75,  4.25,  5.75,  8.25]
     print(ans)
     dfp=generate_grid_points(ans,interval).sort_values(['x', 'y', "z"], ascending=[True, True, True])
-    out_dir_name="../../../grid_coordinates/20240606_"+str(interval).replace('.', '_')
+    out_dir_name="../../../grid_coordinates/20241104_"+str(interval).replace('.', '_')
     os.makedirs(out_dir_name,exist_ok=True)
     inputs=[]
     for n in range(-1,5):
