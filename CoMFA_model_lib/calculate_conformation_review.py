@@ -16,13 +16,15 @@ def get_mol(smiles):
    mol = Chem.MolFromSmiles(smiles)
    mol = Chem.AddHs(mol)
    carbon_13 = Chem.MolFromSmarts("[13C]")
-
+   H_2 = Chem.MolFromSmarts("[2H]")
    # 各部分構造を順次チェック
    found = GetCommonStructure(mol, "[#6](=[#8])([c,C])([c,C])")
    if not found:
        found = GetCommonStructure(mol, "[#6](=[#8])([p,P])([c,C])")
    if not found:
        found = GetCommonStructure(mol, "[#6](=[#8])([c,C])([p,P])")
+   if mol.HasSubstructMatch(H_2):
+       found = GetCommonStructure(mol, "[#6](=[#8])([c,C])([*1])")
    if mol.HasSubstructMatch(carbon_13):
        found = GetCommonStructure(mol, "[C;!13C](=[#8])([N])([c,C])")
 
