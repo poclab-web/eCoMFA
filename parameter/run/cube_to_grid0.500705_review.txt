@@ -1,11 +1,11 @@
 {
-"cube_dir_name": "D:\calculation\wB97X-D_def2-TZVP20240416_review",
-"grid_coordinates":"../../../grid_coordinates/20240726_0_5",
-"out_dir_name":"../../../result/20240729_0_5_spl5_",
-"freq_dir":"D:\calculation\psi4_optimization_aligned_review\b3lyp_6-31gd_freq",
-"opt_structure":"D:\calculation\psi4_optimization_aligned_review\b3lyp_6-31gd",
+"cube_dir_name": "D:/calculation/wB97X-D_def2-TZVP20240416_review",
+"grid_coordinates":"C:/Users/poclabws/grid_coordinates/20240606_review_0_5",
+"out_dir_name":"../../../result/20241105_0_5_spl5",
+"freq_dir":"D:/calculation/psi4_optimization_aligned_review/b3lyp_6-31gd_freq",
+"opt_structure":"D:/calculation/psi4_optimization_aligned_review/b3lyp_6-31gd",
 "n_splits":"5",
-"n_repeats":"10",
+"n_repeats":"1",
 "sigmas":["0.50","1.00","2.00"],
-"processes":"2"
+"processes":"60"
 }

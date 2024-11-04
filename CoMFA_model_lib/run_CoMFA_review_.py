@@ -13,7 +13,7 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.model_selection import KFold
 import time
-import calculate_conformation
+import calculate_conformation_review
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.metrics import pairwise_distances_argmin_min
@@ -738,7 +738,7 @@ def get_free_energy(mol,dir):
     del_list=[]
 
     for conf in mol.GetConformers():
-        path=dir + "/" + mol.GetProp("InchyKey") + "/gaussianinput{}.log".format(conf.GetId())
+        path=dir + "/" + mol.GetProp("InChIKey") + "/gaussianinput{}.log".format(conf.GetId())
         if is_normal_frequencies(path):
             try:
                 with open(path, 'r') as f:
@@ -765,7 +765,7 @@ def get_grid_feat(mol,RT,dir):
     we = []
     for conf in mol.GetConformers():
         data = pd.read_pickle(
-            "{}/{}/data{}.pkl".format(dir, mol.GetProp("InchyKey"), conf.GetId()))
+            "{}/{}/data{}.pkl".format(dir, mol.GetProp("InChIKey"), conf.GetId()))
         Bd = float(conf.GetProp("Boltzmann_distribution"))
         we.append(Bd)
         feat.append(data[features].values.tolist())
@@ -778,7 +778,7 @@ def get_grid_feat(mol,RT,dir):
     # w = np.exp(-Dt)
     # print(np.max(w),np.min(w),np.average(w))
     data[features] = np.nan_to_num(np.average(feat, weights=we, axis=0))
-    data.to_pickle( "{}/{}/dataBoltzmann.pkl".format(dir, mol.GetProp("InchyKey")))
+    data.to_pickle( "{}/{}/dataBoltzmann.pkl".format(dir, mol.GetProp("InChIKey")))
     # w = np.exp(ESP / np.sqrt(np.average(ESP ** 2, axis=0)).reshape(1, -1))
     # data["ESP"] = np.nan_to_num(
     #     np.average(ESP, weights=np.array(we).reshape(-1, 1) * np.ones(shape=ESP.shape), axis=0))
@@ -890,25 +890,25 @@ if __name__ == '__main__':
     elasticnet_input=[]
     pls_input=[]
     pcr_input=[]
-    for param_name in sorted(glob.glob("../parameter/run/cube_to_grid0.50.txt"),reverse=True):
+    for param_name in sorted(glob.glob("../parameter/run/cube_to_grid0.500705_review.txt"),reverse=True):
         print(param_name)
         with open(param_name, "r") as f:
             param = json.loads(f.read())
         print(param)
         start = time.perf_counter()  # 計測開始
-        for file in glob.glob("../arranged_dataset/*.xlsx"):
+        for file in glob.glob("../../../arranged_dataset/review/*.xlsx"):
             df = pd.read_excel(file).dropna(subset=['smiles']).reset_index(drop=True)#[:10]
             file_name = os.path.splitext(os.path.basename(file))[0]
             features_dir_name = param["grid_coordinates"] + file_name
             print(len(df),features_dir_name)
-            df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
+            df["mol"] = df["smiles"].apply(calculate_conformation_review.get_mol)
             df = df[
-                [len(glob.glob("{}/{}/*".format(param["grid_coordinates"], mol.GetProp("InchyKey"))))>0 for mol in
+                [len(glob.glob("{}/{}/*".format(param["grid_coordinates"], mol.GetProp("InChIKey"))))>0 for mol in
                  df["mol"]]]
             print(len(df),features_dir_name)
             df["mol"].apply(
-                lambda mol: calculate_conformation.read_xyz(mol,
-                                                            param["opt_structure"] + "/" + mol.GetProp("InchyKey")))
+                lambda mol: calculate_conformation_review.read_xyz(mol,
+                                                            param["opt_structure"] + "/" + mol.GetProp("InChIKey")))
             df["mol"].apply(lambda mol : get_free_energy(mol,param["freq_dir"]))
             df=df[[mol.GetNumConformers()>0 for mol in df["mol"]]]
             print(len(df),features_dir_name)
@@ -921,6 +921,7 @@ if __name__ == '__main__':
             # X=np.concatenate([X,X_esp],1).astype("float32")
             # n_clusters = 10  # 例として5クラスターに設定
             # df["test"] = select_data_by_clustering(X, n_clusters)
+            print(df.shape)
             train_df, test_df = train_test_split(df, test_size=0.2, random_state=4)
 
             # ラベルを追加する
