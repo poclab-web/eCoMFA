@@ -37,9 +37,10 @@ def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]
                           # and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*C(=O)[OH1]"))
                           )]
     if flag=="cbs":
-        df = df[df["mol"].map(lambda mol:
-                              not mol.HasSubstructMatch(Chem.MolFromSmarts("[#7]"))
-                              )]
+        True
+        # df = df[df["mol"].map(lambda mol:
+        #                       not mol.HasSubstructMatch(Chem.MolFromSmarts("[#7]"))
+        #                       )]
     elif flag=="dip":
         df = df[df["mol"].map(lambda mol:
                               not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][F,Cl,#7,OH1]"))#
@@ -65,7 +66,7 @@ def make_dataset(from_file_path, out_file_name,name,flag):  # in ["dr.expt.BH3"]
             subset="ROMol")
         print(df[df.duplicated(subset='InChIKey')][["InChIKey","smiles"]])
         df.to_csv("../test.csv")
-        
+        print(df.shape)
         PandasTools.SaveXlsxFromFrame(df, out_file_name, size=(100, 100))
     else:
         df["aliphatic_aliphatic"]=df["mol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("CC(=O)C")))

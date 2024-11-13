@@ -205,8 +205,8 @@ def conf_to_xyz(mol, out_dir_name):
 
 
 def psi4optimization(input_dir_name, output_dir_name, level="hf/sto-3g"):
-    psi4.set_num_threads(nthread=8)
-    psi4.set_memory("8GB")
+    psi4.set_num_threads(nthread=24)
+    psi4.set_memory("32GB")
     psi4.set_options({'geom_maxiter': 10000})
     i = 0
     while os.path.isfile("{}/optimized{}.xyz".format(input_dir_name, i)):
@@ -301,13 +301,13 @@ def run_gaussian(filenames):
 if __name__ == '__main__':
     print("!!")
     #param_file_name = "./parameter/structural optimization/structural optimization.txt"
-    param_file_name = "../parameter/structural optimization/structural_optimization.json"# "../parameter/parameter_cbs.txt"
+    param_file_name = "../parameter/structural_optimization/structural_optimization.txt"# "../parameter/parameter_cbs.txt"
     with open(param_file_name, "r") as f:
         param = json.loads(f.read())
     print(param)
     dfs = []
     # for path in glob.glob("../arranged_dataset/*.xlsx"):
-    for path in glob.glob("../arranged_dataset/newrea/newrea.xlsx"):
+    for path in glob.glob("/Users/mac_poclab/arranged_dataset/review/*"):
         df = pd.read_excel(path)
         dfs.append(df)
     print(dfs)
@@ -320,6 +320,12 @@ if __name__ == '__main__':
     df = df.sort_values("molwt")  # [:2]
     print(df)
     for smiles in df["smiles"]:
+        if "+" in smiles or "-" in smiles:
+            # if smiles in ["O=C(c2[n+](C)cccc2)c1ccccc1","O=C(c2[n+](CC=C)cccc2)c1ccccc1"]:
+            continue
+        
+
+        
         print(smiles)
         mol = get_mol(smiles)
         # if True or smiles != "C1CCCCC1C#CC(=O)C(C)(C)C":
@@ -346,7 +352,7 @@ if __name__ == '__main__':
             ConfTransform(mol)
             conf_to_xyz(mol, psi4_aligned_dirs_name)
 
-        if False and not os.path.isdir(psi4_out_dirs_name_freq):
+        if not os.path.isdir(psi4_out_dirs_name_freq):
             gaussianfrequency(psi4_aligned_dirs_name, psi4_out_dirs_name_freq + "_calculating",
                               param["optimize_level"])
             run_gaussian(psi4_out_dirs_name_freq + "_calculating")

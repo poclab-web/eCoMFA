@@ -36,8 +36,8 @@ def gaussiansinglepoint(input_dir_name, output_dir_name, level="hf/sto-3g"):
         i += 1
 
 def psi4calculation(input_dir_name, output_dir_name, level="hf/sto-3g"):
-    psi4.set_num_threads(nthread=50)
-    psi4.set_memory("64GB")
+    psi4.set_num_threads(nthread=24)
+    psi4.set_memory("32GB")
     # psi4.set_options({'geom_maxiter': 1000})
 
     psi4.set_options({'cubeprop_filepath': output_dir_name})
