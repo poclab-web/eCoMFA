@@ -3,7 +3,6 @@ import heapq
 import json
 import os
 import subprocess
-
 import numpy as np
 import pandas as pd
 import psi4
@@ -250,7 +249,6 @@ def run_gaussian(filenames):
 
 
 if __name__ == '__main__':
-    print("!!")
     #param_file_name = "./parameter/structural optimization/structural optimization.txt"
     param_file_name = "../parameter/structural optimization/structural_optimization.json"# "../parameter/parameter_cbs.txt"
     with open(param_file_name, "r") as f:
