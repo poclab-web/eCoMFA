@@ -1,12 +1,10 @@
 import copy
-import glob
 import os
 
 import pandas as pd
 
-def coef_cube(file,mol_file,prop,column,to_cube_file_name):
-    print(file)
-    df = pd.read_csv(file)
+def coef_cube(df,mol_file,prop,column,to_cube_file_name,feat):
+    
     df_y = copy.deepcopy(df)
     df_y["y"] = -df_y["y"]
     df_z = copy.deepcopy(df)
@@ -20,7 +18,7 @@ def coef_cube(file,mol_file,prop,column,to_cube_file_name):
 
     df = pd.concat([df,df_y,  df_z,df_yz])
     df = df.sort_values(by=["x", "y", "z"], ascending=[True, True, True])
-    
+    df[column]=df[column]*feat
     with open(mol_file, "r", encoding="UTF-8") as f:
         cube = f.read().splitlines()
     # try:
@@ -71,26 +69,43 @@ def coef_cube(file,mol_file,prop,column,to_cube_file_name):
 
 
 if __name__ == '__main__':
-    dir="../../../result/20240704_0_5_spl5"
-    filename=dir+"/*/*_coef.csv"
-    # mol_file = "D:/calculation/wB97X-D_def2-TZVP20240416/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#"F:/cube_aligned/wB97X-D_def2-TZVP20240330/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
+    dir="C:/Users/poclabws/result/20241111"
+    # filename=dir+"C:/Users/poclabws/result/20241111/*/*_coef.csv"
+    # mol_file = "/Users/mac_poclab/cube/wB97X-D_def2-TZVP20240416_review/KWOLFJPFCHCOCG-UHFFFAOYSA-N/Dt02_0.cube"#RIFKADJTWUGDOV-UHFFFAOYSA-N
     mol_files=["C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/TS1R_B3LYP_6-31Gd_PCM_TS_new_4.xyz",
                "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/dip_acetophenone_UFF_B3LYP_631Gd_PCM_IRC_new_4.xyz",
                "C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/Ru_acetophenone_TS_TS_TS_TS_new_4.xyz"]
     prop="Property: ALIE"
-    # for file in glob.glob(filename):
-    #     out_file = file[:-4]  + ".cube"
-    #     coef_cube(file,mol_file,prop,out_file)
-    
-    for name in ["ElasticNet"]:
-        filename=dir+"/{}.csv".format(name)
-        df=pd.read_csv(filename,index_col = 'Unnamed: 0').sort_index()
-        df["dataset"]=df.index*3//len(df)
-        for _,mol_file in enumerate(mol_files):
-            os.makedirs(dir+"/cube/dataset{}".format(_),exist_ok=True)
-            df_=df[(df["dataset"]==_)]
-            file=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_coef.csv"
-            for prop in ["Property: ALIE"]:#,"Property: Default"
-                for column in ["coef_steric","coef_electric"]:
-                    out_file=dir+"/cube/dataset{}/{}{}{}.cube".format(_,file.replace(".","").replace('/', '_').replace("csv",""),prop.replace(": ",""),column)
-                    coef_cube(file,mol_file,prop,column,out_file)
+    acetophenone=pd.read_pickle("C:/Users/poclabws/grid_coordinates/20240606_0_5/KWOLFJPFCHCOCG-UHFFFAOYSA-N/data0.pkl")
+    trifluorophenlyketone=pd.read_pickle("C:/Users/poclabws/grid_coordinates/20240606_0_5/KZJRKRQSDZGHEC-UHFFFAOYSA-N/data0.pkl")
+    substrates=[acetophenone,trifluorophenlyketone]
+    df=pd.read_csv(dir+"/ElasticNet.csv",index_col = 'Unnamed: 0').sort_index()
+    df["dataset"]=df.index*3//len(df)
+    df1=df.iloc[:len(df) // 3]
+    file1=df1["savefilename"][df1["RMSE_validation"]==df1["RMSE_validation"].min()].iloc[0]+"_coef.csv"
+    df2=df.iloc[len(df)//3:len(df)//3*2]
+    file2=df2["savefilename"][df2["RMSE_validation"]==df2["RMSE_validation"].min()].iloc[0]+"_coef.csv"
+    df3=df.iloc[len(df)//3*2:len(df)//3*3]
+    file3=df3["savefilename"][df3["RMSE_validation"]==df3["RMSE_validation"].min()].iloc[0]+"_coef.csv"
+    param=[{"result":file1,"mol":"C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/TS1R_B3LYP_6-31Gd_PCM_TS_new_4.xyz",
+            "cube":"C:/Users/poclabws/grid_coordinates/20240606_0_5/KWOLFJPFCHCOCG-UHFFFAOYSA-N/data0.pkl"},
+            {"result":file2,"mol":"C:/Users/poclabws/PycharmProjects/CoMFA_model/xyz_file/dip_acetophenone_UFF_B3LYP_631Gd_PCM_IRC_new_4.xyz",
+            "cube":"C:/Users/poclabws/grid_coordinates/20240606_0_5/KZJRKRQSDZGHEC-UHFFFAOYSA-N/data0.pkl"}]
+    for p in param:
+        df__=pd.read_csv(p["result"])
+        for column,feature in zip(["coef_steric","coef_electric"],["Dt","ESP"]):
+            mol=pd.read_pickle(p["cube"])
+            feat=mol[feature].values
+            out_file=dir+"/cube{}{}{}.cube".format(p["result"].split("/")[-1],p["cube"].split("/")[-1],feature)
+            coef_cube(df__,p["mol"],prop,column,out_file,feat)
+    raise ValueError
+    for _,mol_file in enumerate(mol_files):
+        os.makedirs(dir+"/cube/dataset{}".format(_),exist_ok=True)
+        df_=df[(df["dataset"]==_)]
+        file=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_coef.csv"
+        df__=pd.read_csv(file)
+        for column,feature in zip(["coef_steric","coef_electric"],["Dt","ESP"]):
+            for __, substrate in enumerate(substrates):
+                feat=substrate[feature].values
+                out_file=dir+"/cube/dataset{}/{}{}.cube".format(_,__,column)
+                coef_cube(df__,mol_file,prop,column,out_file,feat)
