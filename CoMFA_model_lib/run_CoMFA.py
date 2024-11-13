@@ -222,7 +222,7 @@ def is_normal_frequencies(filename):
             frequencies_lines = [line for line in lines if 'Frequencies' in line]
             if len(frequencies_lines)==0:
                 f.close()
-                print(filename, False)
+                print(filename, "fail_freq_calculation")
                 return False
             for l in frequencies_lines:
                 splited = l.split()
@@ -231,7 +231,7 @@ def is_normal_frequencies(filename):
                 ans=all(values)
                 if not ans:
                     f.close()
-                    print(filename,ans)
+                    print(filename,"imaginary freq")
                     return ans
             f.close()
         return True
@@ -287,7 +287,6 @@ def get_grid_feat(mol,RT,dir):
 
 
 if __name__ == '__main__':
-    # time.sleep(60*60*6)
     ridge_input=[]
     lasso_input=[]
     elasticnet_input=[]
@@ -305,9 +304,12 @@ if __name__ == '__main__':
             features_dir_name = param["grid_coordinates"] + file_name
             print(len(df),features_dir_name)
             df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
-            df = df[
-                [len(glob.glob(f'{param["grid_coordinates"]}/{mol.GetProp("InchyKey")}/*'))>0 for mol in
-                 df["mol"]]]
+            for mol in df["mol"]:
+                if len(glob.glob(f'{param["grid_coordinates"]}/{mol.GetProp("InchyKey")}/*'))==0:
+                    print(mol.GetProp("InchyKey"))
+            # df = df[
+            #     [len(glob.glob(f'{param["grid_coordinates"]}/{mol.GetProp("InchyKey")}/*'))>0 for mol in
+            #      df["mol"]]]
             print(len(df),features_dir_name)
             df["mol"].apply(
                 lambda mol: calculate_conformation.read_xyz(mol,

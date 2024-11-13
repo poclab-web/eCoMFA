@@ -71,7 +71,7 @@ def generate_grid_points(range,step):
 
 def read_pickle(dir):
     df=pd.read_pickle(dir)[["Dt", "x", "y", "z"]].astype(np.float32)
-    df=df[df["Dt"]>10e-5]
+    df=df[df["Dt"]>10e-6]
     ans=df[["x"]].min().to_list()+df[["x"]].max().to_list()+df[["y","z"]].abs().max().to_list()
     return ans
 
@@ -107,7 +107,7 @@ def histgram(cube_dir,name,out_dir_name):
 if __name__ == '__main__':
     start = time.perf_counter()  # 計測開始
     interval = 0.5
-    df = pd.concat([pd.read_excel(path) for path in glob.glob("C:/Users/poclabws/PycharmProjects/CoMFA_model/all_dataset/*.xlsx")]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
+    df = pd.concat([pd.read_excel(path) for path in glob.glob("C:/Users/poclabws/PycharmProjects/CoMFA_model/arranged_dataset/*.xlsx")]).dropna(subset=['smiles']).drop_duplicates(subset=["smiles"])
     df["mol"] = df["smiles"].apply(calculate_conformation.get_mol)
     #cubeのディレクトリを指定。
     dir="D:/calculation/wB97X-D_def2-TZVP20240416"
