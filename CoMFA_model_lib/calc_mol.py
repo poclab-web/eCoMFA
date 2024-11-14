@@ -150,7 +150,7 @@ def calc(out_path,smiles):
             #     for coord in coords:
             #         input+= ' '.join(map(str, coord))
             #     input+=''
-            
+
             input = "0 1\n nocom\n noreorient\n "
             for no,coord in zip(nos,coords):
                 input+=f"{no} {coord[0]} {coord[1]} {coord[2]}\n"
@@ -173,5 +173,5 @@ if __name__ == '__main__':
     out_path='/Volumes/SSD-PSM960U3-UW/CoMFA_calc'
     df=pd.read_csv("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/mol_list.csv")
     df["molwt"] = df["SMILES"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
-    df=df.sort_values("molwt").iloc[:10]
+    df=df.sort_values("molwt")#.iloc[:10]
     df[["InChIKey","SMILES"]].apply(lambda _:calc(f'{out_path}/{_[0]}',_[1]),axis=1)

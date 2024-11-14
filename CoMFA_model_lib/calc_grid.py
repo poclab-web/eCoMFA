@@ -46,14 +46,11 @@ def calc_grid(path):
     electrostatic=pd.Series({f'electrostatic {row.x} {row.y} {row.z}': row.electrostatic for idx, row in dfs.iterrows()})
     return pd.concat([steric,electrostatic])
 
-
-
-if __name__ == '__main__':
-    #arranged_dataset読み込み
-    path="/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/cbs.xlsx"
+def calc_grid_(path):
+    print(path)
     df=pd.read_excel(path)
     df["molwt"] = df["SMILES"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
-    df=df.sort_values("molwt").reset_index().iloc[:3]
+    df=df.sort_values("molwt").reset_index().iloc[:20]
     l=[]
     for inchikey in df["InChIKey"]:
         _=calc_grid(f'/Volumes/SSD-PSM960U3-UW/CoMFA_calc/{inchikey}')
@@ -61,6 +58,13 @@ if __name__ == '__main__':
     data=pd.DataFrame(l)
     print(data)
     df=pd.concat([df,data],axis=1).fillna(0)
-    path=path.replace(".xlsx","_grid.xlsx")
-    PandasTools.AddMoleculeColumnToFrame(df, "SMILES")
-    PandasTools.SaveXlsxFromFrame(df, path, size=(100, 100))
+    path=path.replace(".xlsx",".pkl")
+    df.to_pickle(path)
+    # PandasTools.AddMoleculeColumnToFrame(df, "SMILES")
+    # PandasTools.SaveXlsxFromFrame(df, path, size=(100, 100))
+
+if __name__ == '__main__':
+    #arranged_dataset読み込み
+    calc_grid_("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/cbs.xlsx")
+    calc_grid_("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/DIP.xlsx")
+    calc_grid_("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/Ru.xlsx")
