@@ -150,6 +150,7 @@ def calc(out_path,smiles):
             #     for coord in coords:
             #         input+= ' '.join(map(str, coord))
             #     input+=''
+            
             input = "0 1\n nocom\n noreorient\n "
             for no,coord in zip(nos,coords):
                 input+=f"{no} {coord[0]} {coord[1]} {coord[2]}\n"
