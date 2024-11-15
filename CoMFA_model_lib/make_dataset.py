@@ -13,8 +13,8 @@ def common(from_file_path):
     df["InChIKey"] = df["mol"].apply(lambda mol: Chem.inchi.MolToInchiKey(Chem.AddHs(mol)))
     df["er."]=df["er."].apply(lambda x:np.clip(x,0.25,99.75))
     df = df[df["mol"].map(lambda mol: not mol.HasSubstructMatch(Chem.MolFromSmarts("[I]")))]
-    df["RT"] = 1.99 * 10 ** -3 * df["temperature"].values
-    df["ΔΔG.expt."] = df["RT"].values * np.log(100 / df["er."].values - 1)
+    # df["RT"] = 1.99 * 10 ** -3 * df["temperature"].values
+    df["ΔΔG.expt."] = 1.99 * 10 ** -3 * df["temperature"] * np.log(100 / df["er."].values - 1)
     return df
 
 def output(df,to_file_path):
@@ -24,7 +24,7 @@ def output(df,to_file_path):
     df = pd.concat([train_df, test_df])
 
     PandasTools.AddMoleculeColumnToFrame(df, "SMILES")
-    df = df[["entry","SMILES", "ROMol", "InChIKey", "er.", "RT", "ΔΔG.expt.","Reference url","test"]]
+    df = df[["entry","SMILES", "ROMol", "InChIKey", "temperature","er.", "ΔΔG.expt.","Reference url","test"]]
     PandasTools.SaveXlsxFromFrame(df, to_file_path, size=(100, 100))
 
     df["aliphatic_aliphatic"]=df["ROMol"].map(lambda mol: mol.HasSubstructMatch(Chem.MolFromSmarts("CC(=O)C")))
@@ -40,15 +40,9 @@ def output(df,to_file_path):
 
 if __name__ == '__main__':
     
-    df_cbs=common("C:/Users/poclabws/PycharmProjects/CoMFA_model/sampledata/CBS.xlsx")#.drop_duplicates(subset="InChIKey")
-    df_dip=common("C:/Users/poclabws/PycharmProjects/CoMFA_model/sampledata/DIP.xlsx")#.drop_duplicates(subset="InChIKey")
-    df_ru=common("C:/Users/poclabws/PycharmProjects/CoMFA_model/sampledata/Ru.xlsx")#.drop_duplicates(subset="InChIKey")
-    
-    # to_dir_path = "C:/Users/poclabws/PycharmProjects/CoMFA_model/all_dataset"
-    # os.makedirs(to_dir_path, exist_ok=True)
-    # output(df_cbs,f'{to_dir_path}/CBS.xlsx')
-    # output(df_dip,f'{to_dir_path}/DIP.xlsx')
-    # output(df_ru,f'{to_dir_path}/Ru.xlsx')
+    df_cbs=common("/Users/mac_poclab/PycharmProjects/CoMFA_model/sampledata/CBS.xlsx")#.drop_duplicates(subset="InChIKey")
+    df_dip=common("/Users/mac_poclab/PycharmProjects/CoMFA_model/sampledata/DIP.xlsx")#.drop_duplicates(subset="InChIKey")
+    df_ru=common("/Users/mac_poclab/PycharmProjects/CoMFA_model/sampledata/Ru.xlsx")#.drop_duplicates(subset="InChIKey")
 
     df_cbs = df_cbs[df_cbs["mol"].map(lambda mol: not mol.HasSubstructMatch(Chem.MolFromSmarts("n")))]
     df_dip=df = df_dip[df_dip["mol"].map(lambda mol:
@@ -56,7 +50,7 @@ if __name__ == '__main__':
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[#7,OH1]"))
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]**[#7,OH1]")))]
     
-    to_dir_path = "C:/Users/poclabws/PycharmProjects/CoMFA_model/arranged_dataset"
+    to_dir_path = "/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset"
 
     os.makedirs(to_dir_path, exist_ok=True)
     output(df_cbs,f'{to_dir_path}/CBS.xlsx')
