@@ -4,9 +4,6 @@ import numpy as np
 import pandas as pd
 import psi4
 from rdkit import Chem
-from rdkit.Chem.Descriptors import ExactMolWt
-from rdkit.Geometry import Point3D
-from rdkit.Chem.rdCIPLabeler import AssignCIPLabels
 from rdkit.Chem import AllChem
 import heapq
 import cclib
@@ -100,9 +97,13 @@ def transform(conf, carbonyl_atom):
 
 
 def calc(out_path,smiles):
+    try:
+        os.makedirs(out_path)
+    except Exception as e:
+        print(e)
+        return
     mol=Chem.MolFromSmiles(smiles)
     mol=Chem.AddHs(mol)
-    # AssignCIPLabels(mol)
     Chem.AssignStereochemistry(mol,cleanIt=True,force=True,flagPossibleStereoCenters=True)
 
     substruct=Chem.MolFromSmarts("[#6](=[#8])([#6])([#6])")
@@ -122,41 +123,27 @@ def calc(out_path,smiles):
     rmsd_cut(mol,0.5)
     max_n_cut(mol,5)
 
-    os.makedirs(out_path,exist_ok=True)
     for _,conf in enumerate(mol.GetConformers()):
         gjf=f'{out_path}/opt{_}.gjf'
         with open(gjf, 'w')as f:
             xyz="\n".join(Chem.rdmolfiles.MolToXYZBlock(mol,confId=conf.GetId()).split("\n")[2:])
             input=f'%nprocshared=30\n%mem=30GB\n%chk= {_}.chk\n# freq opt=tight b3lyp 6-31g(d)\n\ngood luck!\n\n0 1\n{xyz}'
             print(input,file=f)
-        if True:
+        try:
             subprocess.call(f'source ~/.bash_profile ; g16 {gjf}', shell=True)
             print(f'FINISH CALCULATION {gjf}')
             log=gjf.replace('.gjf', '.log')
-            # log_to_xyz(log)
             data = cclib.io.ccread(log)
             coords = data.atomcoords[-1]  # 最終構造の座標
             coords=transform(coords, substruct)
             nos = data.atomnos
-            # for _,coord in enumerate(coords):
-            #     conf.SetAtomPosition(_, Point3D(coord[0], coord[1], coord[2]))
-            # Chem.MolToXYZFile(mol, file_name, conf.GetId())
-            # xyz=gjf.replace('.gjf', '.xyz')
-            # with open(xyz, 'w')as f:
-            #     print(coords,file=f)
-            # psi4in=f'{out_path}/opt{_}.psi4in'
-            # with open(psi4in, 'w')as f:
-            #     input='memory 30GB\n\nmolecule{\n'
-            #     for coord in coords:
-            #         input+= ' '.join(map(str, coord))
-            #     input+=''
 
             input = "0 1\n nocom\n noreorient\n "
             for no,coord in zip(nos,coords):
                 input+=f"{no} {coord[0]} {coord[1]} {coord[2]}\n"
+            psi4.set_output_file(f'{out_path}/sp{_}.log')
             molecule = psi4.geometry(input)
             energy, wfn = psi4.energy("wB97X-D/def2-TZVP", molecule=molecule, return_wfn=True)
-            psi4.set_output_file(f'{out_path}/sp{_}.log')
             psi4.set_options({'cubeprop_filepath': out_path})
             psi4.set_options({'cubeprop_tasks': ["esp"],
                           "cubic_grid_spacing": [0.2, 0.2, 0.2],
@@ -166,12 +153,10 @@ def calc(out_path,smiles):
             os.rename(f'{out_path}/geom.xyz', f'{out_path}/geom{_}.xyz')
             os.rename(f'{out_path}/Dt.cube', f'{out_path}/Dt{_}.cube')
             os.rename(f'{out_path}/ESP.cube', f'{out_path}/ESP{_}.cube')
-        else:
-            None
+        except Exception as e:
+            print(e)
 
 if __name__ == '__main__':
     out_path='/Volumes/SSD-PSM960U3-UW/CoMFA_calc'
-    df=pd.read_csv("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/mol_list.csv")
-    df["molwt"] = df["SMILES"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
-    df=df.sort_values("molwt")#.iloc[:10]
+    df=pd.read_excel("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/mol_list.xlsx")
     df[["InChIKey","SMILES"]].apply(lambda _:calc(f'{out_path}/{_[0]}',_[1]),axis=1)

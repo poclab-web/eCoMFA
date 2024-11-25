@@ -4,6 +4,7 @@ import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import PandasTools
 from sklearn.model_selection import train_test_split
+from rdkit.Chem.Descriptors import ExactMolWt
 
 def common(from_file_path):
     df = pd.read_excel(from_file_path, engine="openpyxl")
@@ -60,4 +61,7 @@ if __name__ == '__main__':
     print(len(df_all))
     df_all=df_all.drop_duplicates(subset=["InChIKey"])
     print(len(df_all))
-    df_all.to_csv(f'{to_dir_path}/mol_list.csv',index=False)
+    df_all["molwt"] = df_all["SMILES"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
+    df_all=df_all.sort_values("molwt")#.reset_index()#.to_csv(f'{to_dir_path}/mol_list.csv',index=False)
+    PandasTools.AddMoleculeColumnToFrame(df_all, "SMILES")
+    PandasTools.SaveXlsxFromFrame(df_all, f'{to_dir_path}/mol_list.xlsx', size=(100, 100))
