@@ -8,17 +8,51 @@ from rdkit.Chem import PandasTools
 import time
 
 def nan_rmse(x,y):
+    """
+    Calculates the Root Mean Square Error (RMSE) while ignoring NaN values.
+
+    This function computes the RMSE between two arrays, where NaN values in the
+    first array (`x`) are ignored in the calculation.
+
+    Args:
+        x (numpy.ndarray or pandas.Series): Predicted values, which may contain NaN values.
+        y (numpy.ndarray or pandas.Series): Actual values, corresponding to `x`.
+
+    Returns:
+        float: The RMSE value, calculated as:
+               \[
+               \text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (y_i - x_i)^2}
+               \]
+               where \( N \) is the number of non-NaN values in `x`.
+    """
     return np.sqrt(np.nanmean((y-x)**2))
 
 def nan_r2(x,y):
+    """
+    Calculates the coefficient of determination (R²) while ignoring NaN values.
+
+    This function computes the R² score between two arrays, where NaN values in
+    the first array (`x`) are ignored. The R² score indicates the proportion of
+    variance in `y` that is predictable from `x`.
+
+    Args:
+        x (numpy.ndarray or pandas.Series): Predicted values, which may contain NaN values.
+        y (numpy.ndarray or pandas.Series): Actual values, corresponding to `x`.
+
+    Returns:
+        float: The R² value, calculated as:
+               \[
+               R^2 = 1 - \frac{\sum (y_i - x_i)^2}{\sum (y_i - \bar{y})^2}
+               \]
+               where:
+               - \( \bar{y} \) is the mean of the non-NaN `y` values.
+               - The summations ignore NaN values in `x`.
+    """
     x,y=x[~np.isnan(x)],y[~np.isnan(x)]
     return 1-np.sum((y-x)**2)/np.sum((y-np.mean(y))**2)
 
 def best_parameter(path):
     df=pd.read_pickle(path)
-    # df["molwt"] = df["SMILES"].apply(lambda smiles: ExactMolWt(Chem.MolFromSmiles(smiles)))
-    # df=df.sort_values("molwt").reset_index()
-    #cvがつくカラムに対してrmseなどを取得してデータフレームに入れる。
     cv_columns=df.filter(like='cv').columns
     df_results=pd.DataFrame(index=cv_columns)
     df_results["cv_RMSE"]=df_results.index.map(lambda column: nan_rmse(df[column].values,df["ΔΔG.expt."].values))
@@ -31,21 +65,6 @@ def best_parameter(path):
     coef.columns = ["steric_coef", "electrostatic_coef"]
 
     start=time.time()
-
-    # columns=[]
-    # data=[]
-    # for column in df.filter(like='steric_unfold').columns:
-    #     x,y,z=map(int, re.findall(r'[+-]?\d+', column))
-    #     columns.append(column.replace("unfold","cont"))
-    #     data.append(df[column]*coef.at[f'{x} {abs(y)} {abs(z)}',"steric_coef"]*np.sign(z))
-
-    # for column in df.filter(like='electrostatic_unfold').columns:
-    #     x,y,z=map(int, re.findall(r'[+-]?\d+', column))
-    #     columns.append(column.replace("unfold","cont"))
-    #     data.append(df[column]*coef.at[f'{x} {abs(y)} {abs(z)}',"electrostatic_coef"]*np.sign(z))
-
-    # data=pd.DataFrame(data=np.array(data).T,columns=columns)
-    
     columns=df.filter(like='steric_unfold').columns.tolist()+df.filter(like='electrostatic_unfold').columns.tolist()
     
     def calc_cont(column):
@@ -75,7 +94,7 @@ def make_cube(df,path):
     grid = np.array([re.findall(r'[+-]?\d+', col) for col in df.filter(like='steric_cont ').columns]).astype(int)
     min=np.min(grid,axis=0).astype(int)
     max=np.max(grid,axis=0).astype(int)
-    rang=max-min#+np.array([1,1,1])
+    rang=max-min
     columns=["InChIKey"]
     for x,y,z in product(range(min[0],max[0]+1),range(min[1],max[1]+1),range(min[2],max[2]+1)):
         if x!=0 and y!=0 and z!=0:
@@ -96,9 +115,6 @@ def make_cube(df,path):
             f.readline()
             f.readline()
             coord=[f.readline() for _ in range(n_atom)]
-            # dt=f.read().splitlines()[2:]
-        # n_atom=int(dt[0].split()[0])
-        # coord=dt[4:n_atom+4]
         coord=''.join(coord)
         steric='\n'.join([' '.join(f"{x}" for x in value[i:i + 6])for i in range(0, len(value)//2, 6)])
         electrostatic='\n'.join([' '.join(f"{x}" for x in value[i:i + 6])for i in range(len(value)//2, len(value), 6)])
@@ -110,10 +126,8 @@ def make_cube(df,path):
 
 
 def graph_(df,path):
-    #r2,rmse表示
     #直線表示
-    #軸ラベル表示
-    # データ数表示
+
     
     plt.figure(figsize=(3, 3))
     plt.yticks([-4,0,4])
@@ -144,7 +158,7 @@ def graph_(df,path):
     plt.legend(loc='lower right', fontsize=5, ncols=1)
 
     plt.text(-3.6, 3.6, "$\mathit{N}_{\mathrm{test}}$"+f' = {len(df[df["test"]==1])}\n'+"$\mathit{N}_{\mathrm{training}}$"+f' = {len(df[df["test"]==0])}',# transform=ax.transAxes, 
-                fontsize=10, verticalalignment='top')#, bbox=dict(boxstyle="round,pad=0.3", edgecolor="none", facecolor="white"))
+                fontsize=10, verticalalignment='top')
 
     plt.tight_layout()
     plt.savefig(path.replace(".pkl",".png"),dpi=500,transparent=True)
@@ -189,12 +203,12 @@ def bar():
     plt.savefig(path+"results.png",dpi=500,transparent=True)
 
 if __name__ == '__main__':
-    # df_cbs=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/cbs_regression.pkl")
-    # df_dip=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/DIP_regression.pkl")
-    # df_ru=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/Ru_regression.pkl")
-    # make_cube(df_cbs,'/Volumes/SSD-PSM960U3-UW/CoMFA_results/CBS')
-    # make_cube(df_dip,'/Volumes/SSD-PSM960U3-UW/CoMFA_results/DIP')
-    # make_cube(df_ru,'/Volumes/SSD-PSM960U3-UW/CoMFA_results/Ru')
+    df_cbs=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/cbs_regression.pkl")
+    df_dip=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/DIP_regression.pkl")
+    df_ru=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/Ru_regression.pkl")
+    make_cube(df_cbs,'/Volumes/SSD-PSM960U3-UW/CoMFA_results/CBS')
+    make_cube(df_dip,'/Volumes/SSD-PSM960U3-UW/CoMFA_results/DIP')
+    make_cube(df_ru,'/Volumes/SSD-PSM960U3-UW/CoMFA_results/Ru')
     bar()
     df=pd.concat([df_cbs,df_dip,df_ru])
     graph_(df,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression.png")
