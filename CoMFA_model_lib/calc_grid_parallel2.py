@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 import glob
 import cclib
-
+from multiprocessing import Pool, cpu_count
+from functools import partial
 
 def calc_grid__(log,T):
     """
@@ -151,6 +152,8 @@ def calc_grid(path,T):
     fold_steric=pd.Series({f'steric_fold {int(row.x)} {int(row.y)} {int(row.z)}': row.steric for idx, row in wfold_grids.iterrows()})
     fold_electrostatic=pd.Series({f'electrostatic_fold {int(row.x)} {int(row.y)} {int(row.z)}': row.electrostatic for idx, row in wfold_grids.iterrows()})
     return pd.concat([steric,electrostatic,fold_steric,fold_electrostatic])
+def process_row(row):
+    return calc_grid(f'/Users/mac_poclab/CoMFA_calc/{row["InChIKey"]}', row["temperature"])
 
 def calc_grid_(path):
     """
@@ -181,15 +184,14 @@ def calc_grid_(path):
     """
     print(f'START PARCING {path}')
     df=pd.read_excel(path)
-    l=[]
-    for inchikey,temperature in zip(df["InChIKey"],df["temperature"]):
-        _=calc_grid(f'/Users/mac_poclab/CoMFA_calc/{inchikey}',temperature)
-        # _=calc_grid(f'/Volumes/SSD-PSM960U3-UW/CoMFA_calc/{inchikey}',temperature)
-        l.append(_)
-    data=pd.DataFrame(l)
-    df=pd.concat([df,data],axis=1).fillna(0)
-    path=path.replace(".xlsx",".pkl")
+    with Pool(10) as pool:
+        results = pool.map(process_row, [row for _, row in df.iterrows()])
+
+    data = pd.DataFrame(results)
+    df = pd.concat([df, data], axis=1).fillna(0)
+    path = path.replace(".xlsx", ".pkl")
     df.to_pickle(path)
+
 
 if __name__ == '__main__':
     #arranged_dataset読み込み
