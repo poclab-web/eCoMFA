@@ -95,17 +95,19 @@ def make_cube(df,path):
     min=np.min(grid,axis=0).astype(int)
     max=np.max(grid,axis=0).astype(int)
     rang=max-min
-    columns=["InChIKey"]
+    
+    columns=["ΔΔG.expt."]
     for x,y,z in product(range(min[0],max[0]+1),range(min[1],max[1]+1),range(min[2],max[2]+1)):
         if x!=0 and y!=0 and z!=0:
             columns.append(f'steric_cont {x} {y} {z}')
     for x,y,z in product(range(min[0],max[0]+1),range(min[1],max[1]+1),range(min[2],max[2]+1)):
         if x!=0 and y!=0 and z!=0:
             columns.append(f'electrostatic_cont {x} {y} {z}')
-    df=df.reindex(columns=columns, fill_value=0)
+    df=df.set_index("InChIKey").reindex(columns=columns, fill_value=0)
     min=' '.join(map(str, min+np.array([0.5,0.5,0.5])))
-    for inchikey,value in zip(df["InChIKey"],df.iloc[:,1:].values):
-        dt=f'/Volumes/SSD-PSM960U3-UW/CoMFA_calc/{inchikey}/Dt0.cube'
+    for inchikey,expt,value in zip(df.index,df["ΔΔG.expt."],df.iloc[:,1:].values):
+        dt=f'/Users/mac_poclab/CoMFA_calc/{inchikey}/Dt0.cube'
+        # dt=f'/Volumes/SSD-PSM960U3-UW/CoMFA_calc/{inchikey}/Dt0.cube'
         with open(dt, 'r', encoding='UTF-8') as f:
             f.readline()
             f.readline()
@@ -118,17 +120,16 @@ def make_cube(df,path):
         coord=''.join(coord)
         steric='\n'.join([' '.join(f"{x}" for x in value[i:i + 6])for i in range(0, len(value)//2, 6)])
         electrostatic='\n'.join([' '.join(f"{x}" for x in value[i:i + 6])for i in range(len(value)//2, len(value), 6)])
+        contribution=np.sum(value[:len(value)//2]),np.sum(value[len(value)//2:])
         os.makedirs(f'{path}/{inchikey}',exist_ok=True)
         with open(f'{path}/{inchikey}/steric.cube','w') as f:
-            print(f'contribution Gaussian Cube File.\nProperty: Default # color steric {np.sum(value[:len(value)//2]):.2f} kcal/mol\n{n_atom} {min}\n{rang[0]} 1 0 0\n{rang[1]} 0 1 0\n{rang[2]} 0 0 1\n{coord}\n{steric}',file=f)
+            print(f'contribution Gaussian Cube File.\nProperty: Default # color steric {contribution[0]:.2f} predict {sum(contribution):.2f} expt {expt:.2f}\n{n_atom} {min}\n{rang[0]} 1 0 0\n{rang[1]} 0 1 0\n{rang[2]} 0 0 1\n{coord}\n{steric}',file=f)
         with open(f'{path}/{inchikey}/electrostatic.cube','w') as f:
-            print(f'contribution Gaussian Cube File.\nProperty: ALIE # color electrostatic {np.sum(value[len(value)//2:]):.2f}\n{n_atom} {min}\n{rang[0]} 1 0 0\n{rang[1]} 0 1 0\n{rang[2]} 0 0 1\n{coord}\n{electrostatic}',file=f)
+            print(f'contribution Gaussian Cube File.\nProperty: ALIE # color electrostatic {contribution[1]:.2f} predict {sum(contribution):.2f} expt {expt:.2f}\n{n_atom} {min}\n{rang[0]} 1 0 0\n{rang[1]} 0 1 0\n{rang[2]} 0 0 1\n{coord}\n{electrostatic}',file=f)
 
 
 def graph_(df,path):
     #直線表示
-
-    
     plt.figure(figsize=(3, 3))
     plt.yticks([-4,0,4])
     plt.xticks([-4,0,4])
@@ -139,17 +140,17 @@ def graph_(df,path):
     rmse=nan_rmse(df["regression"].values,df["ΔΔG.expt."].values)
     r2=nan_r2(df["regression"].values,df["ΔΔG.expt."].values)
     plt.scatter([],[],label="$\mathrm{RMSE_{regression}}$"+f" = {rmse:.2f}"
-                   +"\n$r^2_{regression}$ = " + f"{r2:.2f}",c="black",linewidths=0,  alpha=0.5, s=10)
+                   +"\n$r^2_{\mathrm{regression}}$ = " + f"{r2:.2f}",c="black",linewidths=0,  alpha=0.5, s=10)
     
     rmse=nan_rmse(df["cv"].values,df["ΔΔG.expt."].values)
     r2=nan_r2(df["cv"].values,df["ΔΔG.expt."].values)
     plt.scatter([],[],label="$\mathrm{RMSE_{cv}}$"+f" = {rmse:.2f}"
-                   +"\n$r^2_{cv}$ = " + f"{r2:.2f}",c="dodgerblue",linewidths=0,  alpha=0.6, s=10)
+                   +"\n$r^2_{\mathrm{cv}}$ = " + f"{r2:.2f}",c="dodgerblue",linewidths=0,  alpha=0.6, s=10)
     
     rmse=nan_rmse(df["prediction"].values,df["ΔΔG.expt."].values)
     r2=nan_r2(df["prediction"].values,df["ΔΔG.expt."].values)
-    plt.scatter([],[],label="$\mathrm{RMSE_{prediction}}$"+f" = {rmse:.2f}"
-                   +"\n$r^2_{cv}$ = " + f"{r2:.2f}",c="red",linewidths=0,  alpha=0.8, s=10)
+    plt.scatter([],[],label="$\mathrm{RMSE_{test}}$"+f" = {rmse:.2f}"
+                   +"\n$r^2_{\mathrm{test}}$ = " + f"{r2:.2f}",c="red",linewidths=0,  alpha=0.8, s=10)
 
     plt.scatter(df["ΔΔG.expt."],df["cv"],c="dodgerblue",linewidths=0,s=10,alpha=0.6)
     plt.scatter(df["ΔΔG.expt."],df["prediction"],c="red",linewidths=0,s=10,alpha=0.8)
@@ -175,40 +176,65 @@ def bar():
     array=np.array([cbs.filter(regex=r'PLS [+-]?\d+ cv',axis=0).min()["cv_RMSE"],
                     dip.filter(regex=r'PLS [+-]?\d+ cv',axis=0).min()["cv_RMSE"],
                     ru.filter(regex=r'PLS [+-]?\d+ cv',axis=0).min()["cv_RMSE"]])
-    plt.bar(left,array,color="red",label='PLS',alpha=0.2)
+    plt.figure(figsize=(4.8, 3.2))
+    plt.bar(left,array,color="red",label='PLS',alpha=0.25)
+    for i, v in enumerate(array):
+        plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
     left+=0.9
     print(array)
+
     array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"],
                     dip.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"],
                     ru.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"]])
     print(array)
-    plt.bar(left,array,color="red",label='Ridge',alpha=0.4)
+    plt.bar(left,array,color="red",label='Ridge',alpha=0.5)
+    for i, v in enumerate(array):
+        plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
     left+=0.9
 
     array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"],
                     dip.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"],
                     ru.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"]])
-    plt.bar(left,array,color="red",label='Lasso',alpha=0.6)
+    plt.bar(left,array,color="red",label='Lasso',alpha=0.75)
+    for i, v in enumerate(array):
+        plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
     left+=0.9
 
     array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ \d+\.\d+ cv",axis=0).min()["cv_RMSE"],
                     dip.filter(regex=r"^ElasticNet \d+\.\d+ \d+\.\d+ cv",axis=0).min()["cv_RMSE"],
                     ru.filter(regex=r"^ElasticNet \d+\.\d+ \d+\.\d+ cv",axis=0).min()["cv_RMSE"]])
-    plt.bar(left,array,color="red",label='ElasticNet',alpha=0.8)
-    label=["CBS","DIP","Ru"]
+    plt.bar(left,array,color="red",label='Elastic Net',alpha=1)
+    for i, v in enumerate(array):
+        plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
+    
+    label = [r"$\mathit{(S)}$-CBS", r"$\mathit{(+)}$-DIP-Cl", r"$\mathit{(S,S)}$-Ru"]
     plt.bar(left-1.35, 0, tick_label=label, align="center")
-    plt.legend(ncol=4)
-    plt.xlabel("Dataset")
+    
+    plt.axhline(0, color='black', linewidth=1.0)  # y=0の枠線
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+    plt.gca().spines['left'].set_visible(False)
+    
+    plt.grid(axis='y', color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
+    plt.gca().xaxis.set_ticks_position('none')  # 横軸の目盛り線を消す
+    plt.gca().yaxis.set_ticks_position('none')  # 横軸の目盛り線を消す
+    
+    plt.legend(ncol=4, bbox_to_anchor=(0.5, 1.01), loc='lower center', frameon=True)
+    # plt.xlabel("Dataset")
     plt.ylabel("RMSE [kcal/mol]")
+    plt.yticks(np.arange(0, 2.0, 0.5))
+    plt.tight_layout()
     plt.savefig(path+"results.png",dpi=500,transparent=True)
 
 if __name__ == '__main__':
+    bar()
     df_cbs=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/cbs_regression.pkl")
     df_dip=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/DIP_regression.pkl")
     df_ru=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/Ru_regression.pkl")
-    make_cube(df_cbs,'/Volumes/SSD-PSM960U3-UW/CoMFA_results/CBS')
-    make_cube(df_dip,'/Volumes/SSD-PSM960U3-UW/CoMFA_results/DIP')
-    make_cube(df_ru,'/Volumes/SSD-PSM960U3-UW/CoMFA_results/Ru')
-    bar()
-    df=pd.concat([df_cbs,df_dip,df_ru])
-    graph_(df,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression.png")
+    # make_cube(df_cbs,'/Users/mac_poclab/CoMFA_results/CBS')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/CBS
+    # make_cube(df_dip,'/Users/mac_poclab/CoMFA_results/DIP')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/DIP
+    # make_cube(df_ru,'/Users/mac_poclab/CoMFA_results/Ru')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/Ru
+    graph_(df_cbs,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression_cbs.png")
+    graph_(df_dip,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression_dip.png")
+    graph_(df_ru,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression_ru.png")
+    graph_(pd.concat([df_cbs,df_dip,df_ru]),"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression.png")
