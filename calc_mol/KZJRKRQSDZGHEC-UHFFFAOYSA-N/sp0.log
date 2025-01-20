@@ -1,0 +1,1017 @@
+2024-11-15:21:36:24,982 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/KZJRKRQSDZGHEC-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:21:36:24,990 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=709.3617277104818
+2024-11-15:21:38:42,411 INFO     [psi4.driver.driver:526] Return energy(): -540.9367479410163
+2024-11-15:21:46:00,142 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CAXIQKXPSQYDIR-CMDGGOBGSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:21:46:00,149 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=709.3617277104817
+2024-11-15:21:48:34,495 INFO     [psi4.driver.driver:526] Return energy(): -540.9367480777969
+2024-11-15:21:56:15,308 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CAXIQKXPSQYDIR-CMDGGOBGSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:21:56:15,315 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=704.9211826786625
+2024-11-15:21:58:23,308 INFO     [psi4.driver.driver:526] Return energy(): -540.9378018468161
+2024-11-15:22:05:49,262 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CAXIQKXPSQYDIR-CMDGGOBGSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:22:05:49,269 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=704.9217113340802
+2024-11-15:22:07:09,300 INFO     [psi4.driver.driver:526] Return energy(): -540.9378019817431
+2024-11-15:22:15:20,423 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CAXIQKXPSQYDIR-CMDGGOBGSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:22:15:20,431 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=752.2754348842724
+2024-11-15:22:17:27,135 INFO     [psi4.driver.driver:526] Return energy(): -542.1680028826606
+2024-11-15:22:24:18,890 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DYQAZJQDLPPHNB-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:22:24:18,900 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=752.2752539672069
+2024-11-15:22:25:28,432 INFO     [psi4.driver.driver:526] Return energy(): -542.168003012922
+2024-11-15:22:36:01,539 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DYQAZJQDLPPHNB-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:22:36:01,550 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=740.3984988954307
+2024-11-15:22:37:49,594 INFO     [psi4.driver.driver:526] Return energy(): -542.167309975119
+2024-11-15:22:47:12,855 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DYQAZJQDLPPHNB-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:22:47:12,863 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=736.2941028737725
+2024-11-15:22:49:12,459 INFO     [psi4.driver.driver:526] Return energy(): -542.167401440982
+2024-11-15:22:58:37,186 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DYQAZJQDLPPHNB-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:22:58:37,194 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=736.2941342677458
+2024-11-15:23:00:02,966 INFO     [psi4.driver.driver:526] Return energy(): -542.1674014926776
+2024-11-15:23:07:36,988 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DYQAZJQDLPPHNB-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:23:07:36,998 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=727.5544802837796
+2024-11-15:23:09:27,175 INFO     [psi4.driver.driver:526] Return energy(): -542.1733332037377
+2024-11-15:23:16:21,622 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MQESVSITPLILCO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:23:16:21,632 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=741.584423020347
+2024-11-15:23:17:46,188 INFO     [psi4.driver.driver:526] Return energy(): -542.1733485588419
+2024-11-15:23:24:24,926 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MQESVSITPLILCO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:23:24:24,934 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=741.5844753117734
+2024-11-15:23:26:04,194 INFO     [psi4.driver.driver:526] Return energy(): -542.1733486419779
+2024-11-15:23:33:43,293 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MQESVSITPLILCO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:23:33:43,303 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=727.5544793834839
+2024-11-15:23:36:17,302 INFO     [psi4.driver.driver:526] Return energy(): -542.1733339375766
+2024-11-15:23:43:33,894 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MQESVSITPLILCO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:23:43:33,903 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=731.4579915420977
+2024-11-15:23:45:09,601 INFO     [psi4.driver.driver:526] Return energy(): -542.1724880949142
+2024-11-15:23:54:13,96 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MQESVSITPLILCO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-15:23:54:13,107 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=758.5491369892006
+2024-11-15:23:56:02,747 INFO     [psi4.driver.driver:526] Return energy(): -592.945343542568
+2024-11-16:00:01:53,392 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/YSZGCNKBKQQPAH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:00:01:53,400 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=743.8282888615188
+2024-11-16:00:03:14,293 INFO     [psi4.driver.driver:526] Return energy(): -558.1873967182997
+2024-11-16:00:10:31,980 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QMNXJNURJISYMS-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:00:10:31,991 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=754.1201491049077
+2024-11-16:00:13:00,260 INFO     [psi4.driver.driver:526] Return energy(): -558.1865424378531
+2024-11-16:00:18:54,670 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QMNXJNURJISYMS-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:00:18:54,679 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=743.8282849179503
+2024-11-16:00:21:15,504 INFO     [psi4.driver.driver:526] Return energy(): -558.1873963836691
+2024-11-16:00:28:36,924 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QMNXJNURJISYMS-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:00:28:36,932 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=754.1201491049077
+2024-11-16:00:30:37,916 INFO     [psi4.driver.driver:526] Return energy(): -558.1865423583872
+2024-11-16:00:38:29,276 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QMNXJNURJISYMS-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:00:38:29,287 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=697.058861960109
+2024-11-16:00:40:21,841 INFO     [psi4.driver.driver:526] Return energy(): -685.0314166408858
+2024-11-16:00:49:27,97 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XAXKYUYIYBKVHR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:00:49:27,105 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=679.1129678435975
+2024-11-16:00:51:00,694 INFO     [psi4.driver.driver:526] Return energy(): -685.0311840514513
+2024-11-16:00:59:22,219 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XAXKYUYIYBKVHR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:00:59:22,228 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=679.1128667369724
+2024-11-16:01:00:14,154 INFO     [psi4.driver.driver:526] Return energy(): -685.0311838524459
+2024-11-16:01:04:50,693 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XAXKYUYIYBKVHR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:01:04:50,703 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=673.7972782985022
+2024-11-16:01:06:01,888 INFO     [psi4.driver.driver:526] Return energy(): -685.0309039751239
+2024-11-16:01:12:09,571 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XAXKYUYIYBKVHR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:01:12:09,579 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=744.2141896906911
+2024-11-16:01:13:43,206 INFO     [psi4.driver.driver:526] Return energy(): -612.7870953774534
+2024-11-16:01:20:43,650 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QKLCQKPAECHXCQ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:01:20:43,662 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=738.3538858993677
+2024-11-16:01:23:05,816 INFO     [psi4.driver.driver:526] Return energy(): -612.787485728916
+2024-11-16:01:34:37,69 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QKLCQKPAECHXCQ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:01:34:37,77 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=769.0515218113205
+2024-11-16:01:36:25,597 INFO     [psi4.driver.driver:526] Return energy(): -612.793833820118
+2024-11-16:01:44:22,34 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UFOAYTOVTNNRKJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:01:44:22,42 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=774.3737401344674
+2024-11-16:01:46:32,192 INFO     [psi4.driver.driver:526] Return energy(): -612.7928022211773
+2024-11-16:01:55:37,380 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UFOAYTOVTNNRKJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:01:55:37,387 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=774.3431211001904
+2024-11-16:01:58:01,249 INFO     [psi4.driver.driver:526] Return energy(): -612.793389637243
+2024-11-16:02:07:08,18 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UFOAYTOVTNNRKJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:02:07:08,26 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=774.3430997079985
+2024-11-16:02:09:15,405 INFO     [psi4.driver.driver:526] Return energy(): -612.7933900490564
+2024-11-16:02:18:55,269 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UFOAYTOVTNNRKJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:02:18:55,277 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=769.0515772834887
+2024-11-16:02:21:07,324 INFO     [psi4.driver.driver:526] Return energy(): -612.7938339590862
+2024-11-16:02:31:55,198 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UFOAYTOVTNNRKJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:02:31:55,208 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=750.7396381226321
+2024-11-16:02:34:00,322 INFO     [psi4.driver.driver:526] Return energy(): -543.322833252538
+2024-11-16:02:44:43,485 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/SCDHTAAYEHJTGD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:02:44:43,494 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=765.211746258306
+2024-11-16:02:47:34,724 INFO     [psi4.driver.driver:526] Return energy(): -543.3229259328454
+2024-11-16:03:06:23,133 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/SCDHTAAYEHJTGD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:03:06:23,140 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=766.1000732027117
+2024-11-16:03:09:18,783 INFO     [psi4.driver.driver:526] Return energy(): -543.3229279338268
+2024-11-16:03:28:29,409 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/SCDHTAAYEHJTGD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:03:28:29,468 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=766.100097137648
+2024-11-16:03:30:06,612 INFO     [psi4.driver.driver:526] Return energy(): -543.3229271257055
+2024-11-16:03:39:21,844 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/SCDHTAAYEHJTGD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:03:39:21,852 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=750.7396229555436
+2024-11-16:03:41:45,871 INFO     [psi4.driver.driver:526] Return energy(): -543.3228336707461
+2024-11-16:03:46:16,680 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/SCDHTAAYEHJTGD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:03:46:16,692 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=736.2481375253508
+2024-11-16:03:47:41,348 INFO     [psi4.driver.driver:526] Return energy(): -628.7405244069557
+2024-11-16:03:57:25,207 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QHTSEJJUUBOESF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:03:57:25,215 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=679.2413230508507
+2024-11-16:03:58:42,546 INFO     [psi4.driver.driver:526] Return energy(): -659.5480171141617
+2024-11-16:04:06:02,910 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PWFHYGISSIMQKI-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:04:06:02,917 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=675.7812878859783
+2024-11-16:04:07:29,471 INFO     [psi4.driver.driver:526] Return energy(): -659.5457498068499
+2024-11-16:04:14:08,842 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PWFHYGISSIMQKI-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:04:14:08,850 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=675.7813704940194
+2024-11-16:04:16:10,148 INFO     [psi4.driver.driver:526] Return energy(): -659.545749767008
+2024-11-16:04:21:20,841 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PWFHYGISSIMQKI-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:04:21:20,852 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=796.0643512076358
+2024-11-16:04:22:54,59 INFO     [psi4.driver.driver:526] Return energy(): -686.3212640883982
+2024-11-16:04:28:32,284 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RPTSLLGEWZGTHJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:04:28:32,292 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=776.6586219104688
+2024-11-16:04:30:13,960 INFO     [psi4.driver.driver:526] Return energy(): -686.3228079534956
+2024-11-16:04:35:51,826 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RPTSLLGEWZGTHJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:04:35:51,834 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=776.6586533620712
+2024-11-16:04:37:30,826 INFO     [psi4.driver.driver:526] Return energy(): -686.3228078953887
+2024-11-16:04:42:47,14 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RPTSLLGEWZGTHJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:04:42:47,26 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=786.4372598736281
+2024-11-16:04:43:51,950 INFO     [psi4.driver.driver:526] Return energy(): -686.3202723596302
+2024-11-16:04:49:08,228 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RPTSLLGEWZGTHJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:04:49:08,235 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=796.0645797552279
+2024-11-16:04:50:29,802 INFO     [psi4.driver.driver:526] Return energy(): -686.3212643805258
+2024-11-16:05:03:03,28 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RPTSLLGEWZGTHJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:05:03:03,35 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=804.4667785592757
+2024-11-16:05:05:32,271 INFO     [psi4.driver.driver:526] Return energy(): -613.9618922231042
+2024-11-16:05:18:11,786 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XEUGKOFTNAYMMX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:05:18:11,794 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=804.4667558866336
+2024-11-16:05:20:45,280 INFO     [psi4.driver.driver:526] Return energy(): -613.9618945879658
+2024-11-16:05:28:27,201 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XEUGKOFTNAYMMX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:05:28:27,209 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=784.9887011320492
+2024-11-16:05:29:57,595 INFO     [psi4.driver.driver:526] Return energy(): -613.9672652335563
+2024-11-16:05:37:30,552 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/FAXUIYJKGGUCBO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:05:37:30,560 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=784.9884534194998
+2024-11-16:05:38:50,172 INFO     [psi4.driver.driver:526] Return energy(): -613.9672653913057
+2024-11-16:05:47:00,585 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/FAXUIYJKGGUCBO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:05:47:00,593 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=781.8399624363547
+2024-11-16:05:48:49,782 INFO     [psi4.driver.driver:526] Return energy(): -613.9655820473828
+2024-11-16:05:56:49,626 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/FAXUIYJKGGUCBO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:05:56:49,638 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=781.8400233150854
+2024-11-16:05:58:56,329 INFO     [psi4.driver.driver:526] Return energy(): -613.9655827367433
+2024-11-16:06:07:21,321 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/FAXUIYJKGGUCBO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:06:07:21,329 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=800.6322429047067
+2024-11-16:06:08:59,827 INFO     [psi4.driver.driver:526] Return energy(): -613.9606248195477
+2024-11-16:06:17:57,478 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/FODUVZQSLRHUMC-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:06:17:57,486 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=805.8515736186641
+2024-11-16:06:19:57,190 INFO     [psi4.driver.driver:526] Return energy(): -613.9587405371847
+2024-11-16:06:24:17,68 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/FODUVZQSLRHUMC-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:06:24:17,78 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=778.7168017695782
+2024-11-16:06:25:55,881 INFO     [psi4.driver.driver:526] Return energy(): -613.9702061496322
+2024-11-16:06:33:36,780 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/IQZLUWLMQNGTIW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:06:33:36,787 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=779.6565153169469
+2024-11-16:06:34:48,308 INFO     [psi4.driver.driver:526] Return energy(): -613.96644526386
+2024-11-16:06:41:16,846 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/IQZLUWLMQNGTIW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:06:41:16,854 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=777.4476670107509
+2024-11-16:06:42:56,766 INFO     [psi4.driver.driver:526] Return energy(): -592.6707655285909
+2024-11-16:06:49:23,583 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GCSHUYKULREZSJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:06:49:23,591 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=777.4476826428395
+2024-11-16:06:50:51,600 INFO     [psi4.driver.driver:526] Return energy(): -592.6707649287205
+2024-11-16:06:57:01,345 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GCSHUYKULREZSJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:06:57:01,353 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=776.0958945348389
+2024-11-16:06:59:02,452 INFO     [psi4.driver.driver:526] Return energy(): -592.6698907939594
+2024-11-16:07:05:14,520 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/SKFLCXNDKRUHTA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:07:05:14,533 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=776.0958562465925
+2024-11-16:07:07:35,64 INFO     [psi4.driver.driver:526] Return energy(): -592.6698905791268
+2024-11-16:07:13:06,278 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/SKFLCXNDKRUHTA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:07:13:06,286 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=777.0262476965694
+2024-11-16:07:15:06,404 INFO     [psi4.driver.driver:526] Return energy(): -592.6711660748213
+2024-11-16:07:21:13,989 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RYMBAPVTUHZCNF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:07:21:14,3 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=776.6579070773441
+2024-11-16:07:23:27,999 INFO     [psi4.driver.driver:526] Return energy(): -592.6704138072857
+2024-11-16:07:29:37,494 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RYMBAPVTUHZCNF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:07:29:37,503 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=776.6579194455021
+2024-11-16:07:31:20,425 INFO     [psi4.driver.driver:526] Return energy(): -592.6704142388007
+2024-11-16:07:36:51,608 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RYMBAPVTUHZCNF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:07:36:51,617 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=777.0262476965694
+2024-11-16:07:39:16,490 INFO     [psi4.driver.driver:526] Return energy(): -592.6711660103359
+2024-11-16:07:43:05,920 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RYMBAPVTUHZCNF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:07:43:05,928 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=722.6324898948782
+2024-11-16:07:45:20,230 INFO     [psi4.driver.driver:526] Return energy(): -959.0423675153947
+2024-11-16:07:50:57,25 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MCRINSAETDOKDE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:07:50:57,38 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=734.9824956904853
+2024-11-16:07:52:03,336 INFO     [psi4.driver.driver:526] Return energy(): -959.0436158683316
+2024-11-16:07:57:40,831 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MCRINSAETDOKDE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:07:57:40,840 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=734.9824957733011
+2024-11-16:07:59:27,523 INFO     [psi4.driver.driver:526] Return energy(): -959.043615725094
+2024-11-16:08:04:50,165 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MCRINSAETDOKDE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:08:04:50,177 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=735.6891543119792
+2024-11-16:08:07:04,196 INFO     [psi4.driver.driver:526] Return energy(): -959.0435953711996
+2024-11-16:08:12:27,21 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MCRINSAETDOKDE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:08:12:27,29 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=735.6891543119791
+2024-11-16:08:14:14,832 INFO     [psi4.driver.driver:526] Return energy(): -959.0435956915977
+2024-11-16:08:23:00,402 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MCRINSAETDOKDE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:08:23:00,415 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=795.401642259913
+2024-11-16:08:25:27,482 INFO     [psi4.driver.driver:526] Return energy(): -880.0814074540688
+2024-11-16:08:38:57,567 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RRRLNSBRKAMGPF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:08:38:57,575 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=793.2610834621534
+2024-11-16:08:41:01,644 INFO     [psi4.driver.driver:526] Return energy(): -880.0837833198456
+2024-11-16:08:49:43,51 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RRRLNSBRKAMGPF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:08:49:43,59 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=795.4016400178504
+2024-11-16:08:52:46,232 INFO     [psi4.driver.driver:526] Return energy(): -880.0814073398483
+2024-11-16:09:06:31,333 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RRRLNSBRKAMGPF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:09:06:31,346 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=793.2612405102773
+2024-11-16:09:08:54,13 INFO     [psi4.driver.driver:526] Return energy(): -880.0837833012839
+2024-11-16:09:20:02,893 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RRRLNSBRKAMGPF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:09:20:02,907 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=793.4248740445787
+2024-11-16:09:22:45,828 INFO     [psi4.driver.driver:526] Return energy(): -880.0834856969363
+2024-11-16:09:30:50,163 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/RRRLNSBRKAMGPF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:09:30:50,348 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=815.4565091802809
+2024-11-16:09:32:25,46 INFO     [psi4.driver.driver:526] Return energy(): -579.0476301893966
+2024-11-16:09:39:11,980 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VCDPHYIZVFJQCD-ZRDIBKRKSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:09:39:11,993 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=780.9826390585949
+2024-11-16:09:41:02,570 INFO     [psi4.driver.driver:526] Return energy(): -578.9960653847033
+2024-11-16:09:45:38,575 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QXGIWMOPVOXYCX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:09:45:38,584 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=731.3175696013947
+2024-11-16:09:46:40,603 INFO     [psi4.driver.driver:526] Return energy(): -1304.1067690996308
+2024-11-16:09:50:57,754 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CERJZAHSUZVMCH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:09:50:57,762 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=731.3175696013946
+2024-11-16:09:52:45,644 INFO     [psi4.driver.driver:526] Return energy(): -1304.1067687494585
+2024-11-16:09:56:14,672 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CERJZAHSUZVMCH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:09:56:14,681 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=740.248942522724
+2024-11-16:09:58:07,200 INFO     [psi4.driver.driver:526] Return energy(): -1304.1089176540827
+2024-11-16:10:03:03,998 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CERJZAHSUZVMCH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:10:03:04,12 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=725.6611209731091
+2024-11-16:10:04:12,883 INFO     [psi4.driver.driver:526] Return energy(): -1304.1165443376385
+2024-11-16:10:09:10,703 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XMCRWEBERCXJCH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:10:09:10,711 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=725.6612035544229
+2024-11-16:10:10:29,490 INFO     [psi4.driver.driver:526] Return energy(): -1304.116544974825
+2024-11-16:10:15:24,417 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XMCRWEBERCXJCH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:10:15:24,426 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=682.2672259508272
+2024-11-16:10:16:29,196 INFO     [psi4.driver.driver:526] Return energy(): -2921.6161443561905
+2024-11-16:10:21:46,571 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ZIAUNOWNSIKDPU-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:10:21:46,585 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=786.2404907905021
+2024-11-16:10:23:22,564 INFO     [psi4.driver.driver:526] Return energy(): -722.0079637789303
+2024-11-16:10:29:38,245 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ABXGMGUHGLQMAW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:10:29:38,253 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=785.6254645961917
+2024-11-16:10:30:58,343 INFO     [psi4.driver.driver:526] Return energy(): -722.0074858269238
+2024-11-16:10:38:30,457 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ABXGMGUHGLQMAW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:10:38:30,466 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=820.983880819787
+2024-11-16:10:39:27,264 INFO     [psi4.driver.driver:526] Return energy(): -721.996311507021
+2024-11-16:10:47:48,270 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/FYDUUODXZQITBF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:10:47:48,278 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=820.5965085568201
+2024-11-16:10:49:27,236 INFO     [psi4.driver.driver:526] Return energy(): -721.998044730796
+2024-11-16:10:57:48,436 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/FYDUUODXZQITBF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:10:57:48,446 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=820.5965010509594
+2024-11-16:10:59:52,957 INFO     [psi4.driver.driver:526] Return energy(): -721.9980444501987
+2024-11-16:11:05:35,867 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/FYDUUODXZQITBF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:11:05:35,876 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=777.1185542028334
+2024-11-16:11:06:36,861 INFO     [psi4.driver.driver:526] Return energy(): -722.0074383432669
+2024-11-16:11:12:59,921 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/HHAISVSEJFEWBZ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:11:12:59,930 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=867.7971247718663
+2024-11-16:11:15:44,158 INFO     [psi4.driver.driver:526] Return energy(): -580.2796223026623
+2024-11-16:11:22:55,685 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BMFYCFSWWDXEPB-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:11:22:55,694 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=854.8278673031771
+2024-11-16:11:25:18,907 INFO     [psi4.driver.driver:526] Return energy(): -580.2817606978629
+2024-11-16:11:31:48,456 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BMFYCFSWWDXEPB-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:11:31:48,468 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=867.7971218437266
+2024-11-16:11:33:46,14 INFO     [psi4.driver.driver:526] Return energy(): -580.2796217492896
+2024-11-16:11:40:58,456 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BMFYCFSWWDXEPB-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:11:40:58,465 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=854.8278371921398
+2024-11-16:11:42:45,293 INFO     [psi4.driver.driver:526] Return energy(): -580.2817598427037
+2024-11-16:11:48:48,788 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BMFYCFSWWDXEPB-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:11:48:48,802 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=634.7017459757001
+2024-11-16:11:49:42,864 INFO     [psi4.driver.driver:526] Return energy(): -3064.5473224215166
+2024-11-16:11:55:12,578 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ONZQYZKCUHFORE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:11:55:12,587 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=634.7017459757
+2024-11-16:11:55:57,430 INFO     [psi4.driver.driver:526] Return energy(): -3064.547322367109
+2024-11-16:11:57:59,915 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ONZQYZKCUHFORE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:11:57:59,923 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=606.3125020075511
+2024-11-16:11:58:52,408 INFO     [psi4.driver.driver:526] Return energy(): -3064.548207297841
+2024-11-16:12:10:17,294 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ONZQYZKCUHFORE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:12:10:17,307 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=847.5756635683558
+2024-11-16:12:13:09,896 INFO     [psi4.driver.driver:526] Return energy(): -581.4848701944472
+2024-11-16:12:24:50,66 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ZGTHHNNORWULAE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:12:24:50,239 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=847.5756015303878
+2024-11-16:12:27:30,678 INFO     [psi4.driver.driver:526] Return energy(): -581.4848701736752
+2024-11-16:12:37:00,755 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ZGTHHNNORWULAE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:12:37:00,929 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=871.120808805973
+2024-11-16:12:39:24,128 INFO     [psi4.driver.driver:526] Return energy(): -581.4853539633405
+2024-11-16:12:50:32,614 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ZGTHHNNORWULAE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:12:50:32,624 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=830.7370618628502
+2024-11-16:12:53:28,148 INFO     [psi4.driver.driver:526] Return energy(): -581.484912693401
+2024-11-16:13:02:30,308 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ZGTHHNNORWULAE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:13:02:30,319 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=871.1208065326038
+2024-11-16:13:04:50,60 INFO     [psi4.driver.driver:526] Return energy(): -581.4853538594992
+2024-11-16:13:28:59,150 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ZGTHHNNORWULAE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:13:28:59,226 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=864.9185659865319
+2024-11-16:13:30:58,14 INFO     [psi4.driver.driver:526] Return energy(): -632.2395193247974
+2024-11-16:13:40:22,597 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WILPNXBAEMGDCS-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:13:40:22,606 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=848.8527270111749
+2024-11-16:13:42:35,439 INFO     [psi4.driver.driver:526] Return energy(): -632.2394781892806
+2024-11-16:13:51:54,589 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WILPNXBAEMGDCS-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:13:51:54,603 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=848.852744870446
+2024-11-16:13:54:21,367 INFO     [psi4.driver.driver:526] Return energy(): -632.239477558743
+2024-11-16:14:05:44,791 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WILPNXBAEMGDCS-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:14:05:44,804 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=876.810263624904
+2024-11-16:14:07:34,70 INFO     [psi4.driver.driver:526] Return energy(): -652.1094114155303
+2024-11-16:14:17:19,443 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PJVVSYKDAYJZCV-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:14:17:19,451 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=880.4579980752617
+2024-11-16:14:19:41,92 INFO     [psi4.driver.driver:526] Return energy(): -652.1093012918277
+2024-11-16:14:31:22,572 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PJVVSYKDAYJZCV-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:14:31:22,645 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=874.8485187633254
+2024-11-16:14:33:54,243 INFO     [psi4.driver.driver:526] Return energy(): -652.1114432924019
+2024-11-16:14:43:38,844 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PJVVSYKDAYJZCV-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:14:43:38,853 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=880.4579980752617
+2024-11-16:14:46:17,466 INFO     [psi4.driver.driver:526] Return energy(): -652.1093008410817
+2024-11-16:14:57:47,653 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PJVVSYKDAYJZCV-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:14:57:47,711 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=874.8485517802584
+2024-11-16:14:59:08,613 INFO     [psi4.driver.driver:526] Return energy(): -652.1114439809647
+2024-11-16:15:06:46,15 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PJVVSYKDAYJZCV-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:15:06:46,23 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=835.599593650326
+2024-11-16:15:08:06,119 INFO     [psi4.driver.driver:526] Return energy(): -652.1169281447432
+2024-11-16:15:12:58,641 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XVRCVKWYKYJEIG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:15:12:58,649 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=811.7511916403206
+2024-11-16:15:15:32,535 INFO     [psi4.driver.driver:526] Return energy(): -652.1165268378211
+2024-11-16:15:26:58,509 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XVRCVKWYKYJEIG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:15:26:58,547 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=835.5992391092187
+2024-11-16:15:28:47,69 INFO     [psi4.driver.driver:526] Return energy(): -652.1169280999875
+2024-11-16:15:40:43,279 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XVRCVKWYKYJEIG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:15:40:43,347 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=835.5992151902188
+2024-11-16:15:43:30,825 INFO     [psi4.driver.driver:526] Return energy(): -652.1169283770748
+2024-11-16:15:50:57,651 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XVRCVKWYKYJEIG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:15:50:57,660 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=835.5995936503258
+2024-11-16:15:52:36,221 INFO     [psi4.driver.driver:526] Return energy(): -652.1169280906963
+2024-11-16:16:03:15,557 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XVRCVKWYKYJEIG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:16:03:15,567 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=908.1696466389499
+2024-11-16:16:05:26,223 INFO     [psi4.driver.driver:526] Return energy(): -582.6679190736419
+2024-11-16:16:15:00,723 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PSQYTAPXSHCGMF-BQYQJAHWSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:16:15:00,736 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=908.9441847276571
+2024-11-16:16:16:54,97 INFO     [psi4.driver.driver:526] Return energy(): -582.6681121682363
+2024-11-16:16:27:09,622 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PSQYTAPXSHCGMF-BQYQJAHWSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:16:27:09,632 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=908.1696503452673
+2024-11-16:16:29:09,42 INFO     [psi4.driver.driver:526] Return energy(): -582.6679189226641
+2024-11-16:16:38:35,989 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PSQYTAPXSHCGMF-BQYQJAHWSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:16:38:35,999 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=908.9441640778647
+2024-11-16:16:40:59,147 INFO     [psi4.driver.driver:526] Return energy(): -582.6681115540249
+2024-11-16:17:44:02,807 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PSQYTAPXSHCGMF-BQYQJAHWSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:17:44:02,895 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=881.0057009375953
+2024-11-16:17:46:02,774 INFO     [psi4.driver.driver:526] Return energy(): -582.6408613652268
+2024-11-16:17:55:39,280 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MSRORZBOBVAASL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:17:55:39,289 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=866.4551329270208
+2024-11-16:17:57:59,510 INFO     [psi4.driver.driver:526] Return energy(): -582.6407580629124
+2024-11-16:18:26:01,564 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MSRORZBOBVAASL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:18:26:01,645 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=881.0057126656196
+2024-11-16:18:28:43,199 INFO     [psi4.driver.driver:526] Return energy(): -582.6408606545264
+2024-11-16:18:41:32,92 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MSRORZBOBVAASL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:18:41:32,101 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=882.3691336037572
+2024-11-16:18:43:51,166 INFO     [psi4.driver.driver:526] Return energy(): -653.2817775414842
+2024-11-16:18:51:37,564 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DKVCHMQHUMLKPO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:18:51:37,573 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=886.2187688384791
+2024-11-16:18:53:46,519 INFO     [psi4.driver.driver:526] Return energy(): -653.2834724698723
+2024-11-16:19:01:44,381 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DKVCHMQHUMLKPO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:19:01:44,396 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=886.2188690454639
+2024-11-16:19:04:08,595 INFO     [psi4.driver.driver:526] Return energy(): -653.2834722374816
+2024-11-16:19:12:22,875 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DKVCHMQHUMLKPO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:19:12:22,884 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=882.3691006704096
+2024-11-16:19:14:46,422 INFO     [psi4.driver.driver:526] Return energy(): -653.2817789132027
+2024-11-16:19:23:48,655 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DKVCHMQHUMLKPO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:19:23:48,669 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=827.6236753547469
+2024-11-16:19:26:32,689 INFO     [psi4.driver.driver:526] Return energy(): -583.8932463466416
+2024-11-16:19:33:57,836 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WWHQKPBWGGRGPU-FMIVXFBMSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:19:33:57,844 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=827.6236753547469
+2024-11-16:19:37:13,274 INFO     [psi4.driver.driver:526] Return energy(): -583.893246524595
+2024-11-16:19:45:56,685 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WWHQKPBWGGRGPU-FMIVXFBMSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:19:45:56,694 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=853.310686182185
+2024-11-16:19:49:04,379 INFO     [psi4.driver.driver:526] Return energy(): -583.8937789328187
+2024-11-16:19:56:29,256 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WWHQKPBWGGRGPU-FMIVXFBMSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:19:56:29,265 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=876.3757296556904
+2024-11-16:19:59:02,676 INFO     [psi4.driver.driver:526] Return energy(): -583.8936193312755
+2024-11-16:20:07:46,925 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WWHQKPBWGGRGPU-FMIVXFBMSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:20:07:46,933 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=853.3106882701748
+2024-11-16:20:11:23,149 INFO     [psi4.driver.driver:526] Return energy(): -583.8937791242005
+2024-11-16:20:22:16,401 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WWHQKPBWGGRGPU-FMIVXFBMSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:20:22:16,419 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=868.2729247040877
+2024-11-16:20:24:45,111 INFO     [psi4.driver.driver:526] Return energy(): -615.9551834552599
+2024-11-16:20:36:00,197 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WXPWZZHELZEVPO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:20:36:00,414 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=868.2729729513131
+2024-11-16:20:38:40,196 INFO     [psi4.driver.driver:526] Return energy(): -615.9551836512613
+2024-11-16:20:49:28,150 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WXPWZZHELZEVPO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:20:49:28,164 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=855.0905941015454
+2024-11-16:20:51:44,877 INFO     [psi4.driver.driver:526] Return energy(): -615.9498907714799
+2024-11-16:20:59:13,529 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/OTKCEEWUXHVZQI-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:20:59:13,538 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=876.2973463621765
+2024-11-16:21:00:49,135 INFO     [psi4.driver.driver:526] Return energy(): -615.9514942993346
+2024-11-16:21:08:21,374 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/OTKCEEWUXHVZQI-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:21:08:21,382 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=876.2975387422352
+2024-11-16:21:10:52,956 INFO     [psi4.driver.driver:526] Return energy(): -615.9514941540165
+2024-11-16:21:17:50,300 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/OTKCEEWUXHVZQI-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:21:17:50,308 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=887.2553591258959
+2024-11-16:21:19:17,114 INFO     [psi4.driver.driver:526] Return energy(): -615.9529869098444
+2024-11-16:21:26:10,587 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CKGKXGQVRVAKEA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:21:26:10,600 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=887.2553591258959
+2024-11-16:21:27:47,760 INFO     [psi4.driver.driver:526] Return energy(): -615.9529866762213
+2024-11-16:21:36:02,505 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CKGKXGQVRVAKEA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:21:36:02,515 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=893.9312594874305
+2024-11-16:21:37:49,979 INFO     [psi4.driver.driver:526] Return energy(): -615.9523466752929
+2024-11-16:21:45:51,467 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CKGKXGQVRVAKEA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:21:45:51,476 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=893.931119219313
+2024-11-16:21:47:54,191 INFO     [psi4.driver.driver:526] Return energy(): -615.9523467636436
+2024-11-16:21:54:27,820 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CKGKXGQVRVAKEA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:21:54:27,829 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=854.6697516021701
+2024-11-16:21:56:56,306 INFO     [psi4.driver.driver:526] Return energy(): -615.9588594121899
+2024-11-16:22:03:27,669 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QCZZSANNLWPGEA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:22:03:27,682 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=854.6697509245798
+2024-11-16:22:06:10,702 INFO     [psi4.driver.driver:526] Return energy(): -615.9588601767219
+2024-11-16:22:13:39,78 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QCZZSANNLWPGEA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:22:13:39,87 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=845.0661785849666
+2024-11-16:22:15:33,516 INFO     [psi4.driver.driver:526] Return energy(): -726.8407709714335
+2024-11-16:22:19:39,40 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NDQOKFMZSIKVBG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:22:19:39,53 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=805.4347797211432
+2024-11-16:22:21:31,503 INFO     [psi4.driver.driver:526] Return energy(): -726.8424779294556
+2024-11-16:22:27:51,90 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NDQOKFMZSIKVBG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:22:27:51,99 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=821.9140396801315
+2024-11-16:22:29:54,193 INFO     [psi4.driver.driver:526] Return energy(): -726.8420935093701
+2024-11-16:22:35:59,207 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NDQOKFMZSIKVBG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:22:35:59,216 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=845.0661706260357
+2024-11-16:22:37:25,696 INFO     [psi4.driver.driver:526] Return energy(): -726.8407711159
+2024-11-16:22:43:20,143 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NDQOKFMZSIKVBG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:22:43:20,157 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=821.9138174883788
+2024-11-16:22:45:06,726 INFO     [psi4.driver.driver:526] Return energy(): -726.8420933393553
+2024-11-16:22:57:08,218 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NDQOKFMZSIKVBG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:22:57:08,227 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=872.3181586821686
+2024-11-16:22:59:14,262 INFO     [psi4.driver.driver:526] Return energy(): -631.991608308199
+2024-11-16:23:11:13,903 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CXDYOXSPZUWEQX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:23:11:13,913 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=872.3181678435026
+2024-11-16:23:13:34,930 INFO     [psi4.driver.driver:526] Return energy(): -631.9916082835576
+2024-11-16:23:24:46,406 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CXDYOXSPZUWEQX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:23:24:46,421 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=871.8914269384859
+2024-11-16:23:26:48,385 INFO     [psi4.driver.driver:526] Return energy(): -631.990783344585
+2024-11-16:23:37:55,982 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CXDYOXSPZUWEQX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:23:37:55,991 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=871.8914277371055
+2024-11-16:23:39:49,981 INFO     [psi4.driver.driver:526] Return energy(): -631.9907825583945
+2024-11-16:23:56:33,460 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CXDYOXSPZUWEQX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-16:23:56:33,476 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=872.4465979233969
+2024-11-16:23:58:38,632 INFO     [psi4.driver.driver:526] Return energy(): -631.9911250755799
+2024-11-17:00:49:19,562 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BHDAKOZHMSQCFH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:00:49:19,573 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=871.2132028888243
+2024-11-17:00:51:00,414 INFO     [psi4.driver.driver:526] Return energy(): -631.9895438175082
+2024-11-17:00:58:09,56 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BHDAKOZHMSQCFH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:00:58:09,66 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=891.2587961707811
+2024-11-17:00:59:58,334 INFO     [psi4.driver.driver:526] Return energy(): -631.989206762455
+2024-11-17:01:07:18,224 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/YIPODLIDWSBPJA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:01:07:18,235 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=890.8089949872934
+2024-11-17:01:09:07,253 INFO     [psi4.driver.driver:526] Return energy(): -631.9884702047069
+2024-11-17:01:16:27,318 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/YIPODLIDWSBPJA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:01:16:27,327 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=890.809011721725
+2024-11-17:01:18:44,312 INFO     [psi4.driver.driver:526] Return energy(): -631.9884708434672
+2024-11-17:01:26:00,930 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/YIPODLIDWSBPJA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:01:26:00,939 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=891.2587767940755
+2024-11-17:01:27:52,587 INFO     [psi4.driver.driver:526] Return energy(): -631.9892064840476
+2024-11-17:01:37:11,827 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/YIPODLIDWSBPJA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:01:37:11,838 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=898.4196795713145
+2024-11-17:01:39:29,804 INFO     [psi4.driver.driver:526] Return energy(): -631.9884318202248
+2024-11-17:01:47:30,341 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/YIPODLIDWSBPJA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:01:47:30,352 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=892.455276751433
+2024-11-17:01:49:09,19 INFO     [psi4.driver.driver:526] Return energy(): -631.9882909811532
+2024-11-17:01:57:06,853 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GWXTVPWMINBKEI-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:01:57:06,862 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=899.8578916142365
+2024-11-17:01:58:56,993 INFO     [psi4.driver.driver:526] Return energy(): -631.9879265621798
+2024-11-17:02:06:56,791 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GWXTVPWMINBKEI-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:02:06:56,800 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=899.8578074746105
+2024-11-17:02:09:45,179 INFO     [psi4.driver.driver:526] Return energy(): -631.9879267683359
+2024-11-17:02:16:58,779 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GWXTVPWMINBKEI-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:02:16:58,788 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=892.4552416815404
+2024-11-17:02:19:17,78 INFO     [psi4.driver.driver:526] Return energy(): -631.9882919117122
+2024-11-17:02:23:35,835 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GWXTVPWMINBKEI-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:02:23:35,844 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=704.2401874487248
+2024-11-17:02:25:04,28 INFO     [psi4.driver.driver:526] Return energy(): -2958.5120265979117
+2024-11-17:02:29:09,650 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LIGACIXOYTUXAW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:02:29:09,659 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=704.240097543081
+2024-11-17:02:30:39,958 INFO     [psi4.driver.driver:526] Return energy(): -2958.512026801729
+2024-11-17:02:34:38,131 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LIGACIXOYTUXAW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:02:34:38,139 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=682.1198566714421
+2024-11-17:02:35:28,64 INFO     [psi4.driver.driver:526] Return energy(): -2958.510272665358
+2024-11-17:02:38:17,308 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LIGACIXOYTUXAW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:02:38:17,316 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=684.8728118734946
+2024-11-17:02:39:51,843 INFO     [psi4.driver.driver:526] Return energy(): -2958.517628440694
+2024-11-17:02:45:55,966 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/WYECURVXVYPVAT-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:02:45:55,975 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=731.5874732411658
+2024-11-17:02:47:12,5 INFO     [psi4.driver.driver:526] Return energy(): -2958.508505972811
+2024-11-17:02:53:13,533 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PIMNFNXBTGPCIL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:02:53:13,542 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=731.5874419620935
+2024-11-17:02:54:19,824 INFO     [psi4.driver.driver:526] Return energy(): -2958.5085068569456
+2024-11-17:02:57:20,816 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PIMNFNXBTGPCIL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:02:57:20,825 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=694.2501971191618
+2024-11-17:02:58:27,298 INFO     [psi4.driver.driver:526] Return energy(): -2958.5171657651417
+2024-11-17:03:01:16,899 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/JYAQYXOVOHJRCS-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:03:01:16,908 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=693.6636806598628
+2024-11-17:03:02:19,321 INFO     [psi4.driver.driver:526] Return energy(): -2958.516969229937
+2024-11-17:03:07:51,113 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/JYAQYXOVOHJRCS-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:03:07:51,122 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=791.175390978251
+2024-11-17:03:09:02,420 INFO     [psi4.driver.driver:526] Return energy(): -758.8161427130863
+2024-11-17:03:19:54,208 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LISOVATZGSPQOC-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:03:19:54,216 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=935.0402996816453
+2024-11-17:03:23:50,822 INFO     [psi4.driver.driver:526] Return energy(): -586.3339734081358
+2024-11-17:03:34:10,528 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BTJCLODZUWAGCT-IJLUTSLNSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:03:34:10,537 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=941.603409936932
+2024-11-17:03:38:04,107 INFO     [psi4.driver.driver:526] Return energy(): -586.33392174362
+2024-11-17:03:49:07,437 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BTJCLODZUWAGCT-IJLUTSLNSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:03:49:07,447 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=956.5416225358719
+2024-11-17:03:52:43,935 INFO     [psi4.driver.driver:526] Return energy(): -586.3342257783257
+2024-11-17:04:03:45,896 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BTJCLODZUWAGCT-IJLUTSLNSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:04:03:45,905 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=945.2039926540798
+2024-11-17:04:06:31,111 INFO     [psi4.driver.driver:526] Return energy(): -586.3340490318634
+2024-11-17:04:16:55,927 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BTJCLODZUWAGCT-IJLUTSLNSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:04:16:55,943 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=946.499110668815
+2024-11-17:04:19:57,699 INFO     [psi4.driver.driver:526] Return energy(): -586.3341416122807
+2024-11-17:04:25:32,574 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BTJCLODZUWAGCT-IJLUTSLNSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:04:25:32,583 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=806.5433902522711
+2024-11-17:04:27:27,770 INFO     [psi4.driver.driver:526] Return energy(): -1022.4036720116568
+2024-11-17:04:32:19,753 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/HXAOUYGZEOZTJO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:04:32:19,768 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=803.6785594908785
+2024-11-17:04:34:25,229 INFO     [psi4.driver.driver:526] Return energy(): -1022.4026071018674
+2024-11-17:04:39:52,130 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/HXAOUYGZEOZTJO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:04:39:52,140 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=819.9447063171328
+2024-11-17:04:42:48,720 INFO     [psi4.driver.driver:526] Return energy(): -1022.4045414104547
+2024-11-17:04:48:15,607 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/HXAOUYGZEOZTJO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:04:48:15,617 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=819.944704282645
+2024-11-17:04:49:49,387 INFO     [psi4.driver.driver:526] Return energy(): -1022.4045413482439
+2024-11-17:04:55:05,721 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/HXAOUYGZEOZTJO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:04:55:05,730 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=803.6787406866033
+2024-11-17:04:56:17,145 INFO     [psi4.driver.driver:526] Return energy(): -1022.4026070732197
+2024-11-17:05:02:50,108 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/HXAOUYGZEOZTJO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:05:02:50,122 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=898.5871633282748
+2024-11-17:05:05:10,93 INFO     [psi4.driver.driver:526] Return energy(): -675.8870160522499
+2024-11-17:05:11:45,47 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DWFDQVMFSLLMPE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:05:11:45,57 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=898.587160921302
+2024-11-17:05:14:00,505 INFO     [psi4.driver.driver:526] Return energy(): -675.8870165270611
+2024-11-17:05:19:09,592 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DWFDQVMFSLLMPE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:05:19:09,603 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=896.7567794753494
+2024-11-17:05:21:16,110 INFO     [psi4.driver.driver:526] Return energy(): -653.076962283603
+2024-11-17:05:26:10,950 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GGWCZBGAIGGTDA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:05:26:10,961 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=899.0558388205245
+2024-11-17:05:28:46,751 INFO     [psi4.driver.driver:526] Return energy(): -653.0801508918044
+2024-11-17:05:43:24,414 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GGWCZBGAIGGTDA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:05:43:24,423 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=966.0618514024502
+2024-11-17:05:46:16,667 INFO     [psi4.driver.driver:526] Return energy(): -619.5951674010036
+2024-11-17:05:58:23,521 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NHBBLULITNXPDY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:05:58:23,532 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=958.4282930703698
+2024-11-17:06:01:19,888 INFO     [psi4.driver.driver:526] Return energy(): -619.5971923347004
+2024-11-17:06:17:06,611 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NHBBLULITNXPDY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:06:17:06,621 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=966.061904344726
+2024-11-17:06:20:12,456 INFO     [psi4.driver.driver:526] Return energy(): -619.5951669763248
+2024-11-17:06:32:22,530 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NHBBLULITNXPDY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:06:32:22,539 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=958.4282593257992
+2024-11-17:06:34:30,866 INFO     [psi4.driver.driver:526] Return energy(): -619.5971923399342
+2024-11-17:06:48:33,574 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NHBBLULITNXPDY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:06:48:33,585 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=966.061805404993
+2024-11-17:06:50:42,115 INFO     [psi4.driver.driver:526] Return energy(): -619.5951670635789
+2024-11-17:07:01:21,930 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NHBBLULITNXPDY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:07:01:21,940 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=891.9543081838063
+2024-11-17:07:03:04,913 INFO     [psi4.driver.driver:526] Return energy(): -952.7756033056885
+2024-11-17:07:13:31,974 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LXZSCYZOMOPQEF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:07:13:31,984 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=891.9543107350158
+2024-11-17:07:15:46,864 INFO     [psi4.driver.driver:526] Return energy(): -952.7756034561678
+2024-11-17:07:20:04,288 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LXZSCYZOMOPQEF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:07:20:04,298 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=894.8271746506107
+2024-11-17:07:22:16,692 INFO     [psi4.driver.driver:526] Return energy(): -797.2140713439427
+2024-11-17:07:26:28,855 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NCJZVRPXSSYDBG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:07:26:28,865 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=893.9165680895364
+2024-11-17:07:27:56,754 INFO     [psi4.driver.driver:526] Return energy(): -797.2138952943586
+2024-11-17:07:40:04,114 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/NCJZVRPXSSYDBG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:07:40:04,124 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=930.3687494727345
+2024-11-17:07:42:54,305 INFO     [psi4.driver.driver:526] Return energy(): -691.4374860800792
+2024-11-17:07:50:18,174 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BRUOEHVDTAORQY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:07:50:18,183 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=930.3695884340241
+2024-11-17:07:53:06,227 INFO     [psi4.driver.driver:526] Return energy(): -691.4374855855767
+2024-11-17:07:58:18,990 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BRUOEHVDTAORQY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:07:58:19,0 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=903.2233092360841
+2024-11-17:07:59:52,943 INFO     [psi4.driver.driver:526] Return energy(): -691.4370448726975
+2024-11-17:08:13:12,991 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BRUOEHVDTAORQY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:08:13:13,0 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=930.3696823111416
+2024-11-17:08:14:57,963 INFO     [psi4.driver.driver:526] Return energy(): -691.4374861676234
+2024-11-17:08:22:21,714 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BRUOEHVDTAORQY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:08:22:21,730 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=930.3695884340241
+2024-11-17:08:24:05,590 INFO     [psi4.driver.driver:526] Return energy(): -691.437486121075
+2024-11-17:08:31:18,635 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BRUOEHVDTAORQY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:08:31:18,646 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=934.4909780290716
+2024-11-17:08:33:08,135 INFO     [psi4.driver.driver:526] Return energy(): -691.4438898295492
+2024-11-17:08:40:36,461 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DQQVADFLIZSTDK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:08:40:36,470 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=934.5632345290436
+2024-11-17:08:42:55,162 INFO     [psi4.driver.driver:526] Return energy(): -691.4436967082503
+2024-11-17:08:49:36,705 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DQQVADFLIZSTDK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:08:49:36,721 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=934.5636920710341
+2024-11-17:08:51:35,469 INFO     [psi4.driver.driver:526] Return energy(): -691.4436969309307
+2024-11-17:08:58:03,783 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DQQVADFLIZSTDK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:08:58:03,794 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=934.4910370285559
+2024-11-17:09:00:34,271 INFO     [psi4.driver.driver:526] Return energy(): -691.443890265917
+2024-11-17:09:12:55,33 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DQQVADFLIZSTDK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:09:12:55,48 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=931.7642555561088
+2024-11-17:09:15:23,621 INFO     [psi4.driver.driver:526] Return energy(): -691.4334403916954
+2024-11-17:09:23:48,939 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GRIWFUFDJOESIC-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:09:23:48,949 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=937.5274818388044
+2024-11-17:09:27:00,793 INFO     [psi4.driver.driver:526] Return energy(): -691.4337932984399
+2024-11-17:09:34:48,659 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GRIWFUFDJOESIC-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:09:34:48,670 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=931.7644637993102
+2024-11-17:09:37:02,315 INFO     [psi4.driver.driver:526] Return energy(): -691.4334410471727
+2024-11-17:09:44:49,578 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GRIWFUFDJOESIC-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:09:44:49,588 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=931.7644848140046
+2024-11-17:09:46:49,828 INFO     [psi4.driver.driver:526] Return energy(): -691.4334408770644
+2024-11-17:09:55:19,579 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GRIWFUFDJOESIC-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:09:55:19,595 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=937.5274818388043
+2024-11-17:09:57:33,427 INFO     [psi4.driver.driver:526] Return energy(): -691.4337933098179
+2024-11-17:10:01:32,93 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GRIWFUFDJOESIC-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:10:01:32,104 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=864.7551412295055
+2024-11-17:10:02:27,926 INFO     [psi4.driver.driver:526] Return energy(): -1142.2865991429132
+2024-11-17:10:11:39,503 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DYPQUENOGZXOGE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:10:11:39,513 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=976.9459630316138
+2024-11-17:10:13:55,643 INFO     [psi4.driver.driver:526] Return energy(): -727.3346848383784
+2024-11-17:10:24:59,58 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GCVAEUQDYWOLCF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:10:24:59,149 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=976.9462727621374
+2024-11-17:10:27:32,474 INFO     [psi4.driver.driver:526] Return energy(): -727.3346848978622
+2024-11-17:10:36:47,560 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GCVAEUQDYWOLCF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:10:36:47,571 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=976.6940587172691
+2024-11-17:10:39:35,593 INFO     [psi4.driver.driver:526] Return energy(): -727.336142768524
+2024-11-17:10:48:45,478 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GCVAEUQDYWOLCF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:10:48:45,489 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=976.6940677871995
+2024-11-17:10:50:06,38 INFO     [psi4.driver.driver:526] Return energy(): -727.3361422897943
+2024-11-17:10:58:34,725 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/GCVAEUQDYWOLCF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:10:58:34,741 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1001.9940939851265
+2024-11-17:11:00:21,309 INFO     [psi4.driver.driver:526] Return energy(): -692.6028022337299
+2024-11-17:11:08:56,865 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PIZHFBODNLEQBL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:11:08:56,875 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1001.9940849257979
+2024-11-17:11:11:08,990 INFO     [psi4.driver.driver:526] Return energy(): -692.6028019964849
+2024-11-17:11:21:22,632 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PIZHFBODNLEQBL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:11:21:22,650 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=998.1446933873476
+2024-11-17:11:24:21,393 INFO     [psi4.driver.driver:526] Return energy(): -692.6008634380544
+2024-11-17:11:34:34,455 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PIZHFBODNLEQBL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:11:34:34,465 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=998.1446668530431
+2024-11-17:11:37:28,209 INFO     [psi4.driver.driver:526] Return energy(): -692.6008633371723
+2024-11-17:11:48:52,361 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PIZHFBODNLEQBL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:11:48:52,371 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1017.0618212019461
+2024-11-17:11:50:59,287 INFO     [psi4.driver.driver:526] Return energy(): -728.4947375923141
+2024-11-17:12:02:52,95 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VUGQIIQFXCXZJU-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:12:02:52,196 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1017.0619524834808
+2024-11-17:12:05:11,598 INFO     [psi4.driver.driver:526] Return energy(): -728.4947389722554
+2024-11-17:12:16:19,868 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VUGQIIQFXCXZJU-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:12:16:19,878 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1017.0642486368178
+2024-11-17:12:18:48,180 INFO     [psi4.driver.driver:526] Return energy(): -728.4929881183012
+2024-11-17:12:26:38,576 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VUGQIIQFXCXZJU-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:12:26:38,594 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=964.9757240180439
+2024-11-17:12:28:36,787 INFO     [psi4.driver.driver:526] Return energy(): -655.2690598589226
+2024-11-17:12:36:30,936 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QGGZBXOADPVUPN-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:12:36:30,948 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=964.9757240180436
+2024-11-17:12:38:42,227 INFO     [psi4.driver.driver:526] Return energy(): -655.2690596336281
+2024-11-17:12:49:33,740 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QGGZBXOADPVUPN-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:12:49:33,753 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=964.9755326374257
+2024-11-17:12:51:28,97 INFO     [psi4.driver.driver:526] Return energy(): -655.2690600836418
+2024-11-17:12:56:29,929 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QGGZBXOADPVUPN-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:12:56:29,939 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=939.7932856814255
+2024-11-17:12:58:18,685 INFO     [psi4.driver.driver:526] Return energy(): -655.2695456171929
+2024-11-17:13:09:10,558 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QGGZBXOADPVUPN-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:13:09:10,574 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=964.9754875339917
+2024-11-17:13:11:16,860 INFO     [psi4.driver.driver:526] Return energy(): -655.2690605956449
+2024-11-17:13:22:22,550 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QGGZBXOADPVUPN-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:13:22:22,654 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=994.9832427955482
+2024-11-17:13:24:40,843 INFO     [psi4.driver.driver:526] Return energy(): -655.2726988509165
+2024-11-17:13:35:45,214 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PJCBRWRFLHBSNH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:13:35:45,224 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=994.9832427955484
+2024-11-17:13:38:39,741 INFO     [psi4.driver.driver:526] Return energy(): -655.27269945942
+2024-11-17:13:55:14,671 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PJCBRWRFLHBSNH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:13:55:14,682 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=997.9652656611222
+2024-11-17:13:56:57,277 INFO     [psi4.driver.driver:526] Return energy(): -655.2721040472683
+2024-11-17:14:15:42,795 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PJCBRWRFLHBSNH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:14:15:42,806 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=997.9653276353445
+2024-11-17:14:18:21,812 INFO     [psi4.driver.driver:526] Return energy(): -655.2721042271463
+2024-11-17:14:28:05,814 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PJCBRWRFLHBSNH-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:14:28:05,835 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=931.4517408388099
+2024-11-17:14:29:57,448 INFO     [psi4.driver.driver:526] Return energy(): -766.1570492869135
+2024-11-17:14:34:26,745 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/OQHGRUHRHLFMBX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:14:34:26,755 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=888.9855162508725
+2024-11-17:14:37:06,574 INFO     [psi4.driver.driver:526] Return energy(): -766.1586896432005
+2024-11-17:14:44:05,50 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/OQHGRUHRHLFMBX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:14:44:05,60 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=906.7573662506422
+2024-11-17:14:47:47,486 INFO     [psi4.driver.driver:526] Return energy(): -766.1584015977922
+2024-11-17:14:54:48,24 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/OQHGRUHRHLFMBX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:14:54:48,41 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=906.7573656878593
+2024-11-17:14:57:04,228 INFO     [psi4.driver.driver:526] Return energy(): -766.1584015985985
+2024-11-17:15:03:54,305 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/OQHGRUHRHLFMBX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:15:03:54,315 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=931.4517408388099
+2024-11-17:15:05:38,442 INFO     [psi4.driver.driver:526] Return energy(): -766.1570493647075
+2024-11-17:15:16:49,525 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/OQHGRUHRHLFMBX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:15:16:49,535 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1005.7152476680761
+2024-11-17:15:19:17,778 INFO     [psi4.driver.driver:526] Return energy(): -691.1719878798247
+2024-11-17:15:30:35,233 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/KPBCVVSDGJBODL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:15:30:35,244 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1005.7152321113581
+2024-11-17:15:33:45,69 INFO     [psi4.driver.driver:526] Return energy(): -691.1719873396435
+2024-11-17:15:44:29,630 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/KPBCVVSDGJBODL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:15:44:29,640 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1005.7152096494793
+2024-11-17:15:46:00,115 INFO     [psi4.driver.driver:526] Return energy(): -691.171987814827
+2024-11-17:15:56:50,654 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/KPBCVVSDGJBODL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:15:56:50,664 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1005.7152059246812
+2024-11-17:15:59:45,254 INFO     [psi4.driver.driver:526] Return energy(): -691.17198756622
+2024-11-17:16:07:20,118 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/KPBCVVSDGJBODL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:16:07:20,129 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=973.4095383390417
+2024-11-17:16:10:13,123 INFO     [psi4.driver.driver:526] Return energy(): -691.1711381895273
+2024-11-17:16:17:45,736 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/SWFHGTMLYIBPPA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:16:17:45,756 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=973.4095163277876
+2024-11-17:16:20:13,394 INFO     [psi4.driver.driver:526] Return energy(): -691.1711374454017
+2024-11-17:16:28:23,798 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/SWFHGTMLYIBPPA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:16:28:23,809 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1018.0259474569162
+2024-11-17:16:30:57,966 INFO     [psi4.driver.driver:526] Return energy(): -691.1666357541335
+2024-11-17:16:39:12,493 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CSUUDNFYSFENAE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:16:39:12,503 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1018.0259509501615
+2024-11-17:16:41:24,854 INFO     [psi4.driver.driver:526] Return energy(): -691.1666357311832
+2024-11-17:16:50:51,309 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CSUUDNFYSFENAE-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:16:50:51,320 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=956.4510099147634
+2024-11-17:16:53:47,781 INFO     [psi4.driver.driver:526] Return energy(): -656.4239349814673
+2024-11-17:17:01:33,12 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PFIKCDNZZJYSMK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:17:01:33,24 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=956.4512438842252
+2024-11-17:17:04:45,178 INFO     [psi4.driver.driver:526] Return energy(): -656.4239336058889
+2024-11-17:17:13:23,836 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PFIKCDNZZJYSMK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:17:13:23,846 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=970.4191456058197
+2024-11-17:17:15:14,279 INFO     [psi4.driver.driver:526] Return energy(): -656.4228771973225
+2024-11-17:17:23:46,911 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PFIKCDNZZJYSMK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:17:23:46,921 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=970.4190208919055
+2024-11-17:17:26:41,25 INFO     [psi4.driver.driver:526] Return energy(): -656.4228770566249
+2024-11-17:17:35:13,790 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PFIKCDNZZJYSMK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:17:35:13,810 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=970.4190251904621
+2024-11-17:17:37:18,507 INFO     [psi4.driver.driver:526] Return energy(): -656.422877166316
+2024-11-17:17:44:07,181 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PFIKCDNZZJYSMK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:17:44:07,192 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=977.2232805879197
+2024-11-17:17:46:43,624 INFO     [psi4.driver.driver:526] Return energy(): -707.2072224424414
+2024-11-17:17:53:36,921 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ZYZQOYSKLICWGX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:17:53:36,941 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=977.2233785158419
+2024-11-17:17:55:59,663 INFO     [psi4.driver.driver:526] Return energy(): -707.20722253941
+2024-11-17:18:18:38,922 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/ZYZQOYSKLICWGX-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:18:18:38,933 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=915.9106723473424
+2024-11-17:18:21:00,356 INFO     [psi4.driver.driver:526] Return energy(): -657.6262450825026
+2024-11-17:18:28:57,681 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BXYHYUVKQUDMJD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:18:28:57,691 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=915.9106607516097
+2024-11-17:18:33:06,550 INFO     [psi4.driver.driver:526] Return energy(): -657.6262457896911
+2024-11-17:18:41:42,88 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BXYHYUVKQUDMJD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:18:41:42,106 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=940.630749576962
+2024-11-17:18:45:16,51 INFO     [psi4.driver.driver:526] Return energy(): -657.6261912657807
+2024-11-17:18:51:56,546 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BXYHYUVKQUDMJD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:18:51:56,557 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=902.6440295106278
+2024-11-17:18:55:07,936 INFO     [psi4.driver.driver:526] Return energy(): -657.6260527997646
+2024-11-17:19:03:35,862 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BXYHYUVKQUDMJD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:19:03:35,879 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=940.630756580189
+2024-11-17:19:05:39,817 INFO     [psi4.driver.driver:526] Return energy(): -657.626191674095
+2024-11-17:19:12:00,386 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/BXYHYUVKQUDMJD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:19:12:00,397 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=993.5463686867726
+2024-11-17:19:13:53,113 INFO     [psi4.driver.driver:526] Return energy(): -1036.2414513676672
+2024-11-17:19:19:58,487 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VMHYWKBKHMYRNF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:19:19:58,502 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=993.5463686867726
+2024-11-17:19:21:35,120 INFO     [psi4.driver.driver:526] Return energy(): -1036.2414514551658
+2024-11-17:19:27:19,926 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VMHYWKBKHMYRNF-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:19:27:19,937 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=944.2479238260767
+2024-11-17:19:29:50,67 INFO     [psi4.driver.driver:526] Return energy(): -1036.245985421844
+2024-11-17:19:35:35,245 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UGVRJVHOJNYEHR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:19:35:35,260 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=944.2478957543836
+2024-11-17:19:37:26,836 INFO     [psi4.driver.driver:526] Return energy(): -1036.2459859091448
+2024-11-17:19:58:20,826 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UGVRJVHOJNYEHR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:19:58:20,837 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1058.2519207286266
+2024-11-17:20:00:55,591 INFO     [psi4.driver.driver:526] Return energy(): -658.9143668143533
+2024-11-17:20:13:32,550 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LFBKBXCVHMMYSM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:20:13:32,560 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1070.7458057032013
+2024-11-17:20:16:42,89 INFO     [psi4.driver.driver:526] Return energy(): -658.9135841852766
+2024-11-17:20:26:41,53 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LFBKBXCVHMMYSM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:20:26:41,65 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1095.4813744637072
+2024-11-17:20:30:53,178 INFO     [psi4.driver.driver:526] Return energy(): -658.9145583919645
+2024-11-17:20:40:48,909 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LFBKBXCVHMMYSM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:20:40:48,920 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1095.4813734496004
+2024-11-17:20:45:02,556 INFO     [psi4.driver.driver:526] Return energy(): -658.9145585594486
+2024-11-17:20:57:42,386 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LFBKBXCVHMMYSM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:20:57:42,399 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1070.7457643483153
+2024-11-17:21:00:19,351 INFO     [psi4.driver.driver:526] Return energy(): -658.9135845342488
+2024-11-17:21:06:15,135 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LFBKBXCVHMMYSM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:21:06:15,145 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=961.8091339208893
+2024-11-17:21:08:07,61 INFO     [psi4.driver.driver:526] Return energy(): -1052.281161737782
+2024-11-17:21:13:45,604 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MDGKXQYPOIIMHW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:21:13:45,615 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=953.3335592285822
+2024-11-17:21:16:03,330 INFO     [psi4.driver.driver:526] Return energy(): -1052.2812723409068
+2024-11-17:21:21:40,405 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MDGKXQYPOIIMHW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:21:21:40,415 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=953.3335592285822
+2024-11-17:21:24:09,32 INFO     [psi4.driver.driver:526] Return energy(): -1052.2812719395185
+2024-11-17:21:30:56,660 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MDGKXQYPOIIMHW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:21:30:56,672 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=961.3507399790892
+2024-11-17:21:32:51,833 INFO     [psi4.driver.driver:526] Return energy(): -1052.2805162823038
+2024-11-17:21:38:45,901 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MDGKXQYPOIIMHW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:21:38:45,913 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=961.3512486218334
+2024-11-17:21:41:22,514 INFO     [psi4.driver.driver:526] Return energy(): -1052.280516874492
+2024-11-17:21:48:32,839 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MDGKXQYPOIIMHW-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:21:48:32,860 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=948.0009008401072
+2024-11-17:21:50:44,14 INFO     [psi4.driver.driver:526] Return energy(): -1052.2822673088401
+2024-11-17:21:57:49,72 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/KHXSJSBQIWAIEG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:21:57:49,83 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=948.000895968088
+2024-11-17:21:59:12,546 INFO     [psi4.driver.driver:526] Return energy(): -1052.2822663963657
+2024-11-17:22:05:53,168 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/KHXSJSBQIWAIEG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:22:05:53,178 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=961.8425627161669
+2024-11-17:22:08:17,962 INFO     [psi4.driver.driver:526] Return energy(): -1052.2813479624065
+2024-11-17:22:14:43,664 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DTEIFMBOVCPJGY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:22:14:43,677 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=953.3446131313082
+2024-11-17:22:16:38,375 INFO     [psi4.driver.driver:526] Return energy(): -1052.2812906533459
+2024-11-17:22:23:17,189 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DTEIFMBOVCPJGY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:22:23:17,211 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=961.8425680802148
+2024-11-17:22:24:37,606 INFO     [psi4.driver.driver:526] Return energy(): -1052.2813476846566
+2024-11-17:22:32:13,738 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DTEIFMBOVCPJGY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:22:32:13,749 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=953.34498940983
+2024-11-17:22:34:21,222 INFO     [psi4.driver.driver:526] Return energy(): -1052.2812910541836
+2024-11-17:22:41:40,6 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DTEIFMBOVCPJGY-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:22:41:40,25 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=965.4996820066185
+2024-11-17:22:42:48,602 INFO     [psi4.driver.driver:526] Return energy(): -1418.6467219596373
+2024-11-17:22:50:02,236 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MLXBLQUBVDCARQ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:22:50:02,247 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=965.4996820066185
+2024-11-17:22:51:22,746 INFO     [psi4.driver.driver:526] Return energy(): -1418.6467215870432
+2024-11-17:23:01:27,114 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MLXBLQUBVDCARQ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:23:01:27,125 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1090.993756137428
+2024-11-17:23:03:56,511 INFO     [psi4.driver.driver:526] Return energy(): -730.7424564880074
+2024-11-17:23:14:30,456 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QTUYJWKFWYJIOM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:23:14:30,466 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1093.250111651241
+2024-11-17:23:17:41,710 INFO     [psi4.driver.driver:526] Return energy(): -730.7423463560216
+2024-11-17:23:28:07,758 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QTUYJWKFWYJIOM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:23:28:07,846 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1090.9944288809936
+2024-11-17:23:31:21,62 INFO     [psi4.driver.driver:526] Return energy(): -730.7424576192125
+2024-11-17:23:42:48,298 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QTUYJWKFWYJIOM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:23:42:48,309 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1069.6904976847886
+2024-11-17:23:45:14,973 INFO     [psi4.driver.driver:526] Return energy(): -730.7416861060278
+2024-11-17:23:56:44,417 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QTUYJWKFWYJIOM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-17:23:56:44,437 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1069.690543206634
+2024-11-17:23:59:55,571 INFO     [psi4.driver.driver:526] Return energy(): -730.7416862751566
+2024-11-18:00:09:09,837 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QTUYJWKFWYJIOM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:00:09:09,848 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1034.3141412696486
+2024-11-18:00:11:10,429 INFO     [psi4.driver.driver:526] Return energy(): -730.7543790441318
+2024-11-18:00:26:30,299 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XBYIXIAOQPIYHO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:00:26:30,343 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1029.965517676747
+2024-11-18:00:29:07,942 INFO     [psi4.driver.driver:526] Return energy(): -730.7539986547577
+2024-11-18:00:37:43,774 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XBYIXIAOQPIYHO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:00:37:43,785 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1034.3141462261242
+2024-11-18:00:40:32,367 INFO     [psi4.driver.driver:526] Return energy(): -730.7543784274214
+2024-11-18:00:49:53,35 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XBYIXIAOQPIYHO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:00:49:53,46 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1029.9650628990719
+2024-11-18:00:54:42,345 INFO     [psi4.driver.driver:526] Return energy(): -730.7539988582547
+2024-11-18:01:03:44,319 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XBYIXIAOQPIYHO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:01:03:44,340 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1029.9654586057713
+2024-11-18:01:06:44,448 INFO     [psi4.driver.driver:526] Return energy(): -730.753999320311
+2024-11-18:01:12:43,222 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XBYIXIAOQPIYHO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:01:12:43,233 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=971.6591026966701
+2024-11-18:01:14:11,803 INFO     [psi4.driver.driver:526] Return energy(): -1763.701767622213
+2024-11-18:01:20:16,535 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/OAMHTTBNEJBIKA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:01:20:16,557 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=971.6593790538859
+2024-11-18:01:21:43,360 INFO     [psi4.driver.driver:526] Return energy(): -1763.7017678127938
+2024-11-18:01:26:56,931 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/OAMHTTBNEJBIKA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:01:26:56,942 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=930.6471224649999
+2024-11-18:01:28:53,925 INFO     [psi4.driver.driver:526] Return energy(): -1763.7200784597949
+2024-11-18:01:37:52,979 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VYWPPRLJNVHPEU-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:01:37:52,990 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=906.4307971697086
+2024-11-18:01:39:27,623 INFO     [psi4.driver.driver:526] Return energy(): -1763.7181684736506
+2024-11-18:01:46:53,307 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VYWPPRLJNVHPEU-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:01:46:53,327 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=906.4303852225046
+2024-11-18:01:48:23,829 INFO     [psi4.driver.driver:526] Return energy(): -1763.7181680146002
+2024-11-18:01:53:37,146 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VYWPPRLJNVHPEU-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:01:53:37,157 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=930.6471316575202
+2024-11-18:01:55:45,142 INFO     [psi4.driver.driver:526] Return energy(): -1763.7200785156776
+2024-11-18:02:03:12,280 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VYWPPRLJNVHPEU-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:02:03:12,291 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=906.4304430835111
+2024-11-18:02:05:22,697 INFO     [psi4.driver.driver:526] Return energy(): -1763.7181690494135
+2024-11-18:02:36:21,803 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VYWPPRLJNVHPEU-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:02:36:21,814 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1035.0567817927222
+2024-11-18:02:40:50,351 INFO     [psi4.driver.driver:526] Return energy(): -662.4760199338127
+2024-11-18:02:59:43,507 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XVKCCRCIQKVMPK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:02:59:43,518 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1035.0569116258903
+2024-11-18:03:04:11,714 INFO     [psi4.driver.driver:526] Return energy(): -662.4760200916637
+2024-11-18:03:21:02,233 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XVKCCRCIQKVMPK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:03:21:02,244 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1035.05750917695
+2024-11-18:03:24:58,423 INFO     [psi4.driver.driver:526] Return energy(): -662.4760205872451
+2024-11-18:03:42:03,539 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XVKCCRCIQKVMPK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:03:42:03,550 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1035.0564149809506
+2024-11-18:03:45:25,702 INFO     [psi4.driver.driver:526] Return energy(): -662.4760206432769
+2024-11-18:03:59:37,810 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XVKCCRCIQKVMPK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:03:59:37,821 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1035.0563075447449
+2024-11-18:04:02:49,679 INFO     [psi4.driver.driver:526] Return energy(): -662.4760206468274
+2024-11-18:04:07:40,347 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/XVKCCRCIQKVMPK-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:04:07:40,358 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1058.109837611661
+2024-11-18:04:08:54,951 INFO     [psi4.driver.driver:526] Return energy(): -920.5006257215387
+2024-11-18:04:15:28,392 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VUBUXALTYMBEQO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:04:15:28,403 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1067.7208066269359
+2024-11-18:04:17:15,498 INFO     [psi4.driver.driver:526] Return energy(): -920.4993581142108
+2024-11-18:04:24:10,921 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VUBUXALTYMBEQO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:04:24:10,932 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1067.7208047154995
+2024-11-18:04:25:58,510 INFO     [psi4.driver.driver:526] Return energy(): -920.4993577748454
+2024-11-18:04:33:41,350 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VUBUXALTYMBEQO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:04:33:41,365 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1078.6533055686666
+2024-11-18:04:35:49,459 INFO     [psi4.driver.driver:526] Return energy(): -836.3064352107199
+2024-11-18:04:44:33,848 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VQCWOGKZDGCRES-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:04:44:33,862 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1063.7523565968188
+2024-11-18:04:46:48,388 INFO     [psi4.driver.driver:526] Return energy(): -836.3100038134178
+2024-11-18:04:53:47,471 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VQCWOGKZDGCRES-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:04:53:47,482 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1078.6532984062992
+2024-11-18:04:56:04,721 INFO     [psi4.driver.driver:526] Return energy(): -836.3064370273731
+2024-11-18:05:01:10,20 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/VQCWOGKZDGCRES-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:05:01:10,31 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1046.728926966525
+2024-11-18:05:03:04,748 INFO     [psi4.driver.driver:526] Return energy(): -836.3163672983899
+2024-11-18:05:08:05,435 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/JWQLBVFFLIHXHA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:05:08:05,446 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1041.0621579461488
+2024-11-18:05:09:25,184 INFO     [psi4.driver.driver:526] Return energy(): -836.3156022080908
+2024-11-18:05:22:54,755 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/JWQLBVFFLIHXHA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:05:22:54,766 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1104.8675077959488
+2024-11-18:05:26:46,548 INFO     [psi4.driver.driver:526] Return energy(): -694.5850885911947
+2024-11-18:05:40:38,891 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PFJFIFJKDPIALO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:05:40:38,902 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1051.886483460911
+2024-11-18:05:43:50,428 INFO     [psi4.driver.driver:526] Return energy(): -694.5846190561347
+2024-11-18:05:57:46,32 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PFJFIFJKDPIALO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:05:57:46,44 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1104.8605388851054
+2024-11-18:06:00:31,955 INFO     [psi4.driver.driver:526] Return energy(): -694.5850880342919
+2024-11-18:06:21:28,353 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PFJFIFJKDPIALO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:06:21:28,365 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1061.1523040387628
+2024-11-18:06:24:39,638 INFO     [psi4.driver.driver:526] Return energy(): -694.5841874222046
+2024-11-18:06:45:19,856 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PFJFIFJKDPIALO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:06:45:19,867 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1061.1522479969176
+2024-11-18:06:47:14,473 INFO     [psi4.driver.driver:526] Return energy(): -694.5841876804149
+2024-11-18:06:58:35,729 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/PFJFIFJKDPIALO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:06:58:35,741 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1074.2000425560616
+2024-11-18:07:00:44,960 INFO     [psi4.driver.driver:526] Return energy(): -922.8569295326726
+2024-11-18:07:10:13,34 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MKMFBYKRUQCCTG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:07:10:13,45 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1018.7532140698943
+2024-11-18:07:12:06,129 INFO     [psi4.driver.driver:526] Return energy(): -922.8554220087659
+2024-11-18:07:21:20,106 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MKMFBYKRUQCCTG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:07:21:20,117 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1041.3390845065608
+2024-11-18:07:23:33,405 INFO     [psi4.driver.driver:526] Return energy(): -922.8561448894005
+2024-11-18:07:31:34,666 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MKMFBYKRUQCCTG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:07:31:34,677 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1074.2000612391041
+2024-11-18:07:33:12,599 INFO     [psi4.driver.driver:526] Return energy(): -922.8569296827575
+2024-11-18:07:42:26,103 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MKMFBYKRUQCCTG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:07:42:26,115 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1041.3391027711934
+2024-11-18:07:44:34,694 INFO     [psi4.driver.driver:526] Return energy(): -922.8561448378794
+2024-11-18:07:50:36,426 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MKMFBYKRUQCCTG-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:07:50:36,438 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1029.8441364064126
+2024-11-18:07:53:06,116 INFO     [psi4.driver.driver:526] Return energy(): -1438.0960908246393
+2024-11-18:07:59:15,843 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UWSLJSQGWHYSDM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:07:59:15,854 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1022.82601892867
+2024-11-18:08:00:56,378 INFO     [psi4.driver.driver:526] Return energy(): -1438.0981609449736
+2024-11-18:08:07:57,304 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UWSLJSQGWHYSDM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:08:07:57,316 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1040.8269246885939
+2024-11-18:08:09:31,49 INFO     [psi4.driver.driver:526] Return energy(): -1438.0962818942378
+2024-11-18:08:15:37,623 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UWSLJSQGWHYSDM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:08:15:37,636 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1040.8273451815346
+2024-11-18:08:17:47,372 INFO     [psi4.driver.driver:526] Return energy(): -1438.0962805472714
+2024-11-18:08:23:49,121 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UWSLJSQGWHYSDM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:08:23:49,133 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1029.8441390106284
+2024-11-18:08:25:51,896 INFO     [psi4.driver.driver:526] Return energy(): -1438.0960909686044
+2024-11-18:08:35:51,785 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/UWSLJSQGWHYSDM-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:08:35:51,796 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1183.5087465220083
+2024-11-18:08:39:34,815 INFO     [psi4.driver.driver:526] Return energy(): -768.810420856483
+2024-11-18:08:48:41,98 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/YNXGVXBSQAEVTO-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:08:48:41,110 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1058.0485226692385
+2024-11-18:08:51:37,285 INFO     [psi4.driver.driver:526] Return energy(): -699.4339055262086
+2024-11-18:08:59:45,908 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QQXJNLYVPPBERR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:08:59:45,920 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1076.9619430421133
+2024-11-18:09:03:49,639 INFO     [psi4.driver.driver:526] Return energy(): -699.4329293782844
+2024-11-18:09:12:25,929 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QQXJNLYVPPBERR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:09:12:25,940 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1076.7803618524604
+2024-11-18:09:17:34,426 INFO     [psi4.driver.driver:526] Return energy(): -699.4336891238022
+2024-11-18:09:27:01,948 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QQXJNLYVPPBERR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:09:27:01,959 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1076.9619671342623
+2024-11-18:09:30:14,795 INFO     [psi4.driver.driver:526] Return energy(): -699.432930134986
+2024-11-18:09:38:52,270 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QQXJNLYVPPBERR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:09:38:52,285 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1076.7803442652184
+2024-11-18:09:42:42,983 INFO     [psi4.driver.driver:526] Return energy(): -699.4336890088035
+2024-11-18:09:50:52,950 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/QQXJNLYVPPBERR-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:09:50:52,966 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1154.4686147354741
+2024-11-18:09:53:22,164 INFO     [psi4.driver.driver:526] Return energy(): -746.3075692630897
+2024-11-18:10:01:35,477 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MDWCIKACMBMJFA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:10:01:35,489 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1154.4692084195012
+2024-11-18:10:03:45,687 INFO     [psi4.driver.driver:526] Return energy(): -746.3075703330235
+2024-11-18:10:16:01,455 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MDWCIKACMBMJFA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:10:16:01,467 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1262.1302976548557
+2024-11-18:10:18:17,586 INFO     [psi4.driver.driver:526] Return energy(): -732.6882056581462
+2024-11-18:10:30:21,988 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CBOPQVXWIKRPKD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:10:30:22,57 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1262.1302912515332
+2024-11-18:10:34:30,888 INFO     [psi4.driver.driver:526] Return energy(): -732.6882079490686
+2024-11-18:10:48:44,442 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/CBOPQVXWIKRPKD-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:10:48:44,708 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1241.6830360277115
+2024-11-18:10:52:21,259 INFO     [psi4.driver.driver:526] Return energy(): -841.8611598167264
+2024-11-18:11:05:35,229 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LUWXCCCGOWDRJL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:11:05:35,242 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1241.682997382677
+2024-11-18:11:08:34,352 INFO     [psi4.driver.driver:526] Return energy(): -841.8611591765219
+2024-11-18:11:22:04,278 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LUWXCCCGOWDRJL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:11:22:04,396 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1238.513788132646
+2024-11-18:11:24:49,552 INFO     [psi4.driver.driver:526] Return energy(): -841.8595433801032
+2024-11-18:11:41:15,347 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LUWXCCCGOWDRJL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:11:41:15,359 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1236.1582318948908
+2024-11-18:11:44:12,881 INFO     [psi4.driver.driver:526] Return energy(): -841.86264364073
+2024-11-18:12:02:18,57 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LUWXCCCGOWDRJL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:12:02:18,331 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1236.1582503434788
+2024-11-18:12:05:46,424 INFO     [psi4.driver.driver:526] Return energy(): -841.8626434200725
+2024-11-18:12:15:22,616 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/LUWXCCCGOWDRJL-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:12:15:22,628 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1199.0525207344317
+2024-11-18:12:18:09,126 INFO     [psi4.driver.driver:526] Return energy(): -733.903857034132
+2024-11-18:12:27:53,407 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DFYJCXSOGSYMAJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:12:27:53,420 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1198.7419915247083
+2024-11-18:12:31:50,544 INFO     [psi4.driver.driver:526] Return energy(): -733.9040116760649
+2024-11-18:12:41:43,670 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DFYJCXSOGSYMAJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:12:41:43,682 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1198.7420006590703
+2024-11-18:12:44:58,371 INFO     [psi4.driver.driver:526] Return energy(): -733.9040119265125
+2024-11-18:12:54:43,226 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DFYJCXSOGSYMAJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:12:54:43,720 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1199.0525207344324
+2024-11-18:12:59:58,517 INFO     [psi4.driver.driver:526] Return energy(): -733.9038574008192
+2024-11-18:13:10:33,820 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/DFYJCXSOGSYMAJ-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:13:10:33,832 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1139.1008228139883
+2024-11-18:13:13:42,139 INFO     [psi4.driver.driver:526] Return energy(): -784.6693572860853
+2024-11-18:13:25:39,443 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MIJZKZQWQXKSPA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:13:25:39,470 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1139.1010000292704
+2024-11-18:13:28:20,636 INFO     [psi4.driver.driver:526] Return energy(): -784.6693563244044
+2024-11-18:13:39:58,569 INFO     [psi4.driver.task_planner:285] PLANNING Atomic:  keywords={'CUBEPROP_FILEPATH': '/Volumes/SSD-PSM960U3-UW/CoMFA_calc/MIJZKZQWQXKSPA-UHFFFAOYSA-N', 'CUBEPROP_TASKS': ['ESP'], 'CUBIC_GRID_OVERAGE': [8, 8, 8], 'CUBIC_GRID_SPACING': [0.2, 0.2, 0.2], 'SCF__INTS_TOLERANCE': 1e-12, 'function_kwargs': {}}
+2024-11-18:13:39:58,581 INFO     [psi4.driver.driver:523] Compute energy(): method=wb97x-d, basis=def2-tzvp, molecule=default, nre=1139.100957672898
+2024-11-18:13:43:06,503 INFO     [psi4.driver.driver:526] Return energy(): -784.6693566081092
