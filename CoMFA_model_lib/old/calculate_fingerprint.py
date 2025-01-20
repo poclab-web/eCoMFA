@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from rdkit import Chem
 import os
-import calculate_conformation
+import CoMFA_model_lib.old.calculate_conformation as calculate_conformation
 import csv
 import json
 from rdkit.Chem import PandasTools
