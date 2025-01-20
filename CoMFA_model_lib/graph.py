@@ -1,192 +1,240 @@
-import glob
-import json
+from itertools import product
 import os
-import shutil
-import matplotlib.pyplot as plt
+import re
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+from rdkit.Chem import PandasTools
+import time
 
-def set_ax(ax):
-    ax.set_ylim(-4, 4)
-    ax.set_yticks([-4, 0, 4])
-    ax.set_xlim(-4, 4)
-    ax.set_xticks([-4, 0, 4])
-    ax.set_aspect("equal")
-    ax.set_xlabel("ΔΔ$\mathit{G}_{\mathrm{expt}}$ [kcal/mol]", fontsize=10)
-    ax.set_ylabel("ΔΔ$\mathit{G}_{\mathrm{predict}}$ [kcal/mol]", fontsize=10)
-    return ax
+def nan_rmse(x,y):
+    """
+    Calculates the Root Mean Square Error (RMSE) while ignoring NaN values.
 
-def draw_yyplot(dir):
-    fig = plt.figure(figsize=(3 * 3, 3 * 1))
+    This function computes the RMSE between two arrays, where NaN values in the
+    first array (`x`) are ignored in the calculation.
 
-    df=pd.read_csv(dir+  "/{}.csv".format("ElasticNet"),index_col = 'Unnamed: 0').sort_index()
+    Args:
+        x (numpy.ndarray or pandas.Series): Predicted values, which may contain NaN values.
+        y (numpy.ndarray or pandas.Series): Actual values, corresponding to `x`.
 
-    df_lasso1=df.iloc[:len(df) // 3][df["l1ratio"]==1]
-    src_file_path=df_lasso1["savefilename"][df_lasso1["RMSE_validation"]==df_lasso1["RMSE_validation"].min()].iloc[0]+"_prediction.xlsx"
-    df_lasso1 = pd.read_excel(src_file_path).sort_values(["smiles"])
+    Returns:
+        float: The RMSE value, calculated as:
+               \[
+               \text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (y_i - x_i)^2}
+               \]
+               where \( N \) is the number of non-NaN values in `x`.
+    """
+    return np.sqrt(np.nanmean((y-x)**2))
+
+def nan_r2(x,y):
+    """
+    Calculates the coefficient of determination (R²) while ignoring NaN values.
+
+    This function computes the R² score between two arrays, where NaN values in
+    the first array (`x`) are ignored. The R² score indicates the proportion of
+    variance in `y` that is predictable from `x`.
+
+    Args:
+        x (numpy.ndarray or pandas.Series): Predicted values, which may contain NaN values.
+        y (numpy.ndarray or pandas.Series): Actual values, corresponding to `x`.
+
+    Returns:
+        float: The R² value, calculated as:
+               \[
+               R^2 = 1 - \frac{\sum (y_i - x_i)^2}{\sum (y_i - \bar{y})^2}
+               \]
+               where:
+               - \( \bar{y} \) is the mean of the non-NaN `y` values.
+               - The summations ignore NaN values in `x`.
+    """
+    x,y=x[~np.isnan(x)],y[~np.isnan(x)]
+    return 1-np.sum((y-x)**2)/np.sum((y-np.mean(y))**2)
+
+def best_parameter(path):
+    df=pd.read_pickle(path)
+    cv_columns=df.filter(like='cv').columns
+    df_results=pd.DataFrame(index=cv_columns)
+    df_results["cv_RMSE"]=df_results.index.map(lambda column: nan_rmse(df[column].values,df["ΔΔG.expt."].values))
+    df_results["cv_r2"]=df_results.index.map(lambda column: nan_r2(df[column].values,df["ΔΔG.expt."].values))
+    best_cv_column=df_results["cv_RMSE"].idxmin()
+    df_results.to_csv(path.replace("_regression.pkl","_results.csv"))
+
+    coef=pd.read_csv(path.replace(".pkl",".csv"), index_col=0)
+    coef = coef[[best_cv_column.replace("cv", "steric_coef"), best_cv_column.replace("cv", "electrostatic_coef")]]
+    coef.columns = ["steric_coef", "electrostatic_coef"]
+
+    start=time.time()
+    columns=df.filter(like='steric_unfold').columns.tolist()+df.filter(like='electrostatic_unfold').columns.tolist()
     
-
-
-    ax = fig.add_subplot(1, 3, 1)
-    ax=set_ax(ax)
+    def calc_cont(column):
+        x,y,z=map(int, re.findall(r'[+-]?\d+', column))
+        coef_column=column.replace(f"_unfold {x} {y} {z}","_coef")
+        return df[column]*coef.at[f'{x} {abs(y)} {abs(z)}',coef_column]*np.sign(z)
+    data = {col.replace("unfold","cont"): calc_cont(col) for col in columns}   
+    data=pd.DataFrame(data=data)
+    data["steric_cont"],data["electrostatic_cont"]=data.iloc[:,:len(data.columns)//2].sum(axis=1),data.iloc[:,len(data.columns)//2:].sum(axis=1)
+    df=pd.concat([df,data],axis=1)
+    print(time.time()-start)
     
+    df["cv"]=df[best_cv_column]
+    df["prediction"]=df[best_cv_column.replace("cv","prediction")]
+    df["regression"]=df[best_cv_column.replace("cv","regression")]
+    df["cv_error"]=df["cv"]-df["ΔΔG.expt."]
+    df["prediction_error"]=df["prediction"]-df["ΔΔG.expt."]
+    # df = df.reindex(df[["prediction_error","cv_error"]].abs().sort_values(ascending=False).index)
+    
+    df_=df[["SMILES","InChIKey","ΔΔG.expt.","steric_cont","electrostatic_cont","regression","prediction","cv","prediction_error","cv_error"]].sort_values(["cv_error","prediction_error"]).fillna("NAN")
+    PandasTools.AddMoleculeColumnToFrame(df_, "SMILES")
+    path=path.replace(".pkl",".xlsx")
+    PandasTools.SaveXlsxFromFrame(df_,path, size=(100, 100))
+    return df#[["ΔΔG.expt.","regression","prediction","cv"]]
+
+def make_cube(df,path):
+    grid = np.array([re.findall(r'[+-]?\d+', col) for col in df.filter(like='steric_cont ').columns]).astype(int)
+    min=np.min(grid,axis=0).astype(int)
+    max=np.max(grid,axis=0).astype(int)
+    rang=max-min
+    
+    columns=["ΔΔG.expt."]
+    for x,y,z in product(range(min[0],max[0]+1),range(min[1],max[1]+1),range(min[2],max[2]+1)):
+        if x!=0 and y!=0 and z!=0:
+            columns.append(f'steric_cont {x} {y} {z}')
+    for x,y,z in product(range(min[0],max[0]+1),range(min[1],max[1]+1),range(min[2],max[2]+1)):
+        if x!=0 and y!=0 and z!=0:
+            columns.append(f'electrostatic_cont {x} {y} {z}')
+    df=df.set_index("InChIKey").reindex(columns=columns, fill_value=0)
+    min=' '.join(map(str, min+np.array([0.5,0.5,0.5])))
+    for inchikey,expt,value in zip(df.index,df["ΔΔG.expt."],df.iloc[:,1:].values):
+        dt=f'/Users/mac_poclab/CoMFA_calc/{inchikey}/Dt0.cube'
+        # dt=f'/Volumes/SSD-PSM960U3-UW/CoMFA_calc/{inchikey}/Dt0.cube'
+        with open(dt, 'r', encoding='UTF-8') as f:
+            f.readline()
+            f.readline()
+            n_atom,x,y,z=f.readline().split()
+            n_atom=int(n_atom)
+            f.readline()
+            f.readline()
+            f.readline()
+            coord=[f.readline() for _ in range(n_atom)]
+        coord=''.join(coord)
+        steric='\n'.join([' '.join(f"{x}" for x in value[i:i + 6])for i in range(0, len(value)//2, 6)])
+        electrostatic='\n'.join([' '.join(f"{x}" for x in value[i:i + 6])for i in range(len(value)//2, len(value), 6)])
+        contribution=np.sum(value[:len(value)//2]),np.sum(value[len(value)//2:])
+        os.makedirs(f'{path}/{inchikey}',exist_ok=True)
+        with open(f'{path}/{inchikey}/steric.cube','w') as f:
+            print(f'contribution Gaussian Cube File.\nProperty: Default # color steric {contribution[0]:.2f} predict {sum(contribution):.2f} expt {expt:.2f}\n{n_atom} {min}\n{rang[0]} 1 0 0\n{rang[1]} 0 1 0\n{rang[2]} 0 0 1\n{coord}\n{steric}',file=f)
+        with open(f'{path}/{inchikey}/electrostatic.cube','w') as f:
+            print(f'contribution Gaussian Cube File.\nProperty: ALIE # color electrostatic {contribution[1]:.2f} predict {sum(contribution):.2f} expt {expt:.2f}\n{n_atom} {min}\n{rang[0]} 1 0 0\n{rang[1]} 0 1 0\n{rang[2]} 0 0 1\n{coord}\n{electrostatic}',file=f)
 
 
-def draw_yyplot(dir):
-    fig = plt.figure(figsize=(3 * 3, 3 * 1))
+def graph_(df,path):
+    #直線表示
+    plt.figure(figsize=(3, 3))
+    plt.yticks([-4,0,4])
+    plt.xticks([-4,0,4])
+    plt.ylim(-4,4)
+    plt.xlim(-4,4)
+    
+    plt.scatter(df["ΔΔG.expt."],df["regression"],c="black",linewidths=0,s=10,alpha=0.5)
+    rmse=nan_rmse(df["regression"].values,df["ΔΔG.expt."].values)
+    r2=nan_r2(df["regression"].values,df["ΔΔG.expt."].values)
+    plt.scatter([],[],label="$\mathrm{RMSE_{regression}}$"+f" = {rmse:.2f}"
+                   +"\n$r^2_{\mathrm{regression}}$ = " + f"{r2:.2f}",c="black",linewidths=0,  alpha=0.5, s=10)
+    
+    rmse=nan_rmse(df["cv"].values,df["ΔΔG.expt."].values)
+    r2=nan_r2(df["cv"].values,df["ΔΔG.expt."].values)
+    plt.scatter([],[],label="$\mathrm{RMSE_{cv}}$"+f" = {rmse:.2f}"
+                   +"\n$r^2_{\mathrm{cv}}$ = " + f"{r2:.2f}",c="dodgerblue",linewidths=0,  alpha=0.6, s=10)
+    
+    rmse=nan_rmse(df["prediction"].values,df["ΔΔG.expt."].values)
+    r2=nan_r2(df["prediction"].values,df["ΔΔG.expt."].values)
+    plt.scatter([],[],label="$\mathrm{RMSE_{test}}$"+f" = {rmse:.2f}"
+                   +"\n$r^2_{\mathrm{test}}$ = " + f"{r2:.2f}",c="red",linewidths=0,  alpha=0.8, s=10)
 
-    for _, name in zip(range(3), ["Lasso","Ridge","ElasticNet"]):
-        ax = fig.add_subplot(1, 3, _ + 1)
-        ax=set_ax(ax)
-        df=pd.read_csv(dir+  "/{}.csv".format("ElasticNet"),index_col = 'Unnamed: 0').sort_index()
-        if name=="Lasso":
-            df=df[df["l1ratio"]==1]
-        elif name=="Ridge":
-            df=df[df["l1ratio"]==0]
-        else:
-            name="Elastic Net"
-        ax.set_title(name)
-        
-        df.reset_index(drop=True, inplace=True)
-        df["dataset"]=df.index*3//len(df)
-        
+    plt.scatter(df["ΔΔG.expt."],df["cv"],c="dodgerblue",linewidths=0,s=10,alpha=0.6)
+    plt.scatter(df["ΔΔG.expt."],df["prediction"],c="red",linewidths=0,s=10,alpha=0.8)
+    plt.xlabel("ΔΔ$\mathit{G}_{\mathrm{expt}}$ [kcal/mol]")
+    plt.ylabel("ΔΔ$\mathit{G}_{\mathrm{predict}}$ [kcal/mol]")
+    plt.legend(loc='lower right', fontsize=5, ncols=1)
 
-        dfs=[]
-        for __ in range(3):
-            df_=df[(df["dataset"]==__)]
-            src_file_path=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_prediction.xlsx"
-            new_file_path=df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_prediction_best.xlsx"
-            df_ = pd.read_excel(src_file_path).sort_values(["smiles"])
-            
-            dfs.append(df_)
-            shutil.copy(src_file_path, new_file_path)
+    plt.text(-3.6, 3.6, "$\mathit{N}_{\mathrm{test}}$"+f' = {len(df[df["test"]==1])}\n'+"$\mathit{N}_{\mathrm{training}}$"+f' = {len(df[df["test"]==0])}',# transform=ax.transAxes, 
+                fontsize=10, verticalalignment='top')
 
-        df_=pd.concat(dfs)
-        df_train=df_[df_["test"]==False]
-        df_test=df_[df_["test"]==True]
-        r2s=[]
-        RMSEs=[]
-        for column in df_.columns:
-            if "validation_PCA" not in column and "validation" in column:
-                print(column)
-                r2s.append(r2_score(df_train["ΔΔG.expt."], df_train[column]))
-                RMSEs.append(mean_squared_error(df_train["ΔΔG.expt."], df_train[column],squared=False))
-                ax.scatter(df_train["ΔΔG.expt."], df_train[column], s=10, c="dodgerblue", edgecolor="none",  alpha=0.6)
-        ax.scatter(df_train["ΔΔG.expt."], df_train["regression"], s=10, c="black", edgecolor="none",  alpha=0.6)
-        
-        r2=r2_score(df_train["ΔΔG.expt."], df_train["regression"])
-        RMSE=mean_squared_error(df_train["ΔΔG.expt."], df_train["regression"],squared=False)
-        # dfs=[]
-        # for __ in range(3):
-        #     df_=df[df["dataset"]==__]
-        #     df_ = pd.read_excel(df_["savefilename"][df_["RMSE_PCA_validation"]==df_["RMSE_PCA_validation"].min()].iloc[0]+"_prediction.xlsx").sort_values(["smiles"])
-        #     dfs.append(df_)
-        # df_=pd.concat(dfs)
-        r2s_PCA=[]
-        RMSEs_PCA=[]
-        for column in df_test.columns:
-            if "prediction" in column:
-                r2s_PCA.append(r2_score(df_test["ΔΔG.expt."], df_test[column]))
-                RMSEs_PCA.append(mean_squared_error(df_test["ΔΔG.expt."], df_test[column],squared=False))
-                ax.scatter(df_test["ΔΔG.expt."], df_test[column], s=10, c="red", edgecolor="none",  alpha=0.8)
-        ax.scatter([],[],c="red",label="$\mathrm{RMSE_{test}}$"+" = {:.2f}".format(np.average(RMSEs_PCA))
-                +"\n$r_{test}^2$ = " + "{:.2f}".format(np.average(r2s_PCA)),  alpha=0.8, s=30)
-        ax.scatter([],[],c="dodgerblue",label="$\mathrm{RMSE_{cv}}$"+" = {:.2f}".format(np.average(RMSEs))
-                   +"\n$r^2_{cv}$ = " + "{:.2f}".format(np.average(r2s)),  alpha=0.6, s=30)
-        ax.scatter([],[],c="black",label="$\mathrm{RMSE_{regression}}$"+" = {:.2f}".format(np.average(RMSE))
-                   +"\n$r^2_{regression}$ = " + "{:.2f}".format(r2),  alpha=0.6, s=30)
-        # 'df' は pandas データフレームであることを想定しています
-        num_rows = len(df_test)  # データフレームの行数を取得
-        ax.text(0.05, 0.95, "$N_{test}$"+f' = {num_rows}\n'+"$N_{training}$"+f' = {len(df_train)}', transform=ax.transAxes, 
-                fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor="none", facecolor="white"))
+    plt.tight_layout()
+    plt.savefig(path.replace(".pkl",".png"),dpi=500,transparent=True)
+    # df = df.reindex(df["error"].abs().sort_values(ascending=False).index)
 
-        ax.legend(loc='lower right', fontsize=6, ncols=1)
-    fig.tight_layout()
-    plt.savefig(dir+  "/yy-plot.png", transparent=False, dpi=300)
-    # plt.show()
-def draw_coef_plot(dir):
-    fig = plt.figure(figsize=(3 * 4, 3 * 1))
-    for _, name in zip(range(4), [ "ElasticNet","PLS"]):
-        ax = fig.add_subplot(1, 4, _ + 1)
-        # ax.set_ylim(-4, 4)
-        # ax.set_yticks([-4, 0, 4])
-        # ax.set_xlim(-4, 4)
-        # ax.set_xticks([-4, 0, 4])
-        ax.set_aspect("equal")
-        ax.set_title(name)
-        # ax.set_xlabel("ΔΔ${G_{expt}}$ [kcal/mol]", fontsize=10)
-        # ax.set_ylabel("ΔΔ${G_{predict}}$ [kcal/mol]", fontsize=10)
-        df=pd.read_csv(dir+  "/{}.csv".format(name),index_col = 'Unnamed: 0').sort_index()
-        df["dataset"]=df.index*3//len(df)
+def bar():
+    path="/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/"
+    cbs=pd.read_csv(path+"CBS_results.csv", index_col=0)
+    dip=pd.read_csv(path+"DIP_results.csv", index_col=0)
+    ru=pd.read_csv(path+"Ru_results.csv", index_col=0)
 
+    left=np.arange(3.0)*4
 
-        # dfs=[]
-        for __ in range(3):
-            df_=df[(df["dataset"]==__)]
-            df_ = pd.read_excel(df_["savefilename"][df_["RMSE_validation"]==df_["RMSE_validation"].min()].iloc[0]+"_prediction.xlsx").sort_values(["smiles"])
-            ax.scatter(df_["steric_cont"], df_["electrostatic_cont"], s=10, c="dodgerblue", edgecolor="none",  alpha=0.2)
-            # dfs.append(df_)
-        # df_=pd.concat(dfs)
-        # df_train=df_[df_["test"]==False]
-        # df_test=df_[df_["test"]==True]
-        # r2s=[]
-        # RMSEs=[]
-        # for column in df_.columns:
-        #     if "validation_PCA" not in column and "validation" in column:
-        #         print(column)
-        #         r2s.append(r2_score(df_train["steric_cont"], df_train[column]))
-        #         RMSEs.append(mean_squared_error(df_train["ΔΔG.expt."], df_train[column],squared=False))
-        #         ax.scatter(df_train["ΔΔG.expt."], df_train[column], s=10, c="dodgerblue", edgecolor="none",  alpha=0.2)
-        # ax.scatter(df_train["ΔΔG.expt."], df_train["regression"], s=10, c="black", edgecolor="none",  alpha=0.8)
-        
-        # r2=r2_score(df_train["ΔΔG.expt."], df_train["regression"])
-        # RMSE=mean_squared_error(df_train["ΔΔG.expt."], df_train["regression"],squared=False)
-        # # dfs=[]
-        # # for __ in range(3):
-        # #     df_=df[df["dataset"]==__]
-        # #     df_ = pd.read_excel(df_["savefilename"][df_["RMSE_PCA_validation"]==df_["RMSE_PCA_validation"].min()].iloc[0]+"_prediction.xlsx").sort_values(["smiles"])
-        # #     dfs.append(df_)
-        # # df_=pd.concat(dfs)
-        # r2s_PCA=[]
-        # RMSEs_PCA=[]
-        # for column in df_test.columns:
-        #     if "prediction" in column:
-        #         r2s_PCA.append(r2_score(df_test["ΔΔG.expt."], df_test[column]))
-        #         RMSEs_PCA.append(mean_squared_error(df_test["ΔΔG.expt."], df_test[column],squared=False))
-        #         ax.scatter(df_test["ΔΔG.expt."], df_test[column], s=10, c="tomato", edgecolor="none",  alpha=0.8)
-        # ax.scatter([],[],c="tomato",label="PCA split \nRMSE = {:.3f}".format(np.average(RMSEs_PCA))
-        #         +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(np.average(r2s_PCA)),  alpha=0.8)
-        # ax.scatter([],[],c="dodgerblue",label="random split \nRMSE = {:.3f}".format(np.average(RMSEs))
-        #            +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(np.average(r2s)),  alpha=0.8)
-        # ax.scatter([],[],c="black",label="regression \nRMSE = {:.3f}".format(np.average(RMSE))
-        #            +"\n$\mathrm{r^2}$ = " + "{:.3f}".format(r2),  alpha=0.8)
-        # # 'df' は pandas データフレームであることを想定しています
-        # num_rows = len(df_test)  # データフレームの行数を取得
-        # ax.text(0.05, 0.95, f'N={num_rows}', transform=ax.transAxes, 
-        #         fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor="none", facecolor="white"))
+    array=np.array([cbs.filter(regex=r'PLS [+-]?\d+ cv',axis=0).min()["cv_RMSE"],
+                    dip.filter(regex=r'PLS [+-]?\d+ cv',axis=0).min()["cv_RMSE"],
+                    ru.filter(regex=r'PLS [+-]?\d+ cv',axis=0).min()["cv_RMSE"]])
+    plt.figure(figsize=(4.8, 3.2))
+    plt.bar(left,array,color="red",label='PLS',alpha=0.25)
+    for i, v in enumerate(array):
+        plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
+    left+=0.9
+    print(array)
 
-        # ax.legend(loc='lower right', fontsize=5, ncols=1)
-    fig.tight_layout()
-    plt.savefig(dir+  "/coef_plot.png", transparent=False, dpi=300)
-    # plt.show()
-def importance(dir):
-    for name in [ "ElasticNet","PLS"]:
-        df=pd.read_csv(dir+  "/{}.csv".format(name),index_col = 'Unnamed: 0').sort_index()
-        df["dataset"]=df.index*3//len(df)
-        dfs=[]
-        for __ in range(3):
-            df_=df[(df["dataset"]==__)]
-            df_=df_[df_["RMSE_validation"]==df_["RMSE_validation"].min()]
-            dfs.append(df_)
-        df=pd.concat(dfs)
-        print(df)
+    array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"],
+                    dip.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"],
+                    ru.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"]])
+    print(array)
+    plt.bar(left,array,color="red",label='Ridge',alpha=0.5)
+    for i, v in enumerate(array):
+        plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
+    left+=0.9
 
-# time.sleep(60*60*6)
-for param_name in glob.glob("C:/Users/poclabws/PycharmProjects/CoMFA_model/parameter/cube_to_grid0.50.txt"):
-    with open(param_name, "r") as f:
-        param = json.loads(f.read())
-    os.makedirs(param["out_dir_name"], exist_ok=True)
-    importance(param["out_dir_name"])
-    draw_yyplot(param["out_dir_name"])
-    draw_coef_plot(param["out_dir_name"])
+    array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"],
+                    dip.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"],
+                    ru.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"]])
+    plt.bar(left,array,color="red",label='Lasso',alpha=0.75)
+    for i, v in enumerate(array):
+        plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
+    left+=0.9
+
+    array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ \d+\.\d+ cv",axis=0).min()["cv_RMSE"],
+                    dip.filter(regex=r"^ElasticNet \d+\.\d+ \d+\.\d+ cv",axis=0).min()["cv_RMSE"],
+                    ru.filter(regex=r"^ElasticNet \d+\.\d+ \d+\.\d+ cv",axis=0).min()["cv_RMSE"]])
+    plt.bar(left,array,color="red",label='Elastic Net',alpha=1)
+    for i, v in enumerate(array):
+        plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
+    
+    label = [r"$\mathit{(S)}$-CBS", r"$\mathit{(+)}$-DIP-Cl", r"$\mathit{(S,S)}$-Ru"]
+    plt.bar(left-1.35, 0, tick_label=label, align="center")
+    
+    plt.axhline(0, color='black', linewidth=1.0)  # y=0の枠線
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+    plt.gca().spines['left'].set_visible(False)
+    
+    plt.grid(axis='y', color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
+    plt.gca().xaxis.set_ticks_position('none')  # 横軸の目盛り線を消す
+    plt.gca().yaxis.set_ticks_position('none')  # 横軸の目盛り線を消す
+    
+    plt.legend(ncol=4, bbox_to_anchor=(0.5, 1.01), loc='lower center', frameon=True)
+    # plt.xlabel("Dataset")
+    plt.ylabel("RMSE [kcal/mol]")
+    plt.yticks(np.arange(0, 2.0, 0.5))
+    plt.tight_layout()
+    plt.savefig(path+"results.png",dpi=500,transparent=True)
+
+if __name__ == '__main__':
+    bar()
+    df_cbs=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/cbs_regression.pkl")
+    df_dip=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/DIP_regression.pkl")
+    df_ru=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/Ru_regression.pkl")
+    # make_cube(df_cbs,'/Users/mac_poclab/CoMFA_results/CBS')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/CBS
+    # make_cube(df_dip,'/Users/mac_poclab/CoMFA_results/DIP')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/DIP
+    # make_cube(df_ru,'/Users/mac_poclab/CoMFA_results/Ru')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/Ru
+    graph_(df_cbs,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression_cbs.png")
+    graph_(df_dip,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression_dip.png")
+    graph_(df_ru,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression_ru.png")
+    graph_(pd.concat([df_cbs,df_dip,df_ru]),"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression.png")
