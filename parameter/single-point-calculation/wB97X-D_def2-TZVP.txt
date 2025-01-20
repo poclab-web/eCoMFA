@@ -1,5 +1,0 @@
-{
-"psi4_aligned_dir_name": "D:/calculation/b3lyp_6-31gd20240427",
-"one_point_level": "wB97X-D/def2-TZVP",
-"cube_dir_name": "D:/calculation/wB97X-D_def2-TZVP20240416"
-}
