@@ -178,6 +178,6 @@ def regression_(path):
     grid.to_csv(path)
     
 if __name__ == '__main__':
-    regression_("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/cbs.pkl")
-    regression_("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/DIP.pkl")
-    regression_("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/Ru.pkl")
+    regression_("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/cbs.pkl")
+    regression_("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/DIP.pkl")
+    regression_("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/Ru.pkl")

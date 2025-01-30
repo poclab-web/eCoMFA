@@ -318,5 +318,5 @@ def calc(out_path,smiles):
 
 if __name__ == '__main__':
     out_path='/Users/mac_poclab/CoMFA_calc'#'/Volumes/SSD-PSM960U3-UW/CoMFA_calc'
-    df=pd.read_excel("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/mol_list.xlsx")
+    df=pd.read_excel("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/mol_list.xlsx")
     df[["InChIKey","SMILES"]].apply(lambda _:calc(f'{out_path}/{_[0]}',_[1]),axis=1)

@@ -195,6 +195,6 @@ def calc_grid_(path):
 
 if __name__ == '__main__':
     #arranged_dataset読み込み
-    calc_grid_("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/cbs.xlsx")
-    calc_grid_("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/DIP.xlsx")
-    calc_grid_("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/Ru.xlsx")
+    calc_grid_("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/cbs.xlsx")
+    calc_grid_("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/DIP.xlsx")
+    calc_grid_("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/Ru.xlsx")
