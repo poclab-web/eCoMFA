@@ -2,7 +2,7 @@ from itertools import product
 import numpy as np
 import pandas as pd
 from sklearn.cross_decomposition import PLSRegression
-from sklearn.linear_model import ElasticNet
+from sklearn.linear_model import Ridge,Lasso,ElasticNet
 from sklearn.model_selection import KFold
 from multiprocessing import Pool, cpu_count
 
@@ -45,7 +45,19 @@ def regression(X_train,X_test,y_train,y,method):
         # PLS regression
         coef, pred = regression(X_train, X_test, y_train, y, method="PLS 3")
     """
-    if "ElasticNet" in method:
+    if "Ridge" in method:
+        alpha=float(method.split()[1])
+        model=Ridge(alpha=alpha, fit_intercept=False)
+        model.fit(X_train, y_train)
+        coef=model.coef_
+        predict=model.predict(X_test)
+    elif "Lasso" in method:
+        alpha=float(method.split()[1])
+        model=Lasso(alpha=alpha, fit_intercept=False)
+        model.fit(X_train, y_train)
+        coef=model.coef_
+        predict=model.predict(X_test)
+    elif "ElasticNet" in method:
         alpha,l1ratio=map(float, method.split()[1:])
         model=ElasticNet(alpha=alpha,l1_ratio=l1ratio, fit_intercept=False)
         model.fit(X_train, y_train)
@@ -140,11 +152,15 @@ def regression_(path):
     y_train,y=df_train["ΔΔG.expt."].values,df["ΔΔG.expt."].values
     grid=pd.DataFrame(index=[col.replace("steric_fold ","") for col in df.filter(like='steric_fold ').columns])
     methods=[]
-    for alpha,l1ratio in product(np.logspace(-20,-1,20,base=2),np.round(np.linspace(0, 1, 11),decimals=10)):
+    for alpha in np.logspace(-20,-1,20,base=2):
+        methods.append(f'Lasso {alpha}')
+    for alpha in np.logspace(-20,-1,20,base=2):
+        methods.append(f'Ridge {alpha}')
+    for alpha,l1ratio in product(np.logspace(-20,-1,20,base=2),np.round(np.linspace(0.1, 0.9, 9),decimals=10)):
         methods.append(f'ElasticNet {alpha} {l1ratio}')
     for n_components in range(1,15):
         methods.append(f'PLS {n_components}')
-    with Pool(15) as pool:
+    with Pool(22) as pool:
         results = pool.map(regression_parallel, [(X_train,X,y_train,y,method) for method in methods])
     
     for result in results:

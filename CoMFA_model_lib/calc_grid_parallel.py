@@ -184,7 +184,7 @@ def calc_grid_(path):
     """
     print(f'START PARCING {path}')
     df=pd.read_excel(path)
-    with Pool(15) as pool:
+    with Pool(22) as pool:
         results = pool.map(process_row, [row for _, row in df.iterrows()])
 
     data = pd.DataFrame(results)
