@@ -1,9 +1,0 @@
-xlsxwriter
-rdkit
-scipy
-tqdm
-matplotlib
-seaborn
-scikit-learn
-notebook
-openpyxl
