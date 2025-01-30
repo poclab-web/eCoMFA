@@ -54,41 +54,49 @@ def nan_r2(x,y):
 def best_parameter(path):
     df=pd.read_pickle(path)
     cv_columns=df.filter(like='cv').columns
+    print(cv_columns)
     df_results=pd.DataFrame(index=cv_columns)
     df_results["cv_RMSE"]=df_results.index.map(lambda column: nan_rmse(df[column].values,df["ΔΔG.expt."].values))
     df_results["cv_r2"]=df_results.index.map(lambda column: nan_r2(df[column].values,df["ΔΔG.expt."].values))
+    df_results["regression_RMSE"]=df.filter(like='regression').columns.map(lambda column: nan_rmse(df[column].values,df["ΔΔG.expt."].values))
+    df_results["regression_r2"]=df.filter(like='regression').columns.map(lambda column: nan_r2(df[column].values,df["ΔΔG.expt."].values))
     best_cv_column=df_results["cv_RMSE"].idxmin()
+    print(best_cv_column,np.log2(float(best_cv_column.split()[1])))
     df_results.to_csv(path.replace("_regression.pkl","_results.csv"))
 
     coef=pd.read_csv(path.replace(".pkl",".csv"), index_col=0)
+    # steric_coef=coef[best_cv_column.replace("cv", "steric_coef")]
+    # electrostatic_coef=coef[best_cv_column.replace("cv", "electrostatic_coef")]
     coef = coef[[best_cv_column.replace("cv", "steric_coef"), best_cv_column.replace("cv", "electrostatic_coef")]]
     coef.columns = ["steric_coef", "electrostatic_coef"]
 
     start=time.time()
     columns=df.filter(like='steric_unfold').columns.tolist()+df.filter(like='electrostatic_unfold').columns.tolist()
-    
     def calc_cont(column):
         x,y,z=map(int, re.findall(r'[+-]?\d+', column))
         coef_column=column.replace(f"_unfold {x} {y} {z}","_coef")
         return df[column]*coef.at[f'{x} {abs(y)} {abs(z)}',coef_column]*np.sign(z)
     data = {col.replace("unfold","cont"): calc_cont(col) for col in columns}   
+    # data={col.replace("unfold","cont"): calc_cont(col) for col in df.filter(like='steric_unfold').columns}
     data=pd.DataFrame(data=data)
     data["steric_cont"],data["electrostatic_cont"]=data.iloc[:,:len(data.columns)//2].sum(axis=1),data.iloc[:,len(data.columns)//2:].sum(axis=1)
     df=pd.concat([df,data],axis=1)
-    print(time.time()-start)
+    print("time",time.time()-start)
     
     df["cv"]=df[best_cv_column]
     df["prediction"]=df[best_cv_column.replace("cv","prediction")]
+    df["er.prediction"]=100/(1+np.exp(df["prediction"]/1.99/df["temperature"]/0.001))
     df["regression"]=df[best_cv_column.replace("cv","regression")]
     df["cv_error"]=df["cv"]-df["ΔΔG.expt."]
     df["prediction_error"]=df["prediction"]-df["ΔΔG.expt."]
     # df = df.reindex(df[["prediction_error","cv_error"]].abs().sort_values(ascending=False).index)
     
-    df_=df[["SMILES","InChIKey","ΔΔG.expt.","steric_cont","electrostatic_cont","regression","prediction","cv","prediction_error","cv_error"]].sort_values(["cv_error","prediction_error"]).fillna("NAN")
+    df_=df[["SMILES","InChIKey","ΔΔG.expt.","steric_cont","electrostatic_cont","regression","prediction","er.prediction","cv","prediction_error","cv_error"]].fillna("NAN")#.sort_values(["cv_error","prediction_error"])
     PandasTools.AddMoleculeColumnToFrame(df_, "SMILES")
     path=path.replace(".pkl",".xlsx")
     PandasTools.SaveXlsxFromFrame(df_,path, size=(100, 100))
     return df#[["ΔΔG.expt.","regression","prediction","cv"]]
+
 
 def make_cube(df,path):
     grid = np.array([re.findall(r'[+-]?\d+', col) for col in df.filter(like='steric_cont ').columns]).astype(int)
@@ -166,7 +174,7 @@ def graph_(df,path):
     # df = df.reindex(df["error"].abs().sort_values(ascending=False).index)
 
 def bar():
-    path="/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/"
+    path="/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/"
     cbs=pd.read_csv(path+"CBS_results.csv", index_col=0)
     dip=pd.read_csv(path+"DIP_results.csv", index_col=0)
     ru=pd.read_csv(path+"Ru_results.csv", index_col=0)
@@ -183,26 +191,32 @@ def bar():
     left+=0.9
     print(array)
 
-    array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"],
-                    dip.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"],
-                    ru.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"]])
+    # array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"],
+    #                 dip.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"],
+    #                 ru.filter(regex=r"^ElasticNet \d+\.\d+ 0.0 cv",axis=0).min()["cv_RMSE"]])
+    array=np.array([cbs.filter(regex=r"^Ridge .{0,} cv",axis=0).min()["cv_RMSE"],
+                    dip.filter(regex=r"^Ridge .{0,} cv",axis=0).min()["cv_RMSE"],
+                    ru.filter(regex=r"^Ridge .{0,} cv",axis=0).min()["cv_RMSE"]])
     print(array)
     plt.bar(left,array,color="red",label='Ridge',alpha=0.5)
     for i, v in enumerate(array):
         plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
     left+=0.9
 
-    array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"],
-                    dip.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"],
-                    ru.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"]])
+    # array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"],
+    #                 dip.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"],
+    #                 ru.filter(regex=r"^ElasticNet \d+\.\d+ 1.0 cv",axis=0).min()["cv_RMSE"]])
+    array=np.array([cbs.filter(regex=r"^Lasso .{0,} cv",axis=0).min()["cv_RMSE"],
+                    dip.filter(regex=r"^Lasso .{0,} cv",axis=0).min()["cv_RMSE"],
+                    ru.filter(regex=r"^Lasso .{0,} cv",axis=0).min()["cv_RMSE"]])
     plt.bar(left,array,color="red",label='Lasso',alpha=0.75)
     for i, v in enumerate(array):
         plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
     left+=0.9
 
-    array=np.array([cbs.filter(regex=r"^ElasticNet \d+\.\d+ \d+\.\d+ cv",axis=0).min()["cv_RMSE"],
-                    dip.filter(regex=r"^ElasticNet \d+\.\d+ \d+\.\d+ cv",axis=0).min()["cv_RMSE"],
-                    ru.filter(regex=r"^ElasticNet \d+\.\d+ \d+\.\d+ cv",axis=0).min()["cv_RMSE"]])
+    array=np.array([cbs.filter(regex=r"^ElasticNet .{0,} cv",axis=0).min()["cv_RMSE"],
+                    dip.filter(regex=r"^ElasticNet .{0,} cv",axis=0).min()["cv_RMSE"],
+                    ru.filter(regex=r"^ElasticNet .{0,} cv",axis=0).min()["cv_RMSE"]])
     plt.bar(left,array,color="red",label='Elastic Net',alpha=1)
     for i, v in enumerate(array):
         plt.text(left[i], v + 0.05, f"{v:.2f}", ha='center', fontsize=8)
@@ -228,13 +242,13 @@ def bar():
 
 if __name__ == '__main__':
     bar()
-    df_cbs=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/cbs_regression.pkl")
-    df_dip=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/DIP_regression.pkl")
-    df_ru=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/Ru_regression.pkl")
-    # make_cube(df_cbs,'/Users/mac_poclab/CoMFA_results/CBS')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/CBS
-    # make_cube(df_dip,'/Users/mac_poclab/CoMFA_results/DIP')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/DIP
-    # make_cube(df_ru,'/Users/mac_poclab/CoMFA_results/Ru')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/Ru
-    graph_(df_cbs,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression_cbs.png")
-    graph_(df_dip,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression_dip.png")
-    graph_(df_ru,"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression_ru.png")
-    graph_(pd.concat([df_cbs,df_dip,df_ru]),"/Users/mac_poclab/PycharmProjects/CoMFA_model/arranged_dataset/regression.png")
+    df_cbs=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/cbs_regression.pkl")
+    df_dip=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/DIP_regression.pkl")
+    df_ru=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/Ru_regression.pkl")
+    make_cube(df_cbs,'/Users/mac_poclab/CoMFA_results/CBS')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/CBS
+    make_cube(df_dip,'/Users/mac_poclab/CoMFA_results/DIP')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/DIP
+    make_cube(df_ru,'/Users/mac_poclab/CoMFA_results/Ru')#/Volumes/SSD-PSM960U3-UW/CoMFA_results/Ru
+    graph_(df_cbs,"/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/regression_cbs.png")
+    graph_(df_dip,"/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/regression_dip.png")
+    graph_(df_ru,"/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/regression_ru.png")
+    graph_(pd.concat([df_cbs,df_dip,df_ru]),"/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/regression.png")
