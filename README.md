@@ -54,7 +54,7 @@ The output will contain predicted selectivity values and model performance metri
 - Corresponding selectivity values for supervised learning
 
 ## Dependencies
-- Python (4.0 is recommended)
+- Python (3.10 is recommended)
 - Gaussian
 - Psi4
 - RDKit
@@ -78,5 +78,5 @@ We welcome contributions! Please follow these steps:
 5. Create a Pull Request
 
 ## Contact
-For inquiries or support, please contact the POC Lab team.
+For inquiries or support, please contact the POC Lab team (gotoh-hiroaki-yw[at]ynu.ac.jp).
 
