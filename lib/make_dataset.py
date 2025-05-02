@@ -102,7 +102,7 @@ def output(df,to_file_path):
     train_df, test_df = train_test_split(df, test_size=0.2, shuffle=False)
     train_df['test'] = 0
     test_df['test'] = 1
-    df = pd.concat([train_df, test_df])#df_,
+    df = pd.concat([train_df, test_df])
     df=df.drop_duplicates(subset="InChIKey")
     PandasTools.AddMoleculeColumnToFrame(df, "SMILES")
     df = df[["entry","SMILES", "ROMol", "InChIKey", "temperature","er.", "ΔΔG.expt.","citation","test"]]
@@ -133,7 +133,6 @@ if __name__ == '__main__':
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6][N,OH1]"))
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]*[N,OH1]"))
                               and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]C(=O)[#6]**[N,OH1]"))
-
                               )]
     
     to_dir_path = "/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset"
