@@ -98,7 +98,6 @@ def output(df,to_file_path):
         output(df, "/path/to/output.xlsx")
     """
     print(len(df))
-    print(len(df))
     train_df, test_df = train_test_split(df, test_size=0.2, shuffle=False)
     train_df['test'] = 0
     test_df['test'] = 1
