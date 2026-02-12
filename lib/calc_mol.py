@@ -287,5 +287,5 @@ def calc(out_path, smiles):
 
 
 if __name__ == "__main__":
-    df = pd.read_excel("dataset/mol_list.xlsx")
+    df = pd.read_excel("results/mol_list.xlsx")
     df[["InChIKey", "SMILES"]].apply(lambda _: calc(f"{OUTPUT_ROOT}/{_[0]}", _[1]), axis=1)

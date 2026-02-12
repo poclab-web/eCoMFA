@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 from rdkit.Chem import PandasTools
 import time
 
+DATASET_DIR = "results"
+
 def nan_rmse(x, y):
     """Compute RMSE while ignoring entries where prediction values are NaN."""
     """
@@ -300,7 +302,7 @@ def graph_(df, path):
 
 def bar():
     """Legacy LOOCV bar plot helper (kept for compatibility)."""
-    path="/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/"
+    path = f"{DATASET_DIR}/"
     cbs=pd.read_csv(path+"cbs_electronic_electrostatic_results.csv", index_col=0)
     dip=pd.read_csv(path+"DIP_electronic_electrostatic_results.csv", index_col=0)
     alpine_borane=pd.read_csv(path+"alpine_borane_electronic_electrostatic_results.csv", index_col=0)
@@ -360,7 +362,7 @@ def bar():
     plt.savefig(path+"results.png",dpi=500,transparent=False)
 def bar():
     """Final combined LOOCV benchmark plot with R2 (scatter) and RMSE (bar)."""
-    path = "/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/"
+    path = f"{DATASET_DIR}/"
     cbs = pd.read_csv(path + "cbs_electronic_electrostatic_results.csv", index_col=0)
     dip = pd.read_csv(path + "DIP_electronic_electrostatic_results.csv", index_col=0)
     alpine_borane = pd.read_csv(path + "alpine_borane_electronic_electrostatic_results.csv", index_col=0)
@@ -449,19 +451,19 @@ def bar():
 if __name__ == '__main__':
     # start=time.time()
     # for cond in ["cbs","DIP","alpine_borane"]:
-    #     evaluate_result(f"/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/{cond}_electronic_electrostatic_regression.pkl")
+    #     evaluate_result(f"{DATASET_DIR}/{cond}_electronic_electrostatic_regression.pkl")
 
     # print(time.time()-start)
 
-    df_cbs=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/cbs_electronic_electrostatic_results.csv")
-    df_dip=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/DIP_electronic_electrostatic_results.csv")
-    df_alp=best_parameter("/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/alpine_borane_electronic_electrostatic_results.csv")
+    df_cbs=best_parameter(f"{DATASET_DIR}/cbs_electronic_electrostatic_results.csv")
+    df_dip=best_parameter(f"{DATASET_DIR}/DIP_electronic_electrostatic_results.csv")
+    df_alp=best_parameter(f"{DATASET_DIR}/alpine_borane_electronic_electrostatic_results.csv")
     # bar()
 
     # make_cube(df_cbs,'/Users/mac_poclab/CoMFA_results/CBS')
     # make_cube(df_dip,'/Users/mac_poclab/CoMFA_results/DIP')
     # make_cube(df_alp,'/Users/mac_poclab/CoMFA_results/alp')
-    graph_(df_cbs,"/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/cont_cbs.png")
-    graph_(df_dip,"/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/cont_dip.png")
-    graph_(df_alp,"/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/cont_alpine_borane.png")
-    graph_(pd.concat([df_cbs,df_dip,df_alp]),"/Users/mac_poclab/PycharmProjects/CoMFA_model/dataset/cont_all.png")
+    graph_(df_cbs, f"{DATASET_DIR}/cont_cbs.png")
+    graph_(df_dip, f"{DATASET_DIR}/cont_dip.png")
+    graph_(df_alp, f"{DATASET_DIR}/cont_alpine_borane.png")
+    graph_(pd.concat([df_cbs,df_dip,df_alp]), f"{DATASET_DIR}/cont_all.png")

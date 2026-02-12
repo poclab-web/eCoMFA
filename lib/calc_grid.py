@@ -209,6 +209,6 @@ def calc_grid_(path):
 
 
 if __name__ == "__main__":
-    calc_grid_("dataset/alpine_borane.xlsx")
-    calc_grid_("dataset/CBS.xlsx")
-    calc_grid_("dataset/DIP.xlsx")
+    calc_grid_("results/alpine_borane.xlsx")
+    calc_grid_("results/CBS.xlsx")
+    calc_grid_("results/DIP.xlsx")

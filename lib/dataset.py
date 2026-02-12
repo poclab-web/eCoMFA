@@ -115,9 +115,9 @@ def output(df, to_file_path):
 
 
 if __name__ == "__main__":
-    df_cbs = common("sampledata_local/CBS.xlsx")
-    df_dip = common("sampledata_local/DIP.xlsx")
-    df_ru = common("sampledata_local/alpine_borane.xlsx")
+    df_cbs = common("dataset/CBS.xlsx")
+    df_dip = common("dataset/DIP.xlsx")
+    df_ru = common("dataset/alpine_borane.xlsx")
 
     df_cbs = df_cbs[
         df_cbs["mol"].map(lambda mol: not mol.HasSubstructMatch(Chem.MolFromSmarts("n")))
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         )
     ]
 
-    to_dir_path = "dataset"
+    to_dir_path = "results"
 
     os.makedirs(to_dir_path, exist_ok=True)
     output(df_cbs, f"{to_dir_path}/CBS.xlsx")

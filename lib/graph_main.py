@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 from rdkit.Chem import PandasTools
 
-DATASET_DIR = "dataset"
+DATASET_DIR = "results"
 CALC_ROOT = os.path.join(os.path.expanduser("~"), "CoMFA_calc")
 RESULTS_ROOT = os.path.join(os.path.expanduser("~"), "CoMFA_results")
 

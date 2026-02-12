@@ -141,7 +141,6 @@ def regression_(path, names):
 
     x_train_all = np.concatenate(trains, axis=1)
     x_all = np.concatenate(train_tests, axis=1)
-    print(x_train_all.shape)
 
     with Pool(NUM_WORKERS) as pool:
         results = list(
@@ -160,7 +159,6 @@ def regression_(path, names):
 
         df[f"{method} regression"] = np.where(df["test"] == 0, predict, np.nan)
         df[f"{method} prediction"] = np.where(df["test"] == 1, predict, np.nan)
-        print(original_array.shape, original_array_scaf.shape)
         df.loc[df["test"] == 0, f"{method} cv"] = original_array
 
     feature_names = "_".join(names)
@@ -180,9 +178,9 @@ def generate_combinations(elements):
 if __name__ == "__main__":
     feature_sets = generate_combinations(["electronic", "electrostatic"])
     dataset_paths = [
-        "dataset/CBS.pkl",
-        "dataset/DIP.pkl",
-        "dataset/alpine_borane.pkl",
+        "results/CBS.pkl",
+        "results/DIP.pkl",
+        "results/alpine_borane.pkl",
     ]
 
     for feat, path in product(feature_sets, dataset_paths):
