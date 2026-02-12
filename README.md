@@ -1,5 +1,6 @@
 # eCoMFA
 
+[![](https://img.shields.io/badge/DOI-10.1021%2Facs.jpca.5c03510-brightgreen)](https://doi.org/10.1021/acs.jpca.5c03510)
 ![](https://img.shields.io/badge/Python-3.8-blue?logo=python)
 ![](https://img.shields.io/badge/License-MIT-orange)
 
