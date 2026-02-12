@@ -1,3 +1,5 @@
 results/
-conformers/
+.DS_Store
+conformer/
 timer.dat
+SI.zip
