@@ -1,82 +1,112 @@
 # eCoMFA
 
+![](https://img.shields.io/badge/Python-3.8-blue?logo=python)
+![](https://img.shields.io/badge/License-MIT-orange)
+
 ## Overview
-The **eCoMFA** (electronic Comparative Molecular Field Analysis) is a computational method used for quantitative structure-selectivity relationship (QSSR) analysis. This repository contains an implementation of the CoMFA model, designed for analyzing molecular data and predicting reaction selectivity based on 3D electronic molecular field properties.
+This repository implements an **electronic CoMFA (eCoMFA)** workflow for quantitative structure-selectivity relationship (QSSR) analysis.
 
-## Features
-- Implementation of the CoMFA model for QSSR analysis
-- Machine learning algorithms for predictive modeling
+The pipeline:
+1. prepares molecular datasets from Excel files,
+2. runs conformer and quantum-chemical calculations,
+3. converts volumetric outputs into CoMFA grid features,
+4. trains regression models (Lasso/Ridge/ElasticNet/PLS), and
+5. generates evaluation tables and publication-ready figures.
 
-## Installation
-To install the necessary dependencies, run:
+## Repository Structure
+- `lib/dataset.py`: build curated training/test datasets from raw Excel files.
+- `lib/calc_mol.py`: generate conformers, run Gaussian/Psi4, and save `geom/Dt/ESP` outputs per molecule.
+- `lib/calc_grid.py`: aggregate cube/log outputs into folded/unfolded grid features and write `.pkl` datasets.
+- `lib/regression.py`: run model sweeps in parallel and save predictions/coefficients.
+- `lib/graph_main.py`: evaluate model performance and generate core regression plots/tables.
+- `lib/graph_cont.py`: generate contribution-space plots (`electronic_cont` vs `electrostatic_cont`).
+- `lib/render_moleculer.py`: helper functions for 3D molecular/grid rendering.
+- `lib/definition_grid.ipynb`, `lib/ts_conformer_calc.ipynb`: exploratory notebooks.
+- `eCoMFA_all_calculation.ipynb`: end-to-end notebook that runs the full workflow step by step.
+- `dataset/`: raw source datasets.
+- `results/`: processed datasets and model outputs.
+
+## Requirements
+### Software
+- Python (Conda recommended)
+- Gaussian (`g16` available in shell)
+- Psi4
+
+### Python packages
+See `environment.yml`.
+
+## Environment Setup
+Create the environment from `environment.yml`:
 
 ```bash
-conda env export -n my_env > environment.yml
+conda env create -f environment.yml
+conda activate <env-name>
 ```
 
-## Usage
-### 1. Prepare Molecular Data
-Prepare your dataset containing molecular structures and selectivity. XLSX files of the dataset can also be used.
+If needed, update `<env-name>` to the `name:` defined in your `environment.yml`.
 
-### 2. Run DFT Calculation
-Use the following command to execute DFT calculation:
+## Workflow
+Run from repository root.
 
+### Notebook (all steps in one place)
+Open and run:
+```bash
+jupyter notebook eCoMFA_all_calculation.ipynb
+```
+The notebook executes the full pipeline in order:
+`lib/dataset.py` -> `lib/calc_mol.py` -> `lib/calc_grid.py` -> `lib/regression.py` -> `lib/graph_main.py`.
+For contribution-space plots, run `python lib/graph_cont.py` separately after the notebook.
+
+### 1. Build dataset files
+```bash
+python lib/dataset.py
+```
+Inputs: `dataset/*.xlsx`  
+Outputs: `results/CBS.xlsx`, `results/DIP.xlsx`, `results/alpine_borane.xlsx`, `results/mol_list.xlsx`
+
+### 2. Run molecular quantum calculations
 ```bash
 python lib/calc_mol.py
 ```
+Default output root is `~/CoMFA_calc` (configurable in `lib/calc_mol.py`).  
+Each molecule directory gets a `done` file when calculations complete successfully.
 
-### 3. Run the Feature Calculation
-Use the following command to execute the feature calculation:
-
+### 3. Build CoMFA grid features
 ```bash
-python lib/calc_grid_parallel.py
+python lib/calc_grid.py
 ```
+Reads `results/*.xlsx` and `~/CoMFA_calc/<InChIKey>/...`, then writes `results/*.pkl`.
 
-### 4. Run the Regression
-Use the following command to execute the regression:
-
+### 4. Train regressions
 ```bash
-python lib/regression_parallel.py
+python lib/regression.py
 ```
+Writes regression outputs such as:
+- `results/*_regression.pkl`
+- `results/*_regression.csv`
 
-### 5. Run the make graph and Evaluation
-Use the following command to make graph and evaluation:
-
+### 5. Evaluate and visualize
 ```bash
-python lib/graph.py
+python lib/graph_main.py
+python lib/graph_cont.py
 ```
+Produces summary CSV/XLSX and figures (e.g., `results/regression*.png`, `results/cont_*.png`, `results/results_with_rmse.png`).
 
-### 3. Analyze Results
-The output will contain predicted selectivity values and model performance metrics.
+## Configuration Notes
+Key runtime settings are centralized near the top of scripts:
+- `lib/calc_mol.py`: `NUM_THREADS`, `MEMORY_GB`, `OUTPUT_ROOT`
+- `lib/calc_grid.py`: `NUM_WORKERS`, `CALC_ROOT`
+- `lib/regression.py`: `NUM_WORKERS`
+- `lib/graph_main.py` / `lib/graph_cont.py`: dataset and output root constants
 
-## Dataset Requirements
-- Molecular structures in SMILES strings and reaction temperature
-- Corresponding selectivity values for supervised learning
-
-## Dependencies
-- Python (3.10 is recommended)
-- Gaussian
-- Psi4
-- RDKit
-- NumPy
-- Pandas
-- Scikit-learn
-- Matplotlib
+## Citation
+Sakaguchi, Daimon, Masaki Shimono, and Hiroaki Gotoh.  
+"Analysis of Asymmetric Reduction of Ketones Using Three-Dimensional Electronic States."  
+*The Journal of Physical Chemistry A* 129.39 (2025): 8945-8958.  
+https://doi.org/10.1021/acs.jpca.5c03510
 
 ## License
-
-
-## Authors
-Developed by the **POC Lab** team.
-
-## Contributing
-We welcome contributions! Please follow these steps:
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature-name`)
-3. Commit your changes (`git commit -m 'Add feature'`)
-4. Push to the branch (`git push origin feature-name`)
-5. Create a Pull Request
+This project is distributed under the MIT License. See `LICENSE.txt`.
 
 ## Contact
-For inquiries or support, please contact the POC Lab team (gotoh-hiroaki-yw[at]ynu.ac.jp).
-
+POC Lab (Hiroaki Gotoh): gotoh-hiroaki-yw[at]ynu.ac.jp
